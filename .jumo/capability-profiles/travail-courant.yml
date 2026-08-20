@@ -1,0 +1,14 @@
+apiVersion: jumo.dev/v1
+kind: CapabilityProfile
+metadata:
+  id: travail-courant
+  namespace: dev.jumo.core
+  name: Travail courant
+spec:
+  ownerRealm: home
+  intent: Rédaction et analyse courante de documents et propositions sous gouvernance.
+  presenceRef: producingSpecialist
+  workerRequirementProfileRef:
+    kind: WorkerRequirementProfile
+    namespace: dev.jumo.core
+    id: governed-document-draft

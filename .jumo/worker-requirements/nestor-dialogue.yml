@@ -1,0 +1,28 @@
+apiVersion: jumo.dev/v1
+kind: WorkerRequirementProfile
+metadata:
+  id: nestor-dialogue
+  namespace: dev.jumo.core
+  name: Nestor dialogue fast worker
+spec:
+  ownerRealm: home
+  taskClasses:
+    - REALTIME_DIALOGUE
+    - NARRATION
+  modalities:
+    - TEXT
+  dataScopeCeiling: REALM_PRIVATE
+  context:
+    minimumTokens: 8192
+  interaction:
+    toolUse: NONE
+    structuredOutput: OPTIONAL
+  quality:
+    minimumAssurance: OBSERVED
+    minimumReliability: 0.7
+    minimumTaskHorizon: PT10S
+    maximumEvaluationAge: P30D
+    reasoningEffort: LOW
+  limits:
+    maximumLatency: PT10S
+    maximumCostClass: LOW

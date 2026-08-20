@@ -1,0 +1,26 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: create-project
+  namespace: dev.jumo.core
+  name: Create project step form
+spec:
+  ownerRealm: home
+  of: CreateProjectStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: project
+      i18nKey: journeyProjectSection
+      columns: 1
+      fields:
+        - path: projectId
+          representation: SHORT_TEXT
+          i18nKey: journeyProjectIdField
+          helpI18nKey: journeyProjectIdHelp
+          required: true
+        - path: purpose
+          representation: MULTILINE_TEXT
+          i18nKey: journeyProjectPurposeField
+          helpI18nKey: journeyProjectPurposeHelp
+          required: true

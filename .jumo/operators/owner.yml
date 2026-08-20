@@ -1,0 +1,9 @@
+apiVersion: jumo.dev/v1
+kind: RoleDefinition
+metadata:
+  id: owner
+  namespace: dev.jumo.core
+  name: Human owner
+spec:
+  ownerRealm: home
+  mission: Approve safety-boundary changes, merge reviewed work, and deploy releases.

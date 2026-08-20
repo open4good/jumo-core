@@ -1,0 +1,19 @@
+apiVersion: jumo.dev/v1
+kind: PolicySet
+metadata:
+  id: security-baseline
+  namespace: dev.jumo.core
+spec:
+  rules:
+    - id: no-silent-policy-weakening
+      effect: DENY
+      when: lower_scope_expands_higher_scope
+    - id: retain-pilot-proposal-provenance
+      effect: ALLOW_WITH_OBLIGATIONS
+      actions:
+        - document.change.propose
+      obligations:
+        - RETAIN_PROVENANCE
+    - id: no-self-approval
+      effect: DENY
+      when: proposer_is_sole_approver

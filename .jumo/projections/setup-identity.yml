@@ -1,0 +1,31 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: setup-identity
+  namespace: dev.jumo.core
+  name: Setup identity step form
+spec:
+  ownerRealm: home
+  of: SetupIdentityStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: identity
+      i18nKey: journeyIdentitySection
+      columns: 1
+      fields:
+        - path: nickname
+          representation: SHORT_TEXT
+          i18nKey: journeyNicknameField
+          helpI18nKey: journeyNicknameHelp
+          required: true
+        - path: avatarBlob
+          representation: SHORT_TEXT
+          i18nKey: journeyAvatarField
+          helpI18nKey: journeyAvatarHelp
+          required: false
+        - path: deviceId
+          representation: SHORT_TEXT
+          i18nKey: journeyDeviceIdField
+          helpI18nKey: journeyDeviceIdHelp
+          required: true

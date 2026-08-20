@@ -1,0 +1,21 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: bind-repository-form
+  namespace: dev.jumo.core
+  name: Bind repository step form
+spec:
+  ownerRealm: home
+  of: BindRepositoryStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: repository
+      i18nKey: journeyGitRepoSection
+      columns: 1
+      fields:
+        - path: repository
+          representation: SHORT_TEXT
+          i18nKey: journeyGitRepoField
+          helpI18nKey: journeyGitRepoHelp
+          required: true

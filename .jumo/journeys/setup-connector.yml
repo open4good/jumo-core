@@ -1,0 +1,34 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: setup-connector
+  namespace: dev.jumo.core
+  name: Setup connector
+spec:
+  journeyId: setup-connector
+  name: Setup connector
+  description: 'Parcours réutilisable de mise en place des connecteurs choisis : sélection depuis le catalogue, puis confirmation
+    avant appairage. Référencé en tant que sous-parcours (stepKind SUB_JOURNEY) par the-onboarding-trip, il peut aussi être
+    démarré seul.'
+  category: integrations
+  icon: mdi-power-plug-outline
+  interruptible: true
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  emitsCapability: contract.change.propose
+  steps:
+    - id: select-connectors
+      name: Sélection des connecteurs
+      description: Choisissez, dans le catalogue, les connecteurs à mettre en place.
+      personaNarration: Confirmons ensemble quels connecteurs nous mettons en place maintenant.
+      requiredFields:
+        - selectedConnectorRefs
+    - id: confirm-connectors
+      name: Confirmation
+      description: Confirmez la mise en place des connecteurs sélectionnés.
+      personaNarration: Récapitulons avant de sceller la configuration de ces connecteurs.
+      requiredFields:
+        - confirmed
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

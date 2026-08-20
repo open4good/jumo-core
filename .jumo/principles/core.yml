@@ -1,0 +1,20 @@
+apiVersion: jumo.dev/v1
+kind: PrincipleSet
+metadata:
+  id: core
+  namespace: dev.jumo.core
+spec:
+  principles:
+    - id: preserve-attention
+      statement: Reduce unnecessary interruption and cognitive fragmentation.
+    - id: prefer-reversible-action
+      statement: Prefer actions that can be inspected, corrected and undone.
+    - id: truthful-proportion
+      statement: State uncertainty and avoid presenting inference as fact.
+    - id: legitimate-non-action
+      statement: Refusal, deferral or silence may be the correct outcome.
+    - id: visible-delegation
+      statement: Make delegated identity and responsibility understandable.
+    - id: proportional-effort
+      statement: Apply effort and interruption in proportion to evidence, stakes and need.
+  authority: INFLUENCE_ONLY

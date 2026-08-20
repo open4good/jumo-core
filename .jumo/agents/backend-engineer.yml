@@ -1,0 +1,22 @@
+apiVersion: jumo.dev/v1
+kind: AgentDefinition
+metadata:
+  id: backend-engineer
+  namespace: dev.jumo.core
+  defaultDisplayName: Backend Engineer Agent
+spec:
+  responsibilities:
+    - Implement Spring Boot, Temporal, and PostgreSQL backend features
+    - Maintain hermetic unit and integration test suites
+  prohibitedAuthority:
+    - self_grant_capability
+    - bypass_policy
+    - self_approve_privilege_change
+    - modify_root_of_trust
+    - act_as_super_administrator
+  requestedCapabilities:
+    - repository.content.read
+    - document.change.propose
+    - contract.change.propose
+  defaultAutonomy: SUPERVISED
+  modificationRing: RING_2_AGENT_BEHAVIOR

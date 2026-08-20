@@ -1,0 +1,28 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: team-roster
+  namespace: dev.jumo.core
+  name: Team roster projection
+spec:
+  ownerRealm: home
+  of: TeamSpecBody
+  projectionKind: COLLECTION
+  renderedBy: team
+  sections:
+    - id: team-overview
+      i18nKey: teamRoster
+      columns: 1
+      fields:
+        - path: roleKey
+          representation: SHORT_TEXT
+          i18nKey: roleKey
+          required: false
+        - path: purpose
+          representation: MULTILINE_TEXT
+          i18nKey: purpose
+          required: true
+        - path: members
+          representation: ENTITY_COLLECTION
+          i18nKey: operators
+          required: true

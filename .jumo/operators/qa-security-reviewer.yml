@@ -1,0 +1,9 @@
+apiVersion: jumo.dev/v1
+kind: RoleDefinition
+metadata:
+  id: qa-security-reviewer
+  namespace: dev.jumo.core
+  name: Independent QA and Security Reviewer
+spec:
+  ownerRealm: home
+  mission: Perform independent adversarial review, verify OPA Rego policies, audit test evidence, and prevent secret leakage.

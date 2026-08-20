@@ -1,0 +1,75 @@
+apiVersion: jumo.dev/v1
+kind: ApiSurface
+metadata:
+  id: internal-v1
+  namespace: dev.jumo.core
+  name: Jumo Internal Worker Control API
+spec:
+  surfaceId: internal-v1
+  audience: INTERNAL_WORKER
+  basePath: /api/internal/v1
+  protocol: MTLS
+  operations:
+    - operationId: dispatchWorkOrder
+      method: POST
+      path: /work-orders/dispatch
+      audience: INTERNAL_WORKER
+      authAction: workorder.dispatch
+      requestBinding:
+        modelClass: CliInvocationRequest
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/CliInvocationRequest
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: ExecutionCellLease
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/ExecutionCellLease
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Dispatch authorized WorkOrder execution to worker.
+    - operationId: completeWorkOrder
+      method: POST
+      path: /work-orders/{workOrderId}/complete
+      audience: INTERNAL_WORKER
+      authAction: workorder.complete
+      requestBinding:
+        modelClass: CliInvocationResult
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/CliInvocationResult
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: WorkOrder
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/WorkOrder
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Complete WorkOrder with sanitized evidence.
+    - operationId: evaluateAppraisal
+      method: POST
+      path: /appraisals/evaluate
+      audience: INTERNAL_WORKER
+      authAction: connector.appraisal.evaluate
+      requestBinding:
+        modelClass: ConnectorActivationDecision
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/ConnectorActivationDecision
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: ConnectorActivationDecision
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/ConnectorActivationDecision
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Evaluate policy rules for connector appraisal and activation.

@@ -1,0 +1,54 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: create-project
+  namespace: dev.jumo.core
+  name: Create a project
+spec:
+  journeyId: create-project
+  name: Create a project
+  description: Declare a new governed project, bind external GitHub repositories, and set up documentation and state authorities.
+  category: teamsProjects
+  icon: mdi-folder-plus-outline
+  interruptible: true
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  emitsCapability: contract.change.propose
+  steps:
+    - id: define-project
+      name: Identité du projet
+      description: Renseignez l'identifiant technique et la finalité du projet.
+      personaNarration: Donnons un nom et une mission claire à votre nouveau projet.
+      stepKind: COLLECT
+      requiredFields:
+        - projectId
+        - purpose
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: create-project
+    - id: bind-repository
+      name: Dépôt Git externe
+      description: Liez le dépôt GitHub cible qui recevra le code et les artefacts (ex. owner/repo).
+      personaNarration: Renseignez les coordonnées de votre dépôt Git externe sous la forme owner/repo.
+      stepKind: COLLECT
+      requiredFields:
+        - repository
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: bind-repository-form
+    - id: confirm-project
+      name: Confirmation
+      description: Validez la création du projet et l'émission du contrat associé.
+      personaNarration: Vérifions le contrat de projet avant son scellement déclaratif.
+      stepKind: COLLECT
+      requiredFields:
+        - confirmed
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: summary-and-activate
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

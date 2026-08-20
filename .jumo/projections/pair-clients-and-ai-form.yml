@@ -1,0 +1,28 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: pair-clients-and-ai-form
+  namespace: dev.jumo.core
+  name: Pair clients and AI keys step form
+spec:
+  ownerRealm: home
+  of: PairClientsAndAiStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: clients
+      i18nKey: journeyPairClientsSection
+      columns: 1
+      fields:
+        - path: pairedClients
+          representation: ENTITY_COLLECTION
+          i18nKey: journeyPairedClientsField
+          required: true
+        - path: aiProvider
+          representation: SHORT_TEXT
+          i18nKey: journeyAiProviderField
+        - path: llmApiKey
+          representation: SECRET
+          i18nKey: journeyLlmApiKeyField
+          helpI18nKey: journeyLlmApiKeyHelp
+          required: true

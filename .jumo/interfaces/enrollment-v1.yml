@@ -1,0 +1,54 @@
+apiVersion: jumo.dev/v1
+kind: ApiSurface
+metadata:
+  id: enrollment-v1
+  namespace: dev.jumo.core
+  name: Jumo BYOVM Enrollment API
+spec:
+  surfaceId: enrollment-v1
+  audience: MACHINE_MTLS
+  basePath: /api/enrollment/v1
+  protocol: HTTPS
+  operations:
+    - operationId: createEnrollmentChallenge
+      method: POST
+      path: /challenge
+      audience: REALM_PRIVATE
+      authAction: machine.enrollment.challenge
+      requestBinding:
+        modelClass: MachineEnrollmentChallenge
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/MachineEnrollmentChallenge
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineEnrollmentChallenge
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineEnrollmentChallenge
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Issue short-lived one-time challenge token for BYOVM bootstrap.
+    - operationId: enrollMachine
+      method: POST
+      path: /enroll
+      audience: PUBLIC_WEB
+      authAction: machine.enrollment.submit
+      requestBinding:
+        modelClass: MachineEnrollmentRequest
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/MachineEnrollmentRequest
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineEnrollmentResult
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineEnrollmentResult
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Submit one-shot enrollment token, CSR, and inventory for certificate issuance.

@@ -1,0 +1,16 @@
+apiVersion: jumo.dev/v1
+kind: ResourceBudget
+metadata:
+  id: interactive
+  namespace: dev.jumo.core
+  name: Interactive episode budget
+spec:
+  limits:
+    tokens: 100000
+    estimatedCostEur: 1.0
+    wallClock: PT10M
+    modelCalls: 12
+    toolCalls: 40
+  minimumAssurance: OBSERVED
+  onExhaustion: REQUEST_HUMAN_DECISION
+  preferDeterministicRouting: true

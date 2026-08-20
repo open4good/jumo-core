@@ -1,0 +1,257 @@
+apiVersion: jumo.dev/v1
+kind: ActionCapabilitySet
+metadata:
+  id: core
+  namespace: dev.jumo.core
+  name: Pilot capability registry
+spec:
+  capabilities:
+    - name: interface.manifest.read
+      description: Read the authenticated Realm's declared pilot interface manifest.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: repository.content.read
+      description: Read the release-pinned pilot corpus within the authenticated Realm.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: document.content.read
+      description: Read governed Markdown without widening its declared audience.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: change.status.read
+      description: Read Realm-scoped proposal and forge projection status.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: change.review
+      description: Record an independent review result without approving, merging, or applying effects.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: model.document.draft
+      description: Send one owner-approved, hash-bound governed document to a declared model provider for a draft.
+      riskTier: MEDIUM
+      reversible: false
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: conversation.turn.submit
+      description: Submit one creator-private Nestor conversation turn without tools or external effects.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: contract.change.propose
+      description: Record a validated, hash-bound operator-contract proposal for separate owner approval and forge projection.
+      riskTier: MEDIUM
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+        - STEP_UP_AUTHENTICATION
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: jumo.effect.ForgeProposalApplier
+    - name: document.change.propose
+      description: Record a hash-bound pilot document proposal for isolated forge projection.
+      riskTier: MEDIUM
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+      minimumAssurance: OBSERVED
+      appliedBy: jumo.effect.ForgeProposalApplier
+    - name: capability.grant.acquire
+      description: Acquire a run-bound, revocable five-minute capability grant with retained provenance.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: execution.cell.vm.provision
+      description: Create a Realm-owned hosted-VM execution cell shell on an owner-unlocked encrypted volume, pending guest
+        hardening and its certificate ceremony.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: jumo.effect.ExecutionCellProvisioningApplier
+    - name: execution.cell.certificate.ceremony
+      description: Perform one host or guest step of the three-party mTLS certificate ceremony that seals a hosted execution
+        cell's local credential custody.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: jumo.effect.ExecutionCellProvisioningApplier
+    - name: execution.cell.pair.confirm
+      description: Confirm one pending Realm execution cell after fresh owner step-up and local pairing-code proof.
+      riskTier: HIGH
+      reversible: false
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: connector.appraisal.record
+      description: Record a typed connector appraisal without admitting an unreviewed connector.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+    - name: attention.item.publish
+      description: Publish a typed attention item to the owner without granting effect authority.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: attention.item.read
+      description: Read the authenticated principal's Realm-scoped open attention routing items.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: project.create
+      description: Record a validated, hash-bound project declaration proposal for separate owner approval and forge projection.
+      riskTier: MEDIUM
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+        - STEP_UP_AUTHENTICATION
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: jumo.effect.ForgeProposalApplier
+    - name: account.profile.read
+      description: Read the authenticated principal's own account profile (display name, avatar metadata).
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: account.profile.update
+      description: Update the authenticated principal's own display name or avatar.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+    - name: account.delete
+      description: Hard-delete the authenticated principal's own Postgres-resident data (profile, conversations, proposals,
+        journey runs, model drafts) and sever their identity from the retained audit trail. Self-service by design -- unlike
+        the other HIGH capabilities here, no HUMAN_OWNER_APPROVAL is required, since a principal deleting their own account
+        needs no one else's sign-off.
+      riskTier: HIGH
+      reversible: false
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: team.roster.read
+      description: Read operator team composition, roles, and independence groups within the authenticated Realm.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: work.order.read
+      description: Read declared work orders, execution rings, and acceptance criteria within the authenticated Realm.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: work.order.propose
+      description: Record a validated, hash-bound work order proposal for separate operator assignment and forge execution.
+      riskTier: MEDIUM
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+        - STEP_UP_AUTHENTICATION
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: jumo.effect.ForgeProposalApplier
+    - name: context.graph.read
+      description: Read composed 2-hop contextual graph nodes, edges, and state overlays for any corpus entity.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: organization.governance.read
+      description: Read an admitted Organization's governance contracts, composition, and retention policy without gaining
+        access to any member Realm's data or effects.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: audit.history.read
+      description: Read the sanitized, paginated audit history within an independently authorized Organization or Realm scope.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: organization.governance.propose
+      description: Record an owner-authorized, typed Organization Git proposal draft for separate validation, approval, and
+        application.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+    - name: organization.realm.provision.request
+      description: Queue an admitted identity's nickname for a bounded trusted Realm provisioner; the request itself creates
+        no Realm, federation, or effect authority.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+    - name: machine.read
+      description: Read execution machines, observations, and runtime installations.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: machine.administer
+      description: Dispatch signed Ansible admin playbook to a machine.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: jumo.effect.ExecutionCellProvisioningApplier
+    - name: machine.drain
+      description: Drain execution machine for maintenance.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: machine.revoke
+      description: Revoke execution machine certificate and access.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: cli.read
+      description: Read declared CLI tools and releases.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: quota.read
+      description: Read provider quota observations.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: connector.read
+      description: Read connector packages and integrations.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: connector.test
+      description: Execute connector verification test plan on a machine.
+      riskTier: MEDIUM
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE

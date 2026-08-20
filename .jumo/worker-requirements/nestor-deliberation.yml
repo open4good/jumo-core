@@ -1,0 +1,28 @@
+apiVersion: jumo.dev/v1
+kind: WorkerRequirementProfile
+metadata:
+  id: nestor-deliberation
+  namespace: dev.jumo.core
+  name: Nestor deliberation deep worker
+spec:
+  ownerRealm: home
+  taskClasses:
+    - REASONING
+    - NARRATION
+  modalities:
+    - TEXT
+  dataScopeCeiling: REALM_PRIVATE
+  context:
+    minimumTokens: 32768
+  interaction:
+    toolUse: NONE
+    structuredOutput: OPTIONAL
+  quality:
+    minimumAssurance: OBSERVED
+    minimumReliability: 0.85
+    minimumTaskHorizon: PT3M
+    maximumEvaluationAge: P30D
+    reasoningEffort: HIGH
+  limits:
+    maximumLatency: PT3M
+    maximumCostClass: HIGH

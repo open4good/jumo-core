@@ -1,0 +1,29 @@
+apiVersion: jumo.dev/v1
+kind: WorkerRequirementProfile
+metadata:
+  id: governed-document-draft
+  namespace: dev.jumo.core
+  name: Governed document draft worker
+spec:
+  ownerRealm: home
+  taskClasses:
+    - REASONING
+    - CODING
+    - NARRATION
+  modalities:
+    - TEXT
+  dataScopeCeiling: REALM_PRIVATE
+  context:
+    minimumTokens: 32768
+  interaction:
+    toolUse: NONE
+    structuredOutput: OPTIONAL
+  quality:
+    minimumAssurance: OBSERVED
+    minimumReliability: 0.8
+    minimumTaskHorizon: PT2M
+    maximumEvaluationAge: P30D
+    reasoningEffort: MEDIUM
+  limits:
+    maximumLatency: PT2M
+    maximumCostClass: MEDIUM

@@ -1,0 +1,31 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: import-skill
+  namespace: dev.jumo.core
+  name: Import skill step form
+spec:
+  ownerRealm: home
+  of: ImportSkillStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: skill
+      i18nKey: journeySkillSection
+      columns: 1
+      fields:
+        - path: alias
+          representation: SHORT_TEXT
+          i18nKey: journeySkillAliasField
+          helpI18nKey: journeySkillAliasHelp
+          required: true
+        - path: repository
+          representation: SHORT_TEXT
+          i18nKey: journeySkillRepositoryField
+          helpI18nKey: journeySkillRepositoryHelp
+          required: true
+        - path: commit
+          representation: SHORT_TEXT
+          i18nKey: journeySkillCommitField
+          helpI18nKey: journeySkillCommitHelp
+          required: true

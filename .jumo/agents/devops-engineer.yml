@@ -1,0 +1,21 @@
+apiVersion: jumo.dev/v1
+kind: AgentDefinition
+metadata:
+  id: devops-engineer
+  namespace: dev.jumo.core
+  defaultDisplayName: DevOps Engineer Agent
+spec:
+  responsibilities:
+    - Manage Docker Compose stacks and CI/CD pipelines
+    - Verify execution-cell health and sealed credential custody
+  prohibitedAuthority:
+    - self_grant_capability
+    - bypass_policy
+    - self_approve_privilege_change
+    - modify_root_of_trust
+    - act_as_super_administrator
+  requestedCapabilities:
+    - repository.content.read
+    - document.change.propose
+  defaultAutonomy: SUPERVISED
+  modificationRing: RING_2_AGENT_BEHAVIOR

@@ -1,0 +1,9 @@
+apiVersion: jumo.dev/v1
+kind: RoleDefinition
+metadata:
+  id: frontend-engineer
+  namespace: dev.jumo.core
+  name: Frontend and UI Specialist
+spec:
+  ownerRealm: home
+  mission: Build Nuxt 3, Vue 3, and Vuetify components, model-driven projection renderers, and accessible Cockpit surfaces.

@@ -1,0 +1,21 @@
+apiVersion: jumo.dev/v1
+kind: AgentDefinition
+metadata:
+  id: qa-security-reviewer
+  namespace: dev.jumo.core
+  defaultDisplayName: QA and Security Reviewer Agent
+spec:
+  responsibilities:
+    - Reproduce evidence independently of the implementation agents
+    - Report verification verdicts, OPA audit findings, and risks
+  prohibitedAuthority:
+    - self_grant_capability
+    - bypass_policy
+    - self_approve_privilege_change
+    - modify_root_of_trust
+    - act_as_super_administrator
+  requestedCapabilities:
+    - repository.content.read
+    - change.review
+  defaultAutonomy: SUPERVISED
+  modificationRing: RING_2_AGENT_BEHAVIOR

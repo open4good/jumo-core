@@ -1,0 +1,26 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: link-repository-form
+  namespace: dev.jumo.core
+  name: Link repository step form
+spec:
+  ownerRealm: home
+  of: LinkRepositoryStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: repository
+      i18nKey: journeyGitRepoSection
+      columns: 1
+      fields:
+        - path: gitRepoUrl
+          representation: SHORT_TEXT
+          i18nKey: journeyGitRepoUrlField
+          helpI18nKey: journeyGitRepoUrlHelp
+          required: true
+        - path: gitBranch
+          representation: SHORT_TEXT
+          i18nKey: journeyGitBranchField
+          helpI18nKey: journeyGitBranchHelp
+          required: true

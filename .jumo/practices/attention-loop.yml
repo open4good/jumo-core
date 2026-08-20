@@ -1,0 +1,14 @@
+apiVersion: jumo.dev/v1
+kind: Practice
+metadata:
+  id: daily-attention-loop
+  namespace: dev.jumo.core
+  name: Daily attention loop
+spec:
+  purpose: Publish one typed daily attention prompt for the Realm owner.
+  delivery: LIVE
+  enabled: true
+  processSpecRef:
+    kind: ProcessSpec
+    namespace: dev.jumo.core
+    id: attention-loop--1-0-0

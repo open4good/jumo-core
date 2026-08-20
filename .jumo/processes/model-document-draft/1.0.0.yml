@@ -1,0 +1,86 @@
+apiVersion: jumo.dev/v1
+kind: ProcessSpec
+metadata:
+  id: model-document-draft--1-0-0
+  namespace: dev.jumo.core
+  name: Supervised model document draft 1.0.0
+spec:
+  ownerRealm: home
+  projectRef:
+    kind: ProjectContract
+    namespace: dev.jumo.core
+    id: jumo
+  processId: model-document-draft
+  processVersion: 1.0.0
+  inputType: ProcessRunRef
+  outputType: ChangeProposalRef
+  startTrigger: MANUAL
+  stageWorkerRequirementRef:
+    - stepId: model-draft
+      workerRequirementProfileRef:
+        kind: WorkerRequirementProfile
+        namespace: dev.jumo.core
+        id: governed-document-draft
+  steps:
+    - id: start
+      kind: START
+    - id: owner-dispatch
+      kind: USER
+      signalType: ApprovalSignal
+    - id: draft-authz
+      kind: GATEWAY
+      semanticStage: POLICY_EVALUATION
+      gatewayMode: EXCLUSIVE
+      gatewayRole: SPLIT
+      pairedGatewayRef: draft-authz-join
+      opaEntrypoint: jumo.authz.decision
+    - id: model-draft
+      kind: SERVICE
+      semanticStage: EXECUTION
+      capabilityRef: model.document.draft
+      ring: RING_1_CONTROL_PLANE
+    - id: reviewer-signal
+      kind: USER
+      signalType: ApprovalSignal
+    - id: draft-authz-join
+      kind: GATEWAY
+      gatewayMode: EXCLUSIVE
+      gatewayRole: JOIN
+      pairedGatewayRef: draft-authz
+    - id: completed
+      kind: END
+      terminalState: COMPLETED
+    - id: declined
+      kind: END
+      terminalState: DECLINED
+  flows:
+    - id: start-owner
+      from: start
+      to: owner-dispatch
+      payloadType: ProcessRunRef
+    - id: owner-policy
+      from: owner-dispatch
+      to: draft-authz
+      payloadType: ProcessRunRef
+    - id: policy-allow
+      from: draft-authz
+      to: model-draft
+      branchLabel: ALLOW
+      payloadType: ProcessRunRef
+    - id: policy-deny
+      from: draft-authz
+      to: declined
+      branchLabel: DENY
+      payloadType: ProcessRunRef
+    - id: draft-review
+      from: model-draft
+      to: reviewer-signal
+      payloadType: ChangeProposalRef
+    - id: review-join
+      from: reviewer-signal
+      to: draft-authz-join
+      payloadType: ChangeProposalRef
+    - id: join-completed
+      from: draft-authz-join
+      to: completed
+      payloadType: ChangeProposalRef

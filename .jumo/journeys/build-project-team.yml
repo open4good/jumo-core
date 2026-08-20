@@ -1,0 +1,51 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: build-project-team
+  namespace: dev.jumo.core
+  name: Build a project team
+spec:
+  journeyId: build-project-team
+  name: Build a project team
+  description: Compose and configure a governed project team with accountable roles, coordination mechanisms, and independent
+    verification groups.
+  category: teamsProjects
+  icon: mdi-account-group-outline
+  interruptible: true
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  emitsCapability: contract.change.propose
+  steps:
+    - id: define-team-scope
+      name: Définition de l'équipe
+      description: Renseignez le nom de l'équipe et la mission du projet gouverné.
+      personaNarration: Définissons ensemble les objectifs de cette nouvelle équipe projet et son champ d'action.
+      stepKind: COLLECT
+      requiredFields:
+        - teamName
+        - projectPurpose
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: build-project-team
+    - id: select-members
+      name: Sélection des membres
+      description: Choisissez les opérateurs et définissez leurs rôles et groupes d'indépendance.
+      personaNarration: Structurons les membres de l'équipe en veillant à la séparation des responsabilités de production
+        et de revue.
+      requiredFields:
+        - members
+    - id: confirm-team
+      name: Validation de l'équipe
+      description: Vérifiez le récapitulatif de l'équipe avant émission de la proposition contractuelle.
+      personaNarration: Tout est en ordre. Validons la création de cette équipe dans votre Realm.
+      stepKind: COLLECT
+      requiredFields:
+        - confirmed
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: summary-and-activate
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

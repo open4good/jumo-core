@@ -1,0 +1,24 @@
+apiVersion: jumo.dev/v1
+kind: AgentDefinition
+metadata:
+  id: lead-architect
+  namespace: dev.jumo.core
+  defaultDisplayName: Lead Architect Agent
+spec:
+  responsibilities:
+    - Steer LinkML metamodeling and architectural decisions
+    - Inspect and author OPA Rego governance policies
+    - Decompose complex user intents into governed WorkOrders
+  prohibitedAuthority:
+    - self_grant_capability
+    - bypass_policy
+    - self_approve_privilege_change
+    - modify_root_of_trust
+    - act_as_super_administrator
+  requestedCapabilities:
+    - repository.content.read
+    - document.content.read
+    - contract.change.propose
+    - document.change.propose
+  defaultAutonomy: SUPERVISED
+  modificationRing: RING_2_AGENT_BEHAVIOR

@@ -1,0 +1,40 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: delegate-development-task
+  namespace: dev.jumo.core
+  name: Delegate a development task
+spec:
+  journeyId: delegate-development-task
+  name: Delegate a development task
+  description: Capture, decompose, and specify a software development task as a governed WorkOrder.
+  category: teamsProjects
+  icon: mdi-clipboard-arrow-right-outline
+  interruptible: true
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  emitsCapability: contract.change.propose
+  steps:
+    - id: capture-task-intent
+      name: Description du besoin
+      description: Décrivez l'objectif fonctionnel ou technique à réaliser par un jumeau développeur.
+      personaNarration: Expliquez ce que vous souhaitez développer ou corriger. Je vais cadrer le périmètre et la décomposition.
+      requiredFields:
+        - taskSlug
+        - purpose
+    - id: specify-work-order
+      name: Spécification du lot
+      description: Définissez l'opérateur responsable, l'équipe et les critères d'acceptation.
+      personaNarration: Associons ce lot à un opérateur d'implémentation et à un vérificateur indépendant.
+      requiredFields:
+        - operatorRef
+        - teamRef
+    - id: confirm-work-order
+      name: Confirmation de la tâche
+      description: Vérifiez la proposition de contrat WorkOrder avant son émission.
+      personaNarration: Le contrat de travail est prêt. Validez pour enregistrer la proposition de tâche.
+      requiredFields:
+        - confirmed
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

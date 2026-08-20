@@ -1,0 +1,21 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: summary-and-activate
+  namespace: dev.jumo.core
+  name: Summary and activate confirmation form
+spec:
+  ownerRealm: home
+  of: SummaryAndActivateStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: confirmation
+      i18nKey: journeyConfirmationSection
+      columns: 1
+      fields:
+        - path: confirmed
+          representation: BOOLEAN_FLAG
+          i18nKey: journeyConfirmField
+          helpI18nKey: journeyConfirmHelp
+          required: true

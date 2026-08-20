@@ -1,0 +1,9 @@
+apiVersion: jumo.dev/v1
+kind: RoleDefinition
+metadata:
+  id: implementer
+  namespace: dev.jumo.core
+  name: Implementer
+spec:
+  ownerRealm: home
+  mission: Produce tested changes inside accepted scope and report evidence.

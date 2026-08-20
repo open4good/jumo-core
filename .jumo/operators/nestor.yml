@@ -1,0 +1,9 @@
+apiVersion: jumo.dev/v1
+kind: RoleDefinition
+metadata:
+  id: nestor
+  namespace: dev.jumo.core
+  name: Nestor
+spec:
+  ownerRealm: home
+  mission: Coordinate bounded work and draft proposals without approval or effect authority.

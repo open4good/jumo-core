@@ -1,0 +1,293 @@
+apiVersion: jumo.dev/v1
+kind: InterfaceSurface
+metadata:
+  id: web
+  namespace: dev.jumo.core
+  name: Pilot cockpit
+spec:
+  ownerRealm: home
+  facets:
+    - entity: Realm
+      list: true
+      detail: true
+      create: NONE
+      modify: NONE
+      retire: NONE
+      commands: []
+    - entity: Agent
+      list: true
+      detail: true
+      create: NONE
+      modify: NONE
+      retire: NONE
+      commands: []
+    - entity: ChangeProposal
+      list: true
+      detail: true
+      create: LIFECYCLE_COMMAND
+      modify: NONE
+      retire: NONE
+      commands:
+        - AUTHORIZE_FORGE_EFFECT
+        - PROPOSE
+    - entity: ForgeProjection
+      list: true
+      detail: true
+      create: LIFECYCLE_COMMAND
+      modify: NONE
+      retire: NONE
+      commands:
+        - PROJECT
+    - entity: Evidence
+      list: true
+      detail: true
+      create: NONE
+      modify: NONE
+      retire: NONE
+      commands: []
+    - entity: AttentionItem
+      list: true
+      detail: true
+      create: NONE
+      modify: NONE
+      retire: NONE
+      commands: []
+    - entity: Team
+      list: true
+      detail: true
+      create: NONE
+      modify: NONE
+      retire: NONE
+      commands: []
+    - entity: WorkOrder
+      list: true
+      detail: true
+      create: NONE
+      modify: NONE
+      retire: NONE
+      commands: []
+  surfaces:
+    - id: home
+      purpose: Orient the authenticated owner in the Home Realm and show the pilot roles.
+      audience: REALM_PRIVATE
+      presenceRef: ecosystemView
+      reads:
+        - INTERFACE_MANIFEST
+        - AGENT_ROLES
+        - CONVERSATION
+        - JOURNEYS
+        - JOURNEY_RUN
+        - CONNECTOR_CATALOG
+        - ATTENTION_ITEMS
+        - THEME_PACK
+        - CONTEXT_GRAPH
+      proposes:
+        - interface.manifest.read
+        - execution.cell.pair.confirm
+        - conversation.turn.submit
+        - contract.change.propose
+        - attention.item.read
+        - context.graph.read
+      writePaths:
+        - pathGlob: .jumo/agents/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/operator-teams/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/projects/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/providers/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/secret-bindings/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/work/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/kits/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/kit-bindings/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/kit-locks/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+    - id: proposals
+      purpose: Show hash-bound proposals and their GitHub pull-request projections.
+      audience: REALM_PRIVATE
+      reads:
+        - CHANGE_PROPOSALS
+        - FORGE_PROJECTIONS
+        - EVIDENCE
+        - CONTEXT_GRAPH
+      proposes:
+        - change.status.read
+        - repository.content.read
+        - context.graph.read
+    - id: team
+      purpose: Show operator teams, members, and independence groups.
+      audience: REALM_PRIVATE
+      reads:
+        - TEAM_ROSTER
+        - CONTEXT_GRAPH
+      proposes:
+        - team.roster.read
+        - context.graph.read
+    - id: work
+      purpose: Show work orders, execution rings, and acceptance criteria.
+      audience: REALM_PRIVATE
+      reads:
+        - WORK_ORDERS
+        - CONTEXT_GRAPH
+      proposes:
+        - work.order.read
+        - context.graph.read
+    - id: documents
+      purpose: Read pilot documents and draft a bounded documentation proposal.
+      audience: PROJECT_SCOPED
+      reads:
+        - DOCUMENT_TREE
+        - DOCUMENT_CONTENT
+      proposes:
+        - document.content.read
+        - model.document.draft
+        - document.change.propose
+        - change.review
+      writePaths:
+        - pathGlob: docs/architecture/**/*.md
+          ring: RING_3_GOVERNED_PROJECT
+          capabilityRef: document.change.propose
+          editor: WYSIWYG_MARKDOWN
+          requiredObligations:
+            - RETAIN_PROVENANCE
+        - pathGlob: docs/functional/**/*.md
+          ring: RING_3_GOVERNED_PROJECT
+          capabilityRef: document.change.propose
+          editor: WYSIWYG_MARKDOWN
+          requiredObligations:
+            - RETAIN_PROVENANCE
+        - pathGlob: docs/security/**/*.md
+          ring: RING_3_GOVERNED_PROJECT
+          capabilityRef: document.change.propose
+          editor: WYSIWYG_MARKDOWN
+          requiredObligations:
+            - RETAIN_PROVENANCE
+        - pathGlob: docs/testing/**/*.md
+          ring: RING_3_GOVERNED_PROJECT
+          capabilityRef: document.change.propose
+          editor: WYSIWYG_MARKDOWN
+          requiredObligations:
+            - RETAIN_PROVENANCE
+    - id: account
+      purpose: Read and update the signed-in principal's own account profile, and self-service account deletion.
+      audience: REALM_PRIVATE
+      reads:
+        - ACCOUNT_PROFILE
+      proposes:
+        - account.profile.read
+        - account.profile.update
+        - account.delete
+    - id: machines
+      purpose: Monitor and manage execution machines, CLI runtimes, quota observations, and connectors.
+      audience: REALM_PRIVATE
+      reads:
+        - EXECUTION_MACHINES
+        - MACHINE_OBSERVATIONS
+        - CLI_TOOLS
+        - PROVIDER_QUOTAS
+        - CONNECTOR_INTEGRATIONS
+        - CONNECTOR_CATALOG
+        - CONTEXT_GRAPH
+      proposes:
+        - machine.read
+        - machine.administer
+        - machine.drain
+        - machine.revoke
+        - cli.read
+        - quota.read
+        - connector.read
+        - connector.test
+        - contract.change.propose
+        - context.graph.read
+      writePaths:
+        - pathGlob: .jumo/execution-machines/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/cli-tools/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/connector-packages/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
+    - id: organization-governance
+      purpose: Read an admitted Organization's governance boundary and submit bounded Git proposals or Realm provisioning
+        requests without transitive Realm access.
+      audience: ORGANIZATION_ONLY
+      reads:
+        - SESSION
+        - ORGANIZATIONS
+        - ORGANIZATION_GOVERNANCE
+        - ORGANIZATION_MEMBERS
+        - ORGANIZATION_COMPOSITION
+        - ORGANIZATION_RETENTION
+        - ORGANIZATION_RETENTION_HOLDS
+        - ORGANIZATION_AUDIT_HISTORY
+        - ORGANIZATION_ONBOARDING
+        - AUDIT_HISTORY
+      proposes:
+        - organization.governance.read
+        - audit.history.read
+        - organization.governance.propose
+        - organization.realm.provision.request

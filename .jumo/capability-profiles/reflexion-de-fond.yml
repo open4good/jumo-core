@@ -1,0 +1,14 @@
+apiVersion: jumo.dev/v1
+kind: CapabilityProfile
+metadata:
+  id: reflexion-de-fond
+  namespace: dev.jumo.core
+  name: Réflexion de fond
+spec:
+  ownerRealm: home
+  intent: Délibération approfondie et raisonnement structuré sur des choix complexes.
+  presenceRef: chiefOfStaff
+  workerRequirementProfileRef:
+    kind: WorkerRequirementProfile
+    namespace: dev.jumo.core
+    id: nestor-deliberation

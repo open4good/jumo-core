@@ -1,0 +1,32 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: work-order-board
+  namespace: dev.jumo.core
+  name: Work order board projection
+spec:
+  ownerRealm: home
+  of: WorkOrderSpec
+  projectionKind: COLLECTION
+  renderedBy: work
+  sections:
+    - id: work-overview
+      i18nKey: workOrderBoard
+      columns: 1
+      fields:
+        - path: purpose
+          representation: MULTILINE_TEXT
+          i18nKey: purpose
+          required: true
+        - path: state
+          representation: ENUMERATION
+          i18nKey: status
+          required: true
+        - path: producerRoleDefinitionRef
+          representation: ENTITY_REFERENCE
+          i18nKey: operators
+          required: true
+        - path: verifierRoleDefinitionRef
+          representation: ENTITY_REFERENCE
+          i18nKey: verifier
+          required: false

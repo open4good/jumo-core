@@ -1,0 +1,12 @@
+apiVersion: jumo.dev/v1
+kind: ConnectorPackage
+metadata:
+  id: google-workspace
+  namespace: dev.jumo.connectors
+  name: Google Workspace Connector
+spec:
+  connectorId: google-workspace
+  version: 1.0.0
+  packageDigest: sha256:cbf5dd7d8258e77a1cbb47db4806ef89b7b9c9f692cc3e5362ffb50669b7e7ab
+  manifestPath: .jumo/connector-packages/google/package.yml
+  requiresAdapter: false

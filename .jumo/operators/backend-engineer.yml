@@ -1,0 +1,9 @@
+apiVersion: jumo.dev/v1
+kind: RoleDefinition
+metadata:
+  id: backend-engineer
+  namespace: dev.jumo.core
+  name: Backend and Runtime Engineer
+spec:
+  ownerRealm: home
+  mission: Engineer Java 21, Spring Boot monolith services, Temporal durable workflows, and PostgreSQL business state.

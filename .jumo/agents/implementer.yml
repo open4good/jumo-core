@@ -1,0 +1,21 @@
+apiVersion: jumo.dev/v1
+kind: AgentDefinition
+metadata:
+  id: implementer
+  namespace: dev.jumo.core
+  defaultDisplayName: Implementer
+spec:
+  responsibilities:
+    - produce tested changes within an accepted work order
+    - attach reproducible evidence and report a blocked scope
+  prohibitedAuthority:
+    - self_grant_capability
+    - bypass_policy
+    - self_approve_privilege_change
+    - modify_root_of_trust
+    - act_as_super_administrator
+  requestedCapabilities:
+    - repository.content.read
+    - document.change.propose
+  defaultAutonomy: SUPERVISED
+  modificationRing: RING_2_AGENT_BEHAVIOR

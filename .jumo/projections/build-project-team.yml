@@ -1,0 +1,26 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: build-project-team
+  namespace: dev.jumo.core
+  name: Build project team step form
+spec:
+  ownerRealm: home
+  of: BuildProjectTeamStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: team
+      i18nKey: journeyTeamSection
+      columns: 1
+      fields:
+        - path: teamName
+          representation: SHORT_TEXT
+          i18nKey: journeyTeamNameField
+          helpI18nKey: journeyTeamNameHelp
+          required: true
+        - path: projectPurpose
+          representation: MULTILINE_TEXT
+          i18nKey: journeyProjectPurposeField
+          helpI18nKey: journeyProjectPurposeHelp
+          required: true

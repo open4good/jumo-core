@@ -1,0 +1,175 @@
+apiVersion: jumo.dev/v1
+kind: ApiSurface
+metadata:
+  id: machine-v1
+  namespace: dev.jumo.core
+  name: Jumo Machine mTLS API
+spec:
+  surfaceId: machine-v1
+  audience: MACHINE_MTLS
+  basePath: /api/machine/v1
+  protocol: MTLS
+  operations:
+    - operationId: submitHeartbeat
+      method: POST
+      path: /heartbeat
+      audience: MACHINE_MTLS
+      authAction: machine.heartbeat
+      requestBinding:
+        modelClass: MachineHealthObservation
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/MachineHealthObservation
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineHealthObservation
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineHealthObservation
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Submit machine heartbeat and resource utilization metrics.
+    - operationId: submitInventory
+      method: POST
+      path: /inventory
+      audience: MACHINE_MTLS
+      authAction: machine.inventory
+      requestBinding:
+        modelClass: MachineInventoryObservation
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/MachineInventoryObservation
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineInventoryObservation
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineInventoryObservation
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Submit machine hardware, OS, and agent inventory.
+    - operationId: submitInvocationEvent
+      method: POST
+      path: /leases/{leaseId}/events
+      audience: MACHINE_MTLS
+      authAction: invocation.event
+      requestBinding:
+        modelClass: CliInvocationEvent
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/CliInvocationEvent
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: CliInvocationEvent
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/CliInvocationEvent
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Stream CLI execution event from sandbox lease.
+    - operationId: submitInvocationResult
+      method: POST
+      path: /leases/{leaseId}/result
+      audience: MACHINE_MTLS
+      authAction: invocation.result
+      requestBinding:
+        modelClass: CliInvocationResult
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/CliInvocationResult
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: CliInvocationResult
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/CliInvocationResult
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Submit sanitized final output payload and evidence digest.
+    - operationId: submitAdminResult
+      method: POST
+      path: /admin-commands/{commandId}/result
+      audience: MACHINE_MTLS
+      authAction: machine.admin.result
+      requestBinding:
+        modelClass: MachineAdminResult
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/MachineAdminResult
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineAdminResult
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineAdminResult
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Submit result of Ansible admin playbook execution.
+    - operationId: submitDiscoverySnapshot
+      method: POST
+      path: /connectors/{connectorId}/discovery
+      audience: MACHINE_MTLS
+      authAction: connector.discovery
+      requestBinding:
+        modelClass: McpInventorySnapshot
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/McpInventorySnapshot
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: McpInventorySnapshot
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/McpInventorySnapshot
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Submit canonical inventory snapshot discovered on machine.
+    - operationId: submitConnectorTestResult
+      method: POST
+      path: /connectors/{connectorId}/test-result
+      audience: MACHINE_MTLS
+      authAction: connector.test.result
+      requestBinding:
+        modelClass: ConnectorTestResult
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/ConnectorTestResult
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: ConnectorTestResult
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/ConnectorTestResult
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Submit executed connector test result.
+    - operationId: getDelegatedSecretToken
+      method: GET
+      path: /leases/{leaseId}/secret-token
+      audience: MACHINE_MTLS
+      authAction: secret.delegated.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: SchemaBoundPayload
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/SchemaBoundPayload
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Retrieve short-lived OpenBao token for WorkOrder secret bindings.

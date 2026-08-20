@@ -1,0 +1,9 @@
+apiVersion: jumo.dev/v1
+kind: RoleDefinition
+metadata:
+  id: lead-architect
+  namespace: dev.jumo.core
+  name: Lead System Architect
+spec:
+  ownerRealm: home
+  mission: Steer system architecture, LinkML metamodeling, OPA governance policies, and WorkOrder decomposition.

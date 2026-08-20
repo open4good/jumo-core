@@ -1,0 +1,353 @@
+apiVersion: jumo.dev/v1
+kind: ApiSurface
+metadata:
+  id: web-v1
+  namespace: dev.jumo.core
+  name: Jumo Web API
+spec:
+  surfaceId: web-v1
+  audience: REALM_PRIVATE
+  basePath: /api/web/v1
+  protocol: HTTPS
+  operations:
+    - operationId: listMachines
+      method: GET
+      path: /realms/{realmId}/machines
+      audience: REALM_PRIVATE
+      authAction: machine.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: ExecutionMachine
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/ExecutionMachine
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List all execution machines registered in the Realm.
+    - operationId: getMachine
+      method: GET
+      path: /realms/{realmId}/machines/{machineId}
+      audience: REALM_PRIVATE
+      authAction: machine.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: ExecutionMachine
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/ExecutionMachine
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Get details of a specific execution machine.
+    - operationId: getMachineInstallations
+      method: GET
+      path: /realms/{realmId}/machines/{machineId}/runtime-installations
+      audience: REALM_PRIVATE
+      authAction: machine.installations.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineRuntimeInstallation
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineRuntimeInstallation
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Get installed CLI and connector runtimes on a machine.
+    - operationId: getMachineObservations
+      method: GET
+      path: /realms/{realmId}/machines/{machineId}/observations
+      audience: REALM_PRIVATE
+      authAction: machine.observations.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineHealthObservation
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineHealthObservation
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Get health and inventory observations of a machine.
+    - operationId: listCliTools
+      method: GET
+      path: /realms/{realmId}/cli-tools
+      audience: REALM_PRIVATE
+      authAction: cli.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: CliToolDefinition
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/CliToolDefinition
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List qualified and declared AI CLI tools.
+    - operationId: listQuotaObservations
+      method: GET
+      path: /realms/{realmId}/quota-observations
+      audience: REALM_PRIVATE
+      authAction: quota.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: ProviderQuotaObservation
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/ProviderQuotaObservation
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List real observed quota and usage states.
+    - operationId: listConnectors
+      method: GET
+      path: /realms/{realmId}/connectors
+      audience: REALM_PRIVATE
+      authAction: connector.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: ConnectorPackage
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/ConnectorPackage
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List active and declared connector packages.
+    - operationId: listConnectorIntegrations
+      method: GET
+      path: /realms/{realmId}/connector-integrations
+      audience: REALM_PRIVATE
+      authAction: connector.integration.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: ConnectorIntegration
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/ConnectorIntegration
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List grouped connector integrations.
+    - operationId: administerMachine
+      method: POST
+      path: /realms/{realmId}/machines/{machineId}/admin
+      audience: REALM_PRIVATE
+      authAction: machine.administer
+      requestBinding:
+        modelClass: MachineAdminCommand
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/MachineAdminCommand
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineAdminResult
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineAdminResult
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Dispatch signed Ansible admin playbook to a machine.
+    - operationId: drainMachine
+      method: POST
+      path: /realms/{realmId}/machines/{machineId}/drain
+      audience: REALM_PRIVATE
+      authAction: machine.drain
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineHealthObservation
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineHealthObservation
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Drain machine for maintenance.
+    - operationId: revokeMachine
+      method: POST
+      path: /realms/{realmId}/machines/{machineId}/revoke
+      audience: REALM_PRIVATE
+      authAction: machine.revoke
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: MachineHealthObservation
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineHealthObservation
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Revoke machine certificate and access.
+    - operationId: getAccountProfile
+      method: GET
+      path: /realms/{realmId}/account/profile
+      audience: REALM_PRIVATE
+      authAction: account.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: Principal
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/Principal
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Get profile of signed-in principal.
+    - operationId: listAttentionItems
+      method: GET
+      path: /realms/{realmId}/attention-items
+      audience: REALM_PRIVATE
+      authAction: attention.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: AttentionItem
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/AttentionItem
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List attention queue items for the Realm.
+    - operationId: listAuditEvents
+      method: GET
+      path: /realms/{realmId}/audit-events
+      audience: REALM_PRIVATE
+      authAction: audit.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: EvidenceRecord
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/EvidenceRecord
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List audit events and evidence ledger records.
+    - operationId: listProjects
+      method: GET
+      path: /realms/{realmId}/projects
+      audience: REALM_PRIVATE
+      authAction: project.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: Project
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/Project
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List projects in the Realm.
+    - operationId: listTeams
+      method: GET
+      path: /realms/{realmId}/teams
+      audience: REALM_PRIVATE
+      authAction: team.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: TeamSpec
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/TeamSpec
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List teams in the Realm.
+    - operationId: listWorkOrders
+      method: GET
+      path: /realms/{realmId}/work-orders
+      audience: REALM_PRIVATE
+      authAction: workorder.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: WorkOrder
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/WorkOrder
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List WorkOrders in the Realm.
+    - operationId: getWorkOrder
+      method: GET
+      path: /realms/{realmId}/work-orders/{workOrderId}
+      audience: REALM_PRIVATE
+      authAction: workorder.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: WorkOrder
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/WorkOrder
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Get specific WorkOrder details.
+    - operationId: listSecrets
+      method: GET
+      path: /realms/{realmId}/secrets
+      audience: REALM_PRIVATE
+      authAction: secret.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: SecretBinding
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/SecretBinding
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List declared secret bindings and OpenBao health.
+    - operationId: listJourneys
+      method: GET
+      path: /realms/{realmId}/journeys
+      audience: REALM_PRIVATE
+      authAction: journey.list
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: AssistedJourney
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/AssistedJourney
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: List declared assisted journeys.
+    - operationId: getContextGraph
+      method: GET
+      path: /realms/{realmId}/context/{kind}/{namespace}/{id}
+      audience: REALM_PRIVATE
+      authAction: context.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: SchemaBoundPayload
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/SchemaBoundPayload
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Resolve relational context graph node.

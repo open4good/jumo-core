@@ -1,0 +1,9 @@
+apiVersion: jumo.dev/v1
+kind: RoleDefinition
+metadata:
+  id: devops-engineer
+  namespace: dev.jumo.core
+  name: DevOps and Infrastructure Operator
+spec:
+  ownerRealm: home
+  mission: Operate Docker Compose services, Caddy reverse proxy, GitHub CI/CD pipelines, and sealed execution cell custody.

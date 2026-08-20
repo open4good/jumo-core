@@ -1,0 +1,9 @@
+apiVersion: jumo.dev/v1
+kind: RoleDefinition
+metadata:
+  id: reviewer
+  namespace: dev.jumo.core
+  name: Reviewer
+spec:
+  ownerRealm: home
+  mission: Reproduce delivery evidence independently and record a review result.

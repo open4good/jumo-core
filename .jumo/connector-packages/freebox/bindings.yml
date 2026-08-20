@@ -1,0 +1,12 @@
+apiVersion: jumo.dev/v1
+kind: ConnectorIntegration
+metadata:
+  id: freebox-home-integration
+  namespace: dev.jumo.connectors
+  name: Freebox Home Integration
+spec:
+  ownerRealm: home
+  category: HOME_AUTOMATION
+  memberConnectorRefs:
+    - freebox-os
+  description: Local Freebox OS integration for LAN and device telemetry

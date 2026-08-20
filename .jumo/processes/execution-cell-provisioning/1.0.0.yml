@@ -1,0 +1,114 @@
+apiVersion: jumo.dev/v1
+kind: ProcessSpec
+metadata:
+  id: execution-cell-provisioning--1-0-0
+  namespace: dev.jumo.core
+  name: Execution cell provisioning 1.0.0
+spec:
+  ownerRealm: home
+  projectRef:
+    kind: ProjectContract
+    namespace: dev.jumo.core
+    id: jumo
+  processId: execution-cell-provisioning
+  processVersion: 1.0.0
+  inputType: ExecutionCellProvisioningRef
+  outputType: ExecutionCellProvisioningRef
+  startTrigger: MANUAL
+  steps:
+    - id: start
+      kind: START
+    - id: authz
+      kind: GATEWAY
+      semanticStage: POLICY_EVALUATION
+      gatewayMode: EXCLUSIVE
+      gatewayRole: SPLIT
+      pairedGatewayRef: authz-join
+      opaEntrypoint: jumo.authz.decision
+    - id: grant
+      kind: SERVICE
+      semanticStage: CAPABILITY_ACQUISITION
+      capabilityRef: capability.grant.acquire
+      ring: RING_1_CONTROL_PLANE
+    - id: provision-vm
+      kind: SERVICE
+      semanticStage: EFFECT_APPLICATION
+      capabilityRef: execution.cell.vm.provision
+      ring: RING_1_CONTROL_PLANE
+      idempotencyKey: cell-provisioning-run-and-device-hash
+    - id: vm-verified
+      kind: USER
+      signalType: ApprovalSignal
+    - id: ceremony-host-init
+      kind: SERVICE
+      semanticStage: EFFECT_APPLICATION
+      capabilityRef: execution.cell.certificate.ceremony
+      ring: RING_1_CONTROL_PLANE
+    - id: ceremony-guest-bootstrap
+      kind: SERVICE
+      semanticStage: EFFECT_APPLICATION
+      capabilityRef: execution.cell.certificate.ceremony
+      ring: RING_1_CONTROL_PLANE
+    - id: cell-pairing-confirm
+      kind: SERVICE
+      semanticStage: EFFECT_APPLICATION
+      capabilityRef: execution.cell.pair.confirm
+      ring: RING_1_CONTROL_PLANE
+    - id: authz-join
+      kind: GATEWAY
+      gatewayMode: EXCLUSIVE
+      gatewayRole: JOIN
+      pairedGatewayRef: authz
+    - id: admitted
+      kind: END
+      terminalState: COMPLETED
+    - id: declined
+      kind: END
+      terminalState: DECLINED
+  flows:
+    - id: start-authz
+      from: start
+      to: authz
+      payloadType: ExecutionCellProvisioningRef
+    - id: authz-allow
+      from: authz
+      to: grant
+      branchLabel: ALLOW
+      payloadType: ExecutionCellProvisioningRef
+    - id: authz-deny
+      from: authz
+      to: declined
+      branchLabel: DENY
+      payloadType: ExecutionCellProvisioningRef
+    - id: grant-provision
+      from: grant
+      to: provision-vm
+      payloadType: ExecutionCellProvisioningRef
+    - id: provision-verify
+      from: provision-vm
+      to: vm-verified
+      payloadType: ExecutionCellProvisioningRef
+    - id: verify-ceremony-host
+      from: vm-verified
+      to: ceremony-host-init
+      payloadType: ApprovalSignal
+    - id: verify-declined
+      from: vm-verified
+      to: declined
+      payloadType: ApprovalSignal
+    - id: host-guest
+      from: ceremony-host-init
+      to: ceremony-guest-bootstrap
+      payloadType: ExecutionCellProvisioningRef
+    - id: guest-pairing
+      from: ceremony-guest-bootstrap
+      to: cell-pairing-confirm
+      payloadType: ExecutionCellProvisioningRef
+    - id: pairing-join
+      from: cell-pairing-confirm
+      to: authz-join
+      payloadType: ExecutionCellProvisioningRef
+    - id: join-admitted
+      from: authz-join
+      to: admitted
+      payloadType: ExecutionCellProvisioningRef

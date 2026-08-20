@@ -1,0 +1,28 @@
+apiVersion: jumo.dev/v1
+kind: WorkerRequirementProfile
+metadata:
+  id: cli-build-and-test
+  namespace: dev.jumo.core
+  name: CLI build and test worker
+spec:
+  ownerRealm: home
+  taskClasses:
+    - CODING
+    - REASONING
+  modalities:
+    - TEXT
+  dataScopeCeiling: REALM_PRIVATE
+  context:
+    minimumTokens: 131072
+  interaction:
+    toolUse: REQUIRED
+    structuredOutput: OPTIONAL
+  quality:
+    minimumAssurance: OBSERVED
+    minimumReliability: 0.8
+    minimumTaskHorizon: PT30M
+    maximumEvaluationAge: P30D
+    reasoningEffort: HIGH
+  limits:
+    maximumLatency: PT30M
+    maximumCostClass: MEDIUM

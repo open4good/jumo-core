@@ -1,0 +1,34 @@
+apiVersion: jumo.dev/v1
+kind: ThemePack
+metadata:
+  id: default
+  namespace: dev.jumo.core
+  name: Jumo default vocabulary
+spec:
+  terminology:
+    - roleKey: chiefOfStaff
+      displayName: Nestor
+    - roleKey: projectSteward
+      displayName: Majordome
+    - roleKey: deliveryLead
+      displayName: Maitre d'oeuvre
+    - roleKey: releaseSteward
+      displayName: Intendant
+    - roleKey: producingSpecialist
+      displayName: Artisan
+    - roleKey: securityAgent
+      displayName: Vigie
+    - roleKey: independentVerifier
+      displayName: Auditor
+    - roleKey: ecosystemView
+      displayName: Mandala
+  voice:
+    style: CALM_PRECISE
+    verbosity: TERSE
+  visualization:
+    ecosystem: mandala
+    palette: restrained
+    presence:
+      chiefOfStaffForm: sigil
+      density: CALM
+      motion: SUBTLE

@@ -1,0 +1,73 @@
+apiVersion: jumo.dev/v1
+kind: ProcessSpec
+metadata:
+  id: nestor-intake--1-0-0
+  namespace: dev.jumo.core
+  name: Nestor dialogue intake and disposition 1.0.0
+spec:
+  ownerRealm: home
+  projectRef:
+    kind: ProjectContract
+    namespace: dev.jumo.core
+    id: jumo
+  processId: nestor-intake
+  processVersion: 1.0.0
+  inputType: ProcessRunRef
+  outputType: ProcessRunRef
+  startTrigger: MANUAL
+  steps:
+    - id: start
+      kind: START
+    - id: clarification
+      kind: USER
+      signalType: ApprovalSignal
+    - id: intake-authz
+      kind: GATEWAY
+      semanticStage: POLICY_EVALUATION
+      gatewayMode: EXCLUSIVE
+      gatewayRole: SPLIT
+      pairedGatewayRef: intake-authz-join
+      opaEntrypoint: jumo.authz.decision
+    - id: submit-turn
+      kind: SERVICE
+      semanticStage: EXECUTION
+      capabilityRef: conversation.turn.submit
+      ring: RING_1_CONTROL_PLANE
+    - id: intake-authz-join
+      kind: GATEWAY
+      gatewayMode: EXCLUSIVE
+      gatewayRole: JOIN
+      pairedGatewayRef: intake-authz
+    - id: completed
+      kind: END
+      terminalState: COMPLETED
+    - id: declined
+      kind: END
+      terminalState: DECLINED
+  flows:
+    - id: start-clarification
+      from: start
+      to: clarification
+      payloadType: ProcessRunRef
+    - id: clarification-authz
+      from: clarification
+      to: intake-authz
+      payloadType: ProcessRunRef
+    - id: authz-allow
+      from: intake-authz
+      to: submit-turn
+      branchLabel: ALLOW
+      payloadType: ProcessRunRef
+    - id: authz-deny
+      from: intake-authz
+      to: declined
+      branchLabel: DENY
+      payloadType: ProcessRunRef
+    - id: turn-join
+      from: submit-turn
+      to: intake-authz-join
+      payloadType: ProcessRunRef
+    - id: join-completed
+      from: intake-authz-join
+      to: completed
+      payloadType: ProcessRunRef

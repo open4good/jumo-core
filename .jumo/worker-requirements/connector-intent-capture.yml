@@ -1,0 +1,27 @@
+apiVersion: jumo.dev/v1
+kind: WorkerRequirementProfile
+metadata:
+  id: connector-intent-capture
+  namespace: dev.jumo.core
+  name: Connector intent capture worker
+spec:
+  ownerRealm: home
+  taskClasses:
+    - CLASSIFICATION
+  modalities:
+    - TEXT
+  dataScopeCeiling: REALM_PRIVATE
+  context:
+    minimumTokens: 8192
+  interaction:
+    toolUse: NONE
+    structuredOutput: REQUIRED
+  quality:
+    minimumAssurance: OBSERVED
+    minimumReliability: 0.7
+    minimumTaskHorizon: PT30S
+    maximumEvaluationAge: P30D
+    reasoningEffort: LOW
+  limits:
+    maximumLatency: PT30S
+    maximumCostClass: LOW

@@ -1,0 +1,14 @@
+apiVersion: jumo.dev/v1
+kind: CapabilityProfile
+metadata:
+  id: reponse-immediate
+  namespace: dev.jumo.core
+  name: Réponse immédiate
+spec:
+  ownerRealm: home
+  intent: Échange conversationnel immédiat pour clarifier une intention ou orienter une demande.
+  presenceRef: chiefOfStaff
+  workerRequirementProfileRef:
+    kind: WorkerRequirementProfile
+    namespace: dev.jumo.core
+    id: nestor-dialogue

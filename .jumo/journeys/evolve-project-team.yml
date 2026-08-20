@@ -1,0 +1,39 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: evolve-project-team
+  namespace: dev.jumo.core
+  name: Evolve project team
+spec:
+  journeyId: evolve-project-team
+  name: Evolve project team
+  description: Modify, add, or reorganize operator roles and independence groups in an existing project team.
+  category: teamsProjects
+  icon: mdi-account-edit-outline
+  interruptible: true
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  emitsCapability: contract.change.propose
+  steps:
+    - id: select-team
+      name: Sélection de l'équipe
+      description: Choisissez l'équipe à faire évoluer et précisez l'intention d'évolution.
+      personaNarration: Quelle équipe souhaitez-vous réorganiser ou enrichir de nouveaux jumeaux ?
+      requiredFields:
+        - teamId
+        - purpose
+    - id: update-members
+      name: Composition des membres
+      description: Ajustez les assignations d'opérateurs et les groupes d'indépendance.
+      personaNarration: Ajustons la composition des membres pour respecter l'indépendance de revue.
+      requiredFields:
+        - members
+    - id: confirm-evolution
+      name: Confirmation de l'évolution
+      description: Vérifiez le diff contractuel avant d'enregistrer la proposition.
+      personaNarration: Tout est prêt pour enregistrer la proposition de modification d'équipe.
+      requiredFields:
+        - confirmed
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

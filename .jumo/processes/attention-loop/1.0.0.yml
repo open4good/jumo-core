@@ -1,0 +1,36 @@
+apiVersion: jumo.dev/v1
+kind: ProcessSpec
+metadata:
+  id: attention-loop--1-0-0
+  namespace: dev.jumo.core
+  name: Timer-started attention loop 1.0.0
+spec:
+  ownerRealm: home
+  projectRef:
+    kind: ProjectContract
+    namespace: dev.jumo.core
+    id: jumo
+  processId: attention-loop
+  processVersion: 1.0.0
+  inputType: AttentionItem
+  outputType: AttentionItem
+  startTrigger: TIMER
+  timerDelay: PT24H
+  steps:
+    - id: start
+      kind: START
+    - id: publish
+      kind: SERVICE
+      capabilityRef: attention.item.publish
+    - id: completed
+      kind: END
+      terminalState: COMPLETED
+  flows:
+    - id: start-publish
+      from: start
+      to: publish
+      payloadType: AttentionItem
+    - id: publish-completed
+      from: publish
+      to: completed
+      payloadType: AttentionItem

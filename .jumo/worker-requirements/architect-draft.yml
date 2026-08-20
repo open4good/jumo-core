@@ -1,0 +1,29 @@
+apiVersion: jumo.dev/v1
+kind: WorkerRequirementProfile
+metadata:
+  id: architect-draft
+  namespace: dev.jumo.core
+  name: Architecture design and drafting worker
+spec:
+  ownerRealm: home
+  taskClasses:
+    - REASONING
+    - CODING
+    - NARRATION
+  modalities:
+    - TEXT
+  dataScopeCeiling: REALM_PRIVATE
+  context:
+    minimumTokens: 32768
+  interaction:
+    toolUse: NONE
+    structuredOutput: OPTIONAL
+  quality:
+    minimumAssurance: OBSERVED
+    minimumReliability: 0.85
+    minimumTaskHorizon: PT2M
+    maximumEvaluationAge: P30D
+    reasoningEffort: HIGH
+  limits:
+    maximumLatency: PT2M
+    maximumCostClass: HIGH

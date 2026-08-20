@@ -1,0 +1,107 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: the-onboarding-trip
+  namespace: dev.jumo.core
+  name: The onboarding trip
+spec:
+  journeyId: the-onboarding-trip
+  name: The onboarding trip
+  description: 'Le parcours d''accueil et d''initialisation de l''environnement Jumo : configuration d''identité, provisioning
+    de la VM d''exécution, liaison du dépôt Git racine, appairage des clients IA, captation d''intention pour les connecteurs,
+    mise en place de ces connecteurs via le sous-parcours dédié, et bilan d''activation.'
+  category: workspace
+  icon: mdi-compass-outline
+  interruptible: false
+  concurrencyPolicy: SINGLE_ACTIVE_RUN
+  firstRunMandatory: true
+  lifetimeUnique: true
+  heroImage: /images/nestor-avatar.svg
+  emitsCapability: contract.change.propose
+  steps:
+    - id: setup-identity
+      name: Identité et Espace Yamaka
+      description: Configuration de votre avatar, du nickname (exposition yamaka.me/u/<nickname>) et enregistrement du device.
+      personaNarration: Bienvenue sur Jumo ! Je suis Nestor, votre coordinateur. Commençons par définir votre identité et
+        préparer votre espace.
+      stepKind: COLLECT
+      requiredFields:
+        - nickname
+        - deviceId
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: setup-identity
+    - id: provision-execution-cell
+      name: Provisioning de la VM d'exécution
+      description: En attente du démarrage de la VM et de la vérification du propriétaire.
+      personaNarration: Votre machine virtuelle d'exécution se prépare. Nous attendons son initialisation et sa vérification.
+      stepKind: AWAIT
+      requiredFields: []
+      processSpecRef:
+        kind: ProcessSpec
+        namespace: dev.jumo.core
+        id: execution-cell-provisioning--1-0-0
+    - id: link-repository
+      name: Dépôt Git Principal
+      description: Liaison de votre dépôt Git racine garantissant la portabilité complète de votre espace.
+      personaNarration: Votre dépôt Git est la source contractuelle de vérité de tout votre environnement. Renseignez votre
+        dépôt racine.
+      stepKind: COLLECT
+      requiredFields:
+        - gitRepoUrl
+        - gitBranch
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: link-repository-form
+    - id: pair-clients-and-ai
+      name: Appairage Clients et Clés IA
+      description: Configuration de vos environnements de développement et saisie sécurisée des clés d'API LLM.
+      personaNarration: Sécurisons vos accès aux modèles de langage (OpenAI, OpenRouter) et appairons vos éditeurs de code
+        préférés.
+      stepKind: COLLECT
+      requiredFields:
+        - pairedClients
+        - llmApiKey
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: pair-clients-and-ai-form
+    - id: capture-connector-intent
+      name: Découverte des Connecteurs
+      description: Dialogue avec Nestor pour analyser vos outils et sélectionner les connecteurs appropriés.
+      personaNarration: Discutons de votre quotidien de développeur pour déterminer quels connecteurs et MCP activer.
+      stepKind: DIALOGUE_COLLECT
+      requiredFields:
+        - selectedConnectors
+      promptTemplateRef:
+        kind: PromptTemplate
+        namespace: dev.jumo.core
+        id: connector-intent-capture
+    - id: setup-connectors
+      name: Mise en Place des Connecteurs
+      description: Sélection puis confirmation des connecteurs à appairer, via le parcours réutilisable dédié.
+      personaNarration: Passons à la mise en place concrète des connecteurs que nous venons de choisir ensemble.
+      stepKind: SUB_JOURNEY
+      requiredFields: []
+      subAssistedJourneyRef:
+        kind: AssistedJourney
+        namespace: dev.jumo.core
+        id: setup-connector
+    - id: summary-and-activate
+      name: Bilan et Activation
+      description: Récapitulatif de votre espace initialisé, émission de la proposition contractuelle et activation.
+      personaNarration: Tout est prêt ! Vérifions ensemble le récapitulatif avant de sceller la configuration racine de votre
+        espace.
+      stepKind: COLLECT
+      requiredFields:
+        - confirmed
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: summary-and-activate
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

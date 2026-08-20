@@ -1,0 +1,83 @@
+apiVersion: jumo.dev/v1
+kind: ProcessSpec
+metadata:
+  id: governed-document-change--1-0-0
+  namespace: dev.jumo.core
+  name: Governed document change 1.0.0
+spec:
+  ownerRealm: home
+  projectRef:
+    kind: ProjectContract
+    namespace: dev.jumo.core
+    id: jumo
+  processId: governed-document-change
+  processVersion: 1.0.0
+  inputType: ChangeProposalRef
+  outputType: ForgeProjectionRef
+  startTrigger: MANUAL
+  steps:
+    - id: start
+      kind: START
+    - id: authz
+      kind: GATEWAY
+      semanticStage: POLICY_EVALUATION
+      gatewayMode: EXCLUSIVE
+      gatewayRole: SPLIT
+      pairedGatewayRef: authz-join
+      opaEntrypoint: jumo.authz.decision
+    - id: owner-signal
+      kind: USER
+      signalType: ApprovalSignal
+    - id: grant
+      kind: SERVICE
+      semanticStage: CAPABILITY_ACQUISITION
+      capabilityRef: capability.grant.acquire
+      ring: RING_1_CONTROL_PLANE
+    - id: forge-project
+      kind: SERVICE
+      semanticStage: EFFECT_APPLICATION
+      capabilityRef: document.change.propose
+      ring: RING_1_CONTROL_PLANE
+      idempotencyKey: process-run-and-projection-hash
+    - id: authz-join
+      kind: GATEWAY
+      gatewayMode: EXCLUSIVE
+      gatewayRole: JOIN
+      pairedGatewayRef: authz
+    - id: completed
+      kind: END
+      terminalState: COMPLETED
+    - id: declined
+      kind: END
+      terminalState: DECLINED
+  flows:
+    - id: start-authz
+      from: start
+      to: authz
+      payloadType: ChangeProposalRef
+    - id: authz-allow
+      from: authz
+      to: owner-signal
+      branchLabel: ALLOW
+      payloadType: ChangeProposalRef
+    - id: authz-deny
+      from: authz
+      to: declined
+      branchLabel: DENY
+      payloadType: ChangeProposalRef
+    - id: approval-grant
+      from: owner-signal
+      to: grant
+      payloadType: ApprovalSignal
+    - id: grant-forge
+      from: grant
+      to: forge-project
+      payloadType: ChangeProposalRef
+    - id: forge-join
+      from: forge-project
+      to: authz-join
+      payloadType: ForgeProjectionRef
+    - id: join-complete
+      from: authz-join
+      to: completed
+      payloadType: ForgeProjectionRef

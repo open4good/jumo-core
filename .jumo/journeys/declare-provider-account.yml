@@ -1,0 +1,48 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: declare-provider-account
+  namespace: dev.jumo.core
+  name: Declare a provider account
+spec:
+  journeyId: declare-provider-account
+  name: Declare a provider account
+  description: Declare an external model or CLI provider account, configure routing aliases, and establish entitlement bounds
+    without accepting raw secret tokens.
+  category: integrations
+  icon: mdi-cloud-outline
+  interruptible: true
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  emitsCapability: contract.change.propose
+  steps:
+    - id: define-provider
+      name: Provider identity
+      description: Specify the provider ID, name, and provider family (e.g. anthropic, openai, google).
+      personaNarration: Let's name and categorize the provider account.
+      requiredFields:
+        - providerId
+        - providerName
+        - provider
+    - id: configure-routing
+      name: Routing configuration
+      description: Configure routing mode, gateway reference, and requirement aliases.
+      personaNarration: Define how model traffic is routed to this provider.
+      requiredFields:
+        - routingMode
+        - gatewayRef
+    - id: configure-entitlement
+      name: Entitlements and quotas
+      description: Specify entitlement status and quota window bounds.
+      personaNarration: Set up the usage permissions and budget thresholds.
+      requiredFields:
+        - permitted
+    - id: confirm-declaration
+      name: Confirmation
+      description: Review the structured ProviderAccount declaration before proposing the change.
+      personaNarration: Let's review the provider contract before submission.
+      requiredFields:
+        - confirmed
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

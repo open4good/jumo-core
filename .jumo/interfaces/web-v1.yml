@@ -144,18 +144,18 @@ spec:
       audience: REALM_PRIVATE
       authAction: machine.administer
       requestBinding:
-        modelClass: MachineAdminCommand
+        modelClass: MachineAdminRequest
         schemaVersion: 1.0.0
-        schemaId: https://jumo.dev/schemas/jumo-v1/MachineAdminCommand
+        schemaId: https://jumo.dev/schemas/jumo-v1/MachineAdminRequest
         schemaDigest: sha256-linkml-v1
         profile: DRAFT_2020_12
       responseBindings:
         - statusCode: 200
           mediaType: application/json
           schemaBinding:
-            modelClass: MachineAdminResult
+            modelClass: MachineAdminCommand
             schemaVersion: 1.0.0
-            schemaId: https://jumo.dev/schemas/jumo-v1/MachineAdminResult
+            schemaId: https://jumo.dev/schemas/jumo-v1/MachineAdminCommand
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: Dispatch signed Ansible admin playbook to a machine.

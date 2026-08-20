@@ -21,13 +21,12 @@ spec:
   steps:
     - id: setup-identity
       name: Identité et Espace Yamaka
-      description: Configuration de votre avatar, du nickname (exposition yamaka.me/u/<nickname>) et enregistrement du device.
+      description: Configuration du nickname (exposition yamaka.me/u/<nickname>). L’identité de machine reste interne à l’enrôlement mTLS.
       personaNarration: Bienvenue sur Jumo ! Je suis Nestor, votre coordinateur. Commençons par définir votre identité et
         préparer votre espace.
       stepKind: COLLECT
       requiredFields:
         - nickname
-        - deviceId
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -56,14 +55,12 @@ spec:
         namespace: dev.jumo.core
         id: link-repository-form
     - id: pair-clients-and-ai
-      name: Appairage Clients et Clés IA
-      description: Configuration de vos environnements de développement et saisie sécurisée des clés d'API LLM.
-      personaNarration: Sécurisons vos accès aux modèles de langage (OpenAI, OpenRouter) et appairons vos éditeurs de code
-        préférés.
+      name: Appairage Clients et IA observée
+      description: Configuration de vos environnements de développement; les clés de fournisseur restent hors navigateur et hors Git.
+      personaNarration: Vérifions les accès IA configurés localement et appairons vos éditeurs de code préférés.
       stepKind: COLLECT
       requiredFields:
         - pairedClients
-        - llmApiKey
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core

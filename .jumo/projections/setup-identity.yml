@@ -19,13 +19,3 @@ spec:
           i18nKey: journeyNicknameField
           helpI18nKey: journeyNicknameHelp
           required: true
-        - path: avatarBlob
-          representation: SHORT_TEXT
-          i18nKey: journeyAvatarField
-          helpI18nKey: journeyAvatarHelp
-          required: false
-        - path: deviceId
-          representation: SHORT_TEXT
-          i18nKey: journeyDeviceIdField
-          helpI18nKey: journeyDeviceIdHelp
-          required: true

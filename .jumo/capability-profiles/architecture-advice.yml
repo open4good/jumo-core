@@ -1,0 +1,14 @@
+apiVersion: jumo.dev/v1
+kind: CapabilityProfile
+metadata:
+  id: architecture-advice
+  namespace: dev.jumo.core
+  name: Architecture advice
+spec:
+  ownerRealm: home
+  intent: Explore a bounded architecture question and receive a reviewed design recommendation.
+  presenceRef: advisor
+  workerRequirementProfileRef:
+    kind: WorkerRequirementProfile
+    namespace: dev.jumo.core
+    id: architect-draft

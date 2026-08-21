@@ -165,13 +165,18 @@ spec:
         - repository.content.read
         - context.graph.read
     - id: team
-      purpose: Show operator teams, members, and independence groups.
+      purpose: Show the collective, Advisors, explicit coordination relations, teams, and separated connector and grant views.
       audience: REALM_PRIVATE
       reads:
         - TEAM_ROSTER
+        - TEAM_HUB
         - CONTEXT_GRAPH
       proposes:
         - team.roster.read
+        - team.hub.read
+        - conversation.turn.respond
+        - conversation.coordinate.read
+        - capability.grant.read
         - context.graph.read
     - id: work
       purpose: Show work orders, execution rings, and acceptance criteria.

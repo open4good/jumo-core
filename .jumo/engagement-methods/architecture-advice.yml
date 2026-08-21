@@ -1,0 +1,31 @@
+apiVersion: jumo.dev/v1
+kind: EngagementMethod
+metadata:
+  id: architecture-advice
+  namespace: dev.jumo.core
+  name: Architecture advice engagement
+spec:
+  agentDefinitionRef:
+    kind: AgentDefinition
+    namespace: dev.jumo.core
+    id: lead-architect
+  workerRequirementProfileRef:
+    kind: WorkerRequirementProfile
+    namespace: dev.jumo.core
+    id: architect-draft
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive
+  assurance: OBSERVED
+  stages:
+    - id: dialogue
+      promptTemplateRef:
+        kind: PromptTemplate
+        namespace: dev.jumo.core
+        id: architecture-advisor-dialogue
+      gate: NONE
+      deliverable: Bounded architecture recommendation
+  termination:
+    maximumDuration: PT10M
+    allowEarlyTermination: true

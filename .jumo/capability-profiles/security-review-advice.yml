@@ -1,0 +1,14 @@
+apiVersion: jumo.dev/v1
+kind: CapabilityProfile
+metadata:
+  id: security-review-advice
+  namespace: dev.jumo.core
+  name: Security review advice
+spec:
+  ownerRealm: home
+  intent: Assess a proposed change for security, privacy, verification and policy risks.
+  presenceRef: advisor
+  workerRequirementProfileRef:
+    kind: WorkerRequirementProfile
+    namespace: dev.jumo.core
+    id: security-review-draft

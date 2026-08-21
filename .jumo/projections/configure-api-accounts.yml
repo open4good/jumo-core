@@ -1,0 +1,21 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: configure-api-accounts
+  namespace: dev.jumo.core
+  name: Configure declared API accounts
+spec:
+  ownerRealm: home
+  of: ConfigureApiAccountsStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: accounts
+      i18nKey: journeyApiAccountsSection
+      columns: 1
+      fields:
+        - path: providerAccountRefs
+          representation: ENTITY_COLLECTION
+          optionsFrom: ProviderAccount
+          i18nKey: journeyProviderAccountsField
+          required: true

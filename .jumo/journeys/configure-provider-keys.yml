@@ -1,0 +1,30 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: configure-provider-keys
+  namespace: dev.jumo.core
+  name: Configuration des clés
+spec:
+  journeyId: configure-provider-keys
+  name: Configuration des clés
+  description: Ingress propriétaire des clés déclarées et appairage des sessions CLI.
+  category: integrations
+  icon: mdi-link-variant
+  interruptible: true
+  concurrencyPolicy: SINGLE_ACTIVE_RUN
+  completionMode: OBSERVATION
+  steps:
+    - id: select-provider-account
+      name: Compte fournisseur déclaré
+      description: Sélectionnez le compte déjà déclaré dont la liaison de secret sera utilisée.
+      stepKind: COLLECT
+      requiredFields: [providerAccountRef]
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: configure-provider-keys}
+    - id: pair-provider-session
+      name: Vérification de la session
+      description: Une observation réelle confirme la clé ingressée ou la session CLI appairée.
+      stepKind: COLLECT
+      requiredFields: [providerAccountRef]
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: configure-provider-keys}
+      verificationSpecRef: {kind: JourneyVerificationSpec, namespace: dev.jumo.core, id: cli-session-pairing}
+  resourceBudgetRef: {kind: ResourceBudget, namespace: dev.jumo.core, id: interactive}

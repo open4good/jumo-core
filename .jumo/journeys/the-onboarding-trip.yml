@@ -54,17 +54,20 @@ spec:
         kind: ProjectionSpec
         namespace: dev.jumo.core
         id: link-repository-form
-    - id: pair-clients-and-ai
-      name: Appairage Clients et IA observée
-      description: Configuration de vos environnements de développement; les clés de fournisseur restent hors navigateur et hors Git.
-      personaNarration: Vérifions les accès IA configurés localement et appairons vos éditeurs de code préférés.
-      stepKind: COLLECT
-      requiredFields:
-        - pairedClients
-      projectionSpecRef:
-        kind: ProjectionSpec
-        namespace: dev.jumo.core
-        id: pair-clients-and-ai-form
+    - id: configure-api-accounts
+      name: Configuration de vos API
+      description: Sélection des comptes API déjà déclarés et liés à un SecretBinding.
+      personaNarration: Sélectionnons les comptes que Jumo pourra observer sans jamais créer un compte implicite.
+      stepKind: SUB_JOURNEY
+      requiredFields: []
+      subAssistedJourneyRef: {kind: AssistedJourney, namespace: dev.jumo.core, id: configure-api-accounts}
+    - id: configure-provider-keys
+      name: Configuration des clés
+      description: Ingress propriétaire des clés et appairage des sessions CLI, avec observation réelle avant continuation.
+      personaNarration: Nous vérifions maintenant vos accès réels et l’appairage local de vos sessions.
+      stepKind: SUB_JOURNEY
+      requiredFields: []
+      subAssistedJourneyRef: {kind: AssistedJourney, namespace: dev.jumo.core, id: configure-provider-keys}
     - id: capture-connector-intent
       name: Découverte des Connecteurs
       description: Dialogue avec Nestor pour analyser vos outils et sélectionner les connecteurs appropriés.

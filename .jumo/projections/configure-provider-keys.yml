@@ -1,0 +1,24 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: configure-provider-keys
+  namespace: dev.jumo.core
+  name: Configure provider keys and sessions
+spec:
+  ownerRealm: home
+  of: ConfigureProviderKeysStepFields
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: provider
+      i18nKey: journeyProviderKeySection
+      columns: 1
+      fields:
+        - path: providerAccountRef
+          representation: ENTITY_REFERENCE
+          optionsFrom: ProviderAccount
+          i18nKey: journeyProviderAccountField
+          required: true
+        - path: providerSessionRef
+          representation: SHORT_TEXT
+          i18nKey: journeyProviderSessionField

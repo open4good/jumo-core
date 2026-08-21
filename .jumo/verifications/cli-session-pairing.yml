@@ -1,0 +1,8 @@
+apiVersion: jumo.dev/v1
+kind: JourneyVerificationSpec
+metadata:
+  id: cli-session-pairing
+  namespace: dev.jumo.core
+  name: CLI session pairing observation
+targetType: CLI_SESSION
+capability: SESSION_PAIRING

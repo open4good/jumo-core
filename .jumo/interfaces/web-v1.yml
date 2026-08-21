@@ -335,6 +335,22 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: List declared assisted journeys.
+    - operationId: verifyJourneyStep
+      method: POST
+      path: /realms/{realmId}/journeys/runs/{runId}/steps/{stepId}/verify
+      audience: REALM_PRIVATE
+      authAction: journey.verify
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: AssistedJourney
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/AssistedJourney
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Run an explicit secret-free observation for the current journey step.
     - operationId: getContextGraph
       method: GET
       path: /realms/{realmId}/context/{kind}/{namespace}/{id}

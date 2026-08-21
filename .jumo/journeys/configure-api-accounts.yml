@@ -1,0 +1,24 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: configure-api-accounts
+  namespace: dev.jumo.core
+  name: Configuration de vos API
+spec:
+  journeyId: configure-api-accounts
+  name: Configuration de vos API
+  description: Sélection des ProviderAccount déjà déclarés dans ce Realm.
+  category: integrations
+  icon: mdi-tune-variant
+  interruptible: true
+  concurrencyPolicy: SINGLE_ACTIVE_RUN
+  completionMode: OBSERVATION
+  steps:
+    - id: select-api-accounts
+      name: Sélection des comptes API
+      description: Choisissez uniquement des comptes ProviderAccount déclarés avec leur SecretBinding.
+      stepKind: COLLECT
+      requiredFields: [providerAccountRefs]
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: configure-api-accounts}
+      verificationSpecRef: {kind: JourneyVerificationSpec, namespace: dev.jumo.core, id: provider-account-smoke}
+  resourceBudgetRef: {kind: ResourceBudget, namespace: dev.jumo.core, id: interactive}

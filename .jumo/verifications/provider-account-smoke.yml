@@ -1,0 +1,8 @@
+apiVersion: jumo.dev/v1
+kind: JourneyVerificationSpec
+metadata:
+  id: provider-account-smoke
+  namespace: dev.jumo.core
+  name: Provider account smoke observation
+targetType: PROVIDER_ACCOUNT
+capability: PROVIDER_SMOKE

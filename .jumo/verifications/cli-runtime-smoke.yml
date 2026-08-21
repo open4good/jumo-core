@@ -1,0 +1,8 @@
+apiVersion: jumo.dev/v1
+kind: JourneyVerificationSpec
+metadata:
+  id: cli-runtime-smoke
+  namespace: dev.jumo.core
+  name: CLI runtime smoke observation
+targetType: CLI_SESSION
+capability: CLI_SMOKE

@@ -7,7 +7,7 @@ metadata:
 spec:
   journeyId: configure-api-accounts
   name: Configuration de vos API
-  description: Sélection des ProviderAccount déjà déclarés dans ce Realm.
+  description: Activation et qualification réelle des ProviderAccount déjà déclarés dans ce Realm.
   category: integrations
   icon: mdi-tune-variant
   interruptible: true
@@ -15,8 +15,8 @@ spec:
   completionMode: OBSERVATION
   steps:
     - id: select-api-accounts
-      name: Sélection des comptes API
-      description: Choisissez uniquement des comptes ProviderAccount déclarés avec leur SecretBinding.
+      name: Qualifier vos comptes API
+      description: Sélectionnez plusieurs comptes déclarés, activez chaque clé via l’ingress propriétaire, puis vérifiez réellement les modèles accessibles.
       stepKind: COLLECT
       requiredFields: [providerAccountRefs]
       projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: configure-api-accounts}

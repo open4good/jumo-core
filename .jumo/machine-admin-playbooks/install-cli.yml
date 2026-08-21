@@ -1,0 +1,10 @@
+apiVersion: jumo.dev/v1
+kind: MachineAdminPlaybook
+metadata:
+  id: install-cli
+  namespace: dev.jumo.core
+  name: Install qualified CLI runtime
+spec:
+  playbookPath: ansible/install_cli.yml
+  playbookDigest: sha256:1e9beeafcabfc58cf8404cb5718093d13c5ed046a797ffbeabb00b333e7f6dcc
+  allowedRealms: [home]

@@ -44,6 +44,12 @@ spec:
       reversible: true
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
+    - name: provider.account.observe
+      description: Perform one bounded, credential-custodied model-catalog observation for a declared ProviderAccount without changing its routing contract.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: contract.change.propose
       description: Record a validated, hash-bound operator-contract proposal for separate owner approval and forge projection.
       riskTier: MEDIUM

@@ -7,38 +7,57 @@ metadata:
 spec:
   journeyId: setup-cli-worker
   name: Setup & appairage d'une CLI
-  description: Configurez un worker CLI isolé (Claude Code, Codex, Copilot, Gemini), liez une clé API si compatible et validez
-    son appairage sécurisé sur votre cellule d'exécution hôte.
+  description: Configurez Codex ou Claude Code sur une machine d'exécution déjà rattachée au Realm. La connexion utilise
+    exclusivement la session locale du titulaire ; aucune clé API n'est demandée ni transmise.
   category: integrations
   icon: mdi-console-line
   interruptible: true
-  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  concurrencyPolicy: SINGLE_ACTIVE_RUN
   emitsCapability: contract.change.propose
   steps:
     - id: select-cli-engine
       name: Choix du moteur CLI
-      description: Sélectionnez le substrat CLI à initialiser (Codex, Claude Code, Copilot, Gemini).
-      personaNarration: Choisissons quel outil CLI vous souhaitez mettre à disposition de vos agents.
+      description: Sélectionnez le moteur qualifié à initialiser (Codex ou Claude Code). Copilot et Gemini ne sont pas encore activables.
+      personaNarration: Choisissons le runtime qualifié que vous souhaitez mettre à disposition de vos agents.
       requiredFields:
         - cliEngine
         - workerName
-    - id: configure-api-link
-      name: Authentification & Clé API
-      description: Liez une clé API déclarée (OpenRouter / OpenAI / Anthropic / Google) ou activez l'authentification par
-        session locale.
-      personaNarration: Associons maintenant les identifiants ou la session d'exécution requise.
+    - id: select-execution-machine
+      name: Machine d'exécution
+      description: Choisissez une machine existante, ACTIVE et saine, appartenant à ce Realm. Le parcours ne crée jamais de VM.
+      personaNarration: La session et le runtime seront liés à cette machine précise.
       requiredFields:
-        - authSource
-    - id: verify-execution-cell
-      name: Vérification cellule d'exécution
-      description: Validation de l'isolation du conteneur et vérification de l'accès mTLS sur la cellule hôte.
-      personaNarration: Assurons-nous que la machine virtuelle d'exécution est prête à accueillir ce conteneur.
+        - executionMachineRef
+        - providerAccountRef
+    - id: install-cli-runtime
+      name: Runtime CLI qualifié
+      description: Vérifiez le runtime OCI signé sur la machine ; s'il est absent, un WorkOrder approuvé l'installe avant de continuer.
+      personaNarration: Nous vérifions l'image immuable qui exécutera le CLI, sans créer de nouvelle machine.
       stepKind: AWAIT
       requiredFields: []
       processSpecRef:
         kind: ProcessSpec
         namespace: dev.jumo.core
-        id: execution-cell-provisioning--1-0-0
+        id: cli-runtime-installation--1-0-0
+    - id: pair-local-session
+      name: Connexion locale
+      description: Ouvrez le lien temporaire et saisissez le code affiché. La session reste chiffrée sur la machine sélectionnée.
+      personaNarration: Votre abonnement est authentifié directement auprès du fournisseur, sans passer par Jumo.
+      requiredFields:
+        - providerSessionRef
+      verificationSpecRef:
+        kind: JourneyVerificationSpec
+        namespace: dev.jumo.core
+        id: cli-session-pairing
+    - id: smoke-test-cli
+      name: Test réel de la CLI
+      description: Exécutez une commande minimale dans un bail isolé. L'activation reste bloquée tant que cette observation n'est pas réussie.
+      personaNarration: Vérifions maintenant la session et le runtime dans les mêmes conditions que l'exécution future.
+      requiredFields: []
+      verificationSpecRef:
+        kind: JourneyVerificationSpec
+        namespace: dev.jumo.core
+        id: cli-runtime-smoke
     - id: confirm-cli-setup
       name: Bilan et activation
       description: Vérifiez la déclaration du WorkerSubstrate avant enregistrement dans le Grand Registre.

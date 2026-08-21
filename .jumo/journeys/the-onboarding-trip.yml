@@ -56,18 +56,11 @@ spec:
         id: link-repository-form
     - id: configure-api-accounts
       name: Configuration de vos API
-      description: Sélection des comptes API déjà déclarés et liés à un SecretBinding.
-      personaNarration: Sélectionnons les comptes que Jumo pourra observer sans jamais créer un compte implicite.
+      description: Activation des comptes API déclarés et qualification réelle des modèles accessibles, sans compte implicite.
+      personaNarration: Sélectionnons les comptes déclarés, activons-les en toute sécurité et observons réellement leurs capacités.
       stepKind: SUB_JOURNEY
       requiredFields: []
       subAssistedJourneyRef: {kind: AssistedJourney, namespace: dev.jumo.core, id: configure-api-accounts}
-    - id: configure-provider-keys
-      name: Configuration des clés
-      description: Ingress propriétaire des clés et appairage des sessions CLI, avec observation réelle avant continuation.
-      personaNarration: Nous vérifions maintenant vos accès réels et l’appairage local de vos sessions.
-      stepKind: SUB_JOURNEY
-      requiredFields: []
-      subAssistedJourneyRef: {kind: AssistedJourney, namespace: dev.jumo.core, id: configure-provider-keys}
     - id: capture-connector-intent
       name: Découverte des Connecteurs
       description: Dialogue avec Nestor pour analyser vos outils et sélectionner les connecteurs appropriés.

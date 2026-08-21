@@ -1,0 +1,11 @@
+apiVersion: jumo.dev/v1
+kind: MachineAdminPlaybook
+metadata:
+  id: pair-cli-session
+  namespace: dev.jumo.core
+  name: Pair holder-operated CLI session
+spec:
+  playbookPath: ansible/pair_cli_session.yml
+  playbookDigest: sha256:7f3e51627fa96c677f965f196e3aee7806cd3dafc8b9b0694a87646a89c14fd5
+  allowedRealms: [home]
+  description: Starts a device-login ceremony inside the pinned CLI image on the selected execution machine.

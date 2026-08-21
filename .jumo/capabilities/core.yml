@@ -155,6 +155,26 @@ spec:
       riskTier: LOW
       reversible: true
       minimumAssurance: SELF_REPORTED
+    - name: team.hub.read
+      description: Read the atomic collective, advisor, coordination and sanitized grant projection for the authenticated Realm.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: conversation.turn.respond
+      description: Record a response to an addressed conversation only from the role's bound human principal.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+    - name: conversation.coordinate.read
+      description: Read a conversation transcript only for an explicitly authorized coordination invocation.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+    - name: capability.grant.read
+      description: Read sanitized recognized capability grant lifecycle state without token, arguments, result or secret.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
     - name: work.order.read
       description: Read declared work orders, execution rings, and acceptance criteria within the authenticated Realm.
       riskTier: LOW

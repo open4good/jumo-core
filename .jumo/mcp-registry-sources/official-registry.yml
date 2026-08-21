@@ -1,0 +1,23 @@
+apiVersion: jumo.dev/v1
+kind: McpRegistrySource
+metadata:
+  id: official-registry
+  namespace: dev.jumo.core
+  name: Official MCP Registry
+spec:
+  sourceType: OFFICIAL_REGISTRY
+  adapter: official-registry-v0.1
+  lifecycle: ENABLED
+  baseUrlAllowlist:
+    - https://registry.modelcontextprotocol.io
+  syncMode: FULL_THEN_INCREMENTAL
+  cadence: PT1H
+  jitter: PT5M
+  workOrderRef:
+    kind: WorkOrder
+    namespace: home.jumo.dev
+    id: mcp-registry-boundary-contracts
+  operatorRoleDefinitionRef:
+    kind: RoleDefinition
+    namespace: dev.jumo.core
+    id: lead-architect

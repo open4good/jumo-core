@@ -6,6 +6,6 @@ metadata:
   name: Bootstrap isolated KVM execution guest
 spec:
   playbookPath: ansible/bootstrap_guest.yml
-  playbookDigest: sha256:58c9673114c217a52ad786bf97d868f38e4cfed8edb7c6d2fa5e5ca4bc163ab2
+  playbookDigest: sha256:fe6d54943b179c9e1665ede3c020eda2cbd23999d5eea8604443cf9d949dc252
   allowedRealms: [home]
   description: Attach a one-time enrollment seed for the pinned guest agent; the guest generates its own mTLS private key.

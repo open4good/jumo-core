@@ -1,0 +1,11 @@
+apiVersion: jumo.dev/v1
+kind: MachineAdminPlaybook
+metadata:
+  id: bootstrap-guest
+  namespace: dev.jumo.core
+  name: Bootstrap isolated KVM execution guest
+spec:
+  playbookPath: ansible/bootstrap_guest.yml
+  playbookDigest: sha256:166d3413879cb6363e6ec60dc1c87c1804b86665592bf7cd03f32aef20f923ae
+  allowedRealms: [home]
+  description: Attach a one-time enrollment seed for the pinned guest agent; the guest generates its own mTLS private key.

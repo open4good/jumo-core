@@ -6,6 +6,6 @@ metadata:
   name: Provision isolated KVM execution guest
 spec:
   playbookPath: ansible/provision_vm.yml
-  playbookDigest: sha256:0c741e5a417b832f7fb2a98520c2a5807b54be157a0425429c09d5ebc4bb8b0a
+  playbookDigest: sha256:e190e31c0defeae4cb3bb8d49ec94cb0609bbb928d42ecb9cf258ccd4e90ccc5
   allowedRealms: [home]
   description: Create a pinned Ubuntu guest on the isolated Jumo network and, only when exactly approved, attach the revalidated Freebox NIC.

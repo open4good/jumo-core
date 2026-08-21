@@ -1,0 +1,15 @@
+apiVersion: jumo.dev/v1
+kind: CliRelease
+metadata:
+  id: claude-code-0-1-0
+  namespace: dev.jumo.core
+  name: Anthropic Claude Code 0.1.0 OCI Release
+spec:
+  toolRef: claude-code
+  version: 0.1.0
+  platform: linux/amd64
+  ociImage: ghcr.io/jumo/runtimes/claude-code:0.1.0
+  imageDigest: sha256:c723f5b7218685121e42a988d5e16da9ee7c5a0ec7b94ad9d6f6eefc4a169b18
+  signatureDigest: sha256:7a81c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1
+  sbomDigest: sha256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b
+  provenanceDigest: sha256:9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e

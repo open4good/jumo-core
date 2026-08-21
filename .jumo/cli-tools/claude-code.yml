@@ -1,0 +1,12 @@
+apiVersion: jumo.dev/v1
+kind: CliToolDefinition
+metadata:
+  id: claude-code
+  namespace: dev.jumo.core
+  name: Anthropic Claude Code CLI
+spec:
+  toolName: claude-code
+  qualification: QUALIFIED
+  supportedAdapterProfiles:
+    - PROMPTED_JSON_VALIDATED
+  defaultProfile: PROMPTED_JSON_VALIDATED

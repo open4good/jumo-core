@@ -1,12 +1,16 @@
 apiVersion: jumo.dev/v1
 kind: ConnectorPackage
 metadata:
-  id: freebox-os
+  id: freebox
+  name: Freebox Wi-Fi connector
   namespace: dev.jumo.connectors
-  name: Freebox OS Local Gateway Connector
 spec:
-  connectorId: freebox-os
+  connectorId: freebox
   version: 1.0.0
-  packageDigest: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  packageDigest: sha256:dd8e224fd3bcf5c6d440ee486e2cb3d960e2a82d63b0d6c9c995d21e39d7896b
   manifestPath: .jumo/connector-packages/freebox/package.yml
+  contractsPath: .jumo/connector-packages/freebox/contracts
+  runtimeImageDigest: sha256:df4b4c8ad8b4ff2be00d930841d00853b2f9b6d837623076c936a79088fd7c9a
+  sbomDigest: sha256:8f42da915ec2f24a87f3b939730d18a3bf0b8d9bf88a13b6f8c3fe4af3a4691c
+  provenanceDigest: sha256:4e9a3f45a0d1b89c1cb226ed7d0ed05b3574ce06dffdfb29c74ee8ba3c80134b
   requiresAdapter: true

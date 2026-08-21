@@ -1,0 +1,15 @@
+apiVersion: jumo.dev/v1
+kind: CliRelease
+metadata:
+  id: codex-0-1-0
+  namespace: dev.jumo.core
+  name: OpenAI Codex 0.1.0 OCI Release
+spec:
+  toolRef: codex
+  version: 0.1.0
+  platform: linux/amd64
+  ociImage: ghcr.io/jumo/runtimes/codex:0.1.0
+  imageDigest: sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
+  signatureDigest: sha256:5b7f0e34c9c1b3d3ef4237f864bc14d6934c94b39fae6cb2c9f5d34190c10b75
+  sbomDigest: sha256:8f42da915ec2f24a87f3b939730d18a3bf0b8d9bf88a13b6f8c3fe4af3a4691c
+  provenanceDigest: sha256:4e9a3f45a0d1b89c1cb226ed7d0ed05b3574ce06dffdfb29c74ee8ba3c80134b

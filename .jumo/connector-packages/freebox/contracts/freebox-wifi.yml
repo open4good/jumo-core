@@ -1,0 +1,23 @@
+apiVersion: jumo.dev/v1
+kind: ActionCapabilitySet
+metadata:
+  id: freebox-wifi-capabilities
+  name: Freebox Wi-Fi capabilities
+  namespace: dev.jumo.connectors
+spec:
+  capabilities:
+    - name: freebox.wifi.read
+      description: Read the global Freebox Wi-Fi configuration from the enrolled machine on the local LAN.
+      riskTier: LOW
+      reversible: true
+      producesExternalEffect: false
+      minimumAssurance: OBSERVED
+    - name: freebox.wifi.set
+      description: Set the global Freebox Wi-Fi configuration after a fresh owner confirmation over the exact payload digest.
+      riskTier: HIGH
+      reversible: true
+      producesExternalEffect: true
+      requiredObligations: [STEP_UP_AUTHENTICATION, HUMAN_OWNER_APPROVAL, RETAIN_PROVENANCE]
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: jumo.effect.FreeboxWifiApplier

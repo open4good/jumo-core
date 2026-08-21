@@ -1,0 +1,12 @@
+apiVersion: jumo.dev/v1
+kind: CliToolDefinition
+metadata:
+  id: codex
+  namespace: dev.jumo.core
+  name: OpenAI Codex CLI
+spec:
+  toolName: codex
+  qualification: QUALIFIED
+  supportedAdapterProfiles:
+    - NATIVE_JSON_SCHEMA
+  defaultProfile: NATIVE_JSON_SCHEMA

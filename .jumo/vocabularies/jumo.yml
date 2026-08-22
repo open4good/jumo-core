@@ -1,0 +1,472 @@
+apiVersion: jumo.dev/v1
+kind: VocabularySet
+metadata:
+  id: jumo
+  namespace: dev.jumo.core
+  name: Jumo concept vocabulary
+spec:
+  ownerRealm: home
+  entries:
+  - canonical: ActionCapabilitySet
+    displayEn: 'Action Capability Set'
+    displayFr: 'Ensemble de capacités d''action'
+    pluralEn: 'Action Capability Sets'
+    pluralFr: 'Ensembles de capacités d''action'
+    directory: capabilities
+  - canonical: AdvisorProfile
+    displayEn: 'Advisor Profile'
+    displayFr: 'Profil de conseiller'
+    pluralEn: 'Advisor Profiles'
+    pluralFr: 'Profils de conseiller'
+    directory: advisor-profiles
+  - canonical: AgentDefinition
+    displayEn: 'Agent'
+    displayFr: 'Agent'
+    pluralEn: 'Agents'
+    pluralFr: 'Agents'
+    directory: agents
+  - canonical: ApiSurface
+    displayEn: 'API Surface'
+    displayFr: 'Surface d''API'
+    pluralEn: 'API Surfaces'
+    pluralFr: 'Surfaces d''API'
+  - canonical: AssistedJourney
+    displayEn: 'Journey'
+    displayFr: 'Parcours'
+    pluralEn: 'Journeys'
+    pluralFr: 'Parcours'
+    directory: journeys
+  - canonical: AttentionItem
+    displayEn: 'Attention Item'
+    displayFr: 'Élément d''attention'
+    pluralEn: 'Attention Items'
+    pluralFr: 'Éléments d''attention'
+  - canonical: CapabilityProfile
+    displayEn: 'Capability Profile'
+    displayFr: 'Profil de capacité'
+    pluralEn: 'Capability Profiles'
+    pluralFr: 'Profils de capacité'
+    directory: capability-profiles
+  - canonical: ChiefOfStaffProfile
+    displayEn: 'Chief of Staff Profile'
+    displayFr: 'Profil de chef de cabinet'
+    pluralEn: 'Chief of Staff Profiles'
+    pluralFr: 'Profils de chef de cabinet'
+    directory: chief-of-staff-profiles
+  - canonical: CliRelease
+    displayEn: 'CLI Release'
+    displayFr: 'Version CLI'
+    pluralEn: 'CLI Releases'
+    pluralFr: 'Versions CLI'
+    directory: cli-releases
+  - canonical: CliToolDefinition
+    displayEn: 'CLI Tool Definition'
+    displayFr: 'Définition d''outil CLI'
+    pluralEn: 'CLI Tool Definitions'
+    pluralFr: 'Définitions d''outil CLI'
+    directory: cli-tools
+  - canonical: ComplianceProfile
+    displayEn: 'Compliance Profile'
+    displayFr: 'Profil de conformité'
+    pluralEn: 'Compliance Profiles'
+    pluralFr: 'Profils de conformité'
+  - canonical: ConnectorAppraisal
+    displayEn: 'Connector Appraisal'
+    displayFr: 'Évaluation de connecteur'
+    pluralEn: 'Connector Appraisals'
+    pluralFr: 'Évaluations de connecteur'
+    directory: appraisals
+  - canonical: ConnectorDefinition
+    displayEn: 'Connector Definition'
+    displayFr: 'Définition de connecteur'
+    pluralEn: 'Connector Definitions'
+    pluralFr: 'Définitions de connecteur'
+    directory: connectors
+  - canonical: ConnectorIntegration
+    displayEn: 'Connector Integration'
+    displayFr: 'Intégration de connecteur'
+    pluralEn: 'Connector Integrations'
+    pluralFr: 'Intégrations de connecteur'
+    directory: connector-packages
+  - canonical: ConnectorPackage
+    displayEn: 'Connector Package'
+    displayFr: 'Paquet de connecteur'
+    pluralEn: 'Connector Packages'
+    pluralFr: 'Paquets de connecteur'
+    directory: connector-packages
+  - canonical: ContractReference
+    displayEn: 'Contract Reference'
+    displayFr: 'Référence de contrat'
+    pluralEn: 'Contract References'
+    pluralFr: 'Références de contrat'
+  - canonical: ControlCatalog
+    displayEn: 'Control Catalog'
+    displayFr: 'Catalogue de contrôles'
+    pluralEn: 'Control Catalogs'
+    pluralFr: 'Catalogues de contrôles'
+  - canonical: CoordinationProfile
+    displayEn: 'Coordination Profile'
+    displayFr: 'Profil de coordination'
+    pluralEn: 'Coordination Profiles'
+    pluralFr: 'Profils de coordination'
+  - canonical: EngagementMethod
+    displayEn: 'Engagement Method'
+    displayFr: 'Méthode d''engagement'
+    pluralEn: 'Engagement Methods'
+    pluralFr: 'Méthodes d''engagement'
+    directory: engagement-methods
+  - canonical: EvidenceProfile
+    displayEn: 'Evidence Profile'
+    displayFr: 'Profil de preuve'
+    pluralEn: 'Evidence Profiles'
+    pluralFr: 'Profils de preuve'
+  - canonical: ExecutionCell
+    displayEn: 'Execution Cell'
+    displayFr: 'Cellule d''exécution'
+    pluralEn: 'Execution Cells'
+    pluralFr: 'Cellules d''exécution'
+  - canonical: ExecutionMachine
+    displayEn: 'Execution Machine'
+    displayFr: 'Machine d''exécution'
+    pluralEn: 'Execution Machines'
+    pluralFr: 'Machines d''exécution'
+    directory: execution-machines
+  - canonical: FederatedPeer
+    displayEn: 'Federated Peer'
+    displayFr: 'Pair fédéré'
+    pluralEn: 'Federated Peers'
+    pluralFr: 'Pairs fédérés'
+  - canonical: FederationProfile
+    displayEn: 'Federation Profile'
+    displayFr: 'Profil de fédération'
+    pluralEn: 'Federation Profiles'
+    pluralFr: 'Profils de fédération'
+  - canonical: GoldenTaskSet
+    displayEn: 'Golden Task Set'
+    displayFr: 'Ensemble de tâches de référence'
+    pluralEn: 'Golden Task Sets'
+    pluralFr: 'Ensembles de tâches de référence'
+  - canonical: ImprovementLoop
+    displayEn: 'Improvement Loop'
+    displayFr: 'Boucle d''amélioration'
+    pluralEn: 'Improvement Loops'
+    pluralFr: 'Boucles d''amélioration'
+  - canonical: ImprovementRecommendation
+    displayEn: 'Improvement Recommendation'
+    displayFr: 'Recommandation d''amélioration'
+    pluralEn: 'Improvement Recommendations'
+    pluralFr: 'Recommandations d''amélioration'
+  - canonical: InterfaceSurface
+    displayEn: 'Interface Surface'
+    displayFr: 'Surface d''interface'
+    pluralEn: 'Interface Surfaces'
+    pluralFr: 'Surfaces d''interface'
+    directory: interfaces
+  - canonical: JumoKit
+    displayEn: 'Kit'
+    displayFr: 'Kit'
+    pluralEn: 'Kits'
+    pluralFr: 'Kits'
+  - canonical: KitBinding
+    displayEn: 'Kit Binding'
+    displayFr: 'Liaison de kit'
+    pluralEn: 'Kit Bindings'
+    pluralFr: 'Liaisons de kit'
+  - canonical: KitLock
+    displayEn: 'Kit Lock'
+    displayFr: 'Verrou de kit'
+    pluralEn: 'Kit Locks'
+    pluralFr: 'Verrous de kit'
+  - canonical: KitReleaseCertification
+    displayEn: 'Kit Release Certification'
+    displayFr: 'Certification de version de kit'
+    pluralEn: 'Kit Release Certifications'
+    pluralFr: 'Certifications de version de kit'
+  - canonical: MachineAdminPlaybook
+    displayEn: 'Machine Admin Playbook'
+    displayFr: 'Playbook d''administration de machine'
+    pluralEn: 'Machine Admin Playbooks'
+    pluralFr: 'Playbooks d''administration de machine'
+    directory: machine-admin-playbooks
+  - canonical: MachineHostDefinition
+    displayEn: 'Machine Host Definition'
+    displayFr: 'Définition d''hôte de machine'
+    pluralEn: 'Machine Host Definitions'
+    pluralFr: 'Définitions d''hôte de machine'
+    directory: machine-hosts
+  - canonical: MachineRuntimeInstallation
+    displayEn: 'Machine Runtime Installation'
+    displayFr: 'Installation du runtime de machine'
+    pluralEn: 'Machine Runtime Installations'
+    pluralFr: 'Installations du runtime de machine'
+  - canonical: McpBundle
+    displayEn: 'MCP Bundle'
+    displayFr: 'Paquet MCP'
+    pluralEn: 'MCP Bundles'
+    pluralFr: 'Paquets MCP'
+    directory: bundles
+  - canonical: McpRegistrySource
+    displayEn: 'MCP Registry Source'
+    displayFr: 'Source de registre MCP'
+    pluralEn: 'MCP Registry Sources'
+    pluralFr: 'Sources de registre MCP'
+    directory: mcp-registry-sources
+  - canonical: OAuthClientBinding
+    displayEn: 'OAuth Client Binding'
+    displayFr: 'Liaison client OAuth'
+    pluralEn: 'OAuth Client Bindings'
+    pluralFr: 'Liaisons client OAuth'
+  - canonical: OfferingSpec
+    displayEn: 'Offering'
+    displayFr: 'Offre'
+    pluralEn: 'Offerings'
+    pluralFr: 'Offres'
+  - canonical: Organization
+    displayEn: 'Organization'
+    displayFr: 'Organisation'
+    pluralEn: 'Organizations'
+    pluralFr: 'Organisations'
+  - canonical: OrganizationAccessBinding
+    displayEn: 'Organization Access Binding'
+    displayFr: 'Liaison d''accès d''organisation'
+    pluralEn: 'Organization Access Bindings'
+    pluralFr: 'Liaisons d''accès d''organisation'
+  - canonical: OrganizationAuditRetentionPolicy
+    displayEn: 'Organization Audit Retention Policy'
+    displayFr: 'Politique de rétention d''audit d''organisation'
+    pluralEn: 'Organization Audit Retention Policies'
+    pluralFr: 'Politiques de rétention d''audit d''organisation'
+  - canonical: OrganizationEnrollmentPolicy
+    displayEn: 'Organization Enrollment Policy'
+    displayFr: 'Politique d''inscription d''organisation'
+    pluralEn: 'Organization Enrollment Policies'
+    pluralFr: 'Politiques d''inscription d''organisation'
+  - canonical: OrganizationPublicationPolicy
+    displayEn: 'Organization Publication Policy'
+    displayFr: 'Politique de publication d''organisation'
+    pluralEn: 'Organization Publication Policies'
+    pluralFr: 'Politiques de publication d''organisation'
+  - canonical: OrganizationRetentionHold
+    displayEn: 'Organization Retention Hold'
+    displayFr: 'Blocage de rétention d''organisation'
+    pluralEn: 'Organization Retention Holds'
+    pluralFr: 'Blocages de rétention d''organisation'
+  - canonical: OrganizationSpec
+    displayEn: 'Organization Specification'
+    displayFr: 'Spécification d''organisation'
+    pluralEn: 'Organization Specifications'
+    pluralFr: 'Spécifications d''organisation'
+  - canonical: OrganizationTemplate
+    displayEn: 'Organization Template'
+    displayFr: 'Modèle d''organisation'
+    pluralEn: 'Organization Templates'
+    pluralFr: 'Modèles d''organisation'
+  - canonical: PersonalSpace
+    displayEn: 'Personal Space'
+    displayFr: 'Espace personnel'
+    pluralEn: 'Personal Spaces'
+    pluralFr: 'Espaces personnels'
+  - canonical: PolicySet
+    displayEn: 'Policy Set'
+    displayFr: 'Ensemble de politiques'
+    pluralEn: 'Policy Sets'
+    pluralFr: 'Ensembles de politiques'
+    directory: policies
+  - canonical: Practice
+    displayEn: 'Practice'
+    displayFr: 'Pratique'
+    pluralEn: 'Practices'
+    pluralFr: 'Pratiques'
+    directory: practices
+  - canonical: Preferences
+    displayEn: 'Preferences'
+    displayFr: 'Préférences'
+    pluralEn: 'Preferences'
+    pluralFr: 'Préférences'
+  - canonical: Principal
+    displayEn: 'Principal'
+    displayFr: 'Principal'
+    pluralEn: 'Principals'
+    pluralFr: 'Principaux'
+    directory: principals
+  - canonical: PrincipalIdentityBinding
+    displayEn: 'Principal Identity Binding'
+    displayFr: 'Liaison d''identité de principal'
+    pluralEn: 'Principal Identity Bindings'
+    pluralFr: 'Liaisons d''identité de principal'
+  - canonical: PrincipleSet
+    displayEn: 'Principle Set'
+    displayFr: 'Ensemble de principes'
+    pluralEn: 'Principle Sets'
+    pluralFr: 'Ensembles de principes'
+    directory: principles
+  - canonical: ProcessSpec
+    displayEn: 'Process'
+    displayFr: 'Processus'
+    pluralEn: 'Processes'
+    pluralFr: 'Processus'
+    directory: processes
+  - canonical: ProcessStep
+    displayEn: 'Process Step'
+    displayFr: 'Étape de processus'
+    pluralEn: 'Process Steps'
+    pluralFr: 'Étapes de processus'
+  - canonical: Project
+    displayEn: 'Project'
+    displayFr: 'Projet'
+    pluralEn: 'Projects'
+    pluralFr: 'Projets'
+  - canonical: ProjectContract
+    displayEn: 'Project Contract'
+    displayFr: 'Contrat de projet'
+    pluralEn: 'Project Contracts'
+    pluralFr: 'Contrats de projet'
+  - canonical: ProjectionSpec
+    displayEn: 'Projection'
+    displayFr: 'Projection'
+    pluralEn: 'Projections'
+    pluralFr: 'Projections'
+    directory: projections
+  - canonical: PromptTemplate
+    displayEn: 'Prompt Template'
+    displayFr: 'Modèle de prompt'
+    pluralEn: 'Prompt Templates'
+    pluralFr: 'Modèles de prompt'
+    directory: prompts
+  - canonical: ProviderAccount
+    displayEn: 'Provider Account'
+    displayFr: 'Compte fournisseur'
+    pluralEn: 'Provider Accounts'
+    pluralFr: 'Comptes fournisseur'
+    directory: providers
+  - canonical: ProviderPlatform
+    displayEn: 'Provider Platform'
+    displayFr: 'Plateforme fournisseur'
+    pluralEn: 'Provider Platforms'
+    pluralFr: 'Plateformes fournisseur'
+    directory: provider-platforms
+  - canonical: ProviderQuotaObservation
+    displayEn: 'Provider Quota Observation'
+    displayFr: 'Observation de quota fournisseur'
+    pluralEn: 'Provider Quota Observations'
+    pluralFr: 'Observations de quota fournisseur'
+  - canonical: ProviderQuotaWindow
+    displayEn: 'Provider Quota Window'
+    displayFr: 'Fenêtre de quota fournisseur'
+    pluralEn: 'Provider Quota Windows'
+    pluralFr: 'Fenêtres de quota fournisseur'
+  - canonical: RealmPublication
+    displayEn: 'Realm Publication'
+    displayFr: 'Publication du Realm'
+    pluralEn: 'Realm Publications'
+    pluralFr: 'Publications du Realm'
+    directory: publications
+  - canonical: RealmTemplate
+    displayEn: 'Realm Template'
+    displayFr: 'Modèle de Realm'
+    pluralEn: 'Realm Templates'
+    pluralFr: 'Modèles de Realm'
+    directory: realm-templates
+  - canonical: RemoteMcpAppraisal
+    displayEn: 'Remote MCP Appraisal'
+    displayFr: 'Évaluation MCP distante'
+    pluralEn: 'Remote MCP Appraisals'
+    pluralFr: 'Évaluations MCP distantes'
+  - canonical: RemoteMcpService
+    displayEn: 'Remote MCP Service'
+    displayFr: 'Service MCP distant'
+    pluralEn: 'Remote MCP Services'
+    pluralFr: 'Services MCP distants'
+  - canonical: ResourceBudget
+    displayEn: 'Resource Budget'
+    displayFr: 'Budget de ressources'
+    pluralEn: 'Resource Budgets'
+    pluralFr: 'Budgets de ressources'
+    directory: budgets
+  - canonical: RoleAssignment
+    displayEn: 'Role Assignment'
+    displayFr: 'Attribution de rôle'
+    pluralEn: 'Role Assignments'
+    pluralFr: 'Attributions de rôle'
+    directory: role-assignments
+  - canonical: RoleBearer
+    displayEn: 'Role Bearer'
+    displayFr: 'Porteur de rôle'
+    pluralEn: 'Role Bearers'
+    pluralFr: 'Porteurs de rôle'
+  - canonical: RoleDefinition
+    displayEn: 'Role'
+    displayFr: 'Rôle'
+    pluralEn: 'Roles'
+    pluralFr: 'Rôles'
+    directory: roles
+    trailer: Jumo-Role
+  - canonical: RoleLifecyclePolicy
+    displayEn: 'Role Lifecycle Policy'
+    displayFr: 'Politique de cycle de vie du rôle'
+    pluralEn: 'Role Lifecycle Policies'
+    pluralFr: 'Politiques de cycle de vie du rôle'
+  - canonical: RoutingEligibility
+    displayEn: 'Routing Eligibility'
+    displayFr: 'Éligibilité de routage'
+    pluralEn: 'Routing Eligibilities'
+    pluralFr: 'Éligibilités de routage'
+    directory: routing-eligibilities
+  - canonical: SecretBinding
+    displayEn: 'Secret Binding'
+    displayFr: 'Liaison de secret'
+    pluralEn: 'Secret Bindings'
+    pluralFr: 'Liaisons de secret'
+    directory: secret-bindings
+  - canonical: SelfDescription
+    displayEn: 'Self-Description'
+    displayFr: 'Auto-description'
+    pluralEn: 'Self-Descriptions'
+    pluralFr: 'Auto-descriptions'
+  - canonical: SelfDescriptionSubject
+    displayEn: 'Self-Description Subject'
+    displayFr: 'Sujet d''auto-description'
+    pluralEn: 'Self-Description Subjects'
+    pluralFr: 'Sujets d''auto-description'
+  - canonical: SolicitationContract
+    displayEn: 'Solicitation Contract'
+    displayFr: 'Contrat de sollicitation'
+    pluralEn: 'Solicitation Contracts'
+    pluralFr: 'Contrats de sollicitation'
+  - canonical: TeamSpec
+    displayEn: 'Team'
+    displayFr: 'Équipe'
+    pluralEn: 'Teams'
+    pluralFr: 'Équipes'
+    directory: teams
+  - canonical: ThemePack
+    displayEn: 'Theme Pack'
+    displayFr: 'Pack de thème'
+    pluralEn: 'Theme Packs'
+    pluralFr: 'Packs de thème'
+    directory: themes
+  - canonical: VocabularySet
+    displayEn: 'Vocabulary'
+    displayFr: 'Vocabulaire'
+    pluralEn: 'Vocabularies'
+    pluralFr: 'Vocabulaires'
+    directory: vocabularies
+  - canonical: WorkOrder
+    displayEn: 'Work Order'
+    displayFr: 'Ordre de travail'
+    pluralEn: 'Work Orders'
+    pluralFr: 'Ordres de travail'
+    directory: work
+    trailer: Jumo-Work-Order
+  - canonical: WorkerRequirementProfile
+    displayEn: 'Worker Requirement Profile'
+    displayFr: 'Profil d''exigences de worker'
+    pluralEn: 'Worker Requirement Profiles'
+    pluralFr: 'Profils d''exigences de worker'
+    directory: worker-requirements
+  - canonical: WorkerSubstrate
+    displayEn: 'Worker Substrate'
+    displayFr: 'Substrat de worker'
+    pluralEn: 'Worker Substrates'
+    pluralFr: 'Substrats de worker'
+    directory: worker-substrates

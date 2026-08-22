@@ -18,6 +18,7 @@ spec:
   lifetimeUnique: true
   heroImage: /images/nestor-avatar.svg
   emitsCapability: contract.change.propose
+  navigationMode: FREE
   steps:
     - id: setup-identity
       name: Identité et Espace Yamaka
@@ -36,6 +37,8 @@ spec:
       description: En attente du démarrage de la VM et de la vérification du propriétaire.
       personaNarration: Votre machine virtuelle d'exécution se prépare. Nous attendons son initialisation et sa vérification.
       stepKind: AWAIT
+      dependsOn: [setup-identity]
+      parallelizable: true
       requiredFields: []
       processSpecRef:
         kind: ProcessSpec
@@ -47,6 +50,8 @@ spec:
       personaNarration: Votre dépôt Git est la source contractuelle de vérité de tout votre environnement. Renseignez votre
         dépôt racine.
       stepKind: COLLECT
+      dependsOn: [setup-identity]
+      parallelizable: true
       requiredFields:
         - gitRepoUrl
         - gitBranch
@@ -59,6 +64,8 @@ spec:
       description: Activation des comptes API déclarés et qualification réelle des modèles accessibles, sans compte implicite.
       personaNarration: Sélectionnons les comptes déclarés, activons-les en toute sécurité et observons réellement leurs capacités.
       stepKind: SUB_JOURNEY
+      dependsOn: [setup-identity]
+      parallelizable: true
       requiredFields: []
       subAssistedJourneyRef: {kind: AssistedJourney, namespace: dev.jumo.core, id: configure-api-accounts}
     - id: capture-connector-intent
@@ -66,6 +73,8 @@ spec:
       description: Dialogue avec Nestor pour analyser vos outils et sélectionner les connecteurs appropriés.
       personaNarration: Discutons de votre quotidien de développeur pour déterminer quels connecteurs et MCP activer.
       stepKind: DIALOGUE_COLLECT
+      dependsOn: [setup-identity]
+      parallelizable: true
       requiredFields:
         - selectedConnectors
       promptTemplateRef:
@@ -77,6 +86,8 @@ spec:
       description: Sélection puis confirmation des connecteurs à appairer, via le parcours réutilisable dédié.
       personaNarration: Passons à la mise en place concrète des connecteurs que nous venons de choisir ensemble.
       stepKind: SUB_JOURNEY
+      dependsOn: [setup-identity]
+      parallelizable: true
       requiredFields: []
       subAssistedJourneyRef:
         kind: AssistedJourney
@@ -88,6 +99,7 @@ spec:
       personaNarration: Tout est prêt ! Vérifions ensemble le récapitulatif avant de sceller la configuration racine de votre
         espace.
       stepKind: COLLECT
+      dependsOn: [provision-execution-cell, link-repository, configure-api-accounts, capture-connector-intent, setup-connectors]
       requiredFields:
         - confirmed
       projectionSpecRef:

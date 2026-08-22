@@ -1,0 +1,25 @@
+apiVersion: jumo.dev/v1
+kind: ProviderPlatform
+metadata:
+  id: openai-compatible
+  namespace: dev.jumo.core
+  name: OpenAI-compatible endpoint
+spec:
+  wireProtocol: OPENAI_RESPONSES
+  egressRouteId: openai-compatible
+  completionPath: /v1/responses
+  modelCatalogPath: /v1/models
+  credentialHeader: AUTHORIZATION_BEARER
+  independenceGroup: openai-compatible
+  hostDeclaredByAccount: true
+  defaultEffortLadder:
+    - rung: LOW
+      modelAlias: default
+    - rung: MEDIUM
+      modelAlias: default
+      nativeEffort:
+        reasoningEffort: medium
+    - rung: HIGH
+      modelAlias: default
+      nativeEffort:
+        reasoningEffort: high

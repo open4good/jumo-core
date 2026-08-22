@@ -1,0 +1,27 @@
+apiVersion: jumo.dev/v1
+kind: ProviderPlatform
+metadata:
+  id: openai
+  namespace: dev.jumo.core
+  name: OpenAI
+spec:
+  wireProtocol: OPENAI_RESPONSES
+  egressRouteId: openai
+  upstreamHost: api.openai.com
+  completionPath: /openai/v1/responses
+  modelCatalogPath: /openai/v1/models
+  credentialHeader: AUTHORIZATION_BEARER
+  independenceGroup: openai
+  hostDeclaredByAccount: false
+  defaultEffortLadder:
+    - rung: LOW
+      modelAlias: gpt-5-mini
+    - rung: MEDIUM
+      modelAlias: gpt-5
+      nativeEffort:
+        reasoningEffort: medium
+    - rung: HIGH
+      modelAlias: gpt-5
+      nativeEffort:
+        reasoningEffort: high
+        maxOutputTokens: 8192

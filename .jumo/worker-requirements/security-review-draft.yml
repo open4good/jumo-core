@@ -24,6 +24,7 @@ spec:
     minimumTaskHorizon: PT2M
     maximumEvaluationAge: P30D
     reasoningEffort: HIGH
+  requiredIndependenceGroup: openai
   limits:
     maximumLatency: PT2M
     maximumCostClass: HIGH

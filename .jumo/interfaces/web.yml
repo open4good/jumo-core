@@ -117,6 +117,13 @@ spec:
           requiredObligations:
             - RETAIN_PROVENANCE
             - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/provider-platforms/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
         - pathGlob: .jumo/secret-bindings/**
           ring: RING_1_CONTROL_PLANE
           capabilityRef: contract.change.propose

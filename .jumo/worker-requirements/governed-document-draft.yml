@@ -24,6 +24,7 @@ spec:
     minimumTaskHorizon: PT2M
     maximumEvaluationAge: P30D
     reasoningEffort: MEDIUM
+  requiredIndependenceGroup: anthropic
   limits:
     maximumLatency: PT2M
     maximumCostClass: MEDIUM

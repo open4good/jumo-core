@@ -1,0 +1,29 @@
+apiVersion: jumo.dev/v1
+kind: ProviderPlatform
+metadata:
+  id: anthropic
+  namespace: dev.jumo.core
+  name: Anthropic
+spec:
+  wireProtocol: ANTHROPIC_MESSAGES
+  egressRouteId: anthropic
+  upstreamHost: api.anthropic.com
+  completionPath: /anthropic/v1/messages
+  modelCatalogPath: /anthropic/v1/models
+  credentialHeader: X_API_KEY
+  independenceGroup: anthropic
+  hostDeclaredByAccount: false
+  defaultEffortLadder:
+    - rung: LOW
+      modelAlias: claude-haiku
+      nativeEffort:
+        maxOutputTokens: 4096
+    - rung: MEDIUM
+      modelAlias: claude-sonnet
+      nativeEffort:
+        maxOutputTokens: 4096
+    - rung: HIGH
+      modelAlias: claude-sonnet
+      nativeEffort:
+        maxOutputTokens: 8192
+        thinkingBudgetTokens: 4096

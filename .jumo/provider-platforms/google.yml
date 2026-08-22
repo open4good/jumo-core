@@ -1,0 +1,26 @@
+apiVersion: jumo.dev/v1
+kind: ProviderPlatform
+metadata:
+  id: google
+  namespace: dev.jumo.core
+  name: Google AI Studio
+spec:
+  wireProtocol: GOOGLE_GENAI
+  egressRouteId: google
+  upstreamHost: generativelanguage.googleapis.com
+  completionPath: /google/v1beta/models/{model}:generateContent
+  modelCatalogPath: /google/v1beta/models
+  credentialHeader: X_GOOG_API_KEY
+  independenceGroup: google
+  hostDeclaredByAccount: false
+  defaultEffortLadder:
+    - rung: LOW
+      modelAlias: gemini-flash
+    - rung: MEDIUM
+      modelAlias: gemini-flash
+      nativeEffort:
+        thinkingBudgetTokens: 2048
+    - rung: HIGH
+      modelAlias: gemini-pro
+      nativeEffort:
+        thinkingBudgetTokens: 8192

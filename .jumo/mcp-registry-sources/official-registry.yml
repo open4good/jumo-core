@@ -17,7 +17,7 @@ spec:
     kind: WorkOrder
     namespace: home.jumo.dev
     id: mcp-registry-boundary-contracts
-  operatorRoleDefinitionRef:
+  roleDefinitionRef:
     kind: RoleDefinition
     namespace: dev.jumo.core
     id: lead-architect

@@ -51,7 +51,7 @@ spec:
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
     - name: contract.change.propose
-      description: Record a validated, hash-bound operator-contract proposal for separate owner approval and forge projection.
+      description: Record a validated, hash-bound role-contract proposal for separate owner approval and forge projection.
       riskTier: MEDIUM
       reversible: false
       producesExternalEffect: true
@@ -157,7 +157,7 @@ spec:
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
     - name: team.roster.read
-      description: Read operator team composition, roles, and independence groups within the authenticated Realm.
+      description: Read team composition, roles, and independence groups within the authenticated Realm.
       riskTier: LOW
       reversible: true
       minimumAssurance: SELF_REPORTED
@@ -187,7 +187,7 @@ spec:
       reversible: true
       minimumAssurance: SELF_REPORTED
     - name: work.order.propose
-      description: Record a validated, hash-bound work order proposal for separate operator assignment and forge execution.
+      description: Record a validated, hash-bound work order proposal for separate role assignment and forge execution.
       riskTier: MEDIUM
       reversible: false
       producesExternalEffect: true

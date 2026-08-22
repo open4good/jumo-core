@@ -23,10 +23,10 @@ spec:
         - purpose
     - id: specify-work-order
       name: Spécification du lot
-      description: Définissez l'opérateur responsable, l'équipe et les critères d'acceptation.
-      personaNarration: Associons ce lot à un opérateur d'implémentation et à un vérificateur indépendant.
+      description: Définissez le rôle responsable, l'équipe et les critères d'acceptation.
+      personaNarration: Associons ce lot à un rôle d'implémentation et à un vérificateur indépendant.
       requiredFields:
-        - operatorRef
+        - roleRef
         - teamRef
     - id: confirm-work-order
       name: Confirmation de la tâche

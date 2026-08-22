@@ -28,7 +28,7 @@ do not clone repositories, follow branches, use submodules, or fall back to a mo
 
 ## Layout
 
-- `agents/`, `operators/`, `capabilities/`, `policies/`, `principles/`, and `practices/`: shared
+- `agents/`, `roles/`, `capabilities/`, `policies/`, `principles/`, and `practices/`: shared
   governance vocabulary and roles.
 - `journeys/`, `projections/`, `prompts/`, `processes/`, and `interfaces/`: reusable interaction
   and process declarations.
@@ -41,6 +41,6 @@ belong to the private Home corpus, not here.
 
 ## Contributing
 
-Make a focused pull request with its WorkOrder, operator, contract revision, deterministic
+Make a focused pull request with its WorkOrder, role, contract revision, deterministic
 validation evidence, and the required Jumo commit trailers. Do not add secrets or Realm bindings.
 Any consuming repository adopts an accepted change in a separate explicit lock-update pull request.

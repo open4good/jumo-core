@@ -24,7 +24,7 @@ spec:
           required: true
         - path: producerRoleDefinitionRef
           representation: ENTITY_REFERENCE
-          i18nKey: operators
+          i18nKey: roles
           required: true
         - path: verifierRoleDefinitionRef
           representation: ENTITY_REFERENCE

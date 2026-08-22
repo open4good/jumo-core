@@ -96,7 +96,7 @@ spec:
           requiredObligations:
             - RETAIN_PROVENANCE
             - STEP_UP_AUTHENTICATION
-        - pathGlob: .jumo/operator-teams/**
+        - pathGlob: .jumo/teams/**
           ring: RING_1_CONTROL_PLANE
           capabilityRef: contract.change.propose
           editor: STRUCTURED_YAML

@@ -7,7 +7,7 @@ metadata:
 spec:
   journeyId: evolve-project-team
   name: Evolve project team
-  description: Modify, add, or reorganize operator roles and independence groups in an existing project team.
+  description: Modify, add, or reorganize roles and independence groups in an existing project team.
   category: teamsProjects
   icon: mdi-account-edit-outline
   interruptible: true

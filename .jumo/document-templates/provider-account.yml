@@ -1,0 +1,31 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: provider-account
+  namespace: dev.jumo.core
+  name: Provider account declaration
+spec:
+  renders: ProviderAccount
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: ProviderAccount
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${providerName}
+    spec:
+      provider: ${provider}
+      independenceGroup: ${independenceGroup}
+      routing:
+        mode: ${routingMode}
+        gatewayRef: ${gatewayRef}
+        requirementAliases: []
+      quotaWindow:
+        windowType: ROLLING_DAILY
+        resetCadence: PT24H
+      observationProvenance:
+        telemetryMode: EMIT_LOCAL
+      onExhaustion:
+        action: FAIL_CLOSED
+      entitlement:
+        permitted: ${permitted}

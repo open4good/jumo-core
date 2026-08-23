@@ -18,8 +18,14 @@ spec:
     targetKind: ProviderAccount
     identifier: {fromField: providerId}
     pathTemplate: .jumo/providers/${id}.yml
+    documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: provider-account}
     validations:
       - {field: providerId, required: true}
+    fieldDefaults:
+      - {field: independenceGroup, value: '${provider}'}
+    fieldConditions:
+      - {field: gatewayRef, whenField: routingMode, equalsValue: GATEWAY_ROUTED}
+    booleanFields: [permitted]
   steps:
     - id: define-provider
       name: Provider identity

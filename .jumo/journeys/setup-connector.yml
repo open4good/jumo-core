@@ -10,7 +10,7 @@ spec:
   description: 'Parcours réutilisable de mise en place des connecteurs choisis : sélection depuis le catalogue, puis confirmation
     avant appairage. Référencé en tant que sous-parcours (stepKind SUB_JOURNEY) par the-onboarding-trip, il peut aussi être
     démarré seul.'
-  category: integrations
+  category: connectors
   icon: mdi-power-plug-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS

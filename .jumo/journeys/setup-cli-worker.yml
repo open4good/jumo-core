@@ -26,6 +26,8 @@ spec:
       name: Machine d'exécution
       description: Choisissez une machine existante, ACTIVE et saine, appartenant à ce Realm. Le parcours ne crée jamais de VM.
       personaNarration: La session et le runtime seront liés à cette machine précise.
+      stepKind: COLLECT
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: cli-worker-execution-machine}
       requiredFields:
         - executionMachineRef
         - providerAccountRef

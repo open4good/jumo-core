@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/setup-cli-worker",
+  "title": "Setup CLI worker step payload",
+  "type": "object",
+  "properties": {
+    "cliEngine": { "type": "string", "minLength": 1 },
+    "workerName": { "type": "string", "minLength": 1 },
+    "executionMachineRef": { "type": "string", "minLength": 1 },
+    "providerAccountRef": { "type": "string", "minLength": 1 },
+    "providerSessionRef": { "type": "string" },
+    "confirmed": { "type": "boolean" }
+  },
+  "required": ["cliEngine", "workerName", "executionMachineRef", "providerAccountRef"]
+}

@@ -1,0 +1,36 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: cli-worker-execution-machine
+  namespace: dev.jumo.core
+  name: CLI worker execution machine and subscription account
+spec:
+  ownerRealm: home
+  payloadSchemaRef: setup-cli-worker
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: placement
+      i18nKey: journeyCliPlacementSection
+      columns: 1
+      fields:
+        - path: executionMachineRef
+          representation: ENTITY_REFERENCE
+          optionsFrom: ExecutionMachine
+          optionsEligibility:
+            - path: spec.desiredState
+              equalsValue: ACTIVE
+          i18nKey: journeyCliExecutionMachineField
+          helpI18nKey: journeyCliExecutionMachineHelp
+          order: 1
+          required: true
+        - path: providerAccountRef
+          representation: ENTITY_REFERENCE
+          optionsFrom: ProviderAccount
+          optionsEligibility:
+            - path: spec.routing.mode
+              equalsValue: PLAN_DIRECT
+          i18nKey: journeyCliProviderAccountField
+          helpI18nKey: journeyCliProviderAccountHelp
+          order: 2
+          required: true

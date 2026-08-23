@@ -17,5 +17,10 @@ spec:
         - path: providerAccountRefs
           representation: ENTITY_COLLECTION
           optionsFrom: ProviderAccount
+          optionsEligibility:
+            - path: spec.routing.mode
+              equalsValue: GATEWAY_ROUTED
+            - path: spec.secretBindingRef
+              present: true
           i18nKey: journeyProviderAccountsField
           required: true

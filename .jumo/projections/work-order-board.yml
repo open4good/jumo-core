@@ -16,6 +16,7 @@ spec:
       fields:
         - path: state
           representation: ENUMERATION
+          optionsFromEnum: WorkOrderState
           i18nKey: status
           order: 1
           required: true

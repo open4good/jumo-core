@@ -6,7 +6,13 @@
   "properties": {
     "providerAccountRef": { "type": "string", "minLength": 1 },
     "providerSessionRef": { "type": "string" },
-    "executionCellRef": { "type": "string" }
+    "executionCellRef": { "type": "string" },
+    "providerCredential": {
+      "type": "string",
+      "minLength": 1,
+      "writeOnly": true,
+      "description": "One-shot owner ingress value. Declared so a projection can render it, never collected -- the cockpit strips every SECRET-represented path out of the turn payload before submitting."
+    }
   },
   "required": ["providerAccountRef"]
 }

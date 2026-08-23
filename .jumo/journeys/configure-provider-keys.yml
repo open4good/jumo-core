@@ -25,6 +25,6 @@ spec:
       description: Une observation réelle confirme la clé ingressée ou la session CLI appairée.
       stepKind: COLLECT
       requiredFields: [providerAccountRef]
-      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: configure-provider-keys}
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: provider-credential-ingress}
       verificationSpecRef: {kind: JourneyVerificationSpec, namespace: dev.jumo.core, id: cli-session-pairing}
   resourceBudgetRef: {kind: ResourceBudget, namespace: dev.jumo.core, id: interactive}

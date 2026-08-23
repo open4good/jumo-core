@@ -23,6 +23,7 @@ spec:
     form: TEXT
   minimumAssurance: OBSERVED
   ring: RING_2_AGENT_BEHAVIOR
+  conversationTask: COORDINATE
   agentDefinitionRef:
     kind: AgentDefinition
     namespace: dev.jumo.core

@@ -23,6 +23,7 @@ spec:
     javaType: dev.jumo.model.ConnectorIntentProposal
   minimumAssurance: OBSERVED
   ring: RING_2_AGENT_BEHAVIOR
+  conversationTask: STRUCTURED_INTENT
   agentDefinitionRef:
     kind: AgentDefinition
     namespace: dev.jumo.core

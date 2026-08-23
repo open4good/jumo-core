@@ -22,6 +22,7 @@ spec:
     form: TEXT
   minimumAssurance: OBSERVED
   ring: RING_2_AGENT_BEHAVIOR
+  conversationTask: COMPACT
   agentDefinitionRef:
     kind: AgentDefinition
     namespace: dev.jumo.core

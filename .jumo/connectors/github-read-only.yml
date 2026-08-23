@@ -9,7 +9,7 @@ spec:
   lifecycle: ENABLED
   transport: MCP
   configurationRef: runtime.connectors.github-read-only
-  placement: REMOTE
+  placement: EXECUTION_CELL
   operations:
     - id: read-repository
       bundleOperationRef: read-repository

@@ -18,7 +18,8 @@ spec:
     license: Apache-2.0
   runtime:
     transport: MCP
-    placement: REMOTE
+    upstreamKind: OCI_STDIO
+    placement: EXECUTION_CELL
     entrypoint: /mcp
   semanticProfile:
     purpose: Read one fixed public GitHub repository manifest through a narrow MCP boundary.

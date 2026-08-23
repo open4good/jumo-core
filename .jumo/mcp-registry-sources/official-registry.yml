@@ -13,11 +13,3 @@ spec:
   syncMode: FULL_THEN_INCREMENTAL
   cadence: PT1H
   jitter: PT5M
-  workOrderRef:
-    kind: WorkOrder
-    namespace: home.jumo.dev
-    id: mcp-registry-boundary-contracts
-  roleDefinitionRef:
-    kind: RoleDefinition
-    namespace: dev.jumo.core
-    id: lead-architect

@@ -316,11 +316,6 @@ spec:
     displayFr: 'Projet'
     pluralEn: 'Projects'
     pluralFr: 'Projets'
-  - canonical: ProjectContract
-    displayEn: 'Project Contract'
-    displayFr: 'Contrat de projet'
-    pluralEn: 'Project Contracts'
-    pluralFr: 'Contrats de projet'
   - canonical: ProjectionSpec
     displayEn: 'Projection'
     displayFr: 'Projection'

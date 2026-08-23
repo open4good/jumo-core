@@ -7,7 +7,7 @@ metadata:
 spec:
   ownerRealm: home
   projectRef:
-    kind: ProjectContract
+    kind: Project
     namespace: dev.jumo.core
     id: jumo
   processId: cli-runtime-installation

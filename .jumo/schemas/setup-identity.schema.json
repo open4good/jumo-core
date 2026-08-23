@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/setup-identity",
+  "title": "Setup identity step payload",
+  "type": "object",
+  "properties": {
+    "nickname": { "type": "string", "minLength": 1 }
+  },
+  "required": ["nickname"]
+}

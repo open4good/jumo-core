@@ -6,7 +6,7 @@ metadata:
   name: Pair clients and AI keys step form
 spec:
   ownerRealm: home
-  of: PairClientsAndAiStepFields
+  payloadSchemaRef: pair-clients-and-ai-form
   projectionKind: FORM
   renderedBy: home
   sections:

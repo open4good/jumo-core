@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/configure-provider-keys",
+  "title": "Configure provider keys and sessions step payload",
+  "type": "object",
+  "properties": {
+    "providerAccountRef": { "type": "string", "minLength": 1 },
+    "providerSessionRef": { "type": "string" },
+    "executionCellRef": { "type": "string" }
+  },
+  "required": ["providerAccountRef"]
+}

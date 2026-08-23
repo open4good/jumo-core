@@ -6,7 +6,7 @@ metadata:
   name: Link repository step form
 spec:
   ownerRealm: home
-  of: LinkRepositoryStepFields
+  payloadSchemaRef: link-repository-form
   projectionKind: FORM
   renderedBy: home
   sections:

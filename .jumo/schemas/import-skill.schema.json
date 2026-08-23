@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/import-skill",
+  "title": "Import skill step payload",
+  "type": "object",
+  "properties": {
+    "alias": { "type": "string", "minLength": 1 },
+    "repository": { "type": "string", "minLength": 1 },
+    "commit": { "type": "string", "pattern": "^[0-9a-fA-F]{40}$" }
+  },
+  "required": ["alias", "repository", "commit"]
+}

@@ -6,7 +6,7 @@ metadata:
   name: Import skill step form
 spec:
   ownerRealm: home
-  of: ImportSkillStepFields
+  payloadSchemaRef: import-skill
   projectionKind: FORM
   renderedBy: home
   sections:

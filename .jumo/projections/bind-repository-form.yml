@@ -6,7 +6,7 @@ metadata:
   name: Bind repository step form
 spec:
   ownerRealm: home
-  of: BindRepositoryStepFields
+  payloadSchemaRef: bind-repository-form
   projectionKind: FORM
   renderedBy: home
   sections:

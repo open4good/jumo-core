@@ -6,7 +6,7 @@ metadata:
   name: Configure declared API accounts
 spec:
   ownerRealm: home
-  of: ConfigureApiAccountsStepFields
+  payloadSchemaRef: configure-api-accounts
   projectionKind: FORM
   renderedBy: home
   sections:

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/build-project-team",
+  "title": "Build project team step payload",
+  "type": "object",
+  "properties": {
+    "teamName": { "type": "string", "minLength": 1 },
+    "projectPurpose": { "type": "string", "minLength": 1 }
+  },
+  "required": ["teamName", "projectPurpose"]
+}

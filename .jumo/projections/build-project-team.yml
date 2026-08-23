@@ -6,7 +6,7 @@ metadata:
   name: Build project team step form
 spec:
   ownerRealm: home
-  of: BuildProjectTeamStepFields
+  payloadSchemaRef: build-project-team
   projectionKind: FORM
   renderedBy: home
   sections:

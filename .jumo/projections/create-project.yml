@@ -6,7 +6,7 @@ metadata:
   name: Create project step form
 spec:
   ownerRealm: home
-  of: CreateProjectStepFields
+  payloadSchemaRef: create-project
   projectionKind: FORM
   renderedBy: home
   sections:

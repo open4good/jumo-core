@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/pair-clients-and-ai-form",
+  "title": "Pair clients and AI keys step payload",
+  "type": "object",
+  "properties": {
+    "pairedClients": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "aiProvider": { "type": "string" }
+  },
+  "required": ["pairedClients"]
+}

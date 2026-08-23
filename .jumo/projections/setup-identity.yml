@@ -6,7 +6,7 @@ metadata:
   name: Setup identity step form
 spec:
   ownerRealm: home
-  of: SetupIdentityStepFields
+  payloadSchemaRef: setup-identity
   projectionKind: FORM
   renderedBy: home
   sections:

@@ -6,7 +6,7 @@ metadata:
   name: Configure provider keys and sessions
 spec:
   ownerRealm: home
-  of: ConfigureProviderKeysStepFields
+  payloadSchemaRef: configure-provider-keys
   projectionKind: FORM
   renderedBy: home
   sections:

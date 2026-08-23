@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/summary-and-activate",
+  "title": "Summary and activate confirmation step payload",
+  "type": "object",
+  "properties": {
+    "confirmed": { "type": ["boolean", "string"] }
+  },
+  "required": ["confirmed"]
+}

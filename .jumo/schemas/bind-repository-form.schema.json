@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/bind-repository-form",
+  "title": "Bind repository step payload",
+  "type": "object",
+  "properties": {
+    "repository": { "type": "string", "minLength": 1 }
+  },
+  "required": ["repository"]
+}

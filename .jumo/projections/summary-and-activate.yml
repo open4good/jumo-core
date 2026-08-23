@@ -6,7 +6,7 @@ metadata:
   name: Summary and activate confirmation form
 spec:
   ownerRealm: home
-  of: SummaryAndActivateStepFields
+  payloadSchemaRef: summary-and-activate
   projectionKind: FORM
   renderedBy: home
   sections:

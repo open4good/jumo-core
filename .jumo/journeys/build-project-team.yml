@@ -14,6 +14,25 @@ spec:
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
   emitsCapability: contract.change.propose
+  emission:
+    targetKind: TeamSpec
+    identifier: {fromField: nickname, defaultValue: workspace, suffix: RUN_PREFIX}
+    pathTemplate: .jumo/teams/${id}.yml
+    documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: team-spec}
+    validations:
+      - {field: teamName, required: true}
+      - {field: projectPurpose, required: true, minimumLength: 10}
+      - {field: members, minimumItems: 2}
+    fieldDefaults:
+      - {field: purpose, value: '${projectPurpose}'}
+    referenceChecks:
+      - {field: members, kind: AgentDefinition, itemPath: roleRef}
+    collectionProjections:
+      - field: members
+        keys: [roleRef, role]
+        optionalKeys: [independenceGroup]
+        itemValidations:
+          - {field: role, minimumLength: 3}
   steps:
     - id: define-team-scope
       name: Définition de l'équipe

@@ -1,0 +1,24 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: kit-binding
+  namespace: dev.jumo.core
+  name: Imported kit binding
+spec:
+  renders: KitBinding
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: KitBinding
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${id}
+    spec:
+      ownerRealm: ${realmId}
+      alias: ${id}
+      kit:
+        repository: ${repository}
+        commit: ${commit}
+      profiles: []
+      values: []
+      derivationRefs: []

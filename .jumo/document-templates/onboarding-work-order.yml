@@ -1,0 +1,21 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: onboarding-work-order
+  namespace: dev.jumo.core
+  name: Onboarding completion WorkOrder
+spec:
+  renders: WorkOrder
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: WorkOrder
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: Workspace onboarding ${id}
+    spec:
+      purpose: Onboarding trip completion for realm ${realmId}.
+      roleRef: nestor
+      projectRef: jumo
+      state: PROPOSED
+      contractRevision: ${contractRevision}

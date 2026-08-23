@@ -13,6 +13,15 @@ spec:
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
   emitsCapability: contract.change.propose
+  emission:
+    targetKind: KitBinding
+    identifier: {fromField: alias}
+    pathTemplate: .jumo/kit-bindings/${id}.yml
+    documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: kit-binding}
+    validations:
+      - {field: alias, required: true}
+      - {field: repository, required: true}
+      - {field: commit, required: true, pattern: '^[0-9a-fA-F]{40}$'}
   steps:
     - id: declare-kit
       name: Declaration du kit

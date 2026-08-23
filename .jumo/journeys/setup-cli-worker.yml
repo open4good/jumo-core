@@ -14,6 +14,16 @@ spec:
   interruptible: true
   concurrencyPolicy: SINGLE_ACTIVE_RUN
   emitsCapability: contract.change.propose
+  emission:
+    targetKind: WorkerSubstrate
+    identifier: {fromField: workerName}
+    pathTemplate: .jumo/worker-substrates/${id}.yml
+    validations:
+      - {field: workerName, required: true}
+      - {field: cliEngine, required: true}
+      - {field: executionMachineRef, required: true}
+      - {field: providerAccountRef, required: true}
+      - {field: providerSessionRef, required: true}
   steps:
     - id: select-cli-engine
       name: Choix du moteur CLI

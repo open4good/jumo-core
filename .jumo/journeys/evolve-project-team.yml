@@ -13,6 +13,25 @@ spec:
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
   emitsCapability: contract.change.propose
+  emission:
+    targetKind: TeamSpec
+    identifier: {fromField: teamId}
+    pathTemplate: .jumo/teams/${id}.yml
+    documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: team-spec}
+    validations:
+      - {field: teamId, required: true}
+      - {field: purpose, required: true, minimumLength: 10}
+      - {field: members, minimumItems: 2}
+    fieldDefaults:
+      - {field: teamName, value: 'Evolved Team ${id}'}
+    referenceChecks:
+      - {field: members, kind: AgentDefinition, itemPath: roleRef}
+    collectionProjections:
+      - field: members
+        keys: [roleRef, role]
+        optionalKeys: [independenceGroup]
+        itemValidations:
+          - {field: role, minimumLength: 3}
   steps:
     - id: select-team
       name: Sélection de l'équipe

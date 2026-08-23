@@ -19,6 +19,11 @@ spec:
   heroImage: /images/nestor-avatar.svg
   emitsCapability: contract.change.propose
   navigationMode: FREE
+  emission:
+    targetKind: WorkOrder
+    identifier: {fromField: nickname, defaultValue: workspace, suffix: RUN_PREFIX}
+    pathTemplate: .jumo/work/${id}.yml
+    documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: onboarding-work-order}
   steps:
     - id: setup-identity
       name: Identité et Espace Yamaka

@@ -13,6 +13,21 @@ spec:
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
   emitsCapability: contract.change.propose
+  emission:
+    targetKind: WorkOrder
+    identifier: {fromField: taskSlug}
+    pathTemplate: .jumo/work/${id}.yml
+    documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: development-work-order}
+    validations:
+      - {field: taskSlug, required: true}
+      - {field: purpose, required: true, minimumLength: 10}
+      - {field: roleRef, required: true}
+      - {field: teamRef, required: true}
+    fieldDefaults:
+      - {field: projectRef, value: jumo}
+      - {field: roadmapRef, value: v0}
+      - {field: ring, value: RING_2_AGENT_BEHAVIOR}
+    routingEligibilityCheck: {projectField: projectRef, teamField: teamRef}
   steps:
     - id: capture-task-intent
       name: Description du besoin

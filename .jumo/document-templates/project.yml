@@ -1,0 +1,27 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: project
+  namespace: dev.jumo.core
+  name: Governed project declaration
+spec:
+  renders: Project
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: Project
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${id}
+    spec:
+      contractDirectory: .jumo
+      ownerRealm: ${realmId}
+      lifecycle: ACTIVE
+      repositoryBindings:
+        - id: github-repository
+          provider: github
+          repository: ${repository}
+      documentation:
+        roots:
+          - path: docs
+            maximumAudience: PROJECT_SCOPED

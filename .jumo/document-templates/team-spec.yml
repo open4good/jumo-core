@@ -1,0 +1,23 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: team-spec
+  namespace: dev.jumo.core
+  name: Delivery team specification
+spec:
+  renders: TeamSpec
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: TeamSpec
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${teamName}
+    spec:
+      ownerRealm: ${realmId}
+      purpose: ${purpose}
+      coordination:
+        mechanisms:
+          - dependencyKind: independent-review
+            mechanism: ADVERSARIAL_REVIEW
+      members: ${members}

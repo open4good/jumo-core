@@ -13,6 +13,15 @@ spec:
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
   emitsCapability: contract.change.propose
+  emission:
+    targetKind: Project
+    identifier: {fromField: projectId}
+    pathTemplate: .jumo/projects/${id}.yml
+    documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: project}
+    validations:
+      - {field: projectId, required: true}
+      - {field: purpose, required: true, minimumLength: 10}
+      - {field: repository, required: true}
   steps:
     - id: define-project
       name: Identité du projet

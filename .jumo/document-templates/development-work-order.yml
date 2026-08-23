@@ -1,0 +1,24 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: development-work-order
+  namespace: dev.jumo.core
+  name: Delegated development WorkOrder
+spec:
+  renders: WorkOrder
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: WorkOrder
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: Development task ${id}
+    spec:
+      purpose: ${purpose}
+      roleRef: ${roleRef}
+      teamRef: ${teamRef}
+      projectRef: ${projectRef}
+      roadmapRef: ${roadmapRef}
+      state: PROPOSED
+      contractRevision: ${contractRevision}
+      ring: ${ring}

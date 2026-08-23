@@ -14,7 +14,7 @@ spec:
   icon: mdi-power-plug-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
-  emitsCapability: contract.change.propose
+  completionMode: OBSERVATION
   steps:
     - id: select-connectors
       name: Sélection des connecteurs

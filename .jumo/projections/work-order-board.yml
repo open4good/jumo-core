@@ -14,19 +14,25 @@ spec:
       i18nKey: workOrderBoard
       columns: 1
       fields:
-        - path: purpose
-          representation: MULTILINE_TEXT
-          i18nKey: purpose
-          required: true
         - path: state
           representation: ENUMERATION
           i18nKey: status
+          order: 1
           required: true
         - path: producerRoleDefinitionRef
           representation: ENTITY_REFERENCE
-          i18nKey: roles
+          i18nKey: producer
+          optionsFrom: RoleDefinition
+          order: 2
           required: true
         - path: verifierRoleDefinitionRef
           representation: ENTITY_REFERENCE
           i18nKey: verifier
+          optionsFrom: RoleDefinition
+          order: 3
           required: false
+        - path: purpose
+          representation: MULTILINE_TEXT
+          i18nKey: purpose
+          order: 4
+          required: true

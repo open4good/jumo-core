@@ -29,6 +29,8 @@ spec:
       name: Choix du moteur CLI
       description: Sélectionnez le moteur qualifié à initialiser (Codex ou Claude Code). Copilot et Gemini ne sont pas encore activables.
       personaNarration: Choisissons le runtime qualifié que vous souhaitez mettre à disposition de vos agents.
+      stepKind: COLLECT
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: cli-worker-engine}
       requiredFields:
         - cliEngine
         - workerName

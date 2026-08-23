@@ -1,0 +1,32 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: cli-worker-engine
+  namespace: dev.jumo.core
+  name: CLI worker engine and name
+spec:
+  ownerRealm: home
+  payloadSchemaRef: setup-cli-worker
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: engine
+      i18nKey: journeyCliEngineSection
+      columns: 1
+      fields:
+        - path: cliEngine
+          representation: ENTITY_REFERENCE
+          optionsFrom: CliToolDefinition
+          optionsEligibility:
+            - path: spec.qualification
+              equalsValue: QUALIFIED
+          i18nKey: journeyCliEngineField
+          helpI18nKey: journeyCliEngineHelp
+          order: 1
+          required: true
+        - path: workerName
+          representation: SHORT_TEXT
+          i18nKey: journeyCliWorkerNameField
+          helpI18nKey: journeyCliWorkerNameHelp
+          order: 2
+          required: true

@@ -6,6 +6,7 @@ metadata:
   name: Anthropic Claude Code CLI
 spec:
   toolName: claude-code
+  cli: CLAUDE_CODE
   qualification: QUALIFIED
   supportedAdapterProfiles:
     - PROMPTED_JSON_VALIDATED

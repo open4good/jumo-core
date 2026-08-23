@@ -6,6 +6,7 @@ metadata:
   name: OpenAI Codex CLI
 spec:
   toolName: codex
+  cli: CODEX
   qualification: QUALIFIED
   supportedAdapterProfiles:
     - NATIVE_JSON_SCHEMA

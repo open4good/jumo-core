@@ -1,0 +1,270 @@
+id: https://jumo.dev/schemas/spike
+name: jumo_spike
+description: >-
+  LOT 1 generation spike. Translates three representative existing JSON Schema kinds --
+  Operator (flat, with enums), ConnectorDefinition (nested objects, lists), and PolicySet
+  (cross-references, conditional requiredness) -- to prove the LinkML -> {JSON Schema, Java,
+  OpenAPI, GraphQL, OWL, SQL DDL, JSON-LD context, docs} chain before committing the full
+  metamodel to it. Not a contract; discarded after LOT 1.
+license: https://www.apache.org/licenses/LICENSE-2.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  jumo: https://jumo.dev/schemas/spike/
+default_prefix: jumo
+default_range: string
+imports:
+  - linkml:types
+
+types:
+  Identifier:
+    typeof: string
+    pattern: "^[a-z][a-z0-9-]*$"
+    description: Stable technical identifier, independent of display name.
+  Namespace:
+    typeof: string
+    pattern: "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*){1,7}$"
+  CapabilityName:
+    typeof: string
+    pattern: "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*){1,3}$"
+  ConfigurationRef:
+    typeof: string
+    pattern: "^[a-z][a-z0-9.-]*$"
+
+enums:
+  Effect:
+    permissible_values:
+      ALLOW: {}
+      DENY: {}
+      ALLOW_WITH_OBLIGATIONS: {}
+      REQUIRE_APPROVAL: {}
+  Obligation:
+    permissible_values:
+      STEP_UP_AUTHENTICATION: {}
+      HUMAN_OWNER_APPROVAL: {}
+      INDEPENDENT_VERIFICATION: {}
+      DISCLOSE_AGENT_IDENTITY: {}
+      RETAIN_PROVENANCE: {}
+      REDACT_SECRETS: {}
+      PREVIEW_BEFORE_SEND: {}
+  Lifecycle:
+    permissible_values:
+      DECLARED: {}
+      ENABLED: {}
+      SUSPENDED: {}
+      RETIRED: {}
+  Transport:
+    permissible_values:
+      MCP: {}
+      HTTP: {}
+      LOCAL_PROCESS: {}
+      FORGE: {}
+      CHANNEL: {}
+  Placement:
+    permissible_values:
+      CONTROL_PLANE: {}
+      CLIENT_CELL: {}
+      EDGE_CELL: {}
+      REMOTE: {}
+  Idempotency:
+    permissible_values:
+      REQUIRED: {}
+      NOT_APPLICABLE: {}
+  Reconciliation:
+    permissible_values:
+      REQUIRED: {}
+      NOT_REQUIRED: {}
+  PolicyScope:
+    permissible_values:
+      PLATFORM: {}
+      REALM: {}
+      PROJECT: {}
+      AGENT: {}
+      RUN: {}
+
+classes:
+  Metadata:
+    description: Shared identity block for every contract document.
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      namespace:
+        range: Namespace
+        required: true
+      name:
+        range: string
+      defaultDisplayName:
+        range: string
+
+  # --- Operator: flat, with enums -------------------------------------------------
+  Operator:
+    description: >-
+      A stable Realm-owned acting role carrying a mission. Its bearer is declared separately
+      by OperatorAssignment; neither declaration grants authority.
+    annotations:
+      openapi.resource: true
+      openapi.operations: "list,create"
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: "jumo.dev/v1"
+        required: true
+      kind:
+        range: string
+        equals_string: "Operator"
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OperatorSpec
+        required: true
+        inlined: true
+
+  OperatorSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      mission:
+        range: string
+        required: true
+        pattern: "^.{10,}$"
+        description: "minLength 10 in the source schema; LinkML has no native string minLength, so this is a workaround pattern (spike finding)."
+      roleKey:
+        range: string
+        pattern: "^[a-z][A-Za-z0-9]*$"
+      isMetaOperator:
+        range: boolean
+        ifabsent: "false"
+      delegatedRealmRef:
+        range: Identifier
+
+  # --- ConnectorDefinition: nested objects, lists ----------------------------------
+  ConnectorDefinition:
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: "jumo.dev/v1"
+        required: true
+      kind:
+        range: string
+        equals_string: "ConnectorDefinition"
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ConnectorDefinitionSpec
+        required: true
+        inlined: true
+
+  ConnectorDefinitionSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      lifecycle:
+        range: Lifecycle
+        required: true
+      transport:
+        range: Transport
+        required: true
+      configurationRef:
+        range: ConfigurationRef
+        required: true
+      bundleRef:
+        range: Identifier
+      remoteServiceRef:
+        range: Identifier
+      placement:
+        range: Placement
+      operations:
+        range: ConnectorOperation
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+
+  ConnectorOperation:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      capabilityRef:
+        range: CapabilityName
+        required: true
+      description:
+        range: string
+        pattern: "^.{10,}$"
+      bundleOperationRef:
+        range: Identifier
+      inputSchemaRef:
+        range: string
+      outputSchemaRef:
+        range: string
+      idempotency:
+        range: Idempotency
+      reconciliation:
+        range: Reconciliation
+      secretBindingRefs:
+        range: Identifier
+        multivalued: true
+
+  # --- PolicySet: cross-references, conditional requiredness ----------------------
+  PolicySet:
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: "jumo.dev/v1"
+        required: true
+      kind:
+        range: string
+        equals_string: "PolicySet"
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PolicySetSpec
+        required: true
+        inlined: true
+
+  PolicySetSpec:
+    attributes:
+      scope:
+        range: PolicyScope
+        ifabsent: "REALM"
+      rules:
+        range: PolicyRule
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+
+  PolicyRule:
+    description: >-
+      The source schema requires `obligations` when effect is ALLOW_WITH_OBLIGATIONS or
+      REQUIRE_APPROVAL (JSON Schema allOf/if/then). LinkML's rules/classification_rules are
+      documented experimental (spike finding); not attempted here -- this conditional moves to
+      Rego, consistent with the alignment plan's decision that Rego is the invariant authority.
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      effect:
+        range: Effect
+        required: true
+      when:
+        range: string
+      actions:
+        range: CapabilityName
+        multivalued: true
+      obligations:
+        range: Obligation
+        multivalued: true
+      reasonCode:
+        range: string

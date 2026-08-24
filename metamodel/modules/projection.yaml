@@ -1,0 +1,235 @@
+id: https://jumo.dev/schemas/projection
+name: jumo_projection
+description: 'ProjectionSpec: a named view of one generated LinkML class (model-driven UI projection). Every
+  step payload and entity facet in this metamodel is already typed by a generated class name (ProcessFlow.payloadType, ProcessStep.signalType,
+  execution.yaml); nothing above this module says how that class is shown or filled in, so the cockpit falls back to
+  dumping raw JSON Schema keys into a table (apps/web/pages/[surface].vue) or hand-written Vue per journey step (apps/web/components/journey/JourneyRunner.vue).
+  A ProjectionSpec is validable by JSON Schema, checkable by Rego, and refusable, the way a hand-written .vue file is none
+  of those -- so an LLM can produce a projection instead of producing Vue.
+
+  Several projections of the same class are normal and expected: a COLLECTION view and a FORM view select different fields
+  in a different order. Selecting which fields a surface exposes is not decoration, though -- it touches Surface.audience
+  (interface.yaml), so it is modeled here rather than folded into ThemePack, which explicitly carries no capability, policy,
+  budget, assurance or workflow field. Rego enforces that no capability, ring, obligation or path is declared in a projection.
+  `renderedBy` names the Surface a projection is scoped to, and Rego
+  confines its actions to what that surface proposes -- but widening a field past its class''s declared audience is still
+  not checkable: the link now exists, yet nothing in this metamodel attaches an audience to an arbitrary generated class today,
+  only to Surface itself, so that narrower invariant remains open, waiting on a class-level audience attribute rather than
+  on the projection-to-surface link alone.
+
+  Vocabulary is semantic (FieldRepresentation), never a UI framework component name -- a front-end component registry is the
+  only place a representation resolves to a concrete widget, so changing design system is a rewrite of that one registry,
+  not of every contract that names a field.'
+license: https://www.apache.org/licenses/LICENSE-2.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  jumo: https://jumo.dev/schemas/projection/
+default_prefix: jumo
+default_range: string
+imports:
+  - linkml:types
+  - core
+enums:
+  FieldRepresentation:
+    description: 'Semantic shape of one field''s value, never a component name. A front-end component registry
+      is the only place this resolves to a concrete widget. STRUCTURED_YAML also names a WritePathEditor
+      value (interface.yaml): same underlying shape, two different concerns -- there a write-target file format, here a field''s
+      read/edit representation -- so the shared name is deliberate, not an oversight.'
+    permissible_values:
+      SHORT_TEXT: {}
+      MULTILINE_TEXT: {}
+      IDENTIFIER: {}
+      ENUMERATION: {}
+      ENTITY_REFERENCE: {}
+      ENTITY_COLLECTION: {}
+      BOOLEAN_FLAG: {}
+      QUANTITY: {}
+      DURATION: {}
+      TIMESTAMP: {}
+      SECRET: {}
+      PATH_GLOB: {}
+      CAPABILITY_NAME: {}
+      MARKDOWN: {}
+      STRUCTURED_YAML: {}
+  ProjectionKind:
+    permissible_values:
+      FORM: {}
+      DETAIL: {}
+      COLLECTION: {}
+classes:
+  ProjectionSpec:
+    description: A named view of one generated LinkML class. `of:` follows the same "generated LinkML class name" pattern
+      as ProcessFlow.payloadType and ProcessStep.signalType (execution.yaml) rather than introducing a second typed-payload
+      vocabulary.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ProjectionSpec
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ProjectionSpecBody
+        required: true
+        inlined: true
+  ProjectionSpecBody:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      of:
+        range: string
+        description: A generated LinkML class name (metamodel/generated/manifest.json), the same pattern ProcessFlow.payloadType
+          and ProcessStep.signalType use. Must name a declared class (Rego). Mutually exclusive with payloadSchemaRef;
+          exactly one of the two is required (Rego) -- a payload either has a generated class or it does not, never both.
+      payloadSchemaRef:
+        range: string
+        description: A JSON Schema 2020-12 document declared under a corpus schemas directory (e.g. jumo-core:.jumo/schemas),
+          for a step payload with no generated LinkML class of its own -- the metamodel names no such instance-specific
+          class (canonical decision 15). Must resolve to a declared schema file (Rego). Mutually exclusive with of.
+      projectionKind:
+        range: ProjectionKind
+        required: true
+      renderedBy:
+        range: Identifier
+        required: true
+        description: 'The id of an InterfaceSurface `Surface` this projection is scoped to. Required and checked against every
+          declared surface (Rego), rather than optional, so a projection nobody
+          lists is never silently unconstrained -- the same fail-closed shape as every other reference in this metamodel.'
+      sections:
+        range: ProjectionSection
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      actions:
+        range: CapabilityName
+        multivalued: true
+        description: 'Every named action must resolve against a declared ActionCapability (Rego, same check as every
+          other capability reference in this metamodel) and must also be among `renderedBy`''s surface''s `proposes` list
+          (Rego) -- a projection can never claim an action its rendering surface
+          does not offer.'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: PROJECTION
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProjectionSection:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      i18nKey:
+        range: string
+        required: true
+        pattern: ^[a-z][a-zA-Z0-9]*$
+      columns:
+        range: integer
+        minimum_value: 1
+        maximum_value: 12
+      fields:
+        range: ProjectionField
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: PROJECTION
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProjectionOptionCondition:
+    description: One condition a candidate instance must satisfy to be offered as a field's option.
+    attributes:
+      path:
+        range: string
+        required: true
+        description: A dotted path into the candidate contract document, e.g. `spec.desiredState`.
+      equalsValue:
+        range: string
+        description: The value at `path` must equal this string. Exactly one of equalsValue and present is required (Rego).
+      present:
+        range: boolean
+        description: The value at `path` must be present and non-empty. Exactly one of equalsValue and present is required (Rego).
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: PROJECTION
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProjectionField:
+    attributes:
+      path:
+        range: string
+        required: true
+        description: A slot of the ProjectionSpecBody.of class this field projects (Rego).
+      representation:
+        range: FieldRepresentation
+        required: true
+      span:
+        range: integer
+        minimum_value: 1
+        maximum_value: 12
+      order:
+        range: integer
+      i18nKey:
+        range: string
+        pattern: ^[a-z][a-zA-Z0-9]*$
+      helpI18nKey:
+        range: string
+        pattern: ^[a-z][a-zA-Z0-9]*$
+      optionsFrom:
+        range: string
+        description: A contract kind whose declared instances populate this field's options, replacing a hardcoded roster
+          lookup with a projection over real Git contracts. Must name a declared kind (Rego). An instance is offered as
+          its `metadata.id` labelled by its `metadata.name`; a projection selects which instances are offered, never how
+          one is addressed. Mutually exclusive with optionsFromEnum (Rego).
+      optionsFromEnum:
+        range: string
+        description: 'A generated LinkML enumeration whose permissible values populate this field''s options, for a field
+          whose domain is a closed vocabulary rather than a contract kind. Mutually exclusive with optionsFrom (Rego).
+          Rego checks that an ENUMERATION field declares one of the two, not that this names an enumeration rather than
+          a class: the repository facts carry per-class slots, not permissible values, so the narrower check waits on a
+          fact this module does not produce.'
+      optionsEligibility:
+        range: ProjectionOptionCondition
+        multivalued: true
+        inlined_as_list: true
+        description: 'Conditions every instance of `optionsFrom` must satisfy to be offered. The eligibility a selection
+          applies is part of what the contract says the field means, so it is declared here rather than left to whichever
+          surface happens to render the field. Conditions read the candidate''s Git document only -- desired and
+          contractual state; recognized runtime state (a machine''s observed health) is a different authority and is not
+          reachable from a projection.'
+      required:
+        range: boolean
+        ifabsent: 'false'
+        description: 'When an AssistedJourneyStep declares both projectionRef and requiredFields (work.yaml), requiredFields
+          must name exactly the fields marked required here (Rego) -- the two lists describe the
+          same gate and must not be allowed
+          to drift.'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: PROJECTION
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

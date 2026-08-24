@@ -1,0 +1,7 @@
+# Pinned per alignment plan decision 1 (LinkML as sole normative source) and the LOT 1
+# generation spike (metamodel/spike/REPORT.md), which verified every generator listed in
+# scripts/generate-metamodel.sh against these exact versions. Bump deliberately, re-run the
+# spike's reproducibility check, and update this comment with the new verdict -- not silently.
+linkml==1.11.1
+linkml-runtime==1.11.1
+linkml-openapi==0.17.0

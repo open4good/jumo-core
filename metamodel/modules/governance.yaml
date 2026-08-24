@@ -1,0 +1,969 @@
+id: https://jumo.dev/schemas/governance
+name: jumo_governance
+description: 'The security kernel (capabilities, policy), the improvement loop, attention, and certification by design. CapabilityDefinition
+  -> ActionCapabilitySet per the rename table. GovernanceOverlay is split into ControlCatalog, ComplianceProfile, EvidenceProfile,
+  and ControlAssessment -- the four together cover what GovernanceOverlay''s
+  single `controls[]` + `status` shape conflated: a reusable catalog of controls, a named compliance profile mapping to a
+  referential, the evidence a mapping needs, and the recognized assessment result. ControlAssessment is LinkML-described but
+  not a Git contract kind: it is reclassified as runtime-only, and its shape exists here so gen-sqlddl can
+  seed a PostgreSQL table, but it carries no apiVersion/kind wrapper.'
+license: https://www.apache.org/licenses/LICENSE-2.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  jumo: https://jumo.dev/schemas/governance/
+default_prefix: jumo
+default_range: string
+imports:
+  - linkml:types
+  - core
+enums:
+  RiskTier:
+    description: ROOT capabilities are Ring 0 and are never grantable through an ordinary workflow.
+    permissible_values:
+      LOW: {}
+      MEDIUM: {}
+      HIGH: {}
+      ROOT: {}
+  PolicyScope:
+    permissible_values:
+      PLATFORM: {}
+      REALM: {}
+      PROJECT: {}
+      AGENT: {}
+      RUN: {}
+  ImprovementMeasure:
+    description: 'Closed, and every entry computable without a model from material that already exists: protocol fields, WorkOrder
+      state, budgets, front matter and recognized state.'
+    permissible_values:
+      CLARIFICATION_TURNS_USED: {}
+      WORK_DECLINE_RATE: {}
+      BUDGET_CONSUMPTION_RATIO: {}
+      ASSURANCE_SHORTFALL: {}
+      DOCUMENT_STALENESS: {}
+      MISSING_COMPLETION_EVIDENCE: {}
+      SUPERSESSION_COUNT: {}
+      CAPTURE_TO_COMPLETION_ELAPSED: {}
+      CORPUS_BUDGET_HEADROOM: {}
+      NON_NORMATIVE_CITATION_RATE: {}
+      ATTENTION_ACTED_ON_RATIO: {}
+  ImprovementDirection:
+    description: Required so the loop's effect on corpus size is visible per recommendation. CONSOLIDATE and DELETE exist
+      because an additions-only loop is the failure mode check-corpus-budget.py bounds.
+    permissible_values:
+      ADD: {}
+      CONSOLIDATE: {}
+      CORRECT: {}
+      DELETE: {}
+  ImprovementState:
+    permissible_values:
+      OPEN: {}
+      ACCEPTED: {}
+      REJECTED: {}
+      SUPERSEDED: {}
+      EXPIRED: {}
+  ImprovementRejectReason:
+    permissible_values:
+      NOT_A_PROBLEM: {}
+      ALREADY_ADDRESSED: {}
+      OUT_OF_SCOPE: {}
+      INSUFFICIENT_EVIDENCE: {}
+      DEFERRED_BY_OWNER: {}
+  AttentionType:
+    description: 'Closed rather than open: an unenumerated type is one a digest cannot route and a policy cannot match. ADMISSION_REFUSED
+      carries work Jumo will not take on, so it has no role to come from.'
+    permissible_values:
+      DECISION_REQUEST: {}
+      RESULT: {}
+      RISK: {}
+      ADMISSION_REFUSED: {}
+  AttentionTargetSubjectKind:
+    permissible_values:
+      ROLE: {}
+      PRINCIPAL: {}
+  AttentionUrgency:
+    permissible_values:
+      LOW: {}
+      NORMAL: {}
+      HIGH: {}
+      CRITICAL: {}
+  AttentionInterruptibility:
+    description: 'Ordered least to most intrusive. Separate from urgency on purpose: a critical item can still belong in the
+      morning digest, and conflating the two is how everything urgent becomes an interruption.'
+    permissible_values:
+      DEFER_TO_DIGEST: {}
+      MAY_INTERRUPT: {}
+      QUIET_HOURS_EXEMPT: {}
+  AttentionRequestedResponse:
+    permissible_values:
+      NONE: {}
+      ACKNOWLEDGEMENT: {}
+      INFORMATION: {}
+      DECISION: {}
+  AttentionAdmissionReason:
+    permissible_values:
+      NO_ELIGIBLE_ROLE: {}
+      ADMISSION_DECLINED: {}
+      POLICY_DENIED: {}
+  ComplianceStatus:
+    description: MAPPED or EVIDENCED is never a certification claim by itself. Only EXTERNALLY_ATTESTED, backed by
+      an EvidenceProfile with independent attestation, may be shown as one.
+    permissible_values:
+      NOT_ASSESSED: {}
+      MAPPED: {}
+      EVIDENCED: {}
+      EXTERNALLY_ATTESTED: {}
+classes:
+  ActionCapabilitySet:
+    description: The security kernel. Capabilities are requested by an agent, authorized by policy and granted to a specific
+      run or worker (canonical decisions 34-35). A capability not declared here cannot be requested, granted or used. Renamed
+      from CapabilityDefinition.
+    annotations:
+      jumo.composition: SEALED
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ActionCapabilitySet
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ActionCapabilitySetSpec
+        required: true
+        inlined: true
+  ActionCapabilitySetSpec:
+    attributes:
+      capabilities:
+        range: ActionCapability
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ActionCapability:
+    attributes:
+      name:
+        range: CapabilityName
+        required: true
+      description:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      riskTier:
+        range: RiskTier
+        required: true
+      reversible:
+        range: boolean
+        required: true
+        description: Whether the effect can be inspected, corrected and undone. Kept alongside the newer EffectRecoveryKind
+          (core.yaml) rather than replaced -- this boolean is the coarse policy-facing gate (irreversible needs stronger obligations);
+          EffectRecoveryKind is the finer-grained recovery mechanism used where a specific capability's recovery path is modeled.
+      producesExternalEffect:
+        range: boolean
+        ifabsent: 'false'
+      maximumGrantDuration:
+        range: Duration
+      requiredObligations:
+        range: Obligation
+        multivalued: true
+      minimumAssurance:
+        range: AssuranceLevel
+      ringCeiling:
+        range: Ring
+        description: Highest-blast-radius ring this capability may ever act on. Absent means the capability is bounded by
+          policy and obligations alone.
+      appliedBy:
+        range: string
+        description: The trusted component that applies the effect. Must not be the component that proposes it -- the prompt-injection
+          boundary.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PolicySet:
+    description: Executable authorization. Only policies allow, deny or impose obligations. Every action named here must resolve
+      against the capability registry.
+    annotations:
+      jumo.composition: SEALED
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: POLICY
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: PolicySet
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PolicySetSpec
+        required: true
+        inlined: true
+  PolicySetSpec:
+    attributes:
+      scope:
+        range: PolicyScope
+        ifabsent: REALM
+        description: A lower scope may restrict but never silently expand a higher one (canonical decision 65).
+      rules:
+        range: PolicyRule
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: POLICY
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PolicyRule:
+    description: Conditional requiredness (ALLOW_WITH_OBLIGATIONS / REQUIRE_APPROVAL require obligations) moves to Rego.
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      effect:
+        range: Effect
+        required: true
+      when:
+        range: string
+        description: Named structural condition evaluated by the policy engine. Free text is not permitted at evaluation time.
+      actions:
+        range: CapabilityName
+        multivalued: true
+      obligations:
+        range: Obligation
+        multivalued: true
+      reasonCode:
+        range: string
+        description: Sanitized code safe to expose across a Realm boundary (canonical decision 66).
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: POLICY
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ImprovementLoop:
+    description: How a Project learns from its own finished work. Declares what is measured, which rhythm synthesizes the
+      measurements, which corpus paths a recommendation may name, and how many may be open at once.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ImprovementLoop
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ImprovementLoopSpec
+        required: true
+        inlined: true
+  ImprovementLoopSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      projectRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: One loop never reaches across Projects; that would be a delegation, not a rhythm.
+      purpose:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      measures:
+        range: ImprovementMeasure
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+      synthesisPracticeRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      assessmentProcessSpecRef:
+        range: ContractReference
+        inlined: true
+        description: Optional explicit ProcessSpec (execution.yaml).
+      targets:
+        range: ImprovementTarget
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      ceilings:
+        range: ImprovementCeilings
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ImprovementTarget:
+    attributes:
+      pathGlob:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9._*-]+(/[A-Za-z0-9._*-]+)*$
+        description: 'Path-traversal exclusion (`not: pattern ..\/`) moves to Rego.'
+      ring:
+        range: Ring
+        required: true
+        description: RING_0_ROOT_OF_TRUST exclusion moves to Rego.
+      capabilityRef:
+        range: CapabilityName
+        required: true
+      autonomy:
+        range: AutonomyLevel
+        required: true
+      mergeCapabilityRef:
+        range: CapabilityName
+        description: Required when autonomy is BOUNDED_AUTONOMOUS (Rego).
+      requiredObligations:
+        range: Obligation
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ImprovementCeilings:
+    attributes:
+      maximumOpenRecommendations:
+        range: integer
+        required: true
+        minimum_value: 1
+        maximum_value: 50
+      recommendationExpiry:
+        range: Duration
+        required: true
+      mayRaiseCorpusCeiling:
+        range: boolean
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ImprovementRecommendation:
+    description: One actionable finding against a Project's corpus, in Git. Carries no authority of its own; reaches the corpus
+      through the same proposal capabilities as any other change. Reclassified as runtime-only, alongside WorkOrder and
+      AttentionItem, once a runtime store exists to demote into.
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ImprovementRecommendation
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ImprovementRecommendationSpec
+        required: true
+        inlined: true
+  ImprovementRecommendationSpec:
+    attributes:
+      improvementLoopRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      finding:
+        range: string
+        required: true
+        pattern: ^.{20,}$
+      observedFrom:
+        range: ImprovementObservation
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      targetPath:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$
+      direction:
+        range: ImprovementDirection
+        required: true
+      state:
+        range: ImprovementState
+        required: true
+      rejectReason:
+        range: ImprovementRejectReason
+      changeProposalRef:
+        range: string
+        pattern: ^.{1,}$
+      raisedAt:
+        range: datetime
+        required: true
+      supersededBy:
+        range: Identifier
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ImprovementObservation:
+    attributes:
+      measure:
+        range: string
+        required: true
+      value:
+        range: string
+        pattern: ^.{1,}$
+      evidenceRef:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: OBSERVATION
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AttentionItem:
+    description: The human-facing routing projection of something that wants a person. It is PostgreSQL recognized state (canonical
+      decision 21), never a Git proposal or effect authority.
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: AttentionItem
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: AttentionItemSpec
+        required: true
+        inlined: true
+  AttentionItemSpec:
+    attributes:
+      type:
+        range: AttentionType
+        required: true
+      source:
+        range: AttentionSource
+        required: true
+        inlined: true
+      target:
+        range: AttentionTarget
+        required: true
+        inlined: true
+      decisionRef:
+        range: string
+        pattern: ^.{1,}$
+      decisionOptions:
+        range: AttentionDecisionOption
+        multivalued: true
+        inlined_as_list: true
+      classification:
+        range: DataScope
+        required: true
+        description: Same enumeration as capability data access, retrieval and rendering (canonical decision 98).
+      urgency:
+        range: AttentionUrgency
+        required: true
+      interruptibility:
+        range: AttentionInterruptibility
+        required: true
+      requestedResponse:
+        range: AttentionRequestedResponse
+      deliveryMode:
+        range: DeliveryMode
+      confidence:
+        range: float
+        minimum_value: 0
+        maximum_value: 1
+        description: Confidence of the interpretation behind this item, not of the outcome it reports.
+      admissionReason:
+        range: AttentionAdmissionReason
+        description: Required on ADMISSION_REFUSED (Rego).
+      relatedCommitments:
+        range: string
+        multivalued: true
+        pattern: ^.{1,}$
+      evidenceRefs:
+        range: string
+        multivalued: true
+        pattern: ^.{1,}$
+      occurredAt:
+        range: datetime
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AttentionSource:
+    attributes:
+      realmId:
+        range: Identifier
+        required: true
+      projectId:
+        range: Identifier
+      roleId:
+        range: Identifier
+        description: The individual acting role this came from, never a team (ADR-0017). Absent on ADMISSION_REFUSED.
+      episodeId:
+        range: string
+        pattern: ^.{1,}$
+      journeyRunId:
+        range: string
+        pattern: ^.{1,}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AttentionTarget:
+    attributes:
+      realmRef:
+        range: Identifier
+        required: true
+      subjectKind:
+        range: AttentionTargetSubjectKind
+        required: true
+      subjectRef:
+        range: Identifier
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AttentionDecisionOption:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      label:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      capabilityRef:
+        range: CapabilityName
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ControlCatalog:
+    description: Internal controls, reusable across ComplianceProfiles (docs/concepts/positionnement-conceptuel.md#conformite-et-auditabilite-par-construction).
+      Split out of the source GovernanceOverlay's inline `controls[]` array, so a control is declared once and mapped
+      from many profiles rather than copy-pasted per referential.
+    annotations:
+      jumo.composition: SEALED
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: POLICY
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ControlCatalog
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ControlCatalogSpec
+        required: true
+        inlined: true
+  ControlCatalogSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      controls:
+        range: Control
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: POLICY
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  Control:
+    attributes:
+      controlId:
+        range: string
+        required: true
+        pattern: ^.{2,}$
+      title:
+        range: string
+        required: true
+        pattern: ^.{3,}$
+      category:
+        range: string
+        required: true
+        pattern: ^.{2,}$
+      mandatoryObligations:
+        range: Obligation
+        multivalued: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: POLICY
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ComplianceProfile:
+    description: 'A named referential (edition, official URI) and its mappings to a ControlCatalog (docs/concepts/positionnement-conceptuel.md#conformite-et-auditabilite-par-construction).
+      Split out of GovernanceOverlay. Never recopies referential text -- identifiers, edition, and URI only. Carries the
+      RGPD art. 30 processing register:
+      a compliance profile scoped to data protection references the processing activities it covers, rather than inventing
+      a separate kind for a register most Realms will attach to exactly one profile.'
+    annotations:
+      jumo.composition: SEALED
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ComplianceProfile
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ComplianceProfileSpec
+        required: true
+        inlined: true
+  ComplianceProfileSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      frameworkName:
+        range: string
+        required: true
+        pattern: ^.{3,}$
+      edition:
+        range: string
+        description: e.g. "2023", "2022" -- the referential's published edition, never its text.
+      officialUri:
+        range: string
+        description: Stable URI to the official referential. No copyrighted text is stored here.
+      status:
+        range: ComplianceStatus
+        required: true
+      controlCatalogRef:
+        range: ContractReference
+        inlined: true
+        description: The ControlCatalog this profile maps against.
+      mappings:
+        range: ComplianceMapping
+        multivalued: true
+        inlined_as_list: true
+      processingRegister:
+        range: ProcessingRegisterEntry
+        multivalued: true
+        inlined_as_list: true
+        description: RGPD art. 30 register of processing activities this profile covers. Empty for non-privacy referentials.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ComplianceMapping:
+    description: Example mappings are marked DRAFT; no MAPPED or EVIDENCED status may be displayed as a certification
+      claim (enforced in Rego, not here).
+    attributes:
+      controlRef:
+        range: string
+        required: true
+        description: References a Control.controlId in the linked ControlCatalog.
+      referentialArticle:
+        range: string
+        description: e.g. an AI Act article number, an ISO clause number.
+      draft:
+        range: boolean
+        ifabsent: 'true'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProcessingRegisterEntry:
+    description: RGPD art. 30 register entry.
+    attributes:
+      activity:
+        range: string
+        required: true
+        pattern: ^.{5,}$
+      purpose:
+        range: string
+        required: true
+        pattern: ^.{5,}$
+      dataCategories:
+        range: string
+        multivalued: true
+      retention:
+        range: Duration
+      dpiaEvidenceProfileRef:
+        range: ContractReference
+        inlined: true
+        description: References an EvidenceProfile carrying the DPIA (art. 35), when required.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  EvidenceProfile:
+    description: The type, source, freshness, independence, and retention an assessment's evidence must meet. Split out of
+      GovernanceOverlay. Carries the DPIA (RGPD art. 35) alongside the pre-existing evidence-quality fields -- an impact
+      assessment is itself a form of evidence about the system, not a separate concept.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: POLICY
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: EvidenceProfile
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: EvidenceProfileSpec
+        required: true
+        inlined: true
+  EvidenceProfileSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      evidenceType:
+        range: string
+        required: true
+        pattern: ^.{2,}$
+      source:
+        range: string
+        required: true
+        pattern: ^.{2,}$
+      requiredFreshness:
+        range: Duration
+      requiredIndependence:
+        range: AssuranceLevel
+      retention:
+        range: Duration
+        description: 'How long this evidence must be kept, explicit rather than left implicit.'
+      claimCoverage:
+        range: string
+        description: 'What claim this evidence class actually supports: provenance volume alone is not proof
+          (docs/concepts/positionnement-conceptuel.md#preuve-et-assurance).'
+      method:
+        range: string
+      sourceDependence:
+        range: string
+      defeaters:
+        range: string
+        multivalued: true
+        description: Known conditions that would invalidate this evidence class.
+      dpia:
+        range: DataProtectionImpactAssessment
+        inlined: true
+        description: RGPD art. 35 impact assessment, when this evidence profile concerns personal data processing.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: POLICY
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  DataProtectionImpactAssessment:
+    attributes:
+      necessityAndProportionality:
+        range: string
+        pattern: ^.{10,}$
+      risksToDataSubjects:
+        range: string
+        multivalued: true
+      mitigations:
+        range: string
+        multivalued: true
+      assessedAt:
+        range: date
+      reviewer:
+        range: Identifier
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ControlAssessment:
+    description: Recognized result of assessing a Control against a ComplianceProfile, with observed evidence. Runtime-only
+      (PostgreSQL), not a Git contract kind -- no apiVersion/kind wrapper. No CERTIFIED or CONFORMANT status without external
+      attestation, evaluator identity, and a validity period (enforced in Rego).
+    attributes:
+      controlRef:
+        range: Identifier
+        required: true
+      complianceProfileRef:
+        range: Identifier
+        required: true
+      status:
+        range: ComplianceStatus
+        required: true
+      evidenceRefs:
+        range: string
+        multivalued: true
+      attestation:
+        range: ExternalAttestation
+        inlined: true
+        description: Required when status is EXTERNALLY_ATTESTED (Rego).
+      assessedAt:
+        range: datetime
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: POLICY
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ExternalAttestation:
+    attributes:
+      evaluatorIdentity:
+        range: string
+        required: true
+      validFrom:
+        range: date
+        required: true
+      validUntil:
+        range: date
+        required: true
+      attestationRef:
+        range: string
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

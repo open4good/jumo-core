@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/policy-input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "principal",
+    "realmId",
+    "resource"
+  ],
+  "properties": {
+    "action": {
+      "type": "string"
+    },
+    "principal": {
+      "type": "string"
+    },
+    "realmId": {
+      "type": "string"
+    },
+    "resource": {
+      "type": "string"
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "obligations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

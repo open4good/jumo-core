@@ -1,0 +1,845 @@
+id: https://jumo.dev/schemas/interface
+name: jumo_interface
+description: Cockpit interface surfaces, decorative theming, and durable vocabulary. No renames in this module.
+license: https://www.apache.org/licenses/LICENSE-2.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  jumo: https://jumo.dev/schemas/interface/
+default_prefix: jumo
+default_range: string
+imports:
+  - linkml:types
+  - core
+enums:
+  InterfaceEntity:
+    permissible_values:
+      Realm: {}
+      Agent: {}
+      ChangeProposal: {}
+      ForgeProjection: {}
+      Evidence: {}
+      AttentionItem: {}
+      Team: {}
+      WorkOrder: {}
+      ExecutionMachine: {}
+      CliTool: {}
+      ConnectorPackage: {}
+  FacetCreateMode:
+    permissible_values:
+      LIFECYCLE_COMMAND: {}
+      NONE: {}
+  ProjectionSource:
+    permissible_values:
+      INTERFACE_MANIFEST: {}
+      AGENT_ROLES: {}
+      CHANGE_PROPOSALS: {}
+      FORGE_PROJECTIONS: {}
+      EVIDENCE: {}
+      DOCUMENT_TREE: {}
+      DOCUMENT_CONTENT: {}
+      CONVERSATION: {}
+      JOURNEYS: {}
+      JOURNEY_RUN: {}
+      CONNECTOR_CATALOG: {}
+      ATTENTION_ITEMS: {}
+      THEME_PACK: {}
+      ACCOUNT_PROFILE: {}
+      TEAM_ROSTER: {}
+      TEAM_HUB: {}
+      WORK_ORDERS: {}
+      CONTEXT_GRAPH: {}
+      SESSION: {}
+      ORGANIZATIONS: {}
+      ORGANIZATION_GOVERNANCE: {}
+      ORGANIZATION_MEMBERS: {}
+      ORGANIZATION_COMPOSITION: {}
+      ORGANIZATION_RETENTION: {}
+      ORGANIZATION_RETENTION_HOLDS: {}
+      ORGANIZATION_AUDIT_HISTORY: {}
+      ORGANIZATION_ONBOARDING: {}
+      AUDIT_HISTORY: {}
+      EXECUTION_MACHINES: {}
+      MACHINE_OBSERVATIONS: {}
+      CLI_TOOLS: {}
+      PROVIDER_QUOTAS: {}
+      CONNECTOR_INTEGRATIONS: {}
+  WritePathEditor:
+    permissible_values:
+      WYSIWYG_MARKDOWN: {}
+      STRUCTURED_YAML: {}
+  VoiceStyle:
+    permissible_values:
+      CALM_PRECISE: {}
+      DIRECT: {}
+      ANALYTICAL: {}
+      WARM: {}
+  VoiceVerbosity:
+    permissible_values:
+      TERSE: {}
+      BALANCED: {}
+      EXPANSIVE: {}
+  PresenceDensity:
+    description: How much is shown at once. CALM is the default posture -- Jumo is measured on attention it returns.
+    permissible_values:
+      CALM: {}
+      STANDARD: {}
+      DENSE: {}
+  PresenceMotion:
+    permissible_values:
+      NONE: {}
+      SUBTLE: {}
+      EXPRESSIVE: {}
+  HttpMethod:
+    description: HTTP request methods for API operations.
+    permissible_values:
+      GET: {}
+      POST: {}
+      PUT: {}
+      DELETE: {}
+      PATCH: {}
+  SchemaProfile:
+    description: Supported generation schema profiles.
+    permissible_values:
+      DRAFT_2020_12: {}
+      NATIVE_JSON_SCHEMA: {}
+      PROMPTED_JSON_VALIDATED: {}
+  ApiAudience:
+    description: Audience and network exposure boundary for API surfaces and operations.
+    permissible_values:
+      PUBLIC_WEB: {}
+      REALM_PRIVATE: {}
+      MACHINE_MTLS: {}
+      INTERNAL_WORKER: {}
+      POLICY: {}
+classes:
+  InterfaceSurface:
+    annotations:
+      jumo.composition: SEALED
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: InterfaceSurface
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: InterfaceSurfaceSpec
+        required: true
+        inlined: true
+  InterfaceSurfaceSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      facets:
+        range: EntityFacet
+        multivalued: true
+        inlined_as_list: true
+      surfaces:
+        range: Surface
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  EntityFacet:
+    attributes:
+      entity:
+        range: InterfaceEntity
+        required: true
+      list:
+        range: boolean
+        required: true
+      detail:
+        range: boolean
+        required: true
+      create:
+        range: FacetCreateMode
+        required: true
+      modify:
+        range: string
+        equals_string: NONE
+        required: true
+      retire:
+        range: string
+        equals_string: NONE
+        required: true
+      commands:
+        range: string
+        multivalued: true
+        pattern: ^[A-Z][A-Z_]*$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  Surface:
+    description: Conditional (reads containing FORGE_PROJECTIONS forces audience REALM_PRIVATE) moves to Rego.
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      purpose:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      audience:
+        range: DataScope
+        required: true
+      reads:
+        range: ProjectionSource
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+      proposes:
+        range: CapabilityName
+        multivalued: true
+      writePaths:
+        range: SurfaceWritePath
+        multivalued: true
+        inlined_as_list: true
+      presenceRef:
+        range: string
+        pattern: ^[a-z][a-zA-Z0-9]*$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SurfaceWritePath:
+    description: Path traversal, editor-to-path compatibility, and required-obligation preservation are semantic constraints
+      enforced by Rego.
+    attributes:
+      target:
+        range: string
+        equals_string: PROJECT_REPOSITORY
+        ifabsent: PROJECT_REPOSITORY
+      pathGlob:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9._*-]+(/[A-Za-z0-9._*-]+)*$
+      ring:
+        range: Ring
+        required: true
+      capabilityRef:
+        range: CapabilityName
+        required: true
+      editor:
+        range: WritePathEditor
+        required: true
+      requiredObligations:
+        range: Obligation
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemePack:
+    description: 'Naming, voice and visual presentation. Decorative and linguistic only: a theme carries no capability, policy,
+      budget, assurance or workflow field, so renaming an agent cannot change what it may do. Open string-keyed maps in the
+      source schema (terminology, roleOverrides, objectForms, rooms) are modeled as lists of key/value entries -- LinkML has
+      no direct patternProperties/additionalProperties-map equivalent; the list form is exact for reading and writing, and
+      Rego can still check "no duplicate key" as an invariant.'
+    annotations:
+      jumo.composition: OVERRIDABLE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ThemePack
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ThemePackSpec
+        required: true
+        inlined: true
+  ThemePackSpec:
+    attributes:
+      terminology:
+        range: TerminologyEntry
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+        description: Display names by role key, such as chiefOfStaff or securityAgent. The technical identifier is unaffected.
+      voice:
+        range: ThemeVoice
+        inlined: true
+      visualization:
+        range: ThemeVisualization
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  TerminologyEntry:
+    attributes:
+      roleKey:
+        range: string
+        required: true
+      displayName:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeVoice:
+    attributes:
+      style:
+        range: VoiceStyle
+      verbosity:
+        range: VoiceVerbosity
+      roleOverrides:
+        range: ThemeVoiceRoleOverride
+        multivalued: true
+        inlined_as_list: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeVoiceRoleOverride:
+    attributes:
+      roleKey:
+        range: string
+        required: true
+        pattern: ^[a-z][A-Za-z0-9]*$
+      style:
+        range: VoiceStyle
+      verbosity:
+        range: VoiceVerbosity
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeVisualization:
+    attributes:
+      ecosystem:
+        range: string
+        pattern: ^.{3,}$
+      palette:
+        range: string
+        pattern: ^.{3,}$
+      presence:
+        range: ThemePresence
+        inlined: true
+      rooms:
+        range: ThemeRoom
+        multivalued: true
+        inlined_as_list: true
+        description: Illustrated room decor keyed by surface id (ADR-0087). A missing entry renders the classic view rather
+          than failing.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemePresence:
+    description: 'How the Chief of Staff is drawn on a surface. Every field here is presentation: there is no data source,
+      no scope and no threshold, so the representation cannot become the thing represented.'
+    attributes:
+      chiefOfStaffForm:
+        range: string
+        pattern: ^.{3,}$
+        description: Named visual form. Naming one does not name an agent.
+      density:
+        range: PresenceDensity
+      motion:
+        range: PresenceMotion
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeRoom:
+    attributes:
+      roomId:
+        range: string
+        required: true
+        pattern: ^[a-z][a-z0-9-]*$
+      background:
+        range: string
+        required: true
+        pattern: ^.{3,}$
+        description: Asset reference for the room's illustrated 2D backdrop.
+      objectForms:
+        range: ThemeObjectForm
+        multivalued: true
+        inlined_as_list: true
+        description: Themed representation by business entity key -- the business term stays visible next to the metaphor
+          (decision 216).
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeObjectForm:
+    attributes:
+      entityKey:
+        range: string
+        required: true
+      form:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  VocabularySet:
+    description: Generated concept glossary. One entry per CONTRACT kind names its canonical class,
+      English and French display and plural forms, target instance directory and commit trailer --
+      the single source every directory, trailer, UI label and metamodel description name is renamed
+      to match (canonical decision 15's sibling for vocabulary).
+    annotations:
+      jumo.composition: OVERRIDABLE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: VocabularySet
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: VocabularySetSpec
+        required: true
+        inlined: true
+  VocabularySetSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      entries:
+        range: VocabularyEntry
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  VocabularyEntry:
+    description: One CONTRACT kind's names. directory and trailer are target-state values the atomic
+      rename (vocabulary-glossary-and-rename AC2/AC3) has not applied everywhere yet -- they are not
+      cross-checked against the current filesystem or commit-msg hook.
+    attributes:
+      canonical:
+        range: string
+        required: true
+        pattern: ^[A-Z][A-Za-z0-9]*$
+      displayEn:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      displayFr:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      pluralEn:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      pluralFr:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      directory:
+        range: string
+        pattern: ^[a-z][a-z0-9-]*$
+      trailer:
+        range: string
+        pattern: ^Jumo-[A-Za-z-]+$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SchemaBinding:
+    description: Deterministic link between a payload, its LinkML class, and exact schema digest.
+    attributes:
+      modelClass:
+        range: string
+        required: true
+      schemaVersion:
+        range: string
+        required: true
+      schemaId:
+        range: string
+        required: true
+      schemaDigest:
+        range: string
+        required: true
+      profile:
+        range: SchemaProfile
+        required: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SchemaBoundPayload:
+    description: Bounded dynamic JSON payload guaranteed by a validated SchemaBinding.
+    attributes:
+      schemaBinding:
+        range: SchemaBinding
+        required: true
+        inlined: true
+      payloadJson:
+        range: string
+        required: true
+      payloadDigest:
+        range: string
+      validated:
+        range: boolean
+        ifabsent: 'false'
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ApiResponseBinding:
+    description: Response schema binding for a specific HTTP status code.
+    attributes:
+      statusCode:
+        range: integer
+        required: true
+      mediaType:
+        range: string
+        required: true
+      schemaBinding:
+        range: SchemaBinding
+        required: true
+        inlined: true
+      description:
+        range: string
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: PUBLIC_WEB
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ApiOperation:
+    description: Typed operation declaration in an API surface contract.
+    attributes:
+      operationId:
+        range: string
+        required: true
+      method:
+        range: HttpMethod
+        required: true
+      path:
+        range: string
+        required: true
+      audience:
+        range: ApiAudience
+        required: true
+      authAction:
+        range: string
+      requestBinding:
+        range: SchemaBinding
+        inlined: true
+      responseBindings:
+        range: ApiResponseBinding
+        multivalued: true
+        inlined: true
+      obligations:
+        range: Obligation
+        multivalued: true
+      errorCodes:
+        range: string
+        multivalued: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: PUBLIC_WEB
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ApiSurface:
+    description: Governed API surface contract mapping routes, verbs, and audiences to SchemaBindings.
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ApiSurface
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ApiSurfaceSpec
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: PUBLIC_WEB
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  ApiSurfaceSpec:
+    description: Specification of an ApiSurface contract.
+    attributes:
+      surfaceId:
+        range: string
+        required: true
+      audience:
+        range: ApiAudience
+        required: true
+      basePath:
+        range: string
+        required: true
+      protocol:
+        range: string
+        ifabsent: '"HTTPS"'
+      operations:
+        range: ApiOperation
+        multivalued: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: PUBLIC_WEB
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ApiProblem:
+    description: RFC 9457 compliant problem details model for API errors without unconstrained maps.
+    attributes:
+      type:
+        range: string
+        required: true
+      title:
+        range: string
+        required: true
+      status:
+        range: integer
+        required: true
+      detail:
+        range: string
+        required: true
+      instance:
+        range: string
+      code:
+        range: string
+      realmId:
+        range: string
+      timestamp:
+        range: string
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: EVENT
+      jumo.audience: PUBLIC_WEB
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PolicyInput:
+    description: Typed input structure evaluated by OPA policies.
+    attributes:
+      action:
+        range: string
+        required: true
+      principal:
+        range: string
+        required: true
+      realmId:
+        range: string
+        required: true
+      resource:
+        range: string
+        required: true
+      context:
+        range: SchemaBoundPayload
+        inlined: true
+      obligations:
+        range: string
+        multivalued: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: POLICY
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ChangeSetFile:
+    description: One ordered file within a ChangeSetProposal. Path traversal and duplicate paths
+      within a proposal are rejected by ChangeSetProposalService, not by this shape.
+    attributes:
+      path:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      contentDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: INTERNAL_WORKER
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ChangeSetProposal:
+    description: Ordered multi-file changeset proposed against one repository, the unit ForgeApplier
+      opens as one repository PR within a multi-repository saga (multi-repository-change-set-saga
+      AC1). Owner approval and phase progression are tracked separately, not on this shape.
+    attributes:
+      changeSetProposalId:
+        range: Identifier
+        required: true
+      repository:
+        range: string
+        required: true
+      baseCommitSha:
+        range: string
+        required: true
+        pattern: ^[0-9a-f]{40}$
+      files:
+        range: ChangeSetFile
+        multivalued: true
+        inlined_as_list: true
+        minimum_cardinality: 1
+      expectedTreeDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      ownerApproved:
+        range: boolean
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: COMMAND
+      jumo.audience: INTERNAL_WORKER
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ChangeSetProjection:
+    description: Observed record of the single atomic PR ForgeApplier opened for a ChangeSetProposal
+      (multi-repository-change-set-saga AC2/AC5). Existence is idempotency evidence -- a second
+      saga execution against the same changeSetProposalId returns this record instead of re-opening
+      a PR.
+    attributes:
+      changeSetProposalId:
+        range: Identifier
+        required: true
+      realmId:
+        range: string
+        required: true
+      provider:
+        range: string
+        required: true
+      externalId:
+        range: string
+        required: true
+      url:
+        range: string
+        required: true
+      state:
+        range: string
+        required: true
+      branchSha:
+        range: string
+        pattern: ^[0-9a-f]{40}$
+      changesetSha256:
+        range: string
+        pattern: ^[0-9a-f]{64}$
+      observedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: INTERNAL_WORKER
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

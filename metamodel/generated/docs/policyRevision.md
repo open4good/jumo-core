@@ -1,0 +1,99 @@
+---
+search:
+  boost: 5.0
+---
+
+# Slot: policyRevision
+
+<div data-search-exclude markdown="1">
+
+
+
+URI: [jumo:policyRevision](https://jumo.dev/schemas/jumo-v1/policyRevision)
+<!-- no inheritance hierarchy -->
+
+
+
+
+
+## Applicable Classes
+
+| Name | Description | Modifies Slot |
+| --- | --- | --- |
+| [RoutingDecision](RoutingDecision.md) | Immutable policy-authorized adapter and cell selection for one recognized tur... |  no  |
+
+
+
+
+
+
+## Properties
+
+### Type and Range
+
+| Property | Value |
+| --- | --- |
+| Range | [String](String.md) |
+| Domain Of | [RoutingDecision](RoutingDecision.md) |
+
+### Cardinality and Requirements
+
+| Property | Value |
+| --- | --- |
+| Required | Yes |
+### Slot Characteristics
+
+| Property | Value |
+| --- | --- |
+| Owner | [RoutingDecision](RoutingDecision.md) |
+
+
+
+
+
+
+
+
+
+
+
+
+## Identifier and Mapping Information
+
+
+
+
+
+### Schema Source
+
+
+* from schema: https://jumo.dev/schemas/jumo-v1
+
+
+
+
+## Mappings
+
+| Mapping Type | Mapped Value |
+| ---  | ---  |
+| self | jumo:policyRevision |
+| native | jumo:policyRevision |
+
+
+
+
+## LinkML Source
+
+<details>
+```yaml
+name: policyRevision
+from_schema: https://jumo.dev/schemas/jumo-v1
+rank: 1000
+owner: RoutingDecision
+domain_of:
+- RoutingDecision
+range: string
+required: true
+
+```
+</details></div>

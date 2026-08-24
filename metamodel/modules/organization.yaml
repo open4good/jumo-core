@@ -1,0 +1,1791 @@
+id: https://jumo.dev/schemas/organization
+name: jumo_organization
+description: 'Roles, teams, assignments, coordination, and personal spaces. Vocabulary: RoleDefinition (formerly Operator),
+  AgentDefinition (formerly AgentArchetype), RoleAssignment (formerly OperatorAssignment), TeamSpec (formerly OperatorTeam),
+  RoutingEligibility (formerly OperatorBinding), RoleLifecyclePolicy (formerly OperatorLifecyclePolicy), OrganizationTemplate
+  (formerly OrganizationBlueprint). "Governed organizations of people and agents" replaces "delegated agency" throughout.'
+license: https://www.apache.org/licenses/LICENSE-2.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  jumo: https://jumo.dev/schemas/organization/
+default_prefix: jumo
+default_range: string
+imports:
+  - linkml:types
+  - core
+  - portability
+enums:
+  ProhibitedAuthority:
+    description: Explicit denials that no policy may override.
+    permissible_values:
+      self_grant_capability: {}
+      bypass_policy: {}
+      infer_transitive_access: {}
+      self_approve_privilege_change: {}
+      modify_root_of_trust: {}
+      act_as_super_administrator: {}
+  CoordinationMechanism:
+    permissible_values:
+      DIRECT_SUPERVISION: {}
+      STANDARDIZED_PROCESS: {}
+      STANDARDIZED_OUTPUT: {}
+      STANDARDIZED_SKILL: {}
+      MUTUAL_ADJUSTMENT: {}
+      ADVERSARIAL_REVIEW: {}
+      CONSENT: {}
+  CoordinationProfileName:
+    permissible_values:
+      FAST_LANE: {}
+      VERTICAL_COMMAND: {}
+      COOPERATIVE_ADAPTIVE: {}
+      ASSURANCE_CELL: {}
+  Reversibility:
+    permissible_values:
+      REVERSIBLE: {}
+      IRREVERSIBLE: {}
+  BearerKind:
+    permissible_values:
+      HUMAN: {}
+      AGENT: {}
+      FEDERATED_PEER: {}
+  MethodologyComplianceLevel:
+    permissible_values:
+      INSPIRED: {}
+      MAPPED: {}
+      CONFORMANT: {}
+  IntentKind:
+    permissible_values:
+      QUESTION: {}
+      RESEARCH: {}
+      PROJECT_WORK: {}
+      STATUS: {}
+      COMMUNICATION: {}
+      OTHER: {}
+  DispositionOutcome:
+    permissible_values:
+      HANDLE_DIRECTLY: {}
+      ROUTE_TO_ROLE: {}
+      ASK_FOR_INFORMATION: {}
+      DEFER: {}
+      DECLINE: {}
+      ESCALATE: {}
+  OnExhaustionOutcome:
+    permissible_values:
+      DEFER: {}
+      DECLINE: {}
+      ESCALATE: {}
+  AcknowledgementTrigger:
+    permissible_values:
+      DECOMPOSED: {}
+      DELEGATED: {}
+      WAITING: {}
+      NOTABLE_EFFECT: {}
+  NotificationChannel:
+    permissible_values:
+      MANDALA: {}
+      WEB_PUSH: {}
+      EMAIL: {}
+      WEBCHAT: {}
+      WHATSAPP: {}
+      SMS: {}
+      TELEPHONY: {}
+      STENTOR: {}
+  SelfDescriptionSubjectKind:
+    permissible_values:
+      Project: {}
+      AgentArchetype: {}
+      Realm: {}
+      Role: {}
+  SelfDescriptionQuestion:
+    description: Fixed vocabulary so every governed Project answers the same questions, and Nestor can federate the answers
+      without bespoke integration per Project.
+    permissible_values:
+      PURPOSE: {}
+      STATE: {}
+      COMMITMENTS: {}
+      CAPABILITIES: {}
+      WAITING_ON: {}
+      RECENT_CHANGES: {}
+      RISKS: {}
+      BOUNDARIES: {}
+  SelfDescriptionAudience:
+    permissible_values:
+      HUMAN: {}
+      AGENT: {}
+      CLIENT: {}
+  AgentCardExposure:
+    permissible_values:
+      DISABLED: {}
+      PUBLIC: {}
+      AUTHENTICATED_EXTENDED: {}
+  AgentCardTransport:
+    permissible_values:
+      JSONRPC: {}
+      GRPC: {}
+      HTTP_JSON: {}
+  OrganizationRole:
+    description: 'Governance role in an Organization tenant. It is deliberately distinct from a RoleDefinition: organization
+      membership coordinates contracts and audit only and never grants a Realm''s data, secret, execution-cell, or effect
+      authority.'
+    permissible_values:
+      OWNER: {}
+      ADMIN: {}
+      MEMBER: {}
+      AUDITOR: {}
+  InteroperabilityAdapter:
+    description: Sealed registry of authorized public interoperability adapters.
+    permissible_values:
+      jumo-profile-v1: {}
+      bpmn-2.0-v1: {}
+      a2a-v1-read-v1: {}
+      acs-jumo-opa-v1: {}
+classes:
+  RoleDefinition:
+    description: A stable Realm-owned acting role carrying a mission. Its bearer is declared separately by RoleAssignment;
+      neither declaration grants authority. Renamed from Operator.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: RoleDefinition
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: RoleDefinitionSpec
+        required: true
+        inlined: true
+  RoleDefinitionSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      mission:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      roleKey:
+        range: string
+        pattern: ^[a-z][A-Za-z0-9]*$
+        description: Optional decorative ThemePack lookup key. Never replaces metadata.id.
+      isMetaRole:
+        range: boolean
+        ifabsent: 'false'
+        description: When true, this role acts on behalf of a Jumo Control Plane or Child Realm.
+      delegatedRealmRef:
+        range: Identifier
+        description: Optional child or target Realm governed by this meta-role.
+      independenceGroup:
+        range: Identifier
+        description: A role's own separation-of-duties group. Two roles sharing one group may not
+          jointly produce and verify the same WorkOrder (governance.rego distinct_independence_groups);
+          absent for a meta-role (Nestor, Owner) that is never itself a team roster candidate.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AgentDefinition:
+    description: Reusable, portable agent behavior. Requests capabilities; never grants them. Renamed from AgentArchetype.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: AgentDefinition
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: AgentDefinitionSpec
+        required: true
+        inlined: true
+  AgentDefinitionSpec:
+    attributes:
+      responsibilities:
+        range: string
+        multivalued: true
+        required: true
+        pattern: ^.{5,}$
+      requestedCapabilities:
+        range: CapabilityName
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+        description: A request, not a grant. Policy decides.
+      prohibitedAuthority:
+        range: ProhibitedAuthority
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+      defaultAutonomy:
+        range: AutonomyLevel
+      modificationRing:
+        range: Ring
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RoleAssignment:
+    description: Git-declared bearer of one stable role. Selects responsibility and provenance only; Membership, policy and
+      grants remain required for every act. Renamed from OperatorAssignment.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: RoleAssignment
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: RoleAssignmentSpec
+        required: true
+        inlined: true
+  RoleAssignmentSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      roleDefinitionRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      bearer:
+        range: RoleBearer
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RoleBearer:
+    description: Discriminated union (HUMAN | AGENT | FEDERATED_PEER) in the source schema. LinkML has no native discriminated
+      union at the attribute level; modeled as one class with branch fields optional. Which fields are required for which
+      `kind` moves to Rego, same disposition as every other conditional-requiredness invariant here.
+    attributes:
+      kind:
+        range: BearerKind
+        required: true
+      principalRef:
+        range: ContractReference
+        inlined: true
+        description: Required when kind is HUMAN.
+      agentDefinitionRef:
+        range: ContractReference
+        inlined: true
+        description: Required when kind is AGENT.
+      defaultWorkerRequirementProfileRef:
+        range: ContractReference
+        inlined: true
+        description: Optional, only meaningful when kind is AGENT.
+      federatedPeerRef:
+        range: ContractReference
+        inlined: true
+        description: Required when kind is FEDERATED_PEER. Names the FederatedPeer contract.
+      remoteRoleKey:
+        range: string
+        description: Optional remote role identifier in the peer realm.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  TeamSpec:
+    description: A Realm-owned composition of roles and nested teams. Coordinates eligible roles but grants no data access,
+      capability or effect authority. Renamed from OperatorTeam.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: TeamSpec
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: TeamSpecBody
+        required: true
+        inlined: true
+  TeamSpecBody:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      purpose:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      roleKey:
+        range: string
+        pattern: ^[a-z][A-Za-z0-9]*$
+      coordination:
+        range: TeamCoordination
+        required: true
+        inlined: true
+        description: 'The managed dependency, not the team, is the unit of analysis (docs/concepts/positionnement-conceptuel.md#coordination-des-dependances).
+          The source schema forced one `mode` for the whole team; this carries one or more CoordinationMechanismBinding
+          entries instead, each scoped to the dependency it governs.'
+      members:
+        range: TeamMember
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 2
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  TeamCoordination:
+    attributes:
+      mechanisms:
+        range: CoordinationMechanismBinding
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      leadRoleDefinitionRef:
+        range: ContractReference
+        inlined: true
+        description: Required when any mechanism binding uses DIRECT_SUPERVISION; must resolve to a role leaf of this team.
+          Conditional requiredness moves to Rego.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CoordinationMechanismBinding:
+    description: One coordination mechanism scoped to the dependency it actually governs, replacing a single team-wide mode
+      (docs/concepts/positionnement-conceptuel.md#coordination-des-dependances). Shared by TeamSpec and CoordinationProfile
+      so a team's inline coordination and a reusable named profile speak the same vocabulary.
+    attributes:
+      mechanism:
+        range: CoordinationMechanism
+        required: true
+      dependencyKind:
+        range: string
+        description: 'Open vocabulary naming the managed dependency (e.g. resource-sharing, prerequisite, simultaneity, decomposition
+          -- Malone & Crowston''s categories). Not an enum: the catalog of dependency kinds is expected to grow with experience,
+          and closing it here would recreate the single-mode rigidity this redesign removes.'
+      phase:
+        range: string
+        description: Open vocabulary naming the work phase this binding applies to.
+      riskTier:
+        range: string
+        description: Open vocabulary; aligns with ActionCapabilitySet's riskTier where relevant.
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CoordinationProfile:
+    description: 'A named, reusable coordination profile: authorized mechanisms, target dependencies, rhythm, and preconditions
+      for team coordination. Distinct from TeamSpec.coordination (inline, per-team) -- a CoordinationProfile is declared once
+      and referenced by name from multiple teams or improvement-loop targets, while TeamSpec.coordination is that team''s
+      own binding. Already used mechanisms[] in the source schema (unlike TeamSpec''s single `mode`), so this class''s mechanisms
+      list was not itself the redesign target -- it gains the same CoordinationMechanismBinding shape as TeamSpec for vocabulary
+      consistency, replacing what was a flat CoordinationMechanism list.'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: CoordinationProfile
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: CoordinationProfileSpec
+        required: true
+        inlined: true
+  CoordinationProfileSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      profileName:
+        range: CoordinationProfileName
+        required: true
+      reversibility:
+        range: Reversibility
+        required: true
+      maxRing:
+        range: Ring
+        required: true
+      assuranceLevel:
+        range: AssuranceLevel
+        required: true
+      mechanisms:
+        range: CoordinationMechanismBinding
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      rhythm:
+        range: Duration
+      preconditions:
+        range: string
+        multivalued: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  TeamMember:
+    description: Discriminated union (roleMember | teamMember) in the source schema. Modeled as one class; exactly one
+      of roleDefinitionRef/teamSpecRef is expected (Rego).
+    attributes:
+      roleDefinitionRef:
+        range: ContractReference
+        inlined: true
+      teamSpecRef:
+        range: ContractReference
+        inlined: true
+      role:
+        range: string
+        pattern: ^.{3,}$
+      independenceGroup:
+        range: Identifier
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RoutingEligibility:
+    description: A desired routing eligibility relation between roles or teams and a Project. Teams flatten to their role
+      leaves. Never grants data access, capabilities or effect authority. Renamed from OperatorBinding.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: RoutingEligibility
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: RoutingEligibilitySpec
+        required: true
+        inlined: true
+  RoutingEligibilitySpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      projectRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      eligibleRoleDefinitionRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+      eligibleTeamSpecRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RoleLifecyclePolicy:
+    description: Onboarding policy and evaluation criteria for roles. Renamed from OperatorLifecyclePolicy -- kept as its
+      own class, not absorbed into RoleDefinition.
+    annotations:
+      jumo.composition: SEALED
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: RoleLifecyclePolicy
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: RoleLifecyclePolicySpec
+        required: true
+        inlined: true
+  RoleLifecyclePolicySpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      shadowEpisodesRequired:
+        range: integer
+        required: true
+        minimum_value: 0
+      boundedTrialEpisodesRequired:
+        range: integer
+        required: true
+        minimum_value: 1
+      maxTrialDurationDays:
+        range: integer
+        required: true
+        minimum_value: 1
+      evaluationCriteria:
+        range: string
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OrganizationTemplate:
+    description: Parametric package of roles, teams, profiles, and lifecycle. Contains no grant. Renamed from OrganizationBlueprint
+      -- the name OrganizationSpec is reserved for the composite class in work.yaml.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: OrganizationTemplate
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OrganizationTemplateSpec
+        required: true
+        inlined: true
+  OrganizationTemplateSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      blueprintName:
+        range: string
+        required: true
+        pattern: ^.{3,}$
+      roles:
+        range: Identifier
+        multivalued: true
+      teams:
+        range: Identifier
+        multivalued: true
+      profiles:
+        range: Identifier
+        multivalued: true
+      roleLifecyclePolicyRef:
+        range: ContractReference
+        inlined: true
+      methodologySource:
+        range: MethodologySource
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MethodologySource:
+    attributes:
+      name:
+        range: string
+        required: true
+        pattern: ^.{2,}$
+      complianceLevel:
+        range: MethodologyComplianceLevel
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ChiefOfStaffProfile:
+    description: Configures a Chief-of-Staff role's attention loop and work disposition. Selects a responsible role and interaction
+      timing; grants no authority.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ChiefOfStaffProfile
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ChiefOfStaffProfileSpec
+        required: true
+        inlined: true
+  ChiefOfStaffProfileSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      roleDefinitionRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      intakeProcessSpecRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      directWorkProcessSpecRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: Governed child Episode started by HANDLE_DIRECTLY; cannot be the intake workflow itself (Rego).
+          References a ProcessSpec (execution.yaml).
+      authority:
+        range: string
+        equals_string: ROUTING_ONLY
+        required: true
+      connectorCatalogScope:
+        range: string
+        equals_string: OWN_REALM_SANITIZED
+        required: true
+      clarification:
+        range: ClarificationPolicy
+        required: true
+        inlined: true
+      dispositionRules:
+        range: DispositionRule
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      acknowledgement:
+        range: AcknowledgementPolicy
+        required: true
+        inlined: true
+      statusPracticeRef:
+        range: ContractReference
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AdvisorProfile:
+    description: A stable role's declared, contextual ways of being solicited. It selects no authority and never duplicates the Chief of Staff identity.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: AdvisorProfile
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: AdvisorProfileSpec
+        required: true
+        inlined: true
+  AdvisorProfileSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      roleDefinitionRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      dialogueOptions:
+        range: AdvisorDialogueOption
+        required: true
+        multivalued: true
+        inlined_as_list: true
+        minimum_cardinality: 1
+      practiceRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AdvisorDialogueOption:
+    description: One named effort option for a role. CapabilityProfile expresses intent; EngagementMethod carries the prompt, worker, budget, assurance and stages.
+    attributes:
+      capabilityProfileRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      engagementMethodRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      defaultOption:
+        range: boolean
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ClarificationPolicy:
+    attributes:
+      enabled:
+        range: boolean
+        required: true
+        description: 'Source schema pins this to `const: true`; enforced in Rego, not expressible as a LinkML boolean
+          constant.'
+      maximumTurns:
+        range: integer
+        required: true
+        minimum_value: 1
+        maximum_value: 10
+      onInsufficientInformation:
+        range: string
+        equals_string: ASK_FOR_INFORMATION
+        required: true
+      onExhaustion:
+        range: OnExhaustionOutcome
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  DispositionRule:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      match:
+        range: DispositionMatch
+        required: true
+        inlined: true
+      outcome:
+        range: DispositionOutcome
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  DispositionMatch:
+    description: minProperties:1 in the source (at least one match field present) moves to Rego.
+    attributes:
+      addressedRoleRefs:
+        range: Identifier
+        multivalued: true
+      addressedTeamRefs:
+        range: Identifier
+        multivalued: true
+      intentKinds:
+        range: IntentKind
+        multivalued: true
+      otherwise:
+        range: boolean
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AcknowledgementPolicy:
+    attributes:
+      mode:
+        range: string
+        equals_string: ADAPTIVE
+        required: true
+      triggers:
+        range: AcknowledgementTrigger
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+      immediateAnswerMaySatisfy:
+        range: boolean
+        required: true
+        description: 'Source schema pins this to `const: true`; enforced in Rego.'
+      maximumDelay:
+        range: Duration
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PersonalSpace:
+    description: Mandatory personal space declaration for a human or agent principal within a Realm.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: PersonalSpace
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PersonalSpaceSpec
+        required: true
+        inlined: true
+  PersonalSpaceSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+        description: Realm this personal space belongs to. An ExecutionCell may only mount a PersonalSpace whose ownerRealm
+          matches its own (Rego, corpus.cell.workspace-realm-scoped).
+      ownerPrincipal:
+        range: Identifier
+        required: true
+        description: Principal (user or agent) owning this personal space.
+      workspacePath:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9._/-]+$
+      storageQuotaBytes:
+        range: integer
+        required: true
+        minimum_value: 1048576
+      gitLfsPointers:
+        range: string
+        multivalued: true
+      preferencesRef:
+        range: ContractReference
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  Preferences:
+    description: User or agent preferences attached to a PersonalSpace.
+    annotations:
+      jumo.composition: OVERRIDABLE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: Preferences
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PreferencesSpec
+        required: true
+        inlined: true
+  PreferencesSpec:
+    attributes:
+      ownerPrincipal:
+        range: Identifier
+        required: true
+      theme:
+        range: string
+        ifabsent: default
+      language:
+        range: string
+        ifabsent: en
+      notifications:
+        range: NotificationPreferences
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  NotificationPreferences:
+    attributes:
+      quietHoursEnabled:
+        range: boolean
+      channels:
+        range: NotificationChannel
+        multivalued: true
+      classificationCeiling:
+        range: DataScope
+      timeZone:
+        range: string
+        pattern: ^.{1,}$
+      quietHours:
+        range: QuietHoursWindow
+        inlined: true
+      focusMode:
+        range: boolean
+        ifabsent: 'false'
+      maximumLiveInterruptionsPerHour:
+        range: integer
+        minimum_value: 0
+        maximum_value: 100
+      maximumConcurrentSolicitations:
+        range: integer
+        minimum_value: 0
+        maximum_value: 100
+      fallbackDelaySeconds:
+        range: integer
+        minimum_value: 1
+        maximum_value: 604800
+      escalationDelaySeconds:
+        range: integer
+        minimum_value: 1
+        maximum_value: 604800
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  QuietHoursWindow:
+    attributes:
+      start:
+        range: string
+        required: true
+        pattern: ^([01][0-9]|2[0-3]):[0-5][0-9]$
+      end:
+        range: string
+        required: true
+        pattern: ^([01][0-9]|2[0-3]):[0-5][0-9]$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SelfDescription:
+    description: How a Project or agent explains itself. Extraction is deterministic and reads only .jumo/ and recognized
+      state; narration merely phrases facts already extracted. A model never retrieves here, so an explanation cannot invent
+      a commitment the contracts do not contain.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: SelfDescription
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: SelfDescriptionSpec
+        required: true
+        inlined: true
+  SelfDescriptionSpec:
+    attributes:
+      subject:
+        range: SelfDescriptionSubject
+        required: true
+        inlined: true
+      answers:
+        range: SelfDescriptionAnswer
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      agentCard:
+        range: AgentCard
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SelfDescriptionSubject:
+    attributes:
+      kind:
+        range: SelfDescriptionSubjectKind
+        required: true
+      id:
+        range: Identifier
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  SelfDescriptionAnswer:
+    attributes:
+      question:
+        range: SelfDescriptionQuestion
+        required: true
+      facts:
+        range: SelfDescriptionFact
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      narrationPromptTemplateRef:
+        range: ContractReference
+        inlined: true
+        description: Optional PromptTemplate that phrases the extracted facts.
+      audience:
+        range: SelfDescriptionAudience
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SelfDescriptionFact:
+    attributes:
+      name:
+        range: string
+        required: true
+        pattern: ^[a-z][a-zA-Z0-9_]*$
+      from:
+        range: string
+        required: true
+        pattern: ^.{3,}$
+        description: 'Deterministic source: a contract kind and path such as ''Project.spec.purpose'', or a named recognized-state
+          query. Evaluated without a model.'
+      redactBeyondBoundary:
+        range: boolean
+        ifabsent: 'false'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AgentCard:
+    description: A2A v1.0 Agent Card projection. Discoverability metadata, not a capability grant.
+    attributes:
+      protocolVersion:
+        range: string
+        equals_string: '1.0'
+        required: true
+      exposure:
+        range: AgentCardExposure
+        required: true
+      preferredTransports:
+        range: AgentCardTransport
+        multivalued: true
+      skills:
+        range: AgentCardSkill
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AgentCardSkill:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      name:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      capabilityRefs:
+        range: CapabilityName
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OrganizationSpec:
+    description: 'A named organization of roles for a recurring mission (docs/concepts/positionnement-conceptuel.md#organisation-moise),
+      referencing RoleDefinition, TeamSpec, RoleAssignment, and OrganizationTemplate without replacing or absorbing any
+      of them -- those classes stay independently declarable, which is what "renamed without absorption" means at the
+      composite-class boundary too. The software-delivery example: a chief-of-staff role, an implementer, a reviewer, a
+      human owner, plus incompatibility and independence constraints between them.'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: OrganizationSpec
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OrganizationSpecBody
+        required: true
+        inlined: true
+  OrganizationSpecBody:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      mission:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      roleRefs:
+        range: OrganizationRoleBinding
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+        description: References RoleDefinition entries this organization uses, each bound to a named seat.
+      organizationTemplateRef:
+        range: ContractReference
+        inlined: true
+        description: Optional OrganizationTemplate this organization was instantiated from.
+      incompatibleSeatPairs:
+        range: SeatIncompatibility
+        multivalued: true
+        inlined_as_list: true
+        description: Seats that may never be filled by the same RoleAssignment bearer (e.g. implementer and reviewer). Enforced
+          in Rego, not here.
+      independentSeatGroups:
+        range: SeatIndependenceGroup
+        multivalued: true
+        inlined_as_list: true
+        description: Seats whose bearers must sit in different independence groups (e.g. reviewer needs a distinct provider
+          group from implementer). Enforced in Rego.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OrganizationRoleBinding:
+    attributes:
+      seatId:
+        range: Identifier
+        required: true
+        description: A named seat in this organization, e.g. "chief-of-staff", "implementer", "reviewer", "owner".
+      roleDefinitionRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: The RoleDefinition this seat is bound to.
+      humanSeat:
+        range: boolean
+        ifabsent: 'false'
+        description: True for the human-owner seat, which is never filled by an AgentDefinition bearer.
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SeatIncompatibility:
+    attributes:
+      seatIds:
+        range: Identifier
+        multivalued: true
+        required: true
+        minimum_cardinality: 2
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SeatIndependenceGroup:
+    attributes:
+      seatIds:
+        range: Identifier
+        multivalued: true
+        required: true
+        minimum_cardinality: 2
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  Organization:
+    description: A tenant boundary with its own Git contract source. Unlike OrganizationSpec, which models an operational
+      composition of roles, this contract names an Organization that composes policy for its member Realms without creating
+      inter-Realm access or effect authority.
+    annotations:
+      jumo.composition: ORGANIZATION_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: Organization
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OrganizationBody
+        required: true
+        inlined: true
+  OrganizationBody:
+    attributes:
+      contractRepository:
+        range: string
+        required: true
+        description: Git repository URL or deployment-supplied reference for this Organization's .jumo source.
+      memberRealmIds:
+        range: Identifier
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+      ownerPrincipalId:
+        range: string
+        required: true
+      realmProvisionerProjectionSpecRef:
+        range: ContractReference
+        inlined: true
+        description: Approved bounded provisioner for self-enrolled Realm creation; never a federation authority.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OrganizationAccessBinding:
+    description: Explicit Git binding for Organization owners, administrators, and auditors. MEMBER is intentionally derived
+      by OrganizationEnrollmentPolicy rather than written as an ambient role.
+    annotations:
+      jumo.composition: ORGANIZATION_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: OrganizationAccessBinding
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OrganizationAccessBindingSpec
+        required: true
+        inlined: true
+  OrganizationAccessBindingSpec:
+    attributes:
+      organizationRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      principalId:
+        range: string
+        required: true
+      role:
+        range: OrganizationRole
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OrganizationEnrollmentPolicy:
+    description: Approved OIDC admission rule for derived MEMBER status and a bounded onboarding provisioner. It neither creates
+      mTLS federation nor gives a member authority in another Realm.
+    annotations:
+      jumo.composition: ORGANIZATION_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: OrganizationEnrollmentPolicy
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OrganizationEnrollmentPolicySpec
+        required: true
+        inlined: true
+  OrganizationEnrollmentPolicySpec:
+    attributes:
+      organizationRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      admittedEmailDomains:
+        range: string
+        multivalued: true
+      admittedEmails:
+        range: string
+        multivalued: true
+      oidcRealm:
+        range: string
+        required: true
+      selfEnrollmentEnabled:
+        range: boolean
+        required: true
+      realmProvisionerProjectionSpecRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      realmRepositoryTemplate:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OrganizationAuditRetentionPolicy:
+    description: Default retention for terminal recognized-state history in one Organization.
+    annotations:
+      jumo.composition: ORGANIZATION_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: OrganizationAuditRetentionPolicy
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OrganizationAuditRetentionPolicySpec
+        required: true
+        inlined: true
+  OrganizationAuditRetentionPolicySpec:
+    attributes:
+      organizationRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      terminalDataRetention:
+        range: Duration
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: EXECUTION_HISTORY
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OrganizationRetentionHold:
+    description: A time-bounded, auditable Organization-wide pause of terminal-history purge.
+    annotations:
+      jumo.composition: ORGANIZATION_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: OrganizationRetentionHold
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OrganizationRetentionHoldSpec
+        required: true
+        inlined: true
+  OrganizationRetentionHoldSpec:
+    attributes:
+      organizationRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      active:
+        range: boolean
+        required: true
+      reason:
+        range: string
+        required: true
+        pattern: ^.{3,}$
+      expiresAt:
+        range: datetime
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OrganizationEnrollmentRequest:
+    description: First, identity-admitted onboarding payload. The trusted provisioner consumes the bounded request only after
+      policy approval; this payload itself neither creates a Realm nor a Git repository.
+    attributes:
+      nickname:
+        range: Identifier
+        required: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: COMMAND
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OrganizationPublicationPolicy:
+    description: Organization-level publication policy setting allowed interoperability adapters, public JWKS, and publication quota.
+    annotations:
+      jumo.composition: ORGANIZATION_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: OrganizationPublicationPolicy
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OrganizationPublicationPolicySpec
+        required: true
+        inlined: true
+  OrganizationPublicationPolicySpec:
+    attributes:
+      organizationRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      allowedAdapters:
+        range: InteroperabilityAdapter
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+      jwksUri:
+        range: string
+      publicKey:
+        range: string
+      maxPublishedRealms:
+        range: integer
+        minimum_value: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RealmPublication:
+    description: Governed public interoperability exposition under /u/{handle} for a Realm. Narrowed to the Organization publication policy envelope.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: RealmPublication
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: RealmPublicationSpec
+        required: true
+        inlined: true
+  RealmPublicationSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      organizationRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      publicHandle:
+        range: string
+        required: true
+        pattern: ^[a-z0-9-_]{2,64}$
+      exposure:
+        range: RealmExposureMode
+        required: true
+      enabledAdapters:
+        range: InteroperabilityAdapter
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+      artifactAllowlist:
+        range: string
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

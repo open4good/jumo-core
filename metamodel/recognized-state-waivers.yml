@@ -1,0 +1,6 @@
+# Tables that scripts/generate/recognized-state-coverage.py accepts as covered without a matching
+# POSTGRES-authority metamodel class, because a human has confirmed the table does not warrant one
+# (a join table, a denormalized projection, migration tooling). Empty for now: canonical decision 15
+# ratchets recognized_state_uncovered_tables downward one class at a time; a table only belongs here
+# once someone has actually looked at it, not as a shortcut to lower the count.
+waivers: []

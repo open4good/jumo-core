@@ -1,0 +1,38 @@
+# Known canonical-decision-15 violations not yet remediated by metamodel-platform-boundary
+# (m0-cleanup). This is a worklist, not a permanent exemption: it must ratchet toward empty
+# (corpus-budget-extension-and-agents-guide measures boundary_allowlist_entries).
+# Format: metamodel:<ClassName>  |  literal:<repo-relative-path>:<identifier>
+
+# JourneyService.emit no longer has a JourneyService.java entry: declare-provider-account's
+# conditional gatewayRef closed via fieldConditions, and setup-cli-worker's WorkerSubstrate
+# rendering now dispatches on the declared emission.targetKind (a contract kind name, not a
+# journey identifier), not the journeyId literal. ConversationService.resolveRoute now resolves
+# its promptId from the PromptTemplate declaring the matching conversationTask (corpus.prompt.
+# conversation-task-unique keeps that resolution unambiguous), so its four prompt-id literals are
+# gone too. ExecutionCellProvisioningActivitiesImpl's "provision-vm" playbookRef literal closed
+# the same way: MachineAdminPlaybookSpec.appliesToCapability names the capability a ProcessStep
+# already declares, and ExecutionMachineService.playbookIdForCapability scans for the playbook
+# claiming it (corpus.machine-admin-playbook.capability-unique keeps that resolution unambiguous)
+# -- AC1 of assisted-journey-generic-emission is now fully closed. Extending
+# check-boundary.py's INSTANCE_SOURCES to machine-admin-playbooks (needed to make this literal
+# visible in the first place) surfaced three siblings of the exact same shape. bootstrap-guest
+# closed the same way (2026-08-24): execution.cell.certificate.ceremony is shared by two
+# ProcessSteps (ceremony-host-init, ceremony-guest-bootstrap) but only one -- bootstrap-guest --
+# is ever dispatched through a MachineAdminRequest; ceremony-host-init has no
+# issueHostInitCommand/playbookRef call site at all (grep confirmed, five playbookRef( call
+# sites in modules/*/src/main map to exactly five playbooks with no other claimant), so
+# capability-unique holds today and appliesToCapability/playbookIdForCapability resolves it
+# unambiguously, same as provision-vm. install-cli closed the same way too (2026-08-24, via
+# cli-playbook-selection-capability-granularity): the install-runtime ProcessStep now carries a
+# dedicated capabilityRef (cli.runtime.install, not the generic machine.administer) and
+# install-cli.yml declares appliesToCapability: cli.runtime.install, so
+# CliRuntimeInstallationAwaitDispatcher.dispatch resolves it via playbookIdForCapability instead of
+# a hand-typed literal. pair-cli-session/smoke-cli-session closed the same way too (2026-08-24,
+# owner decision to author a ProcessSpec): cli-session-pairing--1-0-0 and
+# cli-session-smoke-test--1-0-0 each declare an EFFECT_APPLICATION step with a dedicated
+# capabilityRef (cli.session.pair, cli.session.smoke), pair-cli-session.yml/smoke-cli-session.yml
+# declare the matching appliesToCapability, and CliSessionService.start resolves both via
+# playbookIdForCapability instead of the hand-typed operationKind switch. Neither ProcessSpec
+# changes CliSessionService's actual trigger path (still a direct stepUp-gated service call, not
+# journey-orchestrated) -- they exist as the capability's declared home, same minimal footprint as
+# install-cli's mechanical resolution, not a UX change to how pairing/smoke are invoked.

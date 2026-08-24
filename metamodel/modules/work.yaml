@@ -1,0 +1,1611 @@
+id: https://jumo.dev/schemas/work
+name: jumo_work
+description: Work orders, delegation, methods, practices, and worker selection. WorkOrder (formerly WorkItem),
+  SolicitationContract (formerly DelegationContract).
+license: https://www.apache.org/licenses/LICENSE-2.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  jumo: https://jumo.dev/schemas/work/
+default_prefix: jumo
+default_range: string
+imports:
+  - linkml:types
+  - core
+enums:
+  AssistedJourneyIdentifierSuffix:
+    description: What is appended to a slugified identifier so two runs of the same journey do not collide.
+    permissible_values:
+      NONE: {}
+      RUN_PREFIX:
+        description: The first eight characters of the run identifier.
+  WorkOrderState:
+    description: PROPOSED and ACCEPTED are separate because a work order is not an acceptance, in the same way a CapturedInput
+      is not a Commitment.
+    permissible_values:
+      PROPOSED: {}
+      ACCEPTED: {}
+      IN_PROGRESS: {}
+      DECLINED: {}
+      COMPLETED: {}
+      FAILED: {}
+  AssistedJourneyStepKind:
+    description: 'The IHM-layer counterpart to ProcessStepKind (execution.yaml): AssistedJourney is a human-facing collection
+      graph, while ProcessSpec remains the durable execution graph.'
+    permissible_values:
+      COLLECT: {}
+      AWAIT: {}
+      CONFIRM: {}
+      DIALOGUE_COLLECT: {}
+      SUB_JOURNEY: {}
+  AssistedJourneyNavigationMode:
+    description: Whether the role may choose any dependency-ready step or must follow declaration order.
+    permissible_values:
+      SEQUENTIAL: {}
+      FREE: {}
+  AssistedJourneyConcurrencyPolicy:
+    permissible_values:
+      SINGLE_ACTIVE_RUN: {}
+      MULTIPLE_ACTIVE_RUNS: {}
+  AssistedJourneyCompletionMode:
+    description: Whether a journey emits a governed proposal or only records an observation.
+    permissible_values:
+      PROPOSAL: {}
+      OBSERVATION: {}
+  JourneyVerificationTarget:
+    permissible_values:
+      PROVIDER_ACCOUNT: {}
+      CLI_SESSION: {}
+      EXECUTION_CELL: {}
+  JourneyVerificationCapability:
+    permissible_values:
+      PROVIDER_SMOKE: {}
+      CLI_SMOKE: {}
+      SESSION_PAIRING: {}
+  WorkOrderDeclineReason:
+    permissible_values:
+      OUT_OF_SCOPE: {}
+      NO_CAPABILITY: {}
+      OVER_BUDGET: {}
+      CONFLICTING_COMMITMENT: {}
+      AMBIGUOUS: {}
+      SUPERSEDED:
+        description: Absorbed into another WorkOrder that carries the same acceptance criteria forward.
+  RequiredOwners:
+    permissible_values:
+      BOTH_WHEN_DIFFERENT: {}
+      BOTH_ALWAYS: {}
+      TARGET_ONLY: {}
+  ForbiddenSolicitationReach:
+    description: Delegation is never transitive. A grant to A does not let A pass it to B.
+    permissible_values:
+      raw_memory_access: {}
+      secret_access: {}
+      transitive_capability_use: {}
+      policy_inspection: {}
+      cross_realm_identity_resolution: {}
+  EngagementGate:
+    permissible_values:
+      NONE: {}
+      HUMAN_RESPONSE: {}
+      INDEPENDENT_VERIFICATION: {}
+  DeploymentTarget:
+    permissible_values:
+      docker-compose: {}
+      systemd: {}
+      kubernetes: {}
+      none: {}
+  DurableWorkflowEngine:
+    permissible_values:
+      temporal: {}
+      none: {}
+  BusinessStateStore:
+    permissible_values:
+      postgresql: {}
+      none: {}
+  ExecutionStateStore:
+    permissible_values:
+      temporal: {}
+      none: {}
+  TaskClass:
+    permissible_values:
+      CLASSIFICATION: {}
+      NARRATION: {}
+      REASONING: {}
+      CODING: {}
+      VERIFICATION: {}
+      REALTIME_DIALOGUE: {}
+  Modality:
+    permissible_values:
+      TEXT: {}
+      AUDIO: {}
+      IMAGE: {}
+      VIDEO: {}
+  ToolUseRequirement:
+    permissible_values:
+      NONE: {}
+      OPTIONAL: {}
+      REQUIRED: {}
+  ReasoningEffort:
+    permissible_values:
+      LOW: {}
+      MEDIUM: {}
+      HIGH: {}
+  CostClass:
+    permissible_values:
+      LOW: {}
+      MEDIUM: {}
+      HIGH: {}
+  BenchmarkDimension:
+    permissible_values:
+      TASK_SUCCESS: {}
+      RELIABILITY: {}
+      LATENCY: {}
+      STRUCTURED_OUTPUT: {}
+      TOOL_USE: {}
+      PROVENANCE: {}
+  PromptEngine:
+    permissible_values:
+      thymeleaf: {}
+      literal: {}
+  ConversationTask:
+    description: The closed set of ConversationService turn kinds. Declared on the PromptTemplate that serves it, so the
+      platform resolves task -> prompt from the contract instead of naming the PromptTemplate id in a switch.
+    permissible_values:
+      COORDINATE: {}
+      DELIBERATE: {}
+      COMPACT: {}
+      STRUCTURED_INTENT: {}
+  VariableTrust:
+    description: 'UNTRUSTED carries content originating outside the trust boundary -- email bodies, web pages, transcripts,
+      inbound channel messages. This is propagated provenance metadata, not by itself a security boundary
+      (docs/concepts/positionnement-conceptuel.md#separation-instructions-donnees): the runtime fences these and never
+      treats them as instructions, but authorization decisions are made on concrete argument values, not on this tag alone.'
+    permissible_values:
+      TRUSTED: {}
+      UNTRUSTED: {}
+  PromptOutputForm:
+    permissible_values:
+      STRUCTURED: {}
+      TEXT: {}
+  BudgetOnExhaustion:
+    description: 'DEGRADE_ASSURANCE is deliberately absent: reducing assurance requires an explicit policy decision, not a
+      budget default.'
+    permissible_values:
+      WAIT_FOR_RECOVERY: {}
+      USE_AUTHORIZED_ALTERNATIVE: {}
+      REQUEST_HUMAN_DECISION: {}
+      STOP_CLEANLY: {}
+classes:
+  WorkOrder:
+    description: 'One unit of dispatched work, in Git. Renamed from WorkItem. Carries debtor, creditor, and condition
+      (docs/concepts/positionnement-conceptuel.md#engagements-sociaux): an accepted order is not yet a social commitment
+      without a named debtor, creditor, and discharge condition. The existing
+      state enum (PROPOSED..FAILED) is retained as the closest Git-contract analogue of create/accept/discharge; the fuller
+      create/discharge/release/cancel/assign operation set belongs to the runtime Matter/Episode this Git file is not --
+      this module models Git contracts only.'
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: WorkOrder
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: WorkOrderSpec
+        required: true
+        inlined: true
+  WorkOrderSpec:
+    attributes:
+      purpose:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      producerRoleDefinitionRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: The individual accountable role. A team is never the final accountable addressee.
+      teamSpecRef:
+        range: ContractReference
+        inlined: true
+      projectRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      roadmapRef:
+        range: Identifier
+        description: Groups durable work contracts into a generated roadmap projection.
+      decisionRefs:
+        range: DecisionReference
+        multivalued: true
+        description: Architecture decisions this work implements or expects.
+      verifierRoleDefinitionRef:
+        range: ContractReference
+        inlined: true
+        description: The role that checks the result against the criteria below. May not be the producer; resolves through
+          teamSpecRef to prove a different independence group (Rego).
+      state:
+        range: WorkOrderState
+        required: true
+      declineReason:
+        range: WorkOrderDeclineReason
+      suspendedReason:
+        range: string
+        pattern: ^.{1,160}$
+        description: Set when state is PROPOSED after having been ACCEPTED or IN_PROGRESS, to record why
+          work paused rather than why it was declined. Distinct from declineReason, which is permanent.
+      debtor:
+        range: Identifier
+        description: The role or team that owes this work (commitment lifecycle addition, conceptual upgrades table). Defaults
+          conceptually to producerRoleDefinitionRef/teamSpecRef; kept as an explicit field so a WorkOrder assigned onward
+          carries an accountable debtor independent of who drafted it.
+      creditor:
+        range: Identifier
+        description: The role, team, or Project the work is owed to.
+      condition:
+        range: string
+        description: The condition under which this commitment is discharged, in addition to (not instead of) acceptanceCriteria
+          -- acceptanceCriteria is what is checked; condition is the commitment-theoretic statement of when the debt is considered
+          settled.
+      acceptanceCriteria:
+        range: AcceptanceCriterion
+        multivalued: true
+        inlined_as_list: true
+        description: What the result is checked against. Required from ACCEPTED onward (Rego, same as the source schema's
+          conditional).
+      specification:
+        range: WorkOrderSpecification
+        multivalued: true
+        inlined_as_list: true
+        description: Long-form design lots too large for purpose/condition/acceptanceCriteria -- Markdown body, no
+          language restriction (WorkOrder specification prose is exempt from the English-only rule, AGENTS.md).
+      pathScope:
+        range: string
+        multivalued: true
+        pattern: ^.{1,}$
+        description: Glob patterns the work may touch.
+      ring:
+        range: Ring
+        description: 'The ring this work acts on. RING_0_ROOT_OF_TRUST exclusion (source schema''s `not: const`) moves to
+          Rego.'
+      dependsOnWorkOrderRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+        description: WorkOrders that must be COMPLETED before this one starts.
+      parentWorkOrderRef:
+        range: ContractReference
+        inlined: true
+        description: The larger item this decomposes.
+      sourceRefs:
+        range: string
+        multivalued: true
+        pattern: ^.{1,}$
+      contractRevision:
+        range: string
+        required: true
+        pattern: ^.{7,}$
+        description: Commit the contracts were read at.
+      evidenceRefs:
+        range: string
+        multivalued: true
+        pattern: ^.{1,}$
+      ledgerSourceRevision:
+        range: string
+        pattern: ^.{7,}$
+        description: Commit that carried the last full (pre-compaction) revision of this record, for
+          a COMPLETED WorkOrder compacted into .jumo/work/ledger/. Set by scripts/migrate/compact-completed-work.py,
+          never by hand.
+      consumption:
+        range: ConsumptionReport
+        inlined: true
+      resourceBudgetRef:
+        range: ContractReference
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AcceptanceCriterion:
+    attributes:
+      id:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      statement:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+        description: One checkable claim about the finished result.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  WorkOrderSpecification:
+    attributes:
+      title:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      body:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+        description: Markdown allowed.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ConsumptionReport:
+    description: What the work spent, in units ResourceBudget declares. Keys held identical to ResourceBudget.spec.limits
+      by scripts/validate-integration-contracts.py today; Rego takes over that cross-check.
+    attributes:
+      tokens:
+        range: integer
+        minimum_value: 0
+      estimatedCostEur:
+        range: float
+        minimum_value: 0
+      wallClock:
+        range: Duration
+      modelCalls:
+        range: integer
+        minimum_value: 0
+      toolCalls:
+        range: integer
+        minimum_value: 0
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SolicitationContract:
+    description: 'The only way one Project or Realm may solicit another (canonical decision 25). Exposes a typed interface,
+      never internal Project data. Renamed from DelegationContract: the word "delegation" is reserved for authority
+      delegation, explicitly excluded from V1, and this schema never modeled that -- it models a typed cross-Project
+      request contract.'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: SolicitationContract
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: SolicitationContractSpec
+        required: true
+        inlined: true
+  SolicitationContractSpec:
+    attributes:
+      callerProject:
+        range: Identifier
+        required: true
+      targetProject:
+        range: Identifier
+        required: true
+      allowedRequests:
+        range: AllowedRequest
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      expiresAfter:
+        range: Duration
+      approval:
+        range: SolicitationApproval
+        required: true
+        inlined: true
+      forbidden:
+        range: ForbiddenSolicitationReach
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AllowedRequest:
+    attributes:
+      capability:
+        range: CapabilityName
+        required: true
+      dataScope:
+        range: DataScope
+        required: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: COMMAND
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SolicitationApproval:
+    attributes:
+      requiredOwners:
+        range: RequiredOwners
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  EngagementMethod:
+    description: A reusable, Git-governed method for a Realm-scoped Matter. Describes work; grants neither authority nor employment
+      status.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: EngagementMethod
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: EngagementMethodSpec
+        required: true
+        inlined: true
+  EngagementMethodSpec:
+    attributes:
+      agentDefinitionRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      workerRequirementProfileRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      resourceBudgetRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      assurance:
+        range: AssuranceLevel
+        required: true
+      stages:
+        range: EngagementStage
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      termination:
+        range: EngagementTermination
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  EngagementStage:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      promptTemplateRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      gate:
+        range: EngagementGate
+        required: true
+      deliverable:
+        range: string
+        required: true
+        pattern: ^.{3,}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  EngagementTermination:
+    attributes:
+      maximumDuration:
+        range: Duration
+        required: true
+      allowEarlyTermination:
+        range: boolean
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  Practice:
+    description: 'A recurring governed invocation. Rather than owning its own cron/timezone/invokes fields, a Practice
+      references a ProcessSpec (execution.yaml) whose START step is kind: TIMER -- the schedule lives once,
+      on the process, not twice (once here and once conceptually on whatever the source schema''s separate WorkflowDeclaration
+      would have needed). This removes the source schema''s `schedule` and `invokes` blocks entirely; `delivery`, `autonomy`,
+      `budgetRef`, and `enabled` are unchanged.'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: Practice
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PracticeSpec
+        required: true
+        inlined: true
+  PracticeSpec:
+    attributes:
+      purpose:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      processSpecRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: Exact metadata id of the retained TIMER-triggered ProcessSpec release this Practice invokes. A Practice
+          never follows a mutable logical process pointer.
+      delivery:
+        range: DeliveryMode
+        required: true
+        description: How the result reaches the human. Always LIVE is an interruption schedule, not a rhythm.
+      autonomy:
+        range: AutonomyLevel
+      resourceBudgetRef:
+        range: ContractReference
+        inlined: true
+      enabled:
+        range: boolean
+        ifabsent: 'true'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProjectRuntime:
+    attributes:
+      durableWorkflowEngine:
+        range: DurableWorkflowEngine
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProjectStateAuthority:
+    attributes:
+      desiredState:
+        range: string
+        equals_string: git
+        required: true
+      businessState:
+        range: BusinessStateStore
+        required: true
+      executionState:
+        range: ExecutionStateStore
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CapabilityProfile:
+    description: A human-facing named preset over a WorkerRequirementProfile vector. Names an intent, never a model or a power
+      score (ADR-0019, ADR-0082).
+    annotations:
+      jumo.composition: SEALED
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: CapabilityProfile
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: CapabilityProfileSpec
+        required: true
+        inlined: true
+  CapabilityProfileSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      workerRequirementProfileRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: The WorkerRequirementProfile this preset resolves to.
+      intent:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      presenceRef:
+        range: string
+        pattern: ^[a-z][a-zA-Z0-9]*$
+        description: Optional ThemePack terminology key. Decoration only.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  WorkerRequirementProfile:
+    description: A multi-dimensional task requirement vector used to select an eligible runtime Worker. Names neither provider
+      nor model and defines no aggregate power score.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: WorkerRequirementProfile
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: WorkerRequirementProfileSpec
+        required: true
+        inlined: true
+  WorkerRequirementProfileSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      taskClasses:
+        range: TaskClass
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+      modalities:
+        range: Modality
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+      dataScopeCeiling:
+        range: DataScope
+        required: true
+      context:
+        range: WorkerContextRequirement
+        required: true
+        inlined: true
+      interaction:
+        range: WorkerInteractionRequirement
+        required: true
+        inlined: true
+      quality:
+        range: WorkerQualityRequirement
+        required: true
+        inlined: true
+      limits:
+        range: WorkerLimits
+        required: true
+        inlined: true
+      requiredIndependenceGroup:
+        range: Identifier
+        description: Narrows eligible ProviderAccounts to those sharing this independenceGroup (own, or inherited from
+          their ProviderPlatform). Two profiles at the same reasoningEffort rung are otherwise indistinguishable for
+          routing purposes (provider-platform-catalog lot); a producing and a verifying role's profiles declare disjoint
+          values here when ADR-0019's independence separation must hold operationally, not just architecturally. Absent
+          by default -- most profiles route on rung alone.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  WorkerContextRequirement:
+    attributes:
+      minimumTokens:
+        range: integer
+        required: true
+        minimum_value: 1024
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  WorkerInteractionRequirement:
+    attributes:
+      toolUse:
+        range: ToolUseRequirement
+        required: true
+      structuredOutput:
+        range: ToolUseRequirement
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  WorkerQualityRequirement:
+    attributes:
+      minimumAssurance:
+        range: AssuranceLevel
+        required: true
+      minimumReliability:
+        range: float
+        required: true
+        minimum_value: 0
+        maximum_value: 1
+      minimumTaskHorizon:
+        range: Duration
+        required: true
+      maximumEvaluationAge:
+        range: Duration
+        required: true
+      reasoningEffort:
+        range: ReasoningEffort
+      goldenTaskSetRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  WorkerLimits:
+    attributes:
+      maximumLatency:
+        range: Duration
+        required: true
+      maximumCostClass:
+        range: CostClass
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  GoldenTaskSet:
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: GoldenTaskSet
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: GoldenTaskSetSpec
+        required: true
+        inlined: true
+  GoldenTaskSetSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      workerRequirementProfileRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      cases:
+        range: GoldenTaskCase
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 10
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  GoldenTaskCase:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      taskClass:
+        range: TaskClass
+        required: true
+      instruction:
+        range: string
+        required: true
+        pattern: ^.{20,}$
+      dimensions:
+        range: BenchmarkDimension
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PromptTemplate:
+    description: 'A prompt is Ring 2 material: reviewable, versioned agent behavior (ADR-0008). Belongs to exactly one AgentDefinition;
+      the capabilities its output may propose are constrained to a subset of what that definition requests.'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: PromptTemplate
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PromptTemplateSpec
+        required: true
+        inlined: true
+  PromptTemplateSpec:
+    attributes:
+      agentDefinitionRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: The owning AgentDefinition.
+      purpose:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      template:
+        range: PromptBody
+        required: true
+        inlined: true
+      variables:
+        range: PromptVariable
+        multivalued: true
+        inlined_as_list: true
+      output:
+        range: PromptOutput
+        required: true
+        inlined: true
+      mayProposeCapabilities:
+        range: CapabilityName
+        multivalued: true
+        description: 'Enforced as a subset of the owning AgentDefinition''s requestedCapabilities (Rego). Proposing
+          is still not granting: policy decides.'
+      workerRequirementProfileRef:
+        range: ContractReference
+        inlined: true
+      resourceBudgetRef:
+        range: ContractReference
+        inlined: true
+      minimumAssurance:
+        range: AssuranceLevel
+      ring:
+        range: Ring
+      conversationTask:
+        range: ConversationTask
+        description: The ConversationService task this prompt serves. Optional -- most PromptTemplate documents are
+          referenced by a journey step, not by a conversation task, and leave this unset.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PromptBody:
+    attributes:
+      engine:
+        range: PromptEngine
+        required: true
+      system:
+        range: string
+      user:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      path:
+        range: string
+        description: Optional path to the body, for prompts too long to inline.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PromptVariable:
+    attributes:
+      name:
+        range: string
+        required: true
+        pattern: ^[a-z][a-zA-Z0-9_]*$
+      description:
+        range: string
+      trust:
+        range: VariableTrust
+        required: true
+      required:
+        range: boolean
+        ifabsent: 'true'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PromptOutput:
+    attributes:
+      form:
+        range: PromptOutputForm
+        required: true
+      javaType:
+        range: string
+        description: Fully qualified target type for STRUCTURED output.
+      schemaRef:
+        range: string
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ResourceBudget:
+    description: Per-Episode frugality limits. Assurance may never degrade silently to stay within budget.
+    annotations:
+      jumo.composition: OVERRIDABLE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ResourceBudget
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ResourceBudgetSpec
+        required: true
+        inlined: true
+  ResourceBudgetSpec:
+    attributes:
+      limits:
+        range: BudgetLimits
+        required: true
+        inlined: true
+      minimumAssurance:
+        range: AssuranceLevel
+        description: A floor. Exhaustion may never push the Episode below it without explicit policy and approval.
+      onExhaustion:
+        range: BudgetOnExhaustion
+        required: true
+      preferDeterministicRouting:
+        range: boolean
+        ifabsent: 'true'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  BudgetLimits:
+    attributes:
+      tokens:
+        range: integer
+        minimum_value: 1
+      estimatedCostEur:
+        range: float
+        minimum_value: 0
+      wallClock:
+        range: Duration
+      modelCalls:
+        range: integer
+        minimum_value: 1
+      toolCalls:
+        range: integer
+        minimum_value: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourney:
+    description: Declaration of a multi-turn governed assisted onboarding journey.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: AssistedJourney
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: AssistedJourneySpec
+        required: true
+        inlined: true
+  JourneyVerificationSpec:
+    description: Secret-free declaration of an explicit real observation a journey step may request.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: JourneyVerificationSpec
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      targetType:
+        range: JourneyVerificationTarget
+        required: true
+      capability:
+        range: JourneyVerificationCapability
+        required: true
+  AssistedJourneySpec:
+    attributes:
+      journeyId:
+        range: string
+        required: true
+        pattern: ^[a-z][a-z0-9-]*$
+      name:
+        range: string
+        required: true
+      description:
+        range: string
+      category:
+        range: string
+        description: Catalog category for this journey.
+      icon:
+        range: string
+        description: Display icon for this journey.
+      interruptible:
+        range: boolean
+        ifabsent: 'true'
+      concurrencyPolicy:
+        range: AssistedJourneyConcurrencyPolicy
+      firstRunMandatory:
+        range: boolean
+        ifabsent: 'false'
+      lifetimeUnique:
+        range: boolean
+        ifabsent: 'false'
+      heroImage:
+        range: string
+      resourceBudgetRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: Names the ResourceBudget whose modelCalls limit bounds the clarification-turn ceiling (AC1). The
+          journey does not declare its own ceiling.
+      emitsCapability:
+        range: CapabilityName
+        description: The single capability a proposal journey may invoke. Observation journeys leave this absent.
+      completionMode:
+        range: AssistedJourneyCompletionMode
+        ifabsent: PROPOSAL
+      navigationMode:
+        range: AssistedJourneyNavigationMode
+        ifabsent: SEQUENTIAL
+        description: FREE permits navigation among dependency-ready steps; dependencies remain mandatory server-side.
+      emission:
+        range: AssistedJourneyEmission
+        inlined: true
+        description: 'What a PROPOSAL journey emits when its run completes: the contract kind, where it is written,
+          the template that renders it, and the checks the collected fields must pass. Rego requires it of every
+          PROPOSAL journey (canonical decision 15) -- without it the platform would have to recognise the journey by
+          name to know what it produces, which is the dispatch this slot exists to remove.'
+      steps:
+        range: AssistedJourneyStep
+        multivalued: true
+        inlined_as_list: true
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyEmission:
+    description: 'The declarative replacement for a per-journey emission branch. Everything here is read by one
+      generic renderer: nothing in it names a journey, and nothing outside it decides what a journey emits.'
+    attributes:
+      targetKind:
+        range: string
+        required: true
+        description: The contract kind the emitted document declares. Must name a declared kind (Rego).
+      identifier:
+        range: AssistedJourneyEmittedIdentifier
+        required: true
+        inlined: true
+      pathTemplate:
+        range: string
+        required: true
+        description: Where the document is written, with ${id} standing for the resolved identifier, e.g.
+          `.jumo/teams/${id}.yml`.
+      documentTemplateRef:
+        range: ContractReference
+        inlined: true
+        description: 'The DocumentTemplate that renders the document. Must resolve to a declared template rendering
+          the same kind (Rego). Absent while a journey emits a document this vocabulary cannot yet describe -- the
+          renderer refuses such an emission rather than guessing, and the journey keeps a named branch until a
+          template can replace it, which is exactly what the boundary allowlist records.'
+      validations:
+        range: AssistedJourneyFieldValidation
+        multivalued: true
+        inlined_as_list: true
+        description: Field-level checks the collected payload must pass before anything is written.
+      referenceChecks:
+        range: AssistedJourneyReferenceCheck
+        multivalued: true
+        inlined_as_list: true
+        description: Checks that a collected value names a contract that exists, so a journey never proposes a
+          document pointing at nothing.
+      fieldDefaults:
+        range: AssistedJourneyFieldDefault
+        multivalued: true
+        inlined_as_list: true
+        description: Values used when a field was not collected, so a template needs no conditional of its own.
+      fieldConditions:
+        range: AssistedJourneyFieldCondition
+        multivalued: true
+        inlined_as_list: true
+        description: 'Fields the emitted document carries only under a declared condition. A template drops a key
+          whose lone placeholder resolves to nothing, so a conditional key needs no template conditional of its own
+          -- the condition removes the value and the existing absence rule removes the key. Applied after
+          fieldDefaults, so a default never resurrects a field the condition has removed.'
+      collectionProjections:
+        range: AssistedJourneyCollectionProjection
+        multivalued: true
+        inlined_as_list: true
+        description: 'What a multivalued field contributes to the emitted document. A collected item may carry more
+          than the contract needs, so the emitted item is a projection of it -- declared here rather than decided by
+          the renderer, which is what keeps the emitted shape a contract fact.'
+      routingEligibilityCheck:
+        range: AssistedJourneyRoutingEligibilityCheck
+        inlined: true
+        description: Refuses a proposal that would route work to a team the project did not declare eligible. A
+          project with no declared eligibility constrains nothing, as RoutingEligibility itself is additive.
+      booleanFields:
+        range: string
+        multivalued: true
+        description: 'Field names whose collected "true"/"false" string is coerced to a real YAML boolean before
+          rendering. The platform compensates here rather than in the renderer: the generic step form has no
+          boolean-aware widget yet (projection-field-options-resolution), so a BOOLEAN_FLAG-shaped value still
+          arrives as free text.'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyEmittedIdentifier:
+    description: How the emitted document's identifier is derived from the run, always by slugifying one collected
+      field rather than by a rule the platform keeps per journey.
+    attributes:
+      fromField:
+        range: string
+        required: true
+      defaultValue:
+        range: string
+        description: Used when the field was not collected.
+      suffix:
+        range: AssistedJourneyIdentifierSuffix
+        ifabsent: NONE
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyFieldValidation:
+    attributes:
+      field:
+        range: string
+        required: true
+      required:
+        range: boolean
+        ifabsent: 'false'
+      minimumLength:
+        range: integer
+        minimum_value: 1
+      pattern:
+        range: string
+      minimumItems:
+        range: integer
+        minimum_value: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyFieldCondition:
+    description: One field of the emitted document and the collected value that decides whether it is present at all.
+    attributes:
+      field:
+        range: string
+        required: true
+      whenField:
+        range: string
+        required: true
+        description: The collected or derived value the presence of `field` depends on.
+      equalsValue:
+        range: string
+        required: true
+        description: '`field` is kept when `whenField` equals this value, and removed otherwise.'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyReferenceCheck:
+    attributes:
+      field:
+        range: string
+        required: true
+      kind:
+        range: string
+        required: true
+        description: The contract kind the value must name. Must be a declared kind (Rego).
+      itemPath:
+        range: string
+        description: For a multivalued field, the key inside each item that carries the reference.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.composition: ADDITIVE
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyCollectionProjection:
+    attributes:
+      field:
+        range: string
+        required: true
+      keys:
+        range: string
+        multivalued: true
+        required: true
+        description: The keys each emitted item carries, in the order the document declares them.
+      optionalKeys:
+        range: string
+        multivalued: true
+        description: Keys carried only when the collected item supplies a non-blank value.
+      itemValidations:
+        range: AssistedJourneyFieldValidation
+        multivalued: true
+        inlined_as_list: true
+        description: Checks applied to each item, naming a key of the item rather than a field of the payload.
+      itemReferenceKind:
+        range: string
+        description: When the collected item is a plain reference id rather than an object (an
+          ENTITY_COLLECTION field submits ids), the declared contract kind it names. Must be a
+          declared kind (Rego). The resolved document supplies each declared key not already
+          carried by the submission itself -- keys read spec.<key>, falling back to metadata.name
+          -- so the emitted item never trusts a client-submitted facet the contract can resolve
+          authoritatively instead.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyRoutingEligibilityCheck:
+    attributes:
+      projectField:
+        range: string
+        required: true
+      teamField:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyFieldDefault:
+    attributes:
+      field:
+        range: string
+        required: true
+      value:
+        range: string
+        required: true
+        description: May itself interpolate ${id} or another collected field.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  DocumentTemplate:
+    description: 'A YAML document with ${placeholder} scalars, rendered into the contract a journey proposes. The
+      body is one string rather than a typed nesting because the shape it renders is the shape of whichever kind the
+      journey emits -- the same reason a step payload with no generated class declares payloadSchemaRef against a
+      raw JSON Schema (projection.yaml). Substitution happens after the body is parsed, so a placeholder standing
+      alone as a value may be filled by a list or a mapping, not only by a scalar.'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: PUBLIC_WEB
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: DocumentTemplate
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: DocumentTemplateBody
+        required: true
+        inlined: true
+  DocumentTemplateBody:
+    attributes:
+      renders:
+        range: string
+        required: true
+        description: The contract kind this template produces, checked against the emission that names it (Rego).
+      body:
+        range: string
+        required: true
+        description: The YAML document, with ${placeholder} where a collected or derived value goes.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: PUBLIC_WEB
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyStep:
+    description: 'stepKind/projectionRef/processRef are additive: the model-driven rendering engine that consumes them does
+      not exist yet, so requiredFields stays required and load-bearing -- JourneyService (control-plane) reads it server-side
+      and apps/web/components/journey/JourneyRunner.vue reads it client-side. requiredFields is retired once every
+      AssistedJourney step declares projectionRef/processRef and the renderer that replaces JourneyRunner.vue exists; until
+      then both describe the same steps.'
+    attributes:
+      id:
+        range: string
+        required: true
+      name:
+        range: string
+        required: true
+      description:
+        range: string
+      personaNarration:
+        range: string
+      stepKind:
+        range: AssistedJourneyStepKind
+        description: Required from the model-driven renderer onward (Rego).
+      projectionSpecRef:
+        range: ContractReference
+        inlined: true
+        description: The ProjectionSpec this step renders. Its `of:` class is the step payload type, so the shape is derived
+          rather than declared twice. Required on COLLECT and CONFIRM once stepKind is set (Rego).
+      processSpecRef:
+        range: ContractReference
+        inlined: true
+        description: The ProcessSpec whose run an AWAIT step observes. Required on AWAIT once stepKind is set (Rego).
+      promptTemplateRef:
+        range: ContractReference
+        inlined: true
+        description: The PromptTemplate this step uses when stepKind is DIALOGUE_COLLECT.
+      subAssistedJourneyRef:
+        range: ContractReference
+        inlined: true
+        description: The AssistedJourney this step delegates to when stepKind is SUB_JOURNEY.
+      verificationSpecRef:
+        range: ContractReference
+        inlined: true
+        description: Generic real observation required before this step can advance.
+      dependsOn:
+        range: string
+        multivalued: true
+        description: Step IDs that must be completed before this step becomes available.
+      parallelizable:
+        range: boolean
+        ifabsent: 'false'
+        description: Marks a dependency-ready step as part of a parallelizable work group in the renderer.
+      image:
+        range: string
+        description: Step-level hero image, overriding the journey's heroImage for this step only. Falls back to AssistedJourneySpec.heroImage
+          when absent. Not validated by the schema (same convention as heroImage) -- a kit-distributed asset once JumoKit
+          exports binary assets (portability.yaml).
+      descriptionI18nKey:
+        range: string
+        description: i18n key resolving this step's user-facing description. When present, takes precedence over the literal
+          description string, which remains the fallback for journeys that have not been translated.
+      narrationI18nKey:
+        range: string
+        description: i18n key resolving this step's personaNarration ("Nestor's voice"). Same fallback convention as descriptionI18nKey.
+      requiredFields:
+        range: string
+        multivalued: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

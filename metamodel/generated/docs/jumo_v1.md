@@ -1,0 +1,6 @@
+# jumo_v1
+
+Jumo V1 metamodel root. Single normative source (alignment plan decision 1); JSON Schema, Java records, OpenAPI, GraphQL SDL, OWL, SHACL, JSON-LD context, SQL DDL, and documentation are all generated from this schema and its imported modules (LOT 3). Nothing under metamodel/generated/ or .jumo/schemas/ is hand-edited once LOT 4 cuts the corpus over -- this file and its modules are the only hand-written source of truth for contract shape.
+Modules, by subject matter: core (shared types/enums/Metadata, DocumentFrontMatter, Principal, PrincipleSet), organization (roles, teams, coordination, personal spaces, OrganizationSpec), work (work orders, solicitation, methods, practices, worker selection), governance (capability security kernel, policy, improvement loop, attention, certification by design), execution (ProcessSpec), integration (connectors, MCP, provider accounts, worker substrates, federation), interface (cockpit surfaces, theming, vocabulary), portability (Project, RealmTemplate, Jumo Kit triptych, OfferingSpec), projection (ProjectionSpec: named views of a generated class).
+
+URI: https://jumo.dev/schemas/jumo-v1

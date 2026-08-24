@@ -1,0 +1,45 @@
+{
+  "_comment": "Ceilings for the Jumo corpus. Exceeding one fails CI. Lowering one is the intended direction and needs no ceremony; raising one is a deliberate, reviewable act. Regenerate with scripts/verify/check-corpus-budget.py --update.",
+  "measures": {
+    "non_normative_lines": {
+      "resolution": "non-normative"
+    },
+    "rule_shaped_statements_in_non_normative": {
+      "resolution": "non-normative"
+    },
+    "normative_documents": {
+      "resolution": "normative",
+      "informational": "bounded by NORMATIVE_PATHS, not by a line count"
+    },
+    "work_open_lines": {
+      "resolution": "machine"
+    },
+    "work_ledger_lines": {
+      "resolution": "machine",
+      "informational": "append-only closure records (corpus.work.completed-in-ledger)"
+    },
+    "recognized_state_uncovered_tables": {
+      "resolution": "machine"
+    },
+    "metamodel_construction_references": {
+      "resolution": "machine"
+    },
+    "boundary_allowlist_entries": {
+      "resolution": "machine"
+    },
+    "adr_lines_max": {
+      "resolution": "normative"
+    }
+  },
+  "ceilings": {
+    "non_normative_lines": 244,
+    "rule_shaped_statements_in_non_normative": 1,
+    "normative_documents": 26,
+    "work_open_lines": 0,
+    "work_ledger_lines": 0,
+    "recognized_state_uncovered_tables": 0,
+    "metamodel_construction_references": 0,
+    "boundary_allowlist_entries": 0,
+    "adr_lines_max": 60
+  }
+}

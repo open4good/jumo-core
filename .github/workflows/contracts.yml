@@ -1,0 +1,54 @@
+name: contracts
+
+# jumo-core is the declarative corpus only: no Maven, Node or database. This job wires
+# metamodel-and-policy-to-core AC1's four checks -- LinkML semantic lint, opa check/test, the
+# corpus budget and the metamodel/platform boundary -- so jumo-core validates its own contract
+# authoring before jumo pins a revision of it. Corpus-instance validation (WorkOrders, journeys,
+# the composed negative fixtures) stays jumo's job in corpus-validate.yml, against its own tree.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: contracts-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'main' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  contracts:
+    name: Validate metamodel and policy
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.14'
+
+      - name: Install validation dependencies
+        run: pip install --disable-pip-version-check pyyaml
+
+      - name: LinkML semantic lint
+        run: python3 scripts/generate/lint_linkml_semantics.py
+
+      - name: Enforce the metamodel/platform boundary (canonical decision 15)
+        run: python3 scripts/verify/check-boundary.py
+
+      - name: Enforce the corpus budget
+        run: python3 scripts/verify/check-corpus-budget.py
+
+      - name: opa check --strict
+        run: |
+          docker run --rm -v "${PWD}/policy:/policy:ro" \
+            openpolicyagent/opa:1.19.0@sha256:8523599954435a3659954ad51ee0304d22bd97576f16cdb02e5e39f38ff3962a \
+            check --strict /policy
+
+      - name: opa test
+        run: |
+          docker run --rm -v "${PWD}/policy:/policy:ro" \
+            openpolicyagent/opa:1.19.0@sha256:8523599954435a3659954ad51ee0304d22bd97576f16cdb02e5e39f38ff3962a \
+            test /policy -v

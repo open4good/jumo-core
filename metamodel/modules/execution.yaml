@@ -1,0 +1,1374 @@
+id: https://jumo.dev/schemas/execution
+name: jumo_execution
+description: 'ProcessSpec: the process-as-typed-contract redesign of WorkflowDeclaration. The
+  source schema''s `stages[]` was a flat, ordered enum list with invariants enforced entirely in prose plus scripts/validate-contracts.py
+  ("policy evaluation must precede effect application", "assessment may not share a workflow with effect application"). This
+  module replaces it with a graph (steps + flows) so those invariants become checkable with Rego''s graph.reachable/graph.reachable_paths
+  built-ins instead of hand-written Python walks, and so BPMN 2.0 becomes a generated projection of this graph rather than
+  a second, hand-maintained process representation. The 25-value stage enum from the source schema is preserved
+  verbatim as ProcessStepSemanticStage so every existing ordering invariant still has something to check against; nothing
+  named by that enum was dropped.'
+license: https://www.apache.org/licenses/LICENSE-2.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  jumo: https://jumo.dev/schemas/execution/
+default_prefix: jumo
+default_range: string
+imports:
+  - linkml:types
+  - core
+enums:
+  ProcessStepKind:
+    description: The BPMN-shaped element kinds the ProcessSpec compiler maps to Temporal and, separately, projects to BPMN 2.0
+      XML via an element-mapping table.
+    permissible_values:
+      START: {}
+      END: {}
+      SERVICE: {}
+      USER: {}
+      TIMER: {}
+      MESSAGE: {}
+      GATEWAY: {}
+      SUBPROCESS: {}
+  ProcessStartTrigger:
+    permissible_values:
+      MANUAL: {}
+      TIMER: {}
+  ProcessGatewayMode:
+    permissible_values:
+      EXCLUSIVE: {}
+      PARALLEL: {}
+  ProcessGatewayRole:
+    permissible_values:
+      SPLIT: {}
+      JOIN: {}
+  ProcessStepSemanticStage:
+    description: Verbatim from WorkflowDeclaration.spec.stages (source schema). Ordering invariants previously enforced by
+      scripts/validate-contracts.py ("policy evaluation and capability acquisition must precede effect application"; "OUTCOME_ASSESSMENT
+      follows OUTCOME_MEASUREMENT and never stands alone"; "neither assessment nor synthesis may share a workflow with EFFECT_APPLICATION")
+      move to Rego using graph.reachable_paths over this ProcessSpec's steps/flows.
+    permissible_values:
+      CAPTURE_LINKED: {}
+      NORMALIZE_CAPTURE: {}
+      INTENT_RECOGNITION: {}
+      SUFFICIENCY_ASSESSMENT: {}
+      SCOPE_RESOLUTION: {}
+      DECOMPOSITION: {}
+      WORK_DISPOSITION: {}
+      ACKNOWLEDGEMENT: {}
+      ADMISSION: {}
+      CLARIFICATION: {}
+      POLICY_EVALUATION: {}
+      CAPABILITY_ACQUISITION: {}
+      PLANNING: {}
+      EXECUTION: {}
+      EFFECT_APPLICATION: {}
+      OBSERVATION: {}
+      VERIFICATION: {}
+      STATUS_WINDOW_RESOLUTION: {}
+      STATUS_FACT_EXTRACTION: {}
+      STATUS_NARRATION: {}
+      STATUS_DELIVERY: {}
+      STATUS_CURSOR_ADVANCE: {}
+      OUTCOME_MEASUREMENT: {}
+      OUTCOME_ASSESSMENT: {}
+      IMPROVEMENT_SYNTHESIS: {}
+      COMPLETION: {}
+  ProcessTerminalState:
+    permissible_values:
+      COMPLETED: {}
+      DECLINED: {}
+      CANCELLED: {}
+      FAILED_FINAL: {}
+      SUPERSEDED: {}
+  ProcessHistoryRetention:
+    permissible_values:
+      AUDIT_ALIGNED: {}
+      SHORT: {}
+      MINIMAL: {}
+  MachineOrigin:
+    permissible_values:
+      JUMO_MANAGED_LOCAL: {}
+      USER_PROVIDED: {}
+      JUMO_MANAGED_CLOUD_RESERVED: {}
+  MachineEnvironment:
+    permissible_values:
+      LOCAL_DEV: {}
+      REMOTE: {}
+  MachineDesiredState:
+    permissible_values:
+      DECLARED: {}
+      ACTIVE: {}
+      DRAINING: {}
+      REVOKED: {}
+  CliQualification:
+    permissible_values:
+      QUALIFIED: {}
+      DECLARABLE_ONLY: {}
+      DEPRECATED: {}
+  StructuredOutputMode:
+    permissible_values:
+      NATIVE_JSON_SCHEMA: {}
+      PROMPTED_JSON_VALIDATED: {}
+      UNSUPPORTED: {}
+  QuotaStatus:
+    permissible_values:
+      OBSERVED: {}
+      USAGE_ONLY: {}
+      UNKNOWN: {}
+      UNSUPPORTED: {}
+      STALE: {}
+  WorkloadDriverKind:
+    description: Closed over the drivers activatable by machine-pull-workload-supervisor. The SPI stays
+      platform-neutral for a later home-automation or mobile driver -- a new value is appended when
+      that driver actually exists, not reserved speculatively here.
+    permissible_values:
+      MCP_REGISTRY: {}
+      MCP_GATEWAY: {}
+      MCP_DISCOVERY: {}
+  WorkloadCommandStatus:
+    permissible_values:
+      QUEUED: {}
+      CLAIMED: {}
+      STARTED: {}
+      COMPLETED: {}
+      FAILED: {}
+      TIMED_OUT: {}
+      CANCELLED: {}
+      EXPIRED: {}
+classes:
+  ProcessSpec:
+    description: 'A durable process: a graph of typed steps and flows, compiled to a Temporal Workflow and projected
+      to BPMN 2.0 XML for audit and rendering. A Temporal Workflow normally corresponds to an Episode (canonical
+      decision 39, unchanged by this redesign).'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ProcessSpec
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ProcessSpecBody
+        required: true
+        inlined: true
+  ProcessSpecBody:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      projectRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      processId:
+        range: Identifier
+        required: true
+      processVersion:
+        range: string
+        required: true
+        pattern: ^\d+\.\d+\.\d+$
+      inputType:
+        range: string
+        required: true
+      outputType:
+        range: string
+        required: true
+      startTrigger:
+        range: ProcessStartTrigger
+        required: true
+      timerDelay:
+        range: Duration
+        description: Required only for TIMER starts; ISO-8601 duration rather than cron.
+      steps:
+        range: ProcessStep
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 2
+        description: Must include exactly one START and at least one END (Rego).
+      flows:
+        range: ProcessFlow
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      durability:
+        range: ProcessDurability
+        inlined: true
+      stageWorkerRequirementRef:
+        range: ProcessStageWorkerRequirement
+        multivalued: true
+        inlined_as_list: true
+        description: Task requirements per model-using step (source schema's open string-keyed map, modeled as key/value pairs
+          -- see ThemePack for the same pattern). Every key must name a declared step and every value resolves to a WorkerRequirementProfile
+          (Rego).
+      resourceBudgetRef:
+        range: ContractReference
+        inlined: true
+        description: ResourceBudget governing this process.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProcessStep:
+    description: 'One node in the process graph. inputType/outputType/capabilityRef/opaEntrypoint are used selectively by
+      kind: a GATEWAY step names opaEntrypoint (the OPA decision that selects its outgoing flow);
+      a SERVICE step names capabilityRef and inputType/outputType; a TIMER START step carries the schedule fields Practice.processSpecRef
+      (work.yaml) points at. Which fields apply to which kind is a Rego invariant, not encoded structurally here --
+      LinkML has no tagged-union/discriminated-class construct clean enough to justify one ProcessStep subclass per kind for
+      what is otherwise one shape.'
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      kind:
+        range: ProcessStepKind
+        required: true
+      semanticStage:
+        range: ProcessStepSemanticStage
+        description: The WorkflowDeclaration-era stage this step corresponds to, where applicable.
+      capabilityRef:
+        range: CapabilityName
+        description: Required on a SERVICE step (Rego); must resolve in an ActionCapabilitySet.
+      ring:
+        range: Ring
+        description: Must not exceed the ringCeiling of capabilityRef's ActionCapability (Rego).
+      idempotencyKey:
+        range: string
+        description: Required on a SERVICE step whose capability producesExternalEffect (Rego).
+      opaEntrypoint:
+        range: string
+        pattern: ^[a-z][a-z0-9_.]*$
+        description: 'Required on a GATEWAY step (Rego): the Rego rule the ProcessSpec compiler wires as the decision selecting
+          this gateway''s outgoing branch.'
+      terminalState:
+        range: ProcessTerminalState
+        description: Required on END and forbidden elsewhere.
+      signalType:
+        range: string
+        description: Required on USER and MESSAGE signals; resolves to a generated LinkML class.
+      gatewayMode:
+        range: ProcessGatewayMode
+      gatewayRole:
+        range: ProcessGatewayRole
+      pairedGatewayRef:
+        range: Identifier
+      loopMaximum:
+        range: integer
+        minimum_value: 1
+        maximum_value: 100
+      fallbackFlowRef:
+        range: Identifier
+      subprocessReleaseRef:
+        range: Identifier
+      compensationForStepRef:
+        range: Identifier
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  ProcessFlow:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      from:
+        range: Identifier
+        required: true
+        description: A ProcessStep id in this same ProcessSpec.
+      to:
+        range: Identifier
+        required: true
+        description: A ProcessStep id in this same ProcessSpec.
+      branchLabel:
+        range: string
+        description: Required when `from` names a GATEWAY step with more than one outgoing flow (Rego).
+      payloadType:
+        range: string
+        required: true
+        description: A generated LinkML class name; every edge carries an explicit typed payload.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ChangeProposalRef:
+    description: Narrow hash-bound reference; it never contains a document body or secret.
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      ownerRealm:
+        range: Identifier
+        required: true
+      projectRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      revision:
+        range: string
+        required: true
+      contentHash:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ForgeProjectionRef:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      ownerRealm:
+        range: Identifier
+        required: true
+      projectRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      revision:
+        range: string
+        required: true
+      contentHash:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProcessRunRef:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      ownerRealm:
+        range: Identifier
+        required: true
+      projectRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      revision:
+        range: string
+        required: true
+      contentHash:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ApprovalSignal:
+    description: Minimal user/message signal envelope; no approval decision is inferred from it.
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      ownerRealm:
+        range: Identifier
+        required: true
+      projectRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      revision:
+        range: string
+        required: true
+      contentHash:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ExecutionCellProvisioningRef:
+    description: 'Narrow hash-bound reference to one hosted-execution-cell provisioning run. Same narrow shape as
+      ProcessRunRef/ForgeProjectionRef: it never contains VM identifiers, key material, or pairing-code proof -- those stay
+      in ExecutionCell and its pairing ledger.'
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      ownerRealm:
+        range: Identifier
+        required: true
+      projectRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      revision:
+        range: string
+        required: true
+      contentHash:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProcessDurability:
+    attributes:
+      expectedMaximum:
+        range: Duration
+      historyRetention:
+        range: ProcessHistoryRetention
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProcessStageWorkerRequirement:
+    attributes:
+      stepId:
+        range: Identifier
+        required: true
+      workerRequirementProfileRef:
+        range: ContractReference
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineNetworkConfig:
+    description: Network configuration for an ExecutionMachine.
+    attributes:
+      ipAllocation:
+        range: string
+      macAddress:
+        range: string
+      outboundControlUrl:
+        range: string
+      egressAllowlist:
+        range: string
+        multivalued: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ExecutionMachine:
+    description: Durable Git contract defining an execution machine bound to a single Realm.
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ExecutionMachine
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ExecutionMachineSpec
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  ExecutionMachineSpec:
+    description: Specification for an ExecutionMachine contract.
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      origin:
+        range: MachineOrigin
+        required: true
+      environment:
+        range: MachineEnvironment
+        required: true
+      desiredState:
+        range: MachineDesiredState
+        required: true
+      hostDefinitionRef:
+        range: string
+      installedCliRefs:
+        range: string
+        multivalued: true
+      installedConnectorRefs:
+        range: string
+        multivalued: true
+      ansibleBaselineRef:
+        range: string
+      network:
+        range: MachineNetworkConfig
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineHostDefinition:
+    description: Durable Git contract defining the host environment and driver for a machine.
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: MachineHostDefinition
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: MachineHostDefinitionSpec
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  MachineHostDefinitionSpec:
+    description: Specification for a MachineHostDefinition contract.
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      driver:
+        range: string
+        required: true
+      domainPrefix:
+        range: string
+      storagePool:
+        range: string
+      bridgeNetwork:
+        range: string
+      memoryBytes:
+        range: integer
+      vcpuCount:
+        range: integer
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineInventoryObservation:
+    description: Observed hardware and OS characteristics of an enrolled machine.
+    attributes:
+      osName:
+        range: string
+      osVersion:
+        range: string
+      arch:
+        range: string
+      kernelVersion:
+        range: string
+      cpuCount:
+        range: integer
+      memoryBytes:
+        range: integer
+      diskBytes:
+        range: integer
+      agentVersion:
+        range: string
+      observedAt:
+        range: string
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: OBSERVATION
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineHealthObservation:
+    description: Observed real-time health and load status of an execution machine.
+    attributes:
+      machineId:
+        range: Identifier
+        required: true
+      status:
+        range: string
+        required: true
+      lastHeartbeatAt:
+        range: string
+        required: true
+      activeLeasesCount:
+        range: integer
+      systemLoad:
+        range: float
+      memoryUsagePercent:
+        range: float
+      diskUsagePercent:
+        range: float
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: OBSERVATION
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineEnrollmentRequest:
+    description: BYOVM one-shot machine enrollment request carrying CSR and system inventory.
+    attributes:
+      machineId:
+        range: Identifier
+        required: true
+      realmId:
+        range: Identifier
+        required: true
+      challengeToken:
+        range: string
+        required: true
+      csrPem:
+        range: string
+        required: true
+      systemInventory:
+        range: MachineInventoryObservation
+        inlined: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: COMMAND
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineEnrollmentChallenge:
+    description: Short-lived enrollment challenge issued by the control plane.
+    attributes:
+      token:
+        range: string
+        required: true
+      realmId:
+        range: Identifier
+        required: true
+      machineId:
+        range: Identifier
+        required: true
+      bootstrapDigest:
+        range: string
+        required: true
+      expiresAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineEnrollmentResult:
+    description: Result of a machine enrollment challenge containing issued mTLS certificates.
+    attributes:
+      machineId:
+        range: Identifier
+        required: true
+      certificatePem:
+        range: string
+        required: true
+      caCertificatePem:
+        range: string
+        required: true
+      status:
+        range: string
+        required: true
+      enrolledAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineAdminPlaybook:
+    description: Git-governed allowlisted Ansible playbook definition for machine administration.
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: MachineAdminPlaybook
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: MachineAdminPlaybookSpec
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  MachineAdminPlaybookSpec:
+    description: Specification of an allowlisted machine admin playbook.
+    attributes:
+      playbookPath:
+        range: string
+        required: true
+      playbookDigest:
+        range: string
+        required: true
+      signature:
+        range: string
+      variablesSchemaId:
+        range: string
+      allowedRealms:
+        range: Identifier
+        multivalued: true
+      description:
+        range: string
+      appliesToCapability:
+        range: CapabilityName
+        description: The capability this playbook implements. The platform resolves which playbook
+          to dispatch by scanning for the one declaring the capability a ProcessStep names
+          (capabilityRef), instead of naming the playbook instance by id -- a sealed capability name
+          is platform vocabulary, never an instance identifier (canonical decision 15). At most one
+          playbook may claim a given capability (Rego).
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineAdminRequest:
+    description: Web administration request to dispatch an allowlisted Ansible playbook to a machine.
+    attributes:
+      machineId:
+        range: Identifier
+        required: true
+      playbookRef:
+        range: string
+        required: true
+      variables:
+        range: SchemaBoundPayload
+        inlined: true
+      workOrderId:
+        range: Identifier
+      stepUpProof:
+        range: string
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: COMMAND
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineAdminCommand:
+    description: Ansible playbook execution command sent to an enrolled machine.
+    attributes:
+      commandId:
+        range: Identifier
+        required: true
+      machineId:
+        range: Identifier
+        required: true
+      workOrderId:
+        range: Identifier
+      contractRevision:
+        range: string
+      playbookRef:
+        range: string
+        required: true
+      playbookDigest:
+        range: string
+        required: true
+      variables:
+        range: SchemaBoundPayload
+        inlined: true
+      approvalReference:
+        range: string
+      issuedAt:
+        range: string
+        required: true
+      expiresAt:
+        range: string
+        required: true
+      timeoutSeconds:
+        range: integer
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: COMMAND
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineAdminResult:
+    description: Result and sanitized evidence of an Ansible admin command execution.
+    attributes:
+      commandId:
+        range: Identifier
+        required: true
+      machineId:
+        range: Identifier
+        required: true
+      exitCode:
+        range: integer
+        required: true
+      status:
+        range: string
+        required: true
+      sanitizedEvidence:
+        range: string
+      evidenceDigest:
+        range: string
+      completedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  WorkloadCommand:
+    description: Typed workload command claimed by pull from an ExecutionMachine, distinct from the
+      Ansible-only MachineAdminCommand. Bound to the ExecutionCellLease that scopes its workload
+      boundary (ADR-0047).
+    attributes:
+      commandId:
+        range: Identifier
+        required: true
+      machineId:
+        range: Identifier
+        required: true
+      leaseId:
+        range: Identifier
+        required: true
+      driverKind:
+        range: WorkloadDriverKind
+        required: true
+      workOrderId:
+        range: Identifier
+      contractRevision:
+        range: string
+      payload:
+        range: SchemaBoundPayload
+        inlined: true
+      issuedAt:
+        range: string
+        required: true
+      expiresAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: COMMAND
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  WorkloadCommandResult:
+    description: Terminal outcome of a claimed WorkloadCommand, sanitized before it leaves the machine.
+    attributes:
+      commandId:
+        range: Identifier
+        required: true
+      machineId:
+        range: Identifier
+        required: true
+      status:
+        range: WorkloadCommandStatus
+        required: true
+      sanitizedEvidence:
+        range: string
+      evidenceDigest:
+        range: string
+      completedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MachineRuntimeInstallation:
+    description: Observed runtime installation (CLI or connector) on a target machine.
+    attributes:
+      installationId:
+        range: Identifier
+        required: true
+      machineId:
+        range: Identifier
+        required: true
+      kind:
+        range: string
+        required: true
+      runtimeRef:
+        range: string
+        required: true
+      releaseDigest:
+        range: string
+        required: true
+      status:
+        range: string
+        required: true
+      installedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: CONTRACT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ExecutionCellLease:
+    description: Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and contract digest.
+    attributes:
+      leaseId:
+        range: Identifier
+        required: true
+      machineId:
+        range: Identifier
+        required: true
+      workOrderId:
+        range: Identifier
+        required: true
+      gitCommitSha:
+        range: string
+        required: true
+      contractDigest:
+        range: string
+        required: true
+      status:
+        range: string
+        required: true
+      grantedAt:
+        range: string
+        required: true
+      expiresAt:
+        range: string
+        required: true
+      delegatedSecretBindings:
+        range: string
+        multivalued: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EXECUTION_HISTORY
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliToolDefinition:
+    description: Durable Git contract declaring an AI CLI tool available for execution.
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: CliToolDefinition
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: CliToolDefinitionSpec
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  CliToolDefinitionSpec:
+    description: Specification for a CliToolDefinition contract.
+    attributes:
+      toolName:
+        range: string
+        required: true
+      cli:
+        range: WorkerCli
+        description: The WorkerCli value this tool implements. Without it a runtime has to derive the tool
+          from the enum value by naming convention, which is the instance-naming the boundary forbids.
+      qualification:
+        range: CliQualification
+        required: true
+      supportedAdapterProfiles:
+        range: string
+        multivalued: true
+      defaultProfile:
+        range: string
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliRelease:
+    description: Durable Git contract pinning an immutable OCI container release for a CLI tool.
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: CliRelease
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: CliReleaseSpec
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  CliReleaseSpec:
+    description: Specification for a CliRelease contract.
+    attributes:
+      toolRef:
+        range: string
+        required: true
+      version:
+        range: string
+        required: true
+      platform:
+        range: string
+        required: true
+      ociImage:
+        range: string
+        required: true
+      imageDigest:
+        range: string
+        required: true
+      signatureDigest:
+        range: string
+      sbomDigest:
+        range: string
+      provenanceDigest:
+        range: string
+    annotations:
+      jumo.state_authority: OCI_REGISTRY
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliAdapterProfile:
+    description: Adapter execution profile and command template for a CLI worker runtime.
+    attributes:
+      profileId:
+        range: string
+        required: true
+      structuredOutputMode:
+        range: StructuredOutputMode
+        required: true
+      streamingEventFormat:
+        range: string
+      installCommand:
+        range: string
+      doctorCommand:
+        range: string
+      loginCommand:
+        range: string
+      invocationCommand:
+        range: string
+      quotaSupport:
+        range: boolean
+      defaultTurnLimit:
+        range: integer
+      defaultTimeoutSeconds:
+        range: integer
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliInstallationDesiredState:
+    description: Desired CLI installation state on a specific machine.
+    attributes:
+      machineRef:
+        range: string
+        required: true
+      toolRef:
+        range: string
+        required: true
+      releaseRef:
+        range: string
+        required: true
+      desiredState:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliInstallationObservation:
+    description: Observed installation and doctor health status of a CLI tool on a machine.
+    attributes:
+      machineRef:
+        range: string
+        required: true
+      toolRef:
+        range: string
+        required: true
+      installedReleaseRef:
+        range: string
+        required: true
+      status:
+        range: string
+        required: true
+      doctorSummary:
+        range: string
+      observedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: OBSERVATION
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliInvocationRequest:
+    description: Structured WorkOrder execution invocation dispatched to a CLI worker container.
+    attributes:
+      workOrderId:
+        range: Identifier
+        required: true
+      leaseId:
+        range: Identifier
+        required: true
+      machineRef:
+        range: string
+        required: true
+      toolRef:
+        range: string
+        required: true
+      releaseRef:
+        range: string
+        required: true
+      gitCommitSha:
+        range: string
+        required: true
+      prompt:
+        range: string
+        required: true
+      inputBinding:
+        range: SchemaBinding
+        inlined: true
+      outputBinding:
+        range: SchemaBinding
+        inlined: true
+      turnLimit:
+        range: integer
+      tokenBudget:
+        range: integer
+      timeoutSeconds:
+        range: integer
+      grantedCapabilities:
+        range: string
+        multivalued: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: COMMAND
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliInvocationEvent:
+    description: Streaming event produced during an active CLI invocation.
+    attributes:
+      workOrderId:
+        range: Identifier
+        required: true
+      sequence:
+        range: integer
+        required: true
+      eventType:
+        range: string
+        required: true
+      payloadJson:
+        range: string
+        required: true
+      timestamp:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: EVENT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliInvocationResult:
+    description: Sanitized final output payload, exit code, and evidence digest from a CLI execution.
+    attributes:
+      workOrderId:
+        range: Identifier
+        required: true
+      status:
+        range: string
+        required: true
+      exitCode:
+        range: integer
+        required: true
+      sanitizedOutputPayload:
+        range: SchemaBoundPayload
+        inlined: true
+      evidenceDigest:
+        range: string
+        required: true
+      tokensConsumed:
+        range: integer
+      completedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliUsageObservation:
+    description: Observed consumption metrics from CLI tool invocations.
+    attributes:
+      toolRef:
+        range: string
+        required: true
+      tokensUsed:
+        range: integer
+      callsCount:
+        range: integer
+      durationMs:
+        range: integer
+      capturedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: OBSERVATION
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProviderQuotaObservation:
+    description: Observed quota and rate limit status from an upstream provider.
+    attributes:
+      kind:
+        range: string
+        required: true
+      scope:
+        range: string
+        required: true
+      limit:
+        range: float
+      remaining:
+        range: float
+      unit:
+        range: string
+        required: true
+      capturedAt:
+        range: string
+        required: true
+      staleAt:
+        range: string
+      resetAt:
+        range: string
+      provenance:
+        range: string
+        required: true
+      confidence:
+        range: float
+      status:
+        range: QuotaStatus
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

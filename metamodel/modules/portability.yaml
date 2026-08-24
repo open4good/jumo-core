@@ -1,0 +1,1295 @@
+id: https://jumo.dev/schemas/portability
+name: jumo_portability
+description: 'Project and Realm declarations, and the Jumo Kit portability triptych. JumoKit is an active Git
+  contract kind (canonical decision 13): the manifest a kit repository
+  itself declares, distinct from KitBinding/ KitLock/KitReleaseCertification which live Realm-side. OfferingSpec
+  (renamed from ManagedServiceOffer) is the packaging vehicle. RealmTemplateSpec.ingress
+  is the per-tenant hostname binding -- see RealmIngressBinding.'
+license: https://www.apache.org/licenses/LICENSE-2.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  jumo: https://jumo.dev/schemas/portability/
+default_prefix: jumo
+default_range: string
+imports:
+  - linkml:types
+  - core
+  - work
+enums:
+  ProjectLifecycle:
+    permissible_values:
+      IDEATION: {}
+      BOOTSTRAP: {}
+      ACTIVE: {}
+      MAINTENANCE: {}
+      ARCHIVED: {}
+  ProjectVisibility:
+    permissible_values:
+      PRIVATE: {}
+      PRIVATE_UNTIL_LICENSED: {}
+      CLIENT_SCOPED: {}
+      PUBLIC: {}
+  ForgeProvider:
+    description: GitHub is the only implemented Forge in V0, behind a Forge-neutral abstraction (canonical decision 55).
+    permissible_values:
+      github: {}
+      gitlab: {}
+  RealmSphere:
+    description: Organizational grouping only. A sphere never constitutes a security boundary.
+    permissible_values:
+      PERSONAL: {}
+      PROFESSIONAL: {}
+      MOBILITY: {}
+      HOUSEHOLD: {}
+      CLIENT: {}
+  BranchProtectionState:
+    description: ADVISORY means the Forge does not prevent a direct push, a force-push or a self-approved merge. A declaration
+      is not a control -- it is a claim the owner makes.
+    permissible_values:
+      ADVISORY: {}
+      ENFORCED: {}
+  IndependentVerificationState:
+    description: ADVISORY means no automated check confirms a WorkOrder's producer and verifier are distinct actors in this
+      realm. A declaration is not a control -- it is a claim the owner makes, and ENFORCED costs an observation and a reference
+      to it, same as BranchProtectionState.
+    permissible_values:
+      ADVISORY: {}
+      ENFORCED: {}
+  RealmExposureMode:
+    description: Exposure and federation posture of the Realm. Defaults to PRIVATE_STEALTH. PRIVATE_STEALTH isolates the Realm
+      from unauthenticated external discovery and intra-cluster visibility. CLUSTER_SHARED allows peer discovery and role
+      sharing within the same hosted cluster. PUBLIC_DISCOVERABLE exposes public agent cards and external federation endpoints.
+    permissible_values:
+      PRIVATE_STEALTH: {}
+      CLUSTER_SHARED: {}
+      PUBLIC_DISCOVERABLE: {}
+  KitBindingValueType:
+    permissible_values:
+      STRING: {}
+      NUMBER: {}
+      BOOLEAN: {}
+      REALM_ID: {}
+      PROJECT_ID: {}
+      ENDPOINT_URL: {}
+      CONFIGURATION_REF: {}
+      SECRET_SLOT: {}
+  KitModuleType:
+    permissible_values:
+      ROLE: {}
+      CONNECTOR: {}
+      FEDERATION_HANDLER: {}
+  OfferingState:
+    permissible_values:
+      HYPOTHESIS: {}
+      VALIDATED: {}
+      RETIRED: {}
+  BillingCadence:
+    permissible_values:
+      MONTHLY: {}
+      ANNUAL: {}
+  VatTreatment:
+    permissible_values:
+      EX_VAT: {}
+      INC_VAT: {}
+  SharedRepositoryApprovalPolicy:
+    description: Who must approve a forge-write against a shared repository binding. OWNER_ONLY applies when a single Realm
+      owns the binding. MUTUAL_CONSENT blocks merge until all co-owner Realms have acknowledged.
+    permissible_values:
+      OWNER_ONLY: {}
+      MUTUAL_CONSENT: {}
+  TopologyPlacement:
+    permissible_values:
+      DEDICATED: {}
+      SHARED: {}
+  HostnameInclusion:
+    permissible_values:
+      INCLUDED: {}
+      UNASSIGNED: {}
+  RepositoryOwnership:
+    permissible_values:
+      CLIENT_OWNED: {}
+      JUMO_OWNED: {}
+  RepositoryVisibility:
+    permissible_values:
+      PRIVATE: {}
+      PUBLIC: {}
+  ConsumerIdentityRouting:
+    permissible_values:
+      FORBIDDEN: {}
+      ALLOWED: {}
+  SlaTier:
+    permissible_values:
+      NONE: {}
+      BEST_EFFORT: {}
+      GUARANTEED: {}
+  SourceVisibility:
+    permissible_values:
+      SOURCE_VISIBLE: {}
+      SOURCE_HIDDEN: {}
+  RedistributionTerms:
+    permissible_values:
+      FORBIDDEN: {}
+      ALLOWED: {}
+classes:
+  Project:
+    description: A governed body of work declared in a Realm control repository. Git repositories are optional bound resources,
+      not the identity of a Project.
+    annotations:
+      jumo.composition: REALM_ONLY
+      openapi.resource: true
+      openapi.operations: list,get
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: Project
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ProjectSpec
+        required: true
+        inlined: true
+  ProjectSpec:
+    attributes:
+      contractDirectory:
+        range: string
+        equals_string: .jumo
+        required: true
+      ownerRealm:
+        range: Identifier
+        required: true
+        description: A Project has exactly one canonical owner Realm (ADR-0004).
+      lifecycle:
+        range: ProjectLifecycle
+        required: true
+      visibility:
+        range: ProjectVisibility
+      repositoryBindings:
+        range: RepositoryBinding
+        multivalued: true
+        inlined_as_list: true
+        description: Zero or more Git resources governed by this Project. A repository-free Project remains valid.
+      documentation:
+        range: ProjectDocumentation
+        inlined: true
+        description: Where this Project's governed Markdown lives and who may retrieve it. Jumo indexes declared roots and
+          nothing else (ADR-0014).
+      personalSpaces:
+        range: ProjectPersonalSpaceBinding
+        multivalued: true
+        inlined_as_list: true
+      compatibility:
+        range: ProjectCompatibility
+        inlined: true
+      purpose:
+        range: string
+        pattern: ^.{10,}$
+        description: Folded in from the retired ProjectContract kind (owner decision O3, 2026-08-22).
+      primaryLanguage:
+        range: string
+      deployment:
+        range: DeploymentTarget
+      runtime:
+        range: ProjectRuntime
+        inlined: true
+      authority:
+        range: ProjectStateAuthority
+        inlined: true
+        description: No component may treat its local representation as authority for another category (ADR-0002).
+      milestones:
+        range: Milestone
+        multivalued: true
+        inlined_as_list: true
+        description: Declared in delivery order. Groups the generated roadmap and bounds every WorkOrder's
+          roadmapRef (Rego corpus.work.roadmap-ref-declared).
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  Milestone:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      order:
+        range: integer
+        required: true
+        minimum_value: 0
+        description: Delivery order. Breaks ties when two milestones would otherwise sort ambiguously; the
+          generated roadmap groups in this order, not declaration order.
+      exitCondition:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RepositoryBinding:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      provider:
+        range: ForgeProvider
+        required: true
+      repository:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$
+        description: owner/name. A literal TODO is rejected (Rego, for the placeholder scan).
+      coOwnerRealms:
+        range: Identifier
+        multivalued: true
+        description: Additional Realm identifiers that co-govern this repository. When non-empty, all named Realms must declare
+          a matching RepositoryBinding pointing at the same repository. Policy enforces mutual binding via Rego (corpus.project.mutual-repo-binding).
+      approvalPolicy:
+        range: SharedRepositoryApprovalPolicy
+        description: 'OWNER_ONLY (default): only the ownerRealm may authorize forge writes. MUTUAL_CONSENT: every co-owner
+          Realm must signal approval before ForgeApplier merges.'
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProjectDocumentation:
+    attributes:
+      roots:
+        range: DocumentationRoot
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      canonicalDecisions:
+        range: string
+        description: Folded in from the retired ProjectContract kind (owner decision O3, 2026-08-22).
+      handoff:
+        range: string
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  DocumentationRoot:
+    attributes:
+      path:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$
+        description: Repository-relative directory. No leading slash and no '..'.
+      maximumAudience:
+        range: DataScope
+        required: true
+        description: 'Widest audience any document under this root may claim. A ceiling, not a default: a directory set to
+          REALM_PRIVATE holds for everything in it regardless of what a single file declares.'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProjectPersonalSpaceBinding:
+    attributes:
+      personalSpaceRef:
+        range: ContractReference
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ProjectCompatibility:
+    attributes:
+      minimumJumoVersion:
+        range: string
+        pattern: ^\d+\.\d+\.\d+
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RealmTemplate:
+    description: 'A Realm is a governance, privacy and security boundary. Spheres group work inside a Realm without being
+      security boundaries (canonical decision 12). `ingress` is the
+      same shape one level up, for DNS instead of workspace grouping: `RealmIngressBinding` carries no audience, policy, capability
+      or other authority-bearing attribute, so a subdomain stays routing only by construction, never a security boundary --
+      `enforcement` on this same spec remains the only field that is.'
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: RealmTemplate
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: RealmTemplateSpec
+        required: true
+        inlined: true
+  RealmTemplateSpec:
+    attributes:
+      owner:
+        range: string
+        required: true
+        pattern: ^.{2,}$
+        description: The canonical owner Principal. A literal TODO is rejected (Rego).
+      exposure:
+        range: RealmExposureMode
+        ifabsent: PRIVATE_STEALTH
+        description: Realm exposure posture. Defaults to PRIVATE_STEALTH (fail-closed, invisible by default).
+      spheres:
+        range: RealmSphere
+        multivalued: true
+      chiefOfStaff:
+        range: RealmChiefOfStaffRef
+        inlined: true
+      timezone:
+        range: string
+        pattern: ^.{3,}$
+      ingress:
+        range: RealmIngressBinding
+        inlined: true
+        description: 'Optional per-tenant subdomain routing. Absent for a Realm with no hosted hostname
+          of its own, the same "field-free stays valid" shape as Project.repositoryBindings.'
+      enforcement:
+        range: RealmEnforcement
+        required: true
+        inlined: true
+      policySetRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+        description: Relative paths to PolicySet documents. Resolved and existence-checked (Rego).
+      principleSetRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+        description: Relative paths to PrincipleSet documents. Influence only.
+      contractRepository:
+        range: string
+        description: Target git repository URL or forge path for this Realm.
+      kitBindingRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+        description: Ordered list of kit bindings determining precedence.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RealmChiefOfStaffRef:
+    attributes:
+      roleDefinitionRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      chiefOfStaffProfileRef:
+        range: ContractReference
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RealmIngressBinding:
+    description: 'Per-tenant DNS routing for one RealmTemplate. `baseDomain` is deliberately not named `canonicalDomain` or
+      `hostname`: OfferingTopology.canonicalDomain and OfferingTopology.hostname (this same module) already use both names
+      for an inclusion flag, not a domain value -- a third reuse of either name for a different shape would recreate the exact
+      collision the `ProjectionSource`/`ProjectionSpec` naming warns against elsewhere in this metamodel. Deliberately carries
+      no audience, policy, capability or other authority-bearing attribute: Rego refusing two RealmTemplates the same hostname
+      protects routing correctness, not authorization -- that stays on RealmEnforcement.'
+    attributes:
+      subdomain:
+        range: string
+        required: true
+        pattern: ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$
+        description: DNS label distinguishing this Realm's hostname under baseDomain.
+      baseDomain:
+        range: string
+        required: true
+        pattern: ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)+$
+        description: The parent domain subdomain is bound under, e.g. jumo.dev or a client-owned domain.
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RealmEnforcement:
+    description: 'ENFORCED requiring observedAt/evidenceRef/evidenceMaxAge moves to Rego: claiming enforcement costs
+      an observation and a reference to it.'
+    attributes:
+      branchProtection:
+        range: BranchProtectionState
+        required: true
+      observedAt:
+        range: datetime
+      evidenceRef:
+        range: string
+        pattern: ^.{1,}$
+      evidenceMaxAge:
+        range: Duration
+        description: Maximum age of the Forge protection observation before an autonomy gate must treat the claim as stale
+          (ADR-0028, default PT24H).
+      independentVerification:
+        range: IndependentVerificationState
+        description: 'Optional, additive claim distinct from branchProtection. Not wired into whether the corpus.independence.*
+          rules apply -- those keep running unconditionally regardless of this field. Only claiming ENFORCED here has any
+          effect: it must then carry its own fresh independentVerificationObservedAt/independentVerificationEvidenceRef within
+          independentVerificationEvidenceMaxAge (Rego), same evidence-costs-a-claim shape as branchProtection.'
+      independentVerificationObservedAt:
+        range: datetime
+      independentVerificationEvidenceRef:
+        range: string
+        pattern: ^.{1,}$
+      independentVerificationEvidenceMaxAge:
+        range: Duration
+        description: Maximum age of the independent-verification observation before its ENFORCED claim must be treated as
+          stale, default PT24H.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  JumoKit:
+    description: 'Root manifest for one portable Jumo Kit repository. Official schemas are supplied by Jumo, never by the
+      kit repository. An active contract kind: the manifest a kit repository itself declares.'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: JumoKit
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: JumoKitSpec
+        required: true
+        inlined: true
+  JumoKitSpec:
+    attributes:
+      minimumJumoVersion:
+        range: string
+        required: true
+        pattern: ^\d+\.\d+\.\d+$
+      bindings:
+        range: KitBindingDeclaration
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+        description: Open string-keyed map in the source schema, modeled as a list of key/type pairs (see ThemePack for the
+          same pattern).
+      exports:
+        range: string
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+        pattern: ^\.jumo/[A-Za-z0-9._/-]+\.yml$
+      assetExports:
+        range: string
+        multivalued: true
+        pattern: ^\.jumo/assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp|json)$
+        description: 'Optional binary assets (images) and i18n bundles (json) the kit distributes, distinct from `exports`
+          because these are opaque content, not corpus-governed YAML documents -- no LinkML class validates their bytes, only
+          their provenance (KitLockSpec.renderedAssets digest). Images and i18n bundles share this one tree rather than splitting
+          into two export lists: both are inert content a journey (AssistedJourneyStep.image/heroImage) or the frontend i18n
+          loader references by rendered path, never executed.'
+      profiles:
+        range: KitProfile
+        multivalued: true
+        inlined_as_list: true
+      modules:
+        range: KitModule
+        multivalued: true
+        inlined_as_list: true
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KitBindingDeclaration:
+    attributes:
+      key:
+        range: string
+        required: true
+      type:
+        range: KitBindingValueType
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KitProfile:
+    attributes:
+      id:
+        range: string
+        required: true
+        pattern: ^[a-z][a-z0-9-]*$
+      exports:
+        range: string
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+        pattern: ^\.jumo/[A-Za-z0-9._/-]+\.yml$
+      includes:
+        range: string
+        multivalued: true
+        pattern: ^[a-z][a-z0-9-]*$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KitModule:
+    attributes:
+      id:
+        range: string
+        required: true
+        pattern: ^[a-z][a-z0-9-]*$
+      type:
+        range: KitModuleType
+        required: true
+      sourcePath:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9._/-]+$
+      entrypoint:
+        range: string
+        required: true
+        pattern: ^[a-z][A-Za-z0-9_.]*\.[A-Z][A-Za-z0-9]*$
+      capabilityRefs:
+        range: CapabilityName
+        multivalued: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KitBinding:
+    description: Realm-local, closed binding for one Jumo Kit release. Supplies values but never grants authority.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: KitBinding
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: KitBindingSpec
+        required: true
+        inlined: true
+  KitBindingSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      kit:
+        range: KitReference
+        required: true
+        inlined: true
+      alias:
+        range: Identifier
+        required: true
+      profiles:
+        range: Identifier
+        multivalued: true
+      values:
+        range: KitBindingValue
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      derivationRefs:
+        range: Identifier
+        multivalued: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KitReference:
+    attributes:
+      repository:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$
+      commit:
+        range: string
+        required: true
+        pattern: ^[0-9a-f]{40}$
+      release:
+        range: string
+        pattern: ^.{1,}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KitBindingValue:
+    description: Open string-keyed map (string|number|boolean values) in the source schema, modeled as key/value pairs; value
+      kept as string, the widest common representation.
+    attributes:
+      key:
+        range: string
+        required: true
+      value:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KitLock:
+    description: Rendered provenance for one admitted Jumo Kit. Records bytes and evidence; does not authorize execution.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: KitLock
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: KitLockSpec
+        required: true
+        inlined: true
+  KitLockSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      kitBindingRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      repository:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$
+      commit:
+        range: string
+        required: true
+        pattern: ^[0-9a-f]{40}$
+      manifestDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      kitReleaseCertificationRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      rendered:
+        range: RenderedKitFile
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+      renderedAssets:
+        range: RenderedKitAsset
+        multivalued: true
+        inlined_as_list: true
+        description: Provenance for assetExports (JumoKitSpec) admitted by this release, if any.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RenderedKitFile:
+    attributes:
+      sourcePath:
+        range: string
+        required: true
+        pattern: ^\.jumo/[A-Za-z0-9._/-]+\.yml$
+      targetPath:
+        range: string
+        required: true
+        pattern: ^\.jumo/kits/[a-z][a-z0-9-]*/[A-Za-z0-9._/-]+\.yml$
+      digest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RenderedKitAsset:
+    description: Provenance for one rendered binary asset or i18n bundle -- same digest-provenance shape as RenderedKitFile,
+      kept a separate class because the source/target patterns admit assetExports' file types instead of `.yml`.
+    attributes:
+      sourcePath:
+        range: string
+        required: true
+        pattern: ^\.jumo/assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp|json)$
+      targetPath:
+        range: string
+        required: true
+        pattern: ^\.jumo/kits/[a-z][a-z0-9-]*/assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp|json)$
+      digest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KitReleaseCertification:
+    description: Portable independent review of an exact Jumo Kit release and its executable modules or connector artifacts.
+      signedBy != verifiedBy (source schema's $data cross-field check) moves to Rego -- no actor certifies its own
+      release.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: KitReleaseCertification
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: KitReleaseCertificationSpec
+        required: true
+        inlined: true
+  KitReleaseCertificationSpec:
+    attributes:
+      publisher:
+        range: string
+        required: true
+        pattern: ^.{2,}$
+      repository:
+        range: string
+        required: true
+        pattern: ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$
+      commit:
+        range: string
+        required: true
+        pattern: ^[0-9a-f]{40}$
+      manifestDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      signedBy:
+        range: string
+        required: true
+        pattern: ^.{2,}$
+      verifiedBy:
+        range: string
+        required: true
+        pattern: ^.{2,}$
+      evidenceRefs:
+        range: string
+        multivalued: true
+        required: true
+        minimum_cardinality: 4
+        pattern: ^.{3,}$
+      moduleDigests:
+        range: ModuleDigestEntry
+        multivalued: true
+        inlined_as_list: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ModuleDigestEntry:
+    attributes:
+      moduleId:
+        range: string
+        required: true
+      digest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingSpec:
+    description: 'Hypothesis-level managed-service offer for a client-owned Solo deployment. Records the commercial assumption
+      separately from the durable control-plane decisions that will survive or outlive the experiment. Renamed from ManagedServiceOffer:
+      the vehicle for offering packaging. Numeric const
+      values in the source schema (fixed prices, fixed durations) are kept as plain typed fields with an ifabsent default
+      carrying the source''s pinned value, rather than encoded as JSON-Schema-style constants LinkML has no direct equivalent
+      for -- several of these are expected to become genuinely configurable, so a plain field is the more honest fidelity
+      choice here.'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: OfferingSpec
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: OfferingSpecBody
+        required: true
+        inlined: true
+  OfferingSpecBody:
+    attributes:
+      state:
+        range: OfferingState
+        required: true
+        ifabsent: HYPOTHESIS
+      audience:
+        range: string
+        equals_string: INDEPENDENT_PROFESSIONAL
+        required: true
+      subscriptionAudience:
+        range: string
+        equals_string: INDEPENDENT_PROFESSIONAL
+        required: true
+      pricing:
+        range: OfferingPricing
+        required: true
+        inlined: true
+      onboarding:
+        range: OfferingOnboarding
+        required: true
+        inlined: true
+      topology:
+        range: OfferingTopology
+        required: true
+        inlined: true
+      aiUsage:
+        range: OfferingAiUsage
+        required: true
+        inlined: true
+      support:
+        range: OfferingSupport
+        required: true
+        inlined: true
+      kits:
+        range: OfferingKits
+        required: true
+        inlined: true
+      export:
+        range: OfferingExport
+        required: true
+        inlined: true
+      validation:
+        range: OfferingValidation
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingPricing:
+    attributes:
+      monthlyFeeExVatEur:
+        range: float
+        required: true
+        ifabsent: '49'
+      setupFeeExVatEur:
+        range: float
+        required: true
+        ifabsent: '99'
+      billingCadence:
+        range: BillingCadence
+        required: true
+        ifabsent: MONTHLY
+      minimumTermMonths:
+        range: integer
+        required: true
+        ifabsent: '0'
+      vatTreatment:
+        range: VatTreatment
+        required: true
+        ifabsent: EX_VAT
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingOnboarding:
+    attributes:
+      guidedMinutes:
+        range: integer
+        required: true
+        ifabsent: '30'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingTopology:
+    attributes:
+      realmCell:
+        range: TopologyPlacement
+        required: true
+        ifabsent: DEDICATED
+      controlPlane:
+        range: TopologyPlacement
+        required: true
+        ifabsent: SHARED
+      postgresql:
+        range: TopologyPlacement
+        required: true
+        ifabsent: SHARED
+      temporal:
+        range: TopologyPlacement
+        required: true
+        ifabsent: SHARED
+      keycloak:
+        range: TopologyPlacement
+        required: true
+        ifabsent: SHARED
+      openBao:
+        range: TopologyPlacement
+        required: true
+        ifabsent: DEDICATED
+      hostname:
+        range: HostnameInclusion
+        required: true
+        ifabsent: INCLUDED
+      canonicalDomain:
+        range: HostnameInclusion
+        required: true
+        ifabsent: UNASSIGNED
+      clientRepository:
+        range: OfferingClientRepository
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingClientRepository:
+    attributes:
+      ownership:
+        range: RepositoryOwnership
+        required: true
+        ifabsent: CLIENT_OWNED
+      visibility:
+        range: RepositoryVisibility
+        required: true
+        ifabsent: PRIVATE
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingAiUsage:
+    attributes:
+      includedCreditEur:
+        range: float
+        required: true
+        ifabsent: '5'
+      byokAllowed:
+        range: boolean
+        required: true
+        ifabsent: 'true'
+      consumerIdentityRouting:
+        range: ConsumerIdentityRouting
+        required: true
+        ifabsent: FORBIDDEN
+      overage:
+        range: OfferingOverage
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingOverage:
+    attributes:
+      optInRequired:
+        range: boolean
+        required: true
+        ifabsent: 'true'
+      providerMarkupPercent:
+        range: float
+        required: true
+        ifabsent: '20'
+      hardCap:
+        range: boolean
+        required: true
+        ifabsent: 'true'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingSupport:
+    attributes:
+      requestsPerMonth:
+        range: integer
+        required: true
+        ifabsent: '2'
+      firstResponseTargetBusinessDays:
+        range: integer
+        required: true
+        ifabsent: '2'
+      sla:
+        range: SlaTier
+        required: true
+        ifabsent: NONE
+      recurringAdvice:
+        range: boolean
+        required: true
+        ifabsent: 'false'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingKits:
+    attributes:
+      premium:
+        range: OfferingPremiumKitTerms
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingPremiumKitTerms:
+    attributes:
+      sourceVisibility:
+        range: SourceVisibility
+        required: true
+        ifabsent: SOURCE_VISIBLE
+      internalUsePerpetual:
+        range: boolean
+        required: true
+        ifabsent: 'true'
+      redistribution:
+        range: RedistributionTerms
+        required: true
+        ifabsent: FORBIDDEN
+      resaleSaaS:
+        range: RedistributionTerms
+        required: true
+        ifabsent: FORBIDDEN
+      catalogUpdatesRequireSubscription:
+        range: boolean
+        required: true
+        ifabsent: 'true'
+      supportRequireSubscription:
+        range: boolean
+        required: true
+        ifabsent: 'true'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingExport:
+    attributes:
+      free:
+        range: boolean
+        required: true
+        ifabsent: 'true'
+      exitWindowDays:
+        range: integer
+        required: true
+        ifabsent: '30'
+      backupRetentionDays:
+        range: integer
+        required: true
+        ifabsent: '90'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  OfferingValidation:
+    attributes:
+      minimumPayingCustomers:
+        range: integer
+        required: true
+        ifabsent: '5'
+      minimumCycles:
+        range: integer
+        required: true
+        ifabsent: '3'
+      minimumRenewals:
+        range: integer
+        required: true
+        ifabsent: '4'
+      minimumDirectMarginPercent:
+        range: integer
+        required: true
+        ifabsent: '60'
+      maximumMedianSupportMinutesPerCustomerMonth:
+        range: integer
+        required: true
+        ifabsent: '30'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

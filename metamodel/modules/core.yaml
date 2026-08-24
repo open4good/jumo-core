@@ -1,0 +1,503 @@
+id: https://jumo.dev/schemas/core
+name: jumo_core
+description: Shared types, enums, and the Metadata block every contract document carries. Dissolves common.schema.json (v1alpha1)
+  -- it is no longer a separate schema file; every module imports this one for its shared vocabulary. apiVersion is
+  jumo.dev/v1 (from v1alpha1).
+license: https://www.apache.org/licenses/LICENSE-2.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  jumo: https://jumo.dev/schemas/core/
+default_prefix: jumo
+default_range: string
+imports:
+  - linkml:types
+types:
+  Identifier:
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^[a-z][a-z0-9-]*$
+    description: 'Stable technical identifier. Independent of display name and theme: renaming must never alter authority
+      (canonical decision, naming-and-universe).'
+  DecisionReference:
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^ADR-[0-9]{4}$
+    description: Stable reference to a repository architecture decision record.
+  Namespace:
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*){1,7}$
+    description: Reverse-DNS namespace grammar (1 to 8 lowercase dot-separated segments). Default core baseline is dev.jumo.core.
+  QualifiedReference:
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*){1,7}\/[a-z][a-z0-9-]*$
+    description: 'Qualified reference grammar: <namespace>/<id>.'
+  QualifiedCapabilityReference:
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*){1,7}\/[a-z][a-z0-9]*(\.[a-z][a-z0-9]*){1,3}$
+    description: 'Qualified capability reference grammar: <namespace>/<capabilityName>.'
+  CapabilityName:
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*){1,3}$
+    description: 'Capability namespace grammar: <domain>.[<resource>.]<verb>[.<qualifier>], two to four lowercase segments.
+      Every name used anywhere must resolve against .jumo/capabilities/.'
+  Duration:
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^P(?!$)(\d+Y)?(\d+M)?(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?$
+    description: ISO 8601 duration.
+  ConfigurationRef:
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: ^[a-z][a-z0-9.-]{2,}$
+    description: Reference to trusted runtime configuration. Contains no credentials or endpoint secrets.
+  OpenBaoRuntimeRef:
+    typeof: string
+    base: str
+    uri: xsd:string
+    pattern: '^openbao://[a-z][a-z0-9.-]{2,}/[a-zA-Z0-9._/-]+$'
+    description: Account- or connector-scoped OpenBao KV-v2 reference; the broker resolves the declared field for the target.
+enums:
+  Effect:
+    description: Policy outcome. Only policies authorize; principles never do (ADR-0005).
+    permissible_values:
+      ALLOW: {}
+      DENY: {}
+      ALLOW_WITH_OBLIGATIONS: {}
+      REQUIRE_APPROVAL: {}
+  Obligation:
+    permissible_values:
+      STEP_UP_AUTHENTICATION: {}
+      HUMAN_OWNER_APPROVAL: {}
+      INDEPENDENT_VERIFICATION: {}
+      DISCLOSE_AGENT_IDENTITY: {}
+      RETAIN_PROVENANCE: {}
+      REDACT_SECRETS: {}
+      PREVIEW_BEFORE_SEND: {}
+  AssuranceLevel:
+    permissible_values:
+      NONE: {}
+      SELF_REPORTED: {}
+      OBSERVED: {}
+      INDEPENDENTLY_VERIFIED: {}
+  AutonomyLevel:
+    description: Progressive autonomy ladder. Configured per action class, channel, audience, risk and Realm -- never as one
+      global agent level.
+    permissible_values:
+      OBSERVE: {}
+      DRAFT: {}
+      SUPERVISED: {}
+      BOUNDED_AUTONOMOUS: {}
+  DataScope:
+    description: 'Widest audience a document or capability''s data may be served to. Kept as one enum for audience/publication
+      checks: see InformationClassification and the classification/compartment/release-transformation split below for the
+      narrower declassification-transformation concept. DataScope itself is not retired, since dozens of existing schemas
+      key off it for a single publication-boundary check, and splitting it everywhere at once would be overreach for that
+      one check.'
+    permissible_values:
+      PUBLISHED_SUMMARY: {}
+      TYPED_ATTENTION_ONLY: {}
+      PROJECT_SCOPED: {}
+      REALM_PRIVATE: {}
+      ORGANIZATION_ONLY: {}
+  InformationClassification:
+    description: 'Confidentiality dimension, split out from the single DataScope enum: classification, ownership, and
+      declassification are distinct concerns (docs/concepts/positionnement-conceptuel.md#flux-dinformation). Used where
+      an explicit cross-Realm release transformation is modeled, alongside ReleaseTransformation and ReleaseCompartment
+      below -- not a replacement for DataScope''s simpler publication-boundary role.'
+    permissible_values:
+      PUBLIC: {}
+      INTERNAL: {}
+      REALM_CONFIDENTIAL: {}
+      SECRET: {}
+  ReleaseCompartment:
+    description: The audience/purpose compartment a declassified value is released into.
+    permissible_values:
+      ATTENTION_SURFACE: {}
+      PARTNER_REALM: {}
+      PUBLIC_DOCUMENTATION: {}
+  ReleaseTransformation:
+    description: How a value crossed from its classification into its compartment.
+    permissible_values:
+      VERBATIM: {}
+      SUMMARIZED: {}
+      REDACTED: {}
+      SANITIZED_REASON_CODE: {}
+  DeliveryMode:
+    description: How a result or an AttentionItem reaches the human. Shared by Practice and AttentionItem so a rhythm and
+      the items it carries cannot describe delivery in two vocabularies. Pausing delivery never deletes the canonical event.
+    permissible_values:
+      LIVE: {}
+      DIGEST: {}
+      ESCALATION_ONLY: {}
+      DELEGATED: {}
+      MUTED_UNTIL: {}
+      QUIET_HOURS: {}
+  WorkerCli:
+    description: The CLI a worker substrate runs. Shared vocabulary -- a WorkerSubstrate declares which
+      one it runs (integration) and a CliToolDefinition declares which one it implements (execution),
+      so neither module has to import the other and no naming convention links a tool to a value.
+    permissible_values:
+      CLAUDE_CODE: {}
+      CODEX: {}
+      GEMINI_CLI: {}
+      COPILOT_CLI: {}
+  Ring:
+    description: Self-modification ring (ADR-0008). Ring 0 is never an ordinary change target.
+    permissible_values:
+      RING_0_ROOT_OF_TRUST: {}
+      RING_1_CONTROL_PLANE: {}
+      RING_2_AGENT_BEHAVIOR: {}
+      RING_3_GOVERNED_PROJECT: {}
+  EffectRecoveryKind:
+    description: 'Replaces the source schemas'' `reversible: boolean`: compensation is application-specific and can itself
+      fail, so a single boolean does not say which of these applies (docs/concepts/positionnement-conceptuel.md#sagas-et-recuperation).'
+    permissible_values:
+      RETRY: {}
+      DEDUPLICATION: {}
+      COMPENSATION: {}
+      CORRECTION: {}
+      RECONCILIATION: {}
+      EXPIRY_WINDOW: {}
+      RESIDUAL_HARM: {}
+  DocumentRetrieval:
+    permissible_values:
+      SEMANTIC_SECTIONS: {}
+      WHOLE_DOCUMENT: {}
+      EXCLUDED: {}
+  PrincipalKind:
+    permissible_values:
+      OWNER: {}
+      MEMBER: {}
+      CONTACT: {}
+  ConsentState:
+    permissible_values:
+      NOT_APPLICABLE: {}
+      UNKNOWN: {}
+      REQUESTED: {}
+      GRANTED: {}
+      DECLINED: {}
+      WITHDRAWN: {}
+classes:
+  ContractReference:
+    description: Structured reference to a Git-declared contract document.
+    attributes:
+      kind:
+        range: string
+        required: true
+        pattern: ^[A-Z][A-Za-z0-9]+$
+        description: Declared Git-contract kind.
+      namespace:
+        range: Namespace
+        required: true
+        description: Target logical namespace.
+      id:
+        range: Identifier
+        required: true
+        description: Target contract identifier.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+      jumo.composition: ADDITIVE
+  Metadata:
+    description: Shared identity block for every contract document.
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      namespace:
+        range: Namespace
+        required: true
+      name:
+        range: string
+      defaultDisplayName:
+        range: string
+      overrides:
+        range: LayerOverride
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  LayerOverride:
+    description: Explicit declaration of an overridden document from a lower layer or imported kit.
+    attributes:
+      layer:
+        range: string
+        required: true
+      id:
+        range: Identifier
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  DocumentFrontMatter:
+    description: 'Metadata every governed Markdown document declares, so a retriever can carry a passage''s authority and
+      audience along with its text. An ungoverned RAG loses both at chunk time: explanatory prose comes back looking like
+      a rule, and a Realm-private paragraph comes back to whoever asked. Those are the documentary forms of privilege escalation,
+      and this schema is where they are refused (ADR-0014).'
+    attributes:
+      title:
+        range: string
+        required: true
+        pattern: ^.{3,}$
+      lang:
+        range: string
+        ifabsent: string(en)
+        pattern: ^[a-z]{2}$
+        description: ISO 639-1 code of the document's prose. Defaults to English; a non-normative document may declare
+          fr for explanatory text (docs/concepts/positionnement-conceptuel.md).
+      normative:
+        range: boolean
+        required: true
+        description: 'Whether this document states rules. Travels with every chunk: a retriever may quote a false document
+          as explanation and never as authority (ADR-0005 applied to retrieval).'
+      audience:
+        range: DataScope
+        required: true
+        description: Widest scope a retrieval may serve this document to. Required with no default, because a default here
+          would silently publish.
+      retrieval:
+        range: DocumentRetrieval
+        ifabsent: SEMANTIC_SECTIONS
+      answers:
+        range: string
+        multivalued: true
+        pattern: ^.{10,}$
+        description: Questions this document answers, in the words a person would use.
+      status:
+        range: string
+        pattern: ^.{3,}$
+      supersedes:
+        range: string
+        multivalued: true
+        pattern: ^ADR-[0-9]{4}$
+      superseded_by:
+        range: string
+        multivalued: true
+        pattern: ^ADR-[0-9]{4}$
+      decisions:
+        range: integer
+        multivalued: true
+        description: Canonical decision numbers (docs/00-canonical-decisions.md) this ADR backs.
+      verified_at:
+        range: date
+      stale_after:
+        range: Duration
+      enforced_by:
+        range: string
+        pattern: ^.{3,}$
+        description: Comma-separated paths that mechanically enforce this document's rules. Checked for existence by scripts/check-corpus-budget.py.
+      last_updated:
+        range: date
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  Principal:
+    description: 'A person the Realm knows about: its owner, a Realm member with a personal space, or an external contact
+      with no login. A Principal grants no authority -- Membership, capability grants and policy remain required for anything
+      it does (ADR-0080).'
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: Principal
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PrincipalSpec
+        required: true
+        inlined: true
+  PrincipalSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      principalKind:
+        range: PrincipalKind
+        required: true
+        description: OWNER and MEMBER may hold a PersonalSpace and bear RoleDefinitions; a CONTACT is modeled by someone else's
+          Realm and has neither.
+      displayName:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      personalSpaceRef:
+        range: ContractReference
+        inlined: true
+        description: Present only for OWNER and MEMBER. A CONTACT has no login or workspace here.
+      consentState:
+        range: ConsentState
+        required: true
+        description: NOT_APPLICABLE for OWNER and MEMBER, who consented by joining the Realm. For a CONTACT, the Realm's own
+          record of whether that person agreed to being modeled -- never proof of consent, only a claim the Realm makes.
+      channelBindingRefs:
+        range: Identifier
+        multivalued: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PrincipalIdentityBinding:
+    description: Explicit Realm-local binding between a member or owner Principal and its OIDC subject. It grants no authority and is never prompt context.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: PrincipalIdentityBinding
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PrincipalIdentityBindingSpec
+        required: true
+        inlined: true
+  PrincipalIdentityBindingSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      principalRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      oidcSubject:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      issuer:
+        range: string
+        required: true
+        pattern: ^https://.+$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PrincipleSet:
+    description: Judgement heuristics. Principles influence prioritization, communication and judgement; they never grant
+      capabilities (ADR-0005). The authority field is constrained to INFLUENCE_ONLY so this cannot drift.
+    annotations:
+      jumo.composition: SEALED
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: PrincipleSet
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PrincipleSetSpec
+        required: true
+        inlined: true
+  PrincipleSetSpec:
+    attributes:
+      authority:
+        range: string
+        equals_string: INFLUENCE_ONLY
+        required: true
+        description: Structurally enforced. A PrincipleSet cannot declare any other authority.
+      principles:
+        range: Principle
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  Principle:
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      statement:
+        range: string
+        required: true
+        pattern: ^.{10,}$
+      inspiresPolicies:
+        range: Identifier
+        multivalued: true
+        description: A principle may inspire a policy, but the policy must be explicit and reviewable (canonical decision
+          16). Documentation link, not an authorization path.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

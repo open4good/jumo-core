@@ -131,6 +131,59 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: Submit result of Ansible admin playbook execution.
+    - operationId: claimNextWorkloadCommand
+      method: POST
+      path: /workload-commands/claim
+      audience: MACHINE_MTLS
+      authAction: machine.workload.claim
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: WorkloadCommand
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/WorkloadCommand
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Claim next pending typed workload command for this machine by pull.
+    - operationId: markWorkloadCommandStarted
+      method: POST
+      path: /workload-commands/{commandId}/started
+      audience: MACHINE_MTLS
+      authAction: machine.workload.started
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: WorkloadCommand
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/WorkloadCommand
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Report that a claimed workload command has started executing.
+    - operationId: submitWorkloadCommandResult
+      method: POST
+      path: /workload-commands/{commandId}/result
+      audience: MACHINE_MTLS
+      authAction: machine.workload.result
+      requestBinding:
+        modelClass: WorkloadCommandResult
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/WorkloadCommandResult
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: WorkloadCommandResult
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/WorkloadCommandResult
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Submit the terminal outcome of a claimed workload command.
     - operationId: submitDiscoverySnapshot
       method: POST
       path: /connectors/{connectorId}/discovery

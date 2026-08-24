@@ -12,6 +12,11 @@ public enum JourneyVerificationCapability {
 
   PROVIDER_SMOKE("PROVIDER_SMOKE"),
 
+  /**
+   * Bounded, token-consuming live inference per declared effort rung -- an external effect, unlike PROVIDER_SMOKE's free catalogue discovery. Gated by its own capability.
+   */
+  PROVIDER_LADDER_QUALIFICATION("PROVIDER_LADDER_QUALIFICATION"),
+
   CLI_SMOKE("CLI_SMOKE"),
 
   SESSION_PAIRING("SESSION_PAIRING");

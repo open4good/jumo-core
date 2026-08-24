@@ -59,6 +59,9 @@ enums:
   JourneyVerificationCapability:
     permissible_values:
       PROVIDER_SMOKE: {}
+      PROVIDER_LADDER_QUALIFICATION:
+        description: Bounded, token-consuming live inference per declared effort rung -- an external
+          effect, unlike PROVIDER_SMOKE's free catalogue discovery. Gated by its own capability.
       CLI_SMOKE: {}
       SESSION_PAIRING: {}
   WorkOrderDeclineReason:

@@ -16,6 +16,7 @@ URI: [jumo:JourneyVerificationCapability](https://jumo.dev/schemas/jumo-v1/Journ
 | Value | Meaning | Description |
 | --- | --- | --- |
 | PROVIDER_SMOKE | None |  |
+| PROVIDER_LADDER_QUALIFICATION | None | Bounded, token-consuming live inference per declared effort rung -- an extern... |
 | CLI_SMOKE | None |  |
 | SESSION_PAIRING | None |  |
 
@@ -57,6 +58,11 @@ rank: 1000
 permissible_values:
   PROVIDER_SMOKE:
     text: PROVIDER_SMOKE
+  PROVIDER_LADDER_QUALIFICATION:
+    text: PROVIDER_LADDER_QUALIFICATION
+    description: Bounded, token-consuming live inference per declared effort rung
+      -- an external effect, unlike PROVIDER_SMOKE's free catalogue discovery. Gated
+      by its own capability.
   CLI_SMOKE:
     text: CLI_SMOKE
   SESSION_PAIRING:

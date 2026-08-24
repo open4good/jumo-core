@@ -5679,6 +5679,7 @@
       "description": "",
       "enum": [
         "PROVIDER_SMOKE",
+        "PROVIDER_LADDER_QUALIFICATION",
         "CLI_SMOKE",
         "SESSION_PAIRING"
       ],

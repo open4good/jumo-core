@@ -85,7 +85,7 @@ URI: [jumo:MachineAdminRequest](https://jumo.dev/schemas/jumo-v1/MachineAdminReq
 | --- | --- |
 | jumo.state_authority | POSTGRES |
 | jumo.model_role | COMMAND |
-| jumo.audience | WEB_AUTHENTICATED |
+| jumo.audience | REALM_PRIVATE |
 | jumo.sensitivity | INTERNAL |
 | jumo.boundary_eligible | True |
 | jumo.schema_profiles | draft-2020-12,native-json-schema,prompted-json-validated |
@@ -131,7 +131,7 @@ annotations:
     value: COMMAND
   jumo.audience:
     tag: jumo.audience
-    value: WEB_AUTHENTICATED
+    value: REALM_PRIVATE
   jumo.sensitivity:
     tag: jumo.sensitivity
     value: INTERNAL
@@ -223,7 +223,7 @@ annotations:
     value: COMMAND
   jumo.audience:
     tag: jumo.audience
-    value: WEB_AUTHENTICATED
+    value: REALM_PRIVATE
   jumo.sensitivity:
     tag: jumo.sensitivity
     value: INTERNAL

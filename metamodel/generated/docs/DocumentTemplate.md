@@ -92,7 +92,7 @@ URI: [jumo:DocumentTemplate](https://jumo.dev/schemas/jumo-v1/DocumentTemplate)
 | jumo.composition | ADDITIVE |
 | jumo.state_authority | GIT |
 | jumo.model_role | CONTRACT |
-| jumo.audience | PUBLIC |
+| jumo.audience | PUBLIC_WEB |
 | jumo.sensitivity | INTERNAL |
 | jumo.boundary_eligible | True |
 | jumo.schema_profiles | draft-2020-12,native-json-schema,prompted-json-validated |
@@ -141,7 +141,7 @@ annotations:
     value: CONTRACT
   jumo.audience:
     tag: jumo.audience
-    value: PUBLIC
+    value: PUBLIC_WEB
   jumo.sensitivity:
     tag: jumo.sensitivity
     value: INTERNAL
@@ -539,7 +539,7 @@ annotations:
     value: CONTRACT
   jumo.audience:
     tag: jumo.audience
-    value: PUBLIC
+    value: PUBLIC_WEB
   jumo.sensitivity:
     tag: jumo.sensitivity
     value: INTERNAL

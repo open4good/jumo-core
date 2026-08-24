@@ -14,15 +14,18 @@ a temporary directory and fails the build on any diff against what is committed 
 | `owl/` | OWL ontology, Turtle syntax. Not byte-reproducible run to run (blank-node serialization order); `--check` verifies it structurally instead -- see `metamodel_postprocess.py` | `gen-owl` |
 | `shacl/` | SHACL shapes, Turtle syntax. Same non-reproducibility and check as OWL above | `gen-shacl` |
 | `jsonld/` | JSON-LD `@context` | `gen-jsonld-context` |
-| `sqlddl/` | SQL DDL, PostgreSQL dialect, base schema only (see script header) | `gen-sqlddl` |
+| `sqlddl/` | SQL DDL, PostgreSQL dialect, base schema only | `gen-sqlddl` |
 | `docs/` | Full documentation site, one page per class/slot/type | `gen-doc` |
 | `manifest.json` | `kind -> {JSON Schema pointer, Java class, git-contract, state authority}`, derived from the merged schema via `SchemaView`, not hand-maintained | `scripts/metamodel_postprocess.py build-manifest` |
-| `context-catalog.json` | Bidirectional relationship graph schema for all 56 Git contract kinds | `scripts/metamodel_postprocess.py build-context-catalog` |
+| `context-catalog.json` | Bidirectional relationship graph schema for all Git contract kinds | `scripts/metamodel_postprocess.py build-context-catalog` |
 
-Two more generated artifacts live outside this directory, in the Maven modules that consume them,
-so Maven compiles them as ordinary sources rather than needing a second source root:
+One more generated artifact lives outside this directory, in the Maven module that consumes it, so
+Maven compiles it as an ordinary source rather than needing a second source root:
 
 | Location | Artifact | Generator |
 |---|---|---|
 | `modules/jumo-model/src/main/java/dev/jumo/model/` | Java 21 records, one class per LinkML class, true enums, and `ContractReferenceExtractor.java` | `gen-java --template-variant records --true-enums` & `scripts/metamodel_postprocess.py build-reference-extractor` |
-| `modules/project-contract/src/main/java/dev/jumo/contract/ContractKind.java` | The closed enum of git-contract kinds | `scripts/metamodel_postprocess.py build-contract-kind` |
+
+`modules/project-contract`'s `ContractKind.java` (the closed enum of git-contract kinds) is jumo's
+own generated artifact, not jumo-core's -- it is control-plane-specific code, generated in jumo
+from the pinned metamodel (metamodel-and-policy-to-core AC2).

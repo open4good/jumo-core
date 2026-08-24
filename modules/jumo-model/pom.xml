@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>dev.jumo</groupId>
+    <artifactId>jumo-core-reactor</artifactId>
+    <version>1</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>jumo-model</artifactId>
+  <!-- Kept in step with metamodel/VERSION by hand until pin-contract-sources.sh does it
+       (metamodel-and-policy-to-core AC5, out of scope this pass). -->
+  <version>0.1.0</version>
+  <name>Jumo :: jumo-model</name>
+  <description>
+    Generated Java records for every class metamodel/jumo-v1.yaml declares, plus
+    ContractReferenceExtractor.java. src/main/java is produced by
+    scripts/generate/generate-metamodel.sh -- do not hand-edit; edit the LinkML source and
+    regenerate. No hand-written source lives in this module. Published to GitHub Packages as
+    dev.jumo:jumo-model:0.1.0; jumo depends on this coordinate instead of building it in-tree
+    (metamodel-and-policy-to-core AC2).
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson2.version}</version>
+    </dependency>
+  </dependencies>
+</project>

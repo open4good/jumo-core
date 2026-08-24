@@ -1,2 +1,18 @@
 # Eclipse project metadata is local tooling state, never a Platform contract.
 .project
+
+# --- Build (metamodel-and-policy-to-core AC2: jumo-model is a real Maven module now) ---------
+target/
+*.jar
+
+# --- Tooling -----------------------------------------------------------------
+.venv/
+__pycache__/
+*.py[cod]
+
+# --- IDE ---------------------------------------------------------------------
+.idea/
+.vscode/
+.classpath
+.settings/
+*.iml

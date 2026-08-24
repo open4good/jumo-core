@@ -69,7 +69,7 @@ URI: [jumo:DocumentTemplateBody](https://jumo.dev/schemas/jumo-v1/DocumentTempla
 | --- | --- |
 | jumo.state_authority | GIT |
 | jumo.model_role | VALUE_OBJECT |
-| jumo.audience | PUBLIC |
+| jumo.audience | PUBLIC_WEB |
 | jumo.sensitivity | INTERNAL |
 | jumo.boundary_eligible | True |
 | jumo.schema_profiles | draft-2020-12,native-json-schema,prompted-json-validated |
@@ -115,7 +115,7 @@ annotations:
     value: VALUE_OBJECT
   jumo.audience:
     tag: jumo.audience
-    value: PUBLIC
+    value: PUBLIC_WEB
   jumo.sensitivity:
     tag: jumo.sensitivity
     value: INTERNAL
@@ -167,7 +167,7 @@ annotations:
     value: VALUE_OBJECT
   jumo.audience:
     tag: jumo.audience
-    value: PUBLIC
+    value: PUBLIC_WEB
   jumo.sensitivity:
     tag: jumo.sensitivity
     value: INTERNAL

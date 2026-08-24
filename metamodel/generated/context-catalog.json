@@ -253,7 +253,7 @@
     },
     "ConnectorAppraisal": {
       "kind": "ConnectorAppraisal",
-      "composition": "ADDITIVE",
+      "composition": "REALM_ONLY",
       "stateAuthority": "GIT",
       "outgoing": [
         {
@@ -1465,7 +1465,7 @@
     },
     "RemoteMcpAppraisal": {
       "kind": "RemoteMcpAppraisal",
-      "composition": "ADDITIVE",
+      "composition": "REALM_ONLY",
       "stateAuthority": "GIT",
       "outgoing": [
         {

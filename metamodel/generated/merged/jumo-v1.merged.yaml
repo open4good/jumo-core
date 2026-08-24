@@ -28667,6 +28667,9 @@ classes:
       jumo.model_role:
         tag: jumo.model_role
         value: VALUE_OBJECT
+      jumo.composition:
+        tag: jumo.composition
+        value: ADDITIVE
       jumo.audience:
         tag: jumo.audience
         value: REALM_PRIVATE
@@ -28979,7 +28982,7 @@ classes:
         value: CONTRACT
       jumo.audience:
         tag: jumo.audience
-        value: PUBLIC
+        value: PUBLIC_WEB
       jumo.sensitivity:
         tag: jumo.sensitivity
         value: INTERNAL
@@ -29368,7 +29371,7 @@ classes:
         value: VALUE_OBJECT
       jumo.audience:
         tag: jumo.audience
-        value: PUBLIC
+        value: PUBLIC_WEB
       jumo.sensitivity:
         tag: jumo.sensitivity
         value: INTERNAL
@@ -38686,7 +38689,7 @@ classes:
         value: COMMAND
       jumo.audience:
         tag: jumo.audience
-        value: WEB_AUTHENTICATED
+        value: REALM_PRIVATE
       jumo.sensitivity:
         tag: jumo.sensitivity
         value: INTERNAL
@@ -44069,6 +44072,9 @@ classes:
       jumo.model_role:
         tag: jumo.model_role
         value: CONTRACT
+      jumo.composition:
+        tag: jumo.composition
+        value: REALM_ONLY
       jumo.audience:
         tag: jumo.audience
         value: REALM_PRIVATE
@@ -46317,6 +46323,9 @@ classes:
       jumo.model_role:
         tag: jumo.model_role
         value: CONTRACT
+      jumo.composition:
+        tag: jumo.composition
+        value: REALM_ONLY
       jumo.audience:
         tag: jumo.audience
         value: REALM_PRIVATE

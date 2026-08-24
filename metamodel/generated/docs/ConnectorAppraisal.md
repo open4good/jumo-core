@@ -91,6 +91,7 @@ URI: [jumo:ConnectorAppraisal](https://jumo.dev/schemas/jumo-v1/ConnectorApprais
 | --- | --- |
 | jumo.state_authority | GIT |
 | jumo.model_role | CONTRACT |
+| jumo.composition | REALM_ONLY |
 | jumo.audience | REALM_PRIVATE |
 | jumo.sensitivity | INTERNAL |
 | jumo.boundary_eligible | True |
@@ -135,6 +136,9 @@ annotations:
   jumo.model_role:
     tag: jumo.model_role
     value: CONTRACT
+  jumo.composition:
+    tag: jumo.composition
+    value: REALM_ONLY
   jumo.audience:
     tag: jumo.audience
     value: REALM_PRIVATE
@@ -528,6 +532,9 @@ annotations:
   jumo.model_role:
     tag: jumo.model_role
     value: CONTRACT
+  jumo.composition:
+    tag: jumo.composition
+    value: REALM_ONLY
   jumo.audience:
     tag: jumo.audience
     value: REALM_PRIVATE

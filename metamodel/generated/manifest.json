@@ -506,7 +506,7 @@
       "javaClass": "dev.jumo.model.ConnectorAppraisal",
       "gitContract": true,
       "stateAuthority": "GIT",
-      "composition": "ADDITIVE"
+      "composition": "REALM_ONLY"
     },
     {
       "linkmlClass": "ConnectorAppraisalSpec",
@@ -2330,7 +2330,7 @@
       "javaClass": "dev.jumo.model.RemoteMcpAppraisal",
       "gitContract": true,
       "stateAuthority": "GIT",
-      "composition": "ADDITIVE"
+      "composition": "REALM_ONLY"
     },
     {
       "linkmlClass": "RemoteMcpAppraisalSpec",

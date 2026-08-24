@@ -35,3 +35,5 @@ spec:
         effect: READ_ONLY
         idempotency: NOT_APPLICABLE
         reconciliation: NOT_REQUIRED
+        inputSchemaRef: https://jumo.dev/schemas/jumo-v1/GithubRepositoryManifestRequest
+        outputSchemaRef: https://jumo.dev/schemas/jumo-v1/GithubRepositoryManifestResponse

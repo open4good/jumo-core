@@ -1,10 +1,15 @@
 name: contracts
 
-# jumo-core is the declarative corpus only: no Maven, Node or database. This job wires
-# metamodel-and-policy-to-core AC1's four checks -- LinkML semantic lint, opa check/test, the
-# corpus budget and the metamodel/platform boundary -- so jumo-core validates its own contract
-# authoring before jumo pins a revision of it. Corpus-instance validation (WorkOrders, journeys,
-# the composed negative fixtures) stays jumo's job in corpus-validate.yml, against its own tree.
+# jumo-core is the declarative PLATFORM corpus: no application beyond the one Java artifact its
+# own metamodel generates. The `contracts` job wires metamodel-and-policy-to-core AC1's four
+# checks -- LinkML semantic lint, opa check/test, the corpus budget and the metamodel/platform
+# boundary -- so jumo-core validates its own contract authoring before jumo pins a revision of it.
+# `metamodel` proves modules/jumo-model/src/main/java is reproducible from metamodel/jumo-v1.yaml,
+# the same gate jumo's own corpus-validate.yml runs on itself. `publish-jumo-model` (AC2) is the
+# one place this repository builds and ships code: dev.jumo:jumo-model to GitHub Packages, so jumo
+# depends on it instead of generating it in-tree. Corpus-instance validation (WorkOrders,
+# journeys, the composed negative fixtures) stays jumo's job in corpus-validate.yml, against its
+# own tree.
 
 on:
   pull_request:
@@ -52,3 +57,45 @@ jobs:
           docker run --rm -v "${PWD}/policy:/policy:ro" \
             openpolicyagent/opa:1.19.0@sha256:8523599954435a3659954ad51ee0304d22bd97576f16cdb02e5e39f38ff3962a \
             test /policy -v
+
+  metamodel:
+    name: Metamodel generation reproducibility
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.14'
+
+      - name: Install the pinned LinkML toolchain
+        run: pip install --disable-pip-version-check -r metamodel/requirements.txt
+
+      - name: Regenerate and diff against the committed tree
+        run: bash scripts/generate/generate-metamodel.sh --check
+
+  publish-jumo-model:
+    name: Publish dev.jumo:jumo-model to GitHub Packages
+    needs: [contracts, metamodel]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Linux, X64]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      # modules/jumo-model/src/main/java is already the committed, reproducibility-checked output
+      # of the metamodel job above -- this job builds and ships it, it does not regenerate it.
+      - name: Build and publish jumo-model
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn -B -f pom.xml -pl modules/jumo-model deploy -DskipTests

@@ -33,7 +33,7 @@ spec:
     - id: install-runtime
       kind: SERVICE
       semanticStage: EFFECT_APPLICATION
-      capabilityRef: machine.administer
+      capabilityRef: cli.runtime.install
       ring: RING_1_CONTROL_PLANE
       idempotencyKey: cli-runtime-installation-machine-and-release
     - id: authz-join

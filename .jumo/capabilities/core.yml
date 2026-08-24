@@ -241,6 +241,17 @@ spec:
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
       appliedBy: jumo.effect.ExecutionCellProvisioningApplier
+    - name: cli.runtime.install
+      description: Dispatch the signed Ansible install-cli playbook to install a qualified CLI runtime on a machine.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: jumo.effect.ExecutionCellProvisioningApplier
     - name: machine.drain
       description: Drain execution machine for maintenance.
       riskTier: MEDIUM

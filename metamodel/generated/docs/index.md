@@ -395,8 +395,8 @@ Name: jumo_v1
 | [activity](activity.md) |  |
 | [actualOutputDigest](actualOutputDigest.md) |  |
 | [adapter](adapter.md) |  |
-| [addressedRoleRefs](addressedRoleRefs.md) |  |
-| [addressedTeamRefs](addressedTeamRefs.md) |  |
+| [addressedRoleRefs](addressedRoleRefs.md) | RoleDefinitions this rule matches as the addressee |
+| [addressedTeamRefs](addressedTeamRefs.md) | TeamSpecs this rule matches as the addressee |
 | [admissionReason](admissionReason.md) | Required on ADMISSION_REFUSED (Rego) |
 | [admittedEmailDomains](admittedEmailDomains.md) |  |
 | [admittedEmails](admittedEmails.md) |  |

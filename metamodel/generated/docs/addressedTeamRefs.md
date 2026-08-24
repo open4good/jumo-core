@@ -5,6 +5,11 @@ search:
 
 # Slot: addressedTeamRefs
 
+
+_TeamSpecs this rule matches as the addressee._
+
+
+
 <div data-search-exclude markdown="1">
 
 
@@ -33,7 +38,7 @@ URI: [jumo:addressedTeamRefs](https://jumo.dev/schemas/jumo-v1/addressedTeamRefs
 
 | Property | Value |
 | --- | --- |
-| Range | [Identifier](Identifier.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [DispositionMatch](DispositionMatch.md) |
 
 ### Cardinality and Requirements
@@ -87,13 +92,16 @@ URI: [jumo:addressedTeamRefs](https://jumo.dev/schemas/jumo-v1/addressedTeamRefs
 <details>
 ```yaml
 name: addressedTeamRefs
+description: TeamSpecs this rule matches as the addressee.
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
 owner: DispositionMatch
 domain_of:
 - DispositionMatch
-range: Identifier
+range: ContractReference
 multivalued: true
+inlined: true
+inlined_as_list: true
 
 ```
 </details></div>

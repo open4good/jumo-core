@@ -327,6 +327,22 @@ references contains {"document": document, "location": "spec.statusPracticeRef",
 	ref != null
 }
 
+references contains {"document": document, "location": location, "expected_kind": "RoleDefinition", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "ChiefOfStaffProfile"
+	some rule_index, rule in object.get(corpus.spec(document), "dispositionRules", [])
+	some index, ref in object.get(object.get(rule, "match", {}), "addressedRoleRefs", [])
+	location := sprintf("spec.dispositionRules[%d].match.addressedRoleRefs[%d]", [rule_index, index])
+}
+
+references contains {"document": document, "location": location, "expected_kind": "TeamSpec", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "ChiefOfStaffProfile"
+	some rule_index, rule in object.get(corpus.spec(document), "dispositionRules", [])
+	some index, ref in object.get(object.get(rule, "match", {}), "addressedTeamRefs", [])
+	location := sprintf("spec.dispositionRules[%d].match.addressedTeamRefs[%d]", [rule_index, index])
+}
+
 # RealmTemplate
 references contains {"document": document, "location": "spec.chiefOfStaff.roleDefinitionRef", "expected_kind": "RoleDefinition", "ref": ref} if {
 	some document in corpus.documents

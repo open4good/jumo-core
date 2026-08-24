@@ -1983,12 +1983,14 @@ components:
       properties:
         addressedRoleRefs:
           items:
-            type: string
+            $ref: '#/components/schemas/ContractReference'
           type: array
+          description: RoleDefinitions this rule matches as the addressee.
         addressedTeamRefs:
           items:
-            type: string
+            $ref: '#/components/schemas/ContractReference'
           type: array
+          description: TeamSpecs this rule matches as the addressee.
         intentKinds:
           items:
             $ref: '#/components/schemas/IntentKind'

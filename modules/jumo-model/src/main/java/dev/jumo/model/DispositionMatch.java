@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * minProperties:1 in the source (at least one match field present) moves to Rego.
  */
-public record DispositionMatch(List<String> addressedRoleRefs, List<String> addressedTeamRefs, List<IntentKind> intentKinds, Boolean otherwise)  {
+public record DispositionMatch(List<ContractReference> addressedRoleRefs, List<ContractReference> addressedTeamRefs, List<IntentKind> intentKinds, Boolean otherwise)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,18 +18,18 @@ public record DispositionMatch(List<String> addressedRoleRefs, List<String> addr
 
     public static class Builder {
 
-        private List<String> addressedRoleRefs = List.of();
-        private List<String> addressedTeamRefs = List.of();
+        private List<ContractReference> addressedRoleRefs = List.of();
+        private List<ContractReference> addressedTeamRefs = List.of();
         private List<IntentKind> intentKinds = List.of();
         private Boolean otherwise = null;
 
 
-        public Builder addressedRoleRefs(List<String> addressedRoleRefs) {
+        public Builder addressedRoleRefs(List<ContractReference> addressedRoleRefs) {
             this.addressedRoleRefs = Objects.requireNonNull(addressedRoleRefs);
             return this;
         }
 
-        public Builder addressedTeamRefs(List<String> addressedTeamRefs) {
+        public Builder addressedTeamRefs(List<ContractReference> addressedTeamRefs) {
             this.addressedTeamRefs = Objects.requireNonNull(addressedTeamRefs);
             return this;
         }

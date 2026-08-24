@@ -84,6 +84,8 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [AdvisorProfileSpec](AdvisorProfileSpec.md) | [practiceRefs](practiceRefs.md) | range | [ContractReference](ContractReference.md) |
 | [AdvisorDialogueOption](AdvisorDialogueOption.md) | [capabilityProfileRef](capabilityProfileRef.md) | range | [ContractReference](ContractReference.md) |
 | [AdvisorDialogueOption](AdvisorDialogueOption.md) | [engagementMethodRef](engagementMethodRef.md) | range | [ContractReference](ContractReference.md) |
+| [DispositionMatch](DispositionMatch.md) | [addressedRoleRefs](addressedRoleRefs.md) | range | [ContractReference](ContractReference.md) |
+| [DispositionMatch](DispositionMatch.md) | [addressedTeamRefs](addressedTeamRefs.md) | range | [ContractReference](ContractReference.md) |
 | [PersonalSpaceSpec](PersonalSpaceSpec.md) | [preferencesRef](preferencesRef.md) | range | [ContractReference](ContractReference.md) |
 | [SelfDescriptionAnswer](SelfDescriptionAnswer.md) | [narrationPromptTemplateRef](narrationPromptTemplateRef.md) | range | [ContractReference](ContractReference.md) |
 | [OrganizationSpecBody](OrganizationSpecBody.md) | [organizationTemplateRef](organizationTemplateRef.md) | range | [ContractReference](ContractReference.md) |

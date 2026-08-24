@@ -3697,16 +3697,16 @@
       "description": "minProperties:1 in the source (at least one match field present) moves to Rego.",
       "properties": {
         "addressedRoleRefs": {
+          "description": "RoleDefinitions this rule matches as the addressee.",
           "items": {
-            "pattern": "^[a-z][a-z0-9-]*$",
-            "type": "string"
+            "$ref": "#/$defs/ContractReference"
           },
           "type": "array"
         },
         "addressedTeamRefs": {
+          "description": "TeamSpecs this rule matches as the addressee.",
           "items": {
-            "pattern": "^[a-z][a-z0-9-]*$",
-            "type": "string"
+            "$ref": "#/$defs/ContractReference"
           },
           "type": "array"
         },

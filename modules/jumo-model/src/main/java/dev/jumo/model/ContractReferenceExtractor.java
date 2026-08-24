@@ -309,6 +309,11 @@ public final class ContractReferenceExtractor {
         if (obj.directWorkProcessSpecRef() != null) {
             refs.add(new OutgoingReference("directWorkProcessSpecRef", obj.directWorkProcessSpecRef()));
         }
+        if (obj.dispositionRules() != null) {
+            for (DispositionRule item : obj.dispositionRules()) {
+                extractFromDispositionRule(item, refs);
+            }
+        }
         if (obj.statusPracticeRef() != null) {
             refs.add(new OutgoingReference("statusPracticeRef", obj.statusPracticeRef()));
         }
@@ -401,6 +406,23 @@ public final class ContractReferenceExtractor {
         if (obj.connectorPackageRef() != null) {
             refs.add(new OutgoingReference("connectorPackageRef", obj.connectorPackageRef()));
         }
+    }
+    public static void extractFromDispositionMatch(DispositionMatch obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.addressedRoleRefs() != null) {
+            for (ContractReference r : obj.addressedRoleRefs()) {
+                if (r != null) refs.add(new OutgoingReference("addressedRoleRefs", r));
+            }
+        }
+        if (obj.addressedTeamRefs() != null) {
+            for (ContractReference r : obj.addressedTeamRefs()) {
+                if (r != null) refs.add(new OutgoingReference("addressedTeamRefs", r));
+            }
+        }
+    }
+    public static void extractFromDispositionRule(DispositionRule obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromDispositionMatch(obj.match(), refs);
     }
     public static void extractFromEngagementMethod(EngagementMethod obj, List<OutgoingReference> refs) {
         if (obj == null) return;

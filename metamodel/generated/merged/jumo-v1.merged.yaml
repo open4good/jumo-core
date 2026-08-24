@@ -15760,20 +15760,26 @@ classes:
     attributes:
       addressedRoleRefs:
         name: addressedRoleRefs
+        description: RoleDefinitions this rule matches as the addressee.
         from_schema: https://jumo.dev/schemas/organization
         owner: DispositionMatch
         domain_of:
         - DispositionMatch
-        range: Identifier
+        range: ContractReference
         multivalued: true
+        inlined: true
+        inlined_as_list: true
       addressedTeamRefs:
         name: addressedTeamRefs
+        description: TeamSpecs this rule matches as the addressee.
         from_schema: https://jumo.dev/schemas/organization
         owner: DispositionMatch
         domain_of:
         - DispositionMatch
-        range: Identifier
+        range: ContractReference
         multivalued: true
+        inlined: true
+        inlined_as_list: true
       intentKinds:
         name: intentKinds
         from_schema: https://jumo.dev/schemas/organization

@@ -920,11 +920,15 @@ classes:
     description: minProperties:1 in the source (at least one match field present) moves to Rego.
     attributes:
       addressedRoleRefs:
-        range: Identifier
+        range: ContractReference
         multivalued: true
+        inlined_as_list: true
+        description: RoleDefinitions this rule matches as the addressee.
       addressedTeamRefs:
-        range: Identifier
+        range: ContractReference
         multivalued: true
+        inlined_as_list: true
+        description: TeamSpecs this rule matches as the addressee.
       intentKinds:
         range: IntentKind
         multivalued: true

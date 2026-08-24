@@ -199,6 +199,20 @@
           "description": "Governed child Episode started by HANDLE_DIRECTLY; cannot be the intake workflow itself (Rego). References a ProcessSpec (execution.yaml)."
         },
         {
+          "slotName": "addressedRoleRefs",
+          "targetKind": "RoleDefinition",
+          "cardinality": "MANY",
+          "required": false,
+          "description": "RoleDefinitions this rule matches as the addressee."
+        },
+        {
+          "slotName": "addressedTeamRefs",
+          "targetKind": "TeamSpec",
+          "cardinality": "MANY",
+          "required": false,
+          "description": "TeamSpecs this rule matches as the addressee."
+        },
+        {
           "slotName": "statusPracticeRef",
           "targetKind": "Practice",
           "cardinality": "ONE",
@@ -1639,6 +1653,12 @@
           "description": ""
         },
         {
+          "fromKind": "ChiefOfStaffProfile",
+          "slotName": "addressedRoleRefs",
+          "cardinality": "MANY",
+          "description": "RoleDefinitions this rule matches as the addressee."
+        },
+        {
           "fromKind": "ConnectorAppraisal",
           "slotName": "appraisedByRoleDefinitionRef",
           "cardinality": "ONE",
@@ -1878,6 +1898,12 @@
         }
       ],
       "incoming": [
+        {
+          "fromKind": "ChiefOfStaffProfile",
+          "slotName": "addressedTeamRefs",
+          "cardinality": "MANY",
+          "description": "TeamSpecs this rule matches as the addressee."
+        },
         {
           "fromKind": "RoutingEligibility",
           "slotName": "eligibleTeamSpecRefs",

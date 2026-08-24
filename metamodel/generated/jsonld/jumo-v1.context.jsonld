@@ -1359,9 +1359,11 @@
       "@id": "risksToDataSubjects"
     },
     "addressedRoleRefs": {
+      "@type": "@id",
       "@id": "addressedRoleRefs"
     },
     "addressedTeamRefs": {
+      "@type": "@id",
       "@id": "addressedTeamRefs"
     },
     "intentKinds": {

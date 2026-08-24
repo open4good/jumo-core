@@ -169,6 +169,7 @@ CREATE TABLE "ContractReference" (
 	"RealmTemplateSpec_id" INTEGER,
 	"RoutingEligibilitySpec_id" INTEGER,
 	"AdvisorProfileSpec_id" INTEGER,
+	"DispositionMatch_id" INTEGER,
 	"WorkOrderSpec_id" INTEGER,
 	"WorkerQualityRequirement_id" INTEGER,
 	"ConnectorOperation_uid" INTEGER,
@@ -187,6 +188,7 @@ COMMENT ON COLUMN "ContractReference".id IS 'Target contract identifier.';
 COMMENT ON COLUMN "ContractReference"."RealmTemplateSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."RoutingEligibilitySpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."AdvisorProfileSpec_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ContractReference"."DispositionMatch_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."WorkOrderSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."WorkerQualityRequirement_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ConnectorOperation_uid" IS 'Autocreated FK slot';
@@ -3318,28 +3320,6 @@ CREATE INDEX "ix_RoleLifecyclePolicySpec_evaluationCriteria_evaluatio_0bb1" ON "
 COMMENT ON TABLE "RoleLifecyclePolicySpec_evaluationCriteria" IS 'None';
 COMMENT ON COLUMN "RoleLifecyclePolicySpec_evaluationCriteria"."RoleLifecyclePolicySpec_id" IS 'Autocreated FK slot';
 
-CREATE TABLE "DispositionMatch_addressedRoleRefs" (
-	"DispositionMatch_id" INTEGER,
-	"addressedRoleRefs" TEXT,
-	PRIMARY KEY ("DispositionMatch_id", "addressedRoleRefs"),
-	FOREIGN KEY("DispositionMatch_id") REFERENCES "DispositionMatch" (id)
-);
-CREATE INDEX "ix_DispositionMatch_addressedRoleRefs_DispositionMatch_id" ON "DispositionMatch_addressedRoleRefs" ("DispositionMatch_id");
-CREATE INDEX "ix_DispositionMatch_addressedRoleRefs_addressedRoleRefs" ON "DispositionMatch_addressedRoleRefs" ("addressedRoleRefs");
-COMMENT ON TABLE "DispositionMatch_addressedRoleRefs" IS 'None';
-COMMENT ON COLUMN "DispositionMatch_addressedRoleRefs"."DispositionMatch_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "DispositionMatch_addressedTeamRefs" (
-	"DispositionMatch_id" INTEGER,
-	"addressedTeamRefs" TEXT,
-	PRIMARY KEY ("DispositionMatch_id", "addressedTeamRefs"),
-	FOREIGN KEY("DispositionMatch_id") REFERENCES "DispositionMatch" (id)
-);
-CREATE INDEX "ix_DispositionMatch_addressedTeamRefs_DispositionMatch_id" ON "DispositionMatch_addressedTeamRefs" ("DispositionMatch_id");
-CREATE INDEX "ix_DispositionMatch_addressedTeamRefs_addressedTeamRefs" ON "DispositionMatch_addressedTeamRefs" ("addressedTeamRefs");
-COMMENT ON TABLE "DispositionMatch_addressedTeamRefs" IS 'None';
-COMMENT ON COLUMN "DispositionMatch_addressedTeamRefs"."DispositionMatch_id" IS 'Autocreated FK slot';
-
 CREATE TABLE "DispositionMatch_intentKinds" (
 	"DispositionMatch_id" INTEGER,
 	"intentKinds" "IntentKind",
@@ -6281,6 +6261,7 @@ ALTER TABLE "ConnectorOperation" ADD FOREIGN KEY("ConnectorDefinitionSpec_id") R
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("AdvisorProfileSpec_id") REFERENCES "AdvisorProfileSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorIntentProposal_id") REFERENCES "ConnectorIntentProposal" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorOperation_uid") REFERENCES "ConnectorOperation" (uid);
+ALTER TABLE "ContractReference" ADD FOREIGN KEY("DispositionMatch_id") REFERENCES "DispositionMatch" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ExecutionCellSpec_id") REFERENCES "ExecutionCellSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("FederatedPeerSpec_id") REFERENCES "FederatedPeerSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ProviderAccountSpec_id") REFERENCES "ProviderAccountSpec" (id);

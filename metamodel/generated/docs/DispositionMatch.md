@@ -26,7 +26,25 @@ URI: [jumo:DispositionMatch](https://jumo.dev/schemas/jumo-v1/DispositionMatch)
     click DispositionMatch href "../DispositionMatch/"
       DispositionMatch : addressedRoleRefs
 
+
+
+
+
+        DispositionMatch --> "*" ContractReference : addressedRoleRefs
+        click ContractReference href "../ContractReference/"
+
+
+
       DispositionMatch : addressedTeamRefs
+
+
+
+
+
+        DispositionMatch --> "*" ContractReference : addressedTeamRefs
+        click ContractReference href "../ContractReference/"
+
+
 
       DispositionMatch : intentKinds
 
@@ -53,8 +71,8 @@ URI: [jumo:DispositionMatch](https://jumo.dev/schemas/jumo-v1/DispositionMatch)
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [addressedRoleRefs](addressedRoleRefs.md) | * <br/> [Identifier](Identifier.md) |  | direct |
-| [addressedTeamRefs](addressedTeamRefs.md) | * <br/> [Identifier](Identifier.md) |  | direct |
+| [addressedRoleRefs](addressedRoleRefs.md) | * <br/> [ContractReference](ContractReference.md) | RoleDefinitions this rule matches as the addressee | direct |
+| [addressedTeamRefs](addressedTeamRefs.md) | * <br/> [ContractReference](ContractReference.md) | TeamSpecs this rule matches as the addressee | direct |
 | [intentKinds](intentKinds.md) | * <br/> [IntentKind](IntentKind.md) |  | direct |
 | [otherwise](otherwise.md) | 0..1 <br/> [Boolean](Boolean.md) |  | direct |
 
@@ -151,22 +169,28 @@ from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
   addressedRoleRefs:
     name: addressedRoleRefs
+    description: RoleDefinitions this rule matches as the addressee.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: DispositionMatch
     domain_of:
     - DispositionMatch
-    range: Identifier
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   addressedTeamRefs:
     name: addressedTeamRefs
+    description: TeamSpecs this rule matches as the addressee.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: DispositionMatch
     domain_of:
     - DispositionMatch
-    range: Identifier
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   intentKinds:
     name: intentKinds
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -218,22 +242,28 @@ from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
   addressedRoleRefs:
     name: addressedRoleRefs
+    description: RoleDefinitions this rule matches as the addressee.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: DispositionMatch
     domain_of:
     - DispositionMatch
-    range: Identifier
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   addressedTeamRefs:
     name: addressedTeamRefs
+    description: TeamSpecs this rule matches as the addressee.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: DispositionMatch
     domain_of:
     - DispositionMatch
-    range: Identifier
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   intentKinds:
     name: intentKinds
     from_schema: https://jumo.dev/schemas/jumo-v1

@@ -50,6 +50,16 @@ spec:
       reversible: true
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
+    - name: provider.account.qualify
+      description: Perform one bounded, token-consuming live inference call per declared effort rung for a declared ProviderAccount, spending real provider quota.
+      riskTier: MEDIUM
+      reversible: true
+      producesExternalEffect: true
+      requiredObligations:
+        - HUMAN_OWNER_APPROVAL
+        - RETAIN_PROVENANCE
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: contract.change.propose
       description: Record a validated, hash-bound role-contract proposal for separate owner approval and forge projection.
       riskTier: MEDIUM

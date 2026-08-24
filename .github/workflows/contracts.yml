@@ -10,6 +10,16 @@ name: contracts
 # depends on it instead of generating it in-tree. Corpus-instance validation (WorkOrders,
 # journeys, the composed negative fixtures) stays jumo's job in corpus-validate.yml, against its
 # own tree.
+#
+# Every job runs on ubuntu-latest, not on the org's self-hosted runners as jumo's workflows do.
+# jumo-core is the only one of the three repositories that is public, and the org's single runner
+# group (Default) sets allows_public_repositories: false, so a public repository is assigned no
+# self-hosted runner at all: jobs sit queued forever with a correct label set and an empty
+# runner_name. Enabling public repositories on that group would be the other remedy, but this
+# workflow declares `on: pull_request`, which would expose the owner's own machines to fork pull
+# requests. GitHub-hosted minutes are free for a public repository, and every step here is
+# portable: docker for the pinned opa image, pip for the LinkML toolchain, and mvn deploy to
+# GitHub Packages under the job's own GITHUB_TOKEN.
 
 on:
   pull_request:
@@ -26,7 +36,7 @@ concurrency:
 jobs:
   contracts:
     name: Validate metamodel and policy
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -60,7 +70,7 @@ jobs:
 
   metamodel:
     name: Metamodel generation reproducibility
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -78,7 +88,7 @@ jobs:
     name: Publish dev.jumo:jumo-model to GitHub Packages
     needs: [contracts, metamodel]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write

@@ -252,6 +252,26 @@ spec:
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
       appliedBy: jumo.effect.ExecutionCellProvisioningApplier
+    - name: cli.session.pair
+      description: Dispatch the signed Ansible pair-cli-session playbook to run a device-login ceremony inside the pinned CLI image on a machine.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: dev.jumo.controlplane.web.CliSessionService
+    - name: cli.session.smoke
+      description: Dispatch the signed Ansible smoke-cli-session playbook to run one minimal authenticated request using the machine-local CLI session state.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: dev.jumo.controlplane.web.CliSessionService
     - name: machine.drain
       description: Drain execution machine for maintenance.
       riskTier: MEDIUM

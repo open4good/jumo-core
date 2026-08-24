@@ -1,0 +1,76 @@
+apiVersion: jumo.dev/v1
+kind: ProcessSpec
+metadata:
+  id: cli-session-pairing--1-0-0
+  namespace: dev.jumo.core
+  name: CLI session pairing 1.0.0
+spec:
+  ownerRealm: home
+  projectRef:
+    kind: Project
+    namespace: dev.jumo.core
+    id: jumo
+  processId: cli-session-pairing
+  processVersion: 1.0.0
+  inputType: ProcessRunRef
+  outputType: ProcessRunRef
+  startTrigger: MANUAL
+  steps:
+    - id: start
+      kind: START
+    - id: authz
+      kind: GATEWAY
+      semanticStage: POLICY_EVALUATION
+      gatewayMode: EXCLUSIVE
+      gatewayRole: SPLIT
+      pairedGatewayRef: authz-join
+      opaEntrypoint: jumo.authz.decision
+    - id: grant
+      kind: SERVICE
+      semanticStage: CAPABILITY_ACQUISITION
+      capabilityRef: capability.grant.acquire
+      ring: RING_1_CONTROL_PLANE
+    - id: pair-session
+      kind: SERVICE
+      semanticStage: EFFECT_APPLICATION
+      capabilityRef: cli.session.pair
+      ring: RING_1_CONTROL_PLANE
+      idempotencyKey: cli-session-pairing-machine-and-account
+    - id: authz-join
+      kind: GATEWAY
+      gatewayMode: EXCLUSIVE
+      gatewayRole: JOIN
+      pairedGatewayRef: authz
+    - id: completed
+      kind: END
+      terminalState: COMPLETED
+    - id: declined
+      kind: END
+      terminalState: DECLINED
+  flows:
+    - id: start-authz
+      from: start
+      to: authz
+      payloadType: ProcessRunRef
+    - id: authz-allow
+      from: authz
+      to: grant
+      branchLabel: ALLOW
+      payloadType: ProcessRunRef
+    - id: authz-deny
+      from: authz
+      to: declined
+      branchLabel: DENY
+      payloadType: ProcessRunRef
+    - id: grant-pair
+      from: grant
+      to: pair-session
+      payloadType: ProcessRunRef
+    - id: pair-join
+      from: pair-session
+      to: authz-join
+      payloadType: ProcessRunRef
+    - id: join-completed
+      from: authz-join
+      to: completed
+      payloadType: ProcessRunRef

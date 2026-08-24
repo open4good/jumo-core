@@ -9,3 +9,4 @@ spec:
   playbookDigest: sha256:8944479d5d0b32bb598adaa4f2f17413ad62c872680ae767e761939bee91bdf7
   allowedRealms: [home]
   description: Runs one minimal authenticated request using the machine-local CLI session state.
+  appliesToCapability: cli.session.smoke

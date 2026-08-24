@@ -7,3 +7,4 @@ metadata:
 spec:
   ownerRealm: home
   mission: Operate Docker Compose services, Caddy reverse proxy, GitHub CI/CD pipelines, and sealed execution cell custody.
+  independenceGroup: infra-build

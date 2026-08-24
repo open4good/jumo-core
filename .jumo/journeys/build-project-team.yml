@@ -26,11 +26,12 @@ spec:
     fieldDefaults:
       - {field: purpose, value: '${projectPurpose}'}
     referenceChecks:
-      - {field: members, kind: AgentDefinition, itemPath: roleRef}
+      - {field: members, kind: RoleDefinition, itemPath: roleRef}
     collectionProjections:
       - field: members
         keys: [roleRef, role]
         optionalKeys: [independenceGroup]
+        itemReferenceKind: RoleDefinition
         itemValidations:
           - {field: role, minimumLength: 3}
   steps:
@@ -51,8 +52,13 @@ spec:
       description: Choisissez les opérateurs et définissez leurs rôles et groupes d'indépendance.
       personaNarration: Structurons les membres de l'équipe en veillant à la séparation des responsabilités de production
         et de revue.
+      stepKind: COLLECT
       requiredFields:
         - members
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: select-members
     - id: confirm-team
       name: Validation de l'équipe
       description: Vérifiez le récapitulatif de l'équipe avant émission de la proposition contractuelle.

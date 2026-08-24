@@ -7,3 +7,4 @@ metadata:
 spec:
   ownerRealm: home
   mission: Engineer Java 21, Spring Boot monolith services, Temporal durable workflows, and PostgreSQL business state.
+  independenceGroup: backend-build

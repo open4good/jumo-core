@@ -25,11 +25,12 @@ spec:
     fieldDefaults:
       - {field: teamName, value: 'Evolved Team ${id}'}
     referenceChecks:
-      - {field: members, kind: AgentDefinition, itemPath: roleRef}
+      - {field: members, kind: RoleDefinition, itemPath: roleRef}
     collectionProjections:
       - field: members
         keys: [roleRef, role]
         optionalKeys: [independenceGroup]
+        itemReferenceKind: RoleDefinition
         itemValidations:
           - {field: role, minimumLength: 3}
   steps:
@@ -44,8 +45,13 @@ spec:
       name: Composition des membres
       description: Ajustez les assignations d'opérateurs et les groupes d'indépendance.
       personaNarration: Ajustons la composition des membres pour respecter l'indépendance de revue.
+      stepKind: COLLECT
       requiredFields:
         - members
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: select-members
     - id: confirm-evolution
       name: Confirmation de l'évolution
       description: Vérifiez le diff contractuel avant d'enregistrer la proposition.

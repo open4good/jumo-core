@@ -7,3 +7,4 @@ metadata:
 spec:
   ownerRealm: home
   mission: Build Nuxt 3, Vue 3, and Vuetify components, model-driven projection renderers, and accessible Cockpit surfaces.
+  independenceGroup: frontend-build

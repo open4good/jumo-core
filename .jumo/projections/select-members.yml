@@ -1,0 +1,24 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: select-members
+  namespace: dev.jumo.core
+  name: Select team members step form
+spec:
+  ownerRealm: home
+  payloadSchemaRef: select-members
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: team-members
+      i18nKey: journeySelectMembersSection
+      columns: 1
+      fields:
+        - path: members
+          representation: ENTITY_COLLECTION
+          i18nKey: journeySelectRoles
+          optionsFrom: RoleDefinition
+          optionsEligibility:
+            - path: spec.independenceGroup
+              present: true
+          required: true

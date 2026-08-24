@@ -7,3 +7,4 @@ metadata:
 spec:
   ownerRealm: home
   mission: Perform independent adversarial review, verify OPA Rego policies, audit test evidence, and prevent secret leakage.
+  independenceGroup: review

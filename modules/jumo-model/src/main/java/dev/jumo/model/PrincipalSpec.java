@@ -2,11 +2,10 @@
 package dev.jumo.model;
 
 
-import java.util.List;
 import java.util.Objects;
 
 
-public record PrincipalSpec(String ownerRealm, PrincipalKind principalKind, String displayName, ContractReference personalSpaceRef, ConsentState consentState, List<String> channelBindingRefs)  {
+public record PrincipalSpec(String ownerRealm, PrincipalKind principalKind, String displayName, ContractReference personalSpaceRef, ConsentState consentState)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,7 +18,6 @@ public record PrincipalSpec(String ownerRealm, PrincipalKind principalKind, Stri
         private String displayName = "";
         private ContractReference personalSpaceRef = null;
         private ConsentState consentState = null;
-        private List<String> channelBindingRefs = List.of();
 
 
         public Builder ownerRealm(String ownerRealm) {
@@ -47,13 +45,8 @@ public record PrincipalSpec(String ownerRealm, PrincipalKind principalKind, Stri
             return this;
         }
 
-        public Builder channelBindingRefs(List<String> channelBindingRefs) {
-            this.channelBindingRefs = Objects.requireNonNull(channelBindingRefs);
-            return this;
-        }
-
     public PrincipalSpec build() {
-            return new PrincipalSpec(ownerRealm, principalKind, displayName, personalSpaceRef, consentState, channelBindingRefs);
+            return new PrincipalSpec(ownerRealm, principalKind, displayName, personalSpaceRef, consentState);
         }
     }
 }

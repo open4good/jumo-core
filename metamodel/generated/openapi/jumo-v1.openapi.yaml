@@ -247,10 +247,6 @@ components:
             the Realm. For a CONTACT, the Realm's own record of whether that person
             agreed to being modeled -- never proof of consent, only a claim the Realm
             makes.
-        channelBindingRefs:
-          items:
-            type: string
-          type: array
       additionalProperties: false
       type: object
       required:
@@ -851,10 +847,6 @@ components:
         values:
           items:
             $ref: '#/components/schemas/KitBindingValue'
-          type: array
-        derivationRefs:
-          items:
-            type: string
           type: array
       additionalProperties: false
       type: object

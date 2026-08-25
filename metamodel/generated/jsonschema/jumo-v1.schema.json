@@ -5864,13 +5864,6 @@
           "pattern": "^[a-z][a-z0-9-]*$",
           "type": "string"
         },
-        "derivationRefs": {
-          "items": {
-            "pattern": "^[a-z][a-z0-9-]*$",
-            "type": "string"
-          },
-          "type": "array"
-        },
         "kit": {
           "$ref": "#/$defs/KitReference"
         },
@@ -9525,13 +9518,6 @@
       "additionalProperties": false,
       "description": "",
       "properties": {
-        "channelBindingRefs": {
-          "items": {
-            "pattern": "^[a-z][a-z0-9-]*$",
-            "type": "string"
-          },
-          "type": "array"
-        },
         "consentState": {
           "$ref": "#/$defs/ConsentState",
           "description": "NOT_APPLICABLE for OWNER and MEMBER, who consented by joining the Realm. For a CONTACT, the Realm's own record of whether that person agreed to being modeled -- never proof of consent, only a claim the Realm makes."

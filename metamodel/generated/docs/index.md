@@ -503,7 +503,6 @@ Name: jumo_v1
 | [changeProposalRef](changeProposalRef.md) |  |
 | [changeSetProposalId](changeSetProposalId.md) |  |
 | [changesetSha256](changesetSha256.md) |  |
-| [channelBindingRefs](channelBindingRefs.md) |  |
 | [channels](channels.md) |  |
 | [chiefOfStaff](chiefOfStaff.md) |  |
 | [chiefOfStaffForm](chiefOfStaffForm.md) | Named visual form |
@@ -604,7 +603,6 @@ Name: jumo_v1
 | [dependsOn](dependsOn.md) | Step IDs that must be completed before this step becomes available |
 | [dependsOnWorkOrderRefs](dependsOnWorkOrderRefs.md) | WorkOrders that must be COMPLETED before this one starts |
 | [deployment](deployment.md) |  |
-| [derivationRefs](derivationRefs.md) |  |
 | [description](description.md) |  |
 | [descriptionI18nKey](descriptionI18nKey.md) | i18n key resolving this step's user-facing description |
 | [desiredState](desiredState.md) |  |

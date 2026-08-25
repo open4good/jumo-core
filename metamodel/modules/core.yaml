@@ -371,9 +371,6 @@ classes:
         required: true
         description: NOT_APPLICABLE for OWNER and MEMBER, who consented by joining the Realm. For a CONTACT, the Realm's own
           record of whether that person agreed to being modeled -- never proof of consent, only a claim the Realm makes.
-      channelBindingRefs:
-        range: Identifier
-        multivalued: true
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

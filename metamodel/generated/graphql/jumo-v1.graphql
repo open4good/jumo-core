@@ -2670,7 +2670,6 @@ type KitBindingSpec
     alias: Identifier!
     profiles: [Identifier]
     values: [KitBindingValue]!
-    derivationRefs: [Identifier]
   }
 
 type KitBindingValue
@@ -3569,7 +3568,6 @@ type PrincipalSpec
     displayName: String!
     personalSpaceRef: ContractReference
     consentState: ConsentState!
-    channelBindingRefs: [Identifier]
   }
 
 type Principle

@@ -21,8 +21,6 @@ URI: [jumo:KitBindingSpec](https://jumo.dev/schemas/jumo-v1/KitBindingSpec)
     click KitBindingSpec href "../KitBindingSpec/"
       KitBindingSpec : alias
 
-      KitBindingSpec : derivationRefs
-
       KitBindingSpec : kit
 
 
@@ -66,7 +64,6 @@ URI: [jumo:KitBindingSpec](https://jumo.dev/schemas/jumo-v1/KitBindingSpec)
 | [alias](alias.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [profiles](profiles.md) | * <br/> [Identifier](Identifier.md) |  | direct |
 | [values](values.md) | 1..* <br/> [KitBindingValue](KitBindingValue.md) |  | direct |
-| [derivationRefs](derivationRefs.md) | * <br/> [Identifier](Identifier.md) |  | direct |
 
 
 
@@ -260,15 +257,6 @@ attributes:
     inlined: true
     inlined_as_list: true
     minimum_cardinality: 1
-  derivationRefs:
-    name: derivationRefs
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: KitBindingSpec
-    domain_of:
-    - KitBindingSpec
-    range: Identifier
-    multivalued: true
 
 ```
 </details>
@@ -402,15 +390,6 @@ attributes:
     inlined: true
     inlined_as_list: true
     minimum_cardinality: 1
-  derivationRefs:
-    name: derivationRefs
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: KitBindingSpec
-    domain_of:
-    - KitBindingSpec
-    range: Identifier
-    multivalued: true
 
 ```
 </details></div>

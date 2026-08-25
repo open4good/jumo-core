@@ -4,11 +4,10 @@ package dev.jumo.model;
 
 import java.util.List;
 import java.util.List;
-import java.util.List;
 import java.util.Objects;
 
 
-public record KitBindingSpec(String ownerRealm, KitReference kit, String alias, List<String> profiles, List<KitBindingValue> values, List<String> derivationRefs)  {
+public record KitBindingSpec(String ownerRealm, KitReference kit, String alias, List<String> profiles, List<KitBindingValue> values)  {
 
     public static Builder builder() {
         return new Builder();
@@ -21,7 +20,6 @@ public record KitBindingSpec(String ownerRealm, KitReference kit, String alias, 
         private String alias = "";
         private List<String> profiles = List.of();
         private List<KitBindingValue> values = List.of();
-        private List<String> derivationRefs = List.of();
 
 
         public Builder ownerRealm(String ownerRealm) {
@@ -49,13 +47,8 @@ public record KitBindingSpec(String ownerRealm, KitReference kit, String alias, 
             return this;
         }
 
-        public Builder derivationRefs(List<String> derivationRefs) {
-            this.derivationRefs = Objects.requireNonNull(derivationRefs);
-            return this;
-        }
-
     public KitBindingSpec build() {
-            return new KitBindingSpec(ownerRealm, kit, alias, profiles, values, derivationRefs);
+            return new KitBindingSpec(ownerRealm, kit, alias, profiles, values);
         }
     }
 }

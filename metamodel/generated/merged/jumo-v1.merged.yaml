@@ -3538,14 +3538,6 @@ classes:
         - PrincipalSpec
         range: ConsentState
         required: true
-      channelBindingRefs:
-        name: channelBindingRefs
-        from_schema: https://jumo.dev/schemas/core
-        owner: PrincipalSpec
-        domain_of:
-        - PrincipalSpec
-        range: Identifier
-        multivalued: true
   PrincipalIdentityBinding:
     name: PrincipalIdentityBinding
     annotations:
@@ -7495,14 +7487,6 @@ classes:
         inlined: true
         inlined_as_list: true
         minimum_cardinality: 1
-      derivationRefs:
-        name: derivationRefs
-        from_schema: https://jumo.dev/schemas/portability
-        owner: KitBindingSpec
-        domain_of:
-        - KitBindingSpec
-        range: Identifier
-        multivalued: true
   KitReference:
     name: KitReference
     annotations:

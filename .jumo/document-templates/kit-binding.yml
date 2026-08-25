@@ -21,4 +21,3 @@ spec:
         commit: ${commit}
       profiles: []
       values: []
-      derivationRefs: []

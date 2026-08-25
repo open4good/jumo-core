@@ -687,9 +687,6 @@ classes:
         inlined_as_list: true
         required: true
         minimum_cardinality: 1
-      derivationRefs:
-        range: Identifier
-        multivalued: true
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

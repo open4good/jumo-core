@@ -19,8 +19,6 @@ URI: [jumo:PrincipalSpec](https://jumo.dev/schemas/jumo-v1/PrincipalSpec)
  classDiagram
     class PrincipalSpec
     click PrincipalSpec href "../PrincipalSpec/"
-      PrincipalSpec : channelBindingRefs
-
       PrincipalSpec : consentState
 
 
@@ -75,7 +73,6 @@ URI: [jumo:PrincipalSpec](https://jumo.dev/schemas/jumo-v1/PrincipalSpec)
 | [displayName](displayName.md) | 1 <br/> [String](String.md) |  | direct |
 | [personalSpaceRef](personalSpaceRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) | Present only for OWNER and MEMBER | direct |
 | [consentState](consentState.md) | 1 <br/> [ConsentState](ConsentState.md) | NOT_APPLICABLE for OWNER and MEMBER, who consented by joining the Realm | direct |
-| [channelBindingRefs](channelBindingRefs.md) | * <br/> [Identifier](Identifier.md) |  | direct |
 
 
 
@@ -274,15 +271,6 @@ attributes:
     - PrincipalSpec
     range: ConsentState
     required: true
-  channelBindingRefs:
-    name: channelBindingRefs
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: PrincipalSpec
-    domain_of:
-    - PrincipalSpec
-    range: Identifier
-    multivalued: true
 
 ```
 </details>
@@ -421,15 +409,6 @@ attributes:
     - PrincipalSpec
     range: ConsentState
     required: true
-  channelBindingRefs:
-    name: channelBindingRefs
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: PrincipalSpec
-    domain_of:
-    - PrincipalSpec
-    range: Identifier
-    multivalued: true
 
 ```
 </details></div>

@@ -1928,9 +1928,6 @@
     "alias": {
       "@id": "alias"
     },
-    "derivationRefs": {
-      "@id": "derivationRefs"
-    },
     "kit": {
       "@type": "@id",
       "@id": "kit"
@@ -2930,9 +2927,6 @@
     },
     "oidcSubject": {
       "@id": "oidcSubject"
-    },
-    "channelBindingRefs": {
-      "@id": "channelBindingRefs"
     },
     "consentState": {
       "@context": {

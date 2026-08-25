@@ -5284,17 +5284,6 @@ COMMENT ON COLUMN "ProjectionField"."optionsFromEnum" IS 'A generated LinkML enu
 COMMENT ON COLUMN "ProjectionField".required IS 'When an AssistedJourneyStep declares both projectionRef and requiredFields (work.yaml), requiredFields must name exactly the fields marked required here (Rego) -- the two lists describe the same gate and must not be allowed to drift.';
 COMMENT ON COLUMN "ProjectionField"."ProjectionSection_uid" IS 'Autocreated FK slot';
 
-CREATE TABLE "PrincipalSpec_channelBindingRefs" (
-	"PrincipalSpec_id" INTEGER,
-	"channelBindingRefs" TEXT,
-	PRIMARY KEY ("PrincipalSpec_id", "channelBindingRefs"),
-	FOREIGN KEY("PrincipalSpec_id") REFERENCES "PrincipalSpec" (id)
-);
-CREATE INDEX "ix_PrincipalSpec_channelBindingRefs_PrincipalSpec_id" ON "PrincipalSpec_channelBindingRefs" ("PrincipalSpec_id");
-CREATE INDEX "ix_PrincipalSpec_channelBindingRefs_channelBindingRefs" ON "PrincipalSpec_channelBindingRefs" ("channelBindingRefs");
-COMMENT ON TABLE "PrincipalSpec_channelBindingRefs" IS 'None';
-COMMENT ON COLUMN "PrincipalSpec_channelBindingRefs"."PrincipalSpec_id" IS 'Autocreated FK slot';
-
 CREATE TABLE "Principle_inspiresPolicies" (
 	"Principle_uid" INTEGER,
 	"inspiresPolicies" TEXT,
@@ -5350,17 +5339,6 @@ CREATE INDEX "ix_KitBindingSpec_profiles_KitBindingSpec_id" ON "KitBindingSpec_p
 CREATE INDEX "ix_KitBindingSpec_profiles_profiles" ON "KitBindingSpec_profiles" (profiles);
 COMMENT ON TABLE "KitBindingSpec_profiles" IS 'None';
 COMMENT ON COLUMN "KitBindingSpec_profiles"."KitBindingSpec_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "KitBindingSpec_derivationRefs" (
-	"KitBindingSpec_id" INTEGER,
-	"derivationRefs" TEXT,
-	PRIMARY KEY ("KitBindingSpec_id", "derivationRefs"),
-	FOREIGN KEY("KitBindingSpec_id") REFERENCES "KitBindingSpec" (id)
-);
-CREATE INDEX "ix_KitBindingSpec_derivationRefs_KitBindingSpec_id" ON "KitBindingSpec_derivationRefs" ("KitBindingSpec_id");
-CREATE INDEX "ix_KitBindingSpec_derivationRefs_derivationRefs" ON "KitBindingSpec_derivationRefs" ("derivationRefs");
-COMMENT ON TABLE "KitBindingSpec_derivationRefs" IS 'None';
-COMMENT ON COLUMN "KitBindingSpec_derivationRefs"."KitBindingSpec_id" IS 'Autocreated FK slot';
 
 CREATE TABLE "OrganizationTemplateSpec_roles" (
 	"OrganizationTemplateSpec_id" INTEGER,

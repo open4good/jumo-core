@@ -103,12 +103,53 @@ jobs:
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
 
+      # GitHub Packages refuses to overwrite an already-published release version with 409
+      # Conflict, and both coordinates here are fixed: jumo-core-reactor:1 and the jumo-model
+      # version in its POM. So every push to main after the first one that publishes a given
+      # version fails the whole workflow, for no reason a reader would guess from the error.
+      # Publishing is a version-bump event, not a per-commit one -- so decide first, and say which.
+      - name: Decide whether this version still needs publishing
+        id: decide
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          published() {
+            local path="$1" status
+            status="$(curl -s -o /dev/null -w '%{http_code}' \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              "https://maven.pkg.github.com/open4good/jumo-core/${path}")"
+            [ "$status" = "200" ]
+          }
+          parent="$(mvn -B -q -f pom.xml help:evaluate -Dexpression=project.version -DforceStdout)"
+          model="$(mvn -B -q -f modules/jumo-model/pom.xml help:evaluate \
+            -Dexpression=project.version -DforceStdout)"
+          echo "jumo-core-reactor:${parent}, jumo-model:${model}"
+          if published "dev/jumo/jumo-model/${model}/jumo-model-${model}.pom"; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            echo "dev.jumo:jumo-model:${model} is already published; nothing to deploy."
+            echo "Bump the version in modules/jumo-model/pom.xml to publish a new one."
+            exit 0
+          fi
+          echo "needed=true" >> "$GITHUB_OUTPUT"
+          # -am rebuilds and redeploys the parent, which 409s if it is already there. Only ask for
+          # it when the parent is genuinely missing.
+          if published "dev/jumo/jumo-core-reactor/${parent}/jumo-core-reactor-${parent}.pom"; then
+            echo "projects=-pl modules/jumo-model" >> "$GITHUB_OUTPUT"
+            echo "Parent already published; deploying jumo-model alone."
+          else
+            echo "projects=-pl modules/jumo-model -am" >> "$GITHUB_OUTPUT"
+            echo "Parent missing; deploying it alongside jumo-model."
+          fi
+
       # modules/jumo-model/src/main/java is already the committed, reproducibility-checked output
       # of the metamodel job above -- this job builds and ships it, it does not regenerate it.
       - name: Build and publish jumo-model
+        if: steps.decide.outputs.needed == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # -am also deploys the jumo-core-reactor parent POM. Without it the published
-        # jumo-model POM names a parent no consumer can resolve, and every jumo build fails with
-        # "Could not find artifact dev.jumo:jumo-core-reactor:pom:1" after authenticating fine.
-        run: mvn -B -f pom.xml -pl modules/jumo-model -am deploy -DskipTests
+        # The parent POM must reach the registry too -- without it the published jumo-model POM
+        # names a parent no consumer can resolve, and every jumo build fails with "Could not find
+        # artifact dev.jumo:jumo-core-reactor:pom:1" after authenticating fine. The step above
+        # decides whether it still needs sending.
+        run: mvn -B -f pom.xml ${{ steps.decide.outputs.projects }} deploy -DskipTests

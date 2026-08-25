@@ -480,27 +480,27 @@ iso8601_duration_part(part) := to_number(part) if part != ""
 deny contains corpus.violation("corpus.work.dependency-self", document, message) if {
 	some document in corpus.documents
 	document.kind == "WorkOrder"
-	some dependency in object.get(corpus.spec(document), "dependsOn", [])
+	some dependency in corpus.work_deps(corpus.spec(document))
 	dependency == corpus.id(document)
-	message := sprintf("spec.dependsOn: %q depends on itself", [dependency])
+	message := sprintf("spec.dependsOnWorkOrderRefs: %q depends on itself", [dependency])
 }
 
 deny contains corpus.violation("corpus.work.dependency-resolves", document, message) if {
 	some document in corpus.documents
 	document.kind == "WorkOrder"
-	some dependency in object.get(corpus.spec(document), "dependsOn", [])
+	some dependency in corpus.work_deps(corpus.spec(document))
 	not dependency in corpus.ids_of_kind("WorkOrder")
-	message := sprintf("spec.dependsOn: no WorkOrder declares id %q", [dependency])
+	message := sprintf("spec.dependsOnWorkOrderRefs: no WorkOrder declares id %q", [dependency])
 }
 
 deny contains corpus.violation("corpus.work.dependency-cycle", document, message) if {
 	some document in corpus.documents
 	document.kind == "WorkOrder"
-	some dependency in object.get(corpus.spec(document), "dependsOn", [])
+	some dependency in corpus.work_deps(corpus.spec(document))
 	dependency != corpus.id(document)
 	dependency in corpus.ids_of_kind("WorkOrder")
 	corpus.id(document) in graph.reachable(work_dependency_graph, {dependency})
-	message := sprintf("spec.dependsOn: dependency cycle reaches %q through %q", [corpus.id(document), dependency])
+	message := sprintf("spec.dependsOnWorkOrderRefs: dependency cycle reaches %q through %q", [corpus.id(document), dependency])
 }
 
 started_state(state) if {
@@ -512,19 +512,18 @@ deny contains corpus.violation("corpus.work.dependency-complete", document, mess
 	document.kind == "WorkOrder"
 	spec := corpus.spec(document)
 	started_state(spec.state)
-	some dependency in object.get(spec, "dependsOn", [])
+	some dependency in corpus.work_deps(spec)
 	target := corpus.document_by_kind_id("WorkOrder", dependency)
 	corpus.spec(target).state != "COMPLETED"
-	message := sprintf("spec.dependsOn: %q is not COMPLETED while this work is %s", [dependency, spec.state])
+	message := sprintf("spec.dependsOnWorkOrderRefs: %q is not COMPLETED while this work is %s", [dependency, spec.state])
 }
 
 deny contains corpus.violation("corpus.work.parent-self", document, message) if {
 	some document in corpus.documents
 	document.kind == "WorkOrder"
-	parent := object.get(corpus.spec(document), "parentRef", null)
-	parent != null
+	parent := corpus.work_parent(corpus.spec(document))
 	parent == corpus.id(document)
-	message := "spec.parentRef: an item cannot decompose itself"
+	message := "spec.parentWorkOrderRef: an item cannot decompose itself"
 }
 
 forbidden_work_scope := ".jumo/interfaces/"

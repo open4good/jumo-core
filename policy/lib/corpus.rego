@@ -139,6 +139,12 @@ work_deps(work_spec) := [ref_id(d) |
 	some d in object.get(work_spec, "dependsOnWorkOrderRefs", object.get(work_spec, "dependsOn", []))
 ]
 
+work_parent(work_spec) := id if {
+	val := object.get(work_spec, "parentWorkOrderRef", object.get(work_spec, "parentRef", null))
+	val != null
+	id := ref_id(val)
+}
+
 assignment_role(assignment_spec) := id if {
 	val := object.get(assignment_spec, "roleDefinitionRef", object.get(assignment_spec, "operatorRef", null))
 	val != null

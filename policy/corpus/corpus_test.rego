@@ -720,6 +720,79 @@ test_rejects_two_node_dependency_cycle if {
 	has_rule(violations, "corpus.work.dependency-cycle")
 }
 
+# The four dependency rules and parent-self read spec.dependsOn and spec.parentRef, the pre
+# ADR-0045 field names, while every real WorkOrder has carried dependsOnWorkOrderRefs and
+# parentWorkOrderRef since the reference migration. The tests above all use the legacy shape, so
+# they stayed green while the rules were inert against the actual corpus -- a real circular
+# dependency had to be found and cut by hand in an evidence note on 2026-08-25 because
+# dependency-cycle no longer saw it. These tests assert the current shape, so the rules cannot go
+# blind to it again.
+test_rejects_unfinished_structured_reference_dependency if {
+	bad := document(
+		".jumo/work/structured-dependent.yml",
+		"WorkOrder",
+		"structured-dependent",
+		{
+			"operatorRef": "implementer",
+			"projectRef": "jumo",
+			"state": "IN_PROGRESS",
+			"dependsOnWorkOrderRefs": [{"kind": "WorkOrder", "namespace": "dev.jumo.test", "id": "change"}],
+			"pathScope": ["docs/**"],
+		},
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [bad])
+	has_rule(violations, "corpus.work.dependency-complete")
+}
+
+test_rejects_structured_reference_dependency_cycle if {
+	first := document(
+		".jumo/work/structured-first.yml",
+		"WorkOrder",
+		"structured-first",
+		{
+			"operatorRef": "implementer",
+			"projectRef": "jumo",
+			"state": "PROPOSED",
+			"dependsOnWorkOrderRefs": [{"kind": "WorkOrder", "namespace": "dev.jumo.test", "id": "structured-second"}],
+		},
+	)
+	second := document(
+		".jumo/work/structured-second.yml",
+		"WorkOrder",
+		"structured-second",
+		{
+			"operatorRef": "implementer",
+			"projectRef": "jumo",
+			"state": "PROPOSED",
+			"dependsOnWorkOrderRefs": [{"kind": "WorkOrder", "namespace": "dev.jumo.test", "id": "structured-first"}],
+		},
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [first, second])
+	has_rule(violations, "corpus.work.dependency-cycle")
+}
+
+test_rejects_structured_self_missing_and_parent_dependencies if {
+	bad := document(
+		".jumo/work/structured-bad.yml",
+		"WorkOrder",
+		"structured-bad",
+		{
+			"operatorRef": "implementer",
+			"projectRef": "jumo",
+			"state": "PROPOSED",
+			"dependsOnWorkOrderRefs": [
+				{"kind": "WorkOrder", "namespace": "dev.jumo.test", "id": "structured-bad"},
+				{"kind": "WorkOrder", "namespace": "dev.jumo.test", "id": "missing"},
+			],
+			"parentWorkOrderRef": {"kind": "WorkOrder", "namespace": "dev.jumo.test", "id": "structured-bad"},
+		},
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [bad])
+	has_rule(violations, "corpus.work.dependency-self")
+	has_rule(violations, "corpus.work.dependency-resolves")
+	has_rule(violations, "corpus.work.parent-self")
+}
+
 test_rejects_self_missing_and_parent_dependencies if {
 	bad := document(
 		".jumo/work/bad-dependencies.yml",

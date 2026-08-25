@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Dual-consent authorization record for executing irreversible effect tests.
  */
-public record EffectTestAuthorization(String authorizationId, String planDigest, String inputDigest, String targetDigest, List<String> approverPrincipalRefs, String authorizedAt, String expiresAt)  {
+public record EffectTestAuthorization(String authorizationId, String planDigest, String inputDigest, String targetDigest, List<ContractReference> approverPrincipalRefs, String authorizedAt, String expiresAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -20,7 +20,7 @@ public record EffectTestAuthorization(String authorizationId, String planDigest,
         private String planDigest = "";
         private String inputDigest = "";
         private String targetDigest = "";
-        private List<String> approverPrincipalRefs = List.of();
+        private List<ContractReference> approverPrincipalRefs = List.of();
         private String authorizedAt = "";
         private String expiresAt = "";
 
@@ -45,7 +45,7 @@ public record EffectTestAuthorization(String authorizationId, String planDigest,
             return this;
         }
 
-        public Builder approverPrincipalRefs(List<String> approverPrincipalRefs) {
+        public Builder approverPrincipalRefs(List<ContractReference> approverPrincipalRefs) {
             this.approverPrincipalRefs = Objects.requireNonNull(approverPrincipalRefs);
             return this;
         }

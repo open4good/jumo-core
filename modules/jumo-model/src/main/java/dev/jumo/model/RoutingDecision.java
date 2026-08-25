@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Immutable policy-authorized adapter and cell selection for one recognized turn.
  */
-public record RoutingDecision(String id, String ownerRealm, String conversationTurnRef, String executionCellRef, ModelAccessAdapter adapter, String policyRevision, String reasonCode, String inputSha256, ZonedDateTime evaluatedAt)  {
+public record RoutingDecision(String id, String ownerRealm, String conversationTurnRef, ContractReference executionCellRef, ModelAccessAdapter adapter, String policyRevision, String reasonCode, String inputSha256, ZonedDateTime evaluatedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,7 +19,7 @@ public record RoutingDecision(String id, String ownerRealm, String conversationT
         private String id = "";
         private String ownerRealm = "";
         private String conversationTurnRef = "";
-        private String executionCellRef = "";
+        private ContractReference executionCellRef = null;
         private ModelAccessAdapter adapter = null;
         private String policyRevision = "";
         private String reasonCode = "";
@@ -42,7 +42,7 @@ public record RoutingDecision(String id, String ownerRealm, String conversationT
             return this;
         }
 
-        public Builder executionCellRef(String executionCellRef) {
+        public Builder executionCellRef(ContractReference executionCellRef) {
             this.executionCellRef = Objects.requireNonNull(executionCellRef);
             return this;
         }

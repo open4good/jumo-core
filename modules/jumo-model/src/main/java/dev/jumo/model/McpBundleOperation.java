@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record McpBundleOperation(String id, String exposedName, String upstreamToolName, boolean untrustedOutput, String agentGuidance, String capabilityRef, String description, OperationEffect effect, OperationIdempotency idempotency, OperationReconciliation reconciliation, String inputSchemaRef, String outputSchemaRef, List<String> secretBindingRefs, String recoveryPlanDigest, String killSwitchRef)  {
+public record McpBundleOperation(String id, String exposedName, String upstreamToolName, boolean untrustedOutput, String agentGuidance, String capabilityRef, String description, OperationEffect effect, OperationIdempotency idempotency, OperationReconciliation reconciliation, String inputSchemaRef, String outputSchemaRef, List<ContractReference> secretBindingRefs, String recoveryPlanDigest, String killSwitchRef)  {
 
     public static Builder builder() {
         return new Builder();
@@ -26,7 +26,7 @@ public record McpBundleOperation(String id, String exposedName, String upstreamT
         private OperationReconciliation reconciliation = null;
         private String inputSchemaRef = "";
         private String outputSchemaRef = "";
-        private List<String> secretBindingRefs = List.of();
+        private List<ContractReference> secretBindingRefs = List.of();
         private String recoveryPlanDigest = "";
         private String killSwitchRef = "";
 
@@ -91,7 +91,7 @@ public record McpBundleOperation(String id, String exposedName, String upstreamT
             return this;
         }
 
-        public Builder secretBindingRefs(List<String> secretBindingRefs) {
+        public Builder secretBindingRefs(List<ContractReference> secretBindingRefs) {
             this.secretBindingRefs = Objects.requireNonNull(secretBindingRefs);
             return this;
         }

@@ -173,12 +173,17 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [ConnectorAppraisalSpec](ConnectorAppraisalSpec.md) | [appraisedByRoleDefinitionRef](appraisedByRoleDefinitionRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorAppraisalSpec](ConnectorAppraisalSpec.md) | [verifiedByRoleDefinitionRef](verifiedByRoleDefinitionRef.md) | range | [ContractReference](ContractReference.md) |
 | [McpBundleSpec](McpBundleSpec.md) | [connectorPackageRef](connectorPackageRef.md) | range | [ContractReference](ContractReference.md) |
+| [McpBundleOperation](McpBundleOperation.md) | [secretBindingRefs](secretBindingRefs.md) | range | [ContractReference](ContractReference.md) |
 | [RemoteMcpServiceSpec](RemoteMcpServiceSpec.md) | [oauthSecretBindingRef](oauthSecretBindingRef.md) | range | [ContractReference](ContractReference.md) |
 | [RemoteMcpServiceSpec](RemoteMcpServiceSpec.md) | [remoteMcpAppraisalRef](remoteMcpAppraisalRef.md) | range | [ContractReference](ContractReference.md) |
 | [RemoteMcpAppraisalSpec](RemoteMcpAppraisalSpec.md) | [remoteMcpServiceRef](remoteMcpServiceRef.md) | range | [ContractReference](ContractReference.md) |
 | [RemoteMcpAppraisalSpec](RemoteMcpAppraisalSpec.md) | [verifiedByRoleDefinitionRef](verifiedByRoleDefinitionRef.md) | range | [ContractReference](ContractReference.md) |
 | [ExecutionCellSpec](ExecutionCellSpec.md) | [connectorDefinitionRefs](connectorDefinitionRefs.md) | range | [ContractReference](ContractReference.md) |
 | [ExecutionCellSpec](ExecutionCellSpec.md) | [mountedPersonalSpaceRefs](mountedPersonalSpaceRefs.md) | range | [ContractReference](ContractReference.md) |
+| [ProviderSessionBinding](ProviderSessionBinding.md) | [executionMachineRef](executionMachineRef.md) | range | [ContractReference](ContractReference.md) |
+| [ProviderSessionBinding](ProviderSessionBinding.md) | [providerAccountRef](providerAccountRef.md) | range | [ContractReference](ContractReference.md) |
+| [RoutingDecision](RoutingDecision.md) | [executionCellRef](executionCellRef.md) | range | [ContractReference](ContractReference.md) |
+| [WorkerInvocation](WorkerInvocation.md) | [executionCellRef](executionCellRef.md) | range | [ContractReference](ContractReference.md) |
 | [SecretBindingSpec](SecretBindingSpec.md) | [allowedMcpBundleRefs](allowedMcpBundleRefs.md) | range | [ContractReference](ContractReference.md) |
 | [SecretBindingSpec](SecretBindingSpec.md) | [allowedRemoteMcpServiceRefs](allowedRemoteMcpServiceRefs.md) | range | [ContractReference](ContractReference.md) |
 | [SecretBindingSpec](SecretBindingSpec.md) | [allowedConnectorDefinitionRefs](allowedConnectorDefinitionRefs.md) | range | [ContractReference](ContractReference.md) |
@@ -191,7 +196,19 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [WorkerModelAccess](WorkerModelAccess.md) | [providerAccountRef](providerAccountRef.md) | range | [ContractReference](ContractReference.md) |
 | [WorkerModelAccess](WorkerModelAccess.md) | [secretBindingRef](secretBindingRef.md) | range | [ContractReference](ContractReference.md) |
 | [WorkerGrantedOperation](WorkerGrantedOperation.md) | [connectorDefinitionRef](connectorDefinitionRef.md) | range | [ContractReference](ContractReference.md) |
+| [McpInventorySnapshot](McpInventorySnapshot.md) | [workOrderRef](workOrderRef.md) | range | [ContractReference](ContractReference.md) |
+| [McpInventorySnapshot](McpInventorySnapshot.md) | [executionMachineRef](executionMachineRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorPackageCertificationSpec](ConnectorPackageCertificationSpec.md) | [connectorPackageRef](connectorPackageRef.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorSessionBinding](ConnectorSessionBinding.md) | [connectorRef](connectorRef.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorSessionBinding](ConnectorSessionBinding.md) | [principalRef](principalRef.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorSessionBinding](ConnectorSessionBinding.md) | [machineRef](machineRef.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorSessionBinding](ConnectorSessionBinding.md) | [secretBindingRef](secretBindingRef.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorTestPlan](ConnectorTestPlan.md) | [connectorRef](connectorRef.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorTestPlan](ConnectorTestPlan.md) | [targetMachineRef](targetMachineRef.md) | range | [ContractReference](ContractReference.md) |
+| [EffectTestAuthorization](EffectTestAuthorization.md) | [approverPrincipalRefs](approverPrincipalRefs.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorActivationDecision](ConnectorActivationDecision.md) | [connectorRef](connectorRef.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorActivationDecision](ConnectorActivationDecision.md) | [appraiserRef](appraiserRef.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorActivationDecision](ConnectorActivationDecision.md) | [ownerApproverRef](ownerApproverRef.md) | range | [ContractReference](ContractReference.md) |
 
 
 

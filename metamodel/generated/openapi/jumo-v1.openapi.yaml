@@ -6613,7 +6613,7 @@ components:
           pattern: ^.{3,}$
         secretBindingRefs:
           items:
-            type: string
+            $ref: '#/components/schemas/ContractReference'
           type: array
         recoveryPlanDigest:
           type: string
@@ -6832,11 +6832,11 @@ components:
         ownerRealm:
           type: string
         executionMachineRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         adapter:
           $ref: '#/components/schemas/ModelAccessAdapter'
         providerAccountRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         sessionFingerprint:
           type: string
           pattern: ^sha256:[0-9a-f]{64}$
@@ -6869,7 +6869,7 @@ components:
         conversationTurnRef:
           type: string
         executionCellRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         adapter:
           $ref: '#/components/schemas/ModelAccessAdapter'
         policyRevision:
@@ -6906,7 +6906,7 @@ components:
         routingDecisionRef:
           type: string
         executionCellRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         capabilityGrantRef:
           type: string
         status:
@@ -7775,11 +7775,11 @@ components:
         ownerRealm:
           type: string
         workOrderRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         executionCellLeaseRef:
           type: string
         executionMachineRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         contractRevision:
           type: string
         artifactOrEndpoint:
@@ -8099,15 +8099,15 @@ components:
         sessionId:
           type: string
         connectorRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         principalRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         realmRef:
           type: string
         machineRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         secretBindingRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         grantedScopes:
           items:
             type: string
@@ -8153,9 +8153,9 @@ components:
         planId:
           type: string
         connectorRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         targetMachineRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         testCases:
           items:
             $ref: '#/components/schemas/ConnectorTestCase'
@@ -8208,7 +8208,7 @@ components:
           type: string
         approverPrincipalRefs:
           items:
-            type: string
+            $ref: '#/components/schemas/ContractReference'
           type: array
         authorizedAt:
           type: string
@@ -8229,13 +8229,13 @@ components:
     ConnectorActivationDecision:
       properties:
         connectorRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         decision:
           type: string
         appraiserRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         ownerApproverRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         appraisalDigest:
           type: string
         inventoryDigest:

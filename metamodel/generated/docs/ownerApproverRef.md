@@ -33,7 +33,7 @@ URI: [jumo:ownerApproverRef](https://jumo.dev/schemas/jumo-v1/ownerApproverRef)
 
 | Property | Value |
 | --- | --- |
-| Range | [String](String.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [ConnectorActivationDecision](ConnectorActivationDecision.md) |
 
 ### Cardinality and Requirements
@@ -92,8 +92,9 @@ rank: 1000
 owner: ConnectorActivationDecision
 domain_of:
 - ConnectorActivationDecision
-range: string
+range: ContractReference
 required: true
+inlined: true
 
 ```
 </details></div>

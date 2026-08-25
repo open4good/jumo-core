@@ -36,6 +36,15 @@ URI: [jumo:McpInventorySnapshot](https://jumo.dev/schemas/jumo-v1/McpInventorySn
 
       McpInventorySnapshot : executionMachineRef
 
+
+
+
+
+        McpInventorySnapshot --> "0..1" ContractReference : executionMachineRef
+        click ContractReference href "../ContractReference/"
+
+
+
       McpInventorySnapshot : inventoryDigest
 
       McpInventorySnapshot : ownerRealm
@@ -62,6 +71,15 @@ URI: [jumo:McpInventorySnapshot](https://jumo.dev/schemas/jumo-v1/McpInventorySn
       McpInventorySnapshot : workOrderRef
 
 
+
+
+
+        McpInventorySnapshot --> "0..1" ContractReference : workOrderRef
+        click ContractReference href "../ContractReference/"
+
+
+
+
 ```
 
 
@@ -75,9 +93,9 @@ URI: [jumo:McpInventorySnapshot](https://jumo.dev/schemas/jumo-v1/McpInventorySn
 | ---  | --- | --- | --- |
 | [serverId](serverId.md) | 1 <br/> [String](String.md) |  | direct |
 | [ownerRealm](ownerRealm.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
-| [workOrderRef](workOrderRef.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
+| [workOrderRef](workOrderRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [executionCellLeaseRef](executionCellLeaseRef.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
-| [executionMachineRef](executionMachineRef.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
+| [executionMachineRef](executionMachineRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [contractRevision](contractRevision.md) | 0..1 <br/> [String](String.md) |  | direct |
 | [artifactOrEndpoint](artifactOrEndpoint.md) | 0..1 <br/> [String](String.md) |  | direct |
 | [serverName](serverName.md) | 0..1 <br/> [String](String.md) |  | direct |
@@ -249,7 +267,8 @@ attributes:
     - McpRegistrySourceSpec
     - McpRegistrySourceBindingSpec
     - McpInventorySnapshot
-    range: Identifier
+    range: ContractReference
+    inlined: true
   executionCellLeaseRef:
     name: executionCellLeaseRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -267,7 +286,8 @@ attributes:
     - ProviderSessionBinding
     - WorkerSubstrateSpec
     - McpInventorySnapshot
-    range: Identifier
+    range: ContractReference
+    inlined: true
   contractRevision:
     name: contractRevision
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -459,7 +479,8 @@ attributes:
     - McpRegistrySourceSpec
     - McpRegistrySourceBindingSpec
     - McpInventorySnapshot
-    range: Identifier
+    range: ContractReference
+    inlined: true
   executionCellLeaseRef:
     name: executionCellLeaseRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -477,7 +498,8 @@ attributes:
     - ProviderSessionBinding
     - WorkerSubstrateSpec
     - McpInventorySnapshot
-    range: Identifier
+    range: ContractReference
+    inlined: true
   contractRevision:
     name: contractRevision
     from_schema: https://jumo.dev/schemas/jumo-v1

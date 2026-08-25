@@ -393,6 +393,18 @@ public final class ContractReferenceExtractor {
             }
         }
     }
+    public static void extractFromConnectorActivationDecision(ConnectorActivationDecision obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.connectorRef() != null) {
+            refs.add(new OutgoingReference("connectorRef", obj.connectorRef()));
+        }
+        if (obj.appraiserRef() != null) {
+            refs.add(new OutgoingReference("appraiserRef", obj.appraiserRef()));
+        }
+        if (obj.ownerApproverRef() != null) {
+            refs.add(new OutgoingReference("ownerApproverRef", obj.ownerApproverRef()));
+        }
+    }
     public static void extractFromConnectorAppraisal(ConnectorAppraisal obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         extractFromConnectorAppraisalSpec(obj.spec(), refs);
@@ -467,6 +479,30 @@ public final class ContractReferenceExtractor {
             refs.add(new OutgoingReference("connectorPackageRef", obj.connectorPackageRef()));
         }
     }
+    public static void extractFromConnectorSessionBinding(ConnectorSessionBinding obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.connectorRef() != null) {
+            refs.add(new OutgoingReference("connectorRef", obj.connectorRef()));
+        }
+        if (obj.principalRef() != null) {
+            refs.add(new OutgoingReference("principalRef", obj.principalRef()));
+        }
+        if (obj.machineRef() != null) {
+            refs.add(new OutgoingReference("machineRef", obj.machineRef()));
+        }
+        if (obj.secretBindingRef() != null) {
+            refs.add(new OutgoingReference("secretBindingRef", obj.secretBindingRef()));
+        }
+    }
+    public static void extractFromConnectorTestPlan(ConnectorTestPlan obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.connectorRef() != null) {
+            refs.add(new OutgoingReference("connectorRef", obj.connectorRef()));
+        }
+        if (obj.targetMachineRef() != null) {
+            refs.add(new OutgoingReference("targetMachineRef", obj.targetMachineRef()));
+        }
+    }
     public static void extractFromDispositionMatch(DispositionMatch obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.addressedRoleRefs() != null) {
@@ -483,6 +519,14 @@ public final class ContractReferenceExtractor {
     public static void extractFromDispositionRule(DispositionRule obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         extractFromDispositionMatch(obj.match(), refs);
+    }
+    public static void extractFromEffectTestAuthorization(EffectTestAuthorization obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.approverPrincipalRefs() != null) {
+            for (ContractReference r : obj.approverPrincipalRefs()) {
+                if (r != null) refs.add(new OutgoingReference("approverPrincipalRefs", r));
+            }
+        }
     }
     public static void extractFromEngagementMethod(EngagementMethod obj, List<OutgoingReference> refs) {
         if (obj == null) return;
@@ -637,10 +681,36 @@ public final class ContractReferenceExtractor {
         if (obj == null) return;
         extractFromMcpBundleSpec(obj.spec(), refs);
     }
+    public static void extractFromMcpBundleOperation(McpBundleOperation obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.secretBindingRefs() != null) {
+            for (ContractReference r : obj.secretBindingRefs()) {
+                if (r != null) refs.add(new OutgoingReference("secretBindingRefs", r));
+            }
+        }
+    }
+    public static void extractFromMcpBundleSemanticProfile(McpBundleSemanticProfile obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.operations() != null) {
+            for (McpBundleOperation item : obj.operations()) {
+                extractFromMcpBundleOperation(item, refs);
+            }
+        }
+    }
     public static void extractFromMcpBundleSpec(McpBundleSpec obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.connectorPackageRef() != null) {
             refs.add(new OutgoingReference("connectorPackageRef", obj.connectorPackageRef()));
+        }
+        extractFromMcpBundleSemanticProfile(obj.semanticProfile(), refs);
+    }
+    public static void extractFromMcpInventorySnapshot(McpInventorySnapshot obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.workOrderRef() != null) {
+            refs.add(new OutgoingReference("workOrderRef", obj.workOrderRef()));
+        }
+        if (obj.executionMachineRef() != null) {
+            refs.add(new OutgoingReference("executionMachineRef", obj.executionMachineRef()));
         }
     }
     public static void extractFromMcpRegistrySource(McpRegistrySource obj, List<OutgoingReference> refs) {
@@ -921,6 +991,15 @@ public final class ContractReferenceExtractor {
             refs.add(new OutgoingReference("platformRef", obj.platformRef()));
         }
     }
+    public static void extractFromProviderSessionBinding(ProviderSessionBinding obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.executionMachineRef() != null) {
+            refs.add(new OutgoingReference("executionMachineRef", obj.executionMachineRef()));
+        }
+        if (obj.providerAccountRef() != null) {
+            refs.add(new OutgoingReference("providerAccountRef", obj.providerAccountRef()));
+        }
+    }
     public static void extractFromRealmChiefOfStaffRef(RealmChiefOfStaffRef obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.roleDefinitionRef() != null) {
@@ -1013,6 +1092,12 @@ public final class ContractReferenceExtractor {
         }
         if (obj.federatedPeerRef() != null) {
             refs.add(new OutgoingReference("federatedPeerRef", obj.federatedPeerRef()));
+        }
+    }
+    public static void extractFromRoutingDecision(RoutingDecision obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.executionCellRef() != null) {
+            refs.add(new OutgoingReference("executionCellRef", obj.executionCellRef()));
         }
     }
     public static void extractFromRoutingEligibility(RoutingEligibility obj, List<OutgoingReference> refs) {
@@ -1142,6 +1227,12 @@ public final class ContractReferenceExtractor {
         if (obj == null) return;
         if (obj.connectorDefinitionRef() != null) {
             refs.add(new OutgoingReference("connectorDefinitionRef", obj.connectorDefinitionRef()));
+        }
+    }
+    public static void extractFromWorkerInvocation(WorkerInvocation obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.executionCellRef() != null) {
+            refs.add(new OutgoingReference("executionCellRef", obj.executionCellRef()));
         }
     }
     public static void extractFromWorkerModelAccess(WorkerModelAccess obj, List<OutgoingReference> refs) {

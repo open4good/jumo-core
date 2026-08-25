@@ -805,6 +805,13 @@
           "cardinality": "ONE",
           "required": false,
           "description": ""
+        },
+        {
+          "slotName": "secretBindingRefs",
+          "targetKind": "SecretBinding",
+          "cardinality": "MANY",
+          "required": false,
+          "description": ""
         }
       ],
       "incoming": [
@@ -1888,6 +1895,12 @@
       "incoming": [
         {
           "fromKind": "ConnectorDefinition",
+          "slotName": "secretBindingRefs",
+          "cardinality": "MANY",
+          "description": ""
+        },
+        {
+          "fromKind": "McpBundle",
           "slotName": "secretBindingRefs",
           "cardinality": "MANY",
           "description": ""

@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Recognized opaque binding between a holder provider session and one ExecutionMachine. It never contains a bearer token, refresh token, or provider credential.
  */
-public record ProviderSessionBinding(String id, String ownerRealm, String executionMachineRef, ModelAccessAdapter adapter, String providerAccountRef, String sessionFingerprint, String status, ZonedDateTime expiresAt)  {
+public record ProviderSessionBinding(String id, String ownerRealm, ContractReference executionMachineRef, ModelAccessAdapter adapter, ContractReference providerAccountRef, String sessionFingerprint, String status, ZonedDateTime expiresAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,9 +18,9 @@ public record ProviderSessionBinding(String id, String ownerRealm, String execut
 
         private String id = "";
         private String ownerRealm = "";
-        private String executionMachineRef = "";
+        private ContractReference executionMachineRef = null;
         private ModelAccessAdapter adapter = null;
-        private String providerAccountRef = "";
+        private ContractReference providerAccountRef = null;
         private String sessionFingerprint = "";
         private String status = "";
         private ZonedDateTime expiresAt = null;
@@ -36,7 +36,7 @@ public record ProviderSessionBinding(String id, String ownerRealm, String execut
             return this;
         }
 
-        public Builder executionMachineRef(String executionMachineRef) {
+        public Builder executionMachineRef(ContractReference executionMachineRef) {
             this.executionMachineRef = Objects.requireNonNull(executionMachineRef);
             return this;
         }
@@ -46,7 +46,7 @@ public record ProviderSessionBinding(String id, String ownerRealm, String execut
             return this;
         }
 
-        public Builder providerAccountRef(String providerAccountRef) {
+        public Builder providerAccountRef(ContractReference providerAccountRef) {
             this.providerAccountRef = Objects.requireNonNull(providerAccountRef);
             return this;
         }

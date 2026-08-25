@@ -41,6 +41,15 @@ URI: [jumo:RoutingDecision](https://jumo.dev/schemas/jumo-v1/RoutingDecision)
 
       RoutingDecision : executionCellRef
 
+
+
+
+
+        RoutingDecision --> "1" ContractReference : executionCellRef
+        click ContractReference href "../ContractReference/"
+
+
+
       RoutingDecision : id
 
       RoutingDecision : inputSha256
@@ -66,7 +75,7 @@ URI: [jumo:RoutingDecision](https://jumo.dev/schemas/jumo-v1/RoutingDecision)
 | [id](id.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [ownerRealm](ownerRealm.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [conversationTurnRef](conversationTurnRef.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [executionCellRef](executionCellRef.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
+| [executionCellRef](executionCellRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [adapter](adapter.md) | 1 <br/> [ModelAccessAdapter](ModelAccessAdapter.md) |  | direct |
 | [policyRevision](policyRevision.md) | 1 <br/> [String](String.md) |  | direct |
 | [reasonCode](reasonCode.md) | 1 <br/> [String](String.md) |  | direct |
@@ -274,8 +283,9 @@ attributes:
     domain_of:
     - RoutingDecision
     - WorkerInvocation
-    range: Identifier
+    range: ContractReference
     required: true
+    inlined: true
   adapter:
     name: adapter
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -472,8 +482,9 @@ attributes:
     domain_of:
     - RoutingDecision
     - WorkerInvocation
-    range: Identifier
+    range: ContractReference
     required: true
+    inlined: true
   adapter:
     name: adapter
     from_schema: https://jumo.dev/schemas/jumo-v1

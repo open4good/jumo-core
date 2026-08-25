@@ -26,17 +26,53 @@ URI: [jumo:ConnectorSessionBinding](https://jumo.dev/schemas/jumo-v1/ConnectorSe
     click ConnectorSessionBinding href "../ConnectorSessionBinding/"
       ConnectorSessionBinding : connectorRef
 
+
+
+
+
+        ConnectorSessionBinding --> "1" ContractReference : connectorRef
+        click ContractReference href "../ContractReference/"
+
+
+
       ConnectorSessionBinding : expiresAt
 
       ConnectorSessionBinding : grantedScopes
 
       ConnectorSessionBinding : machineRef
 
+
+
+
+
+        ConnectorSessionBinding --> "0..1" ContractReference : machineRef
+        click ContractReference href "../ContractReference/"
+
+
+
       ConnectorSessionBinding : principalRef
+
+
+
+
+
+        ConnectorSessionBinding --> "0..1" ContractReference : principalRef
+        click ContractReference href "../ContractReference/"
+
+
 
       ConnectorSessionBinding : realmRef
 
       ConnectorSessionBinding : secretBindingRef
+
+
+
+
+
+        ConnectorSessionBinding --> "0..1" ContractReference : secretBindingRef
+        click ContractReference href "../ContractReference/"
+
+
 
       ConnectorSessionBinding : sessionId
 
@@ -55,11 +91,11 @@ URI: [jumo:ConnectorSessionBinding](https://jumo.dev/schemas/jumo-v1/ConnectorSe
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
 | [sessionId](sessionId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [connectorRef](connectorRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [principalRef](principalRef.md) | 0..1 <br/> [String](String.md) |  | direct |
+| [connectorRef](connectorRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [principalRef](principalRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [realmRef](realmRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [machineRef](machineRef.md) | 0..1 <br/> [String](String.md) |  | direct |
-| [secretBindingRef](secretBindingRef.md) | 0..1 <br/> [String](String.md) |  | direct |
+| [machineRef](machineRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [secretBindingRef](secretBindingRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [grantedScopes](grantedScopes.md) | * <br/> [String](String.md) |  | direct |
 | [status](status.md) | 1 <br/> [String](String.md) |  | direct |
 | [expiresAt](expiresAt.md) | 0..1 <br/> [String](String.md) |  | direct |
@@ -166,8 +202,9 @@ attributes:
     - ConnectorSessionBinding
     - ConnectorTestPlan
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   principalRef:
     name: principalRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -176,7 +213,8 @@ attributes:
     - PrincipalIdentityBindingSpec
     - RoleBearer
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
+    inlined: true
   realmRef:
     name: realmRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -195,7 +233,8 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
+    inlined: true
   secretBindingRef:
     name: secretBindingRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -205,7 +244,8 @@ attributes:
     - ProviderAccountSpec
     - WorkerModelAccess
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
+    inlined: true
   grantedScopes:
     name: grantedScopes
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -304,8 +344,9 @@ attributes:
     - ConnectorSessionBinding
     - ConnectorTestPlan
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   principalRef:
     name: principalRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -314,7 +355,8 @@ attributes:
     - PrincipalIdentityBindingSpec
     - RoleBearer
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
+    inlined: true
   realmRef:
     name: realmRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -333,7 +375,8 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
+    inlined: true
   secretBindingRef:
     name: secretBindingRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -343,7 +386,8 @@ attributes:
     - ProviderAccountSpec
     - WorkerModelAccess
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
+    inlined: true
   grantedScopes:
     name: grantedScopes
     from_schema: https://jumo.dev/schemas/jumo-v1

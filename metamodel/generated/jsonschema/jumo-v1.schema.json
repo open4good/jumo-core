@@ -2467,10 +2467,10 @@
           "type": "string"
         },
         "appraiserRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "connectorRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "decidedAt": {
           "type": "string"
@@ -2482,7 +2482,7 @@
           "type": "string"
         },
         "ownerApproverRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         }
       },
       "required": [
@@ -3095,7 +3095,7 @@
       "description": "Active OAuth or API session binding for a Principal/Realm and target machine.",
       "properties": {
         "connectorRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "expiresAt": {
           "type": "string"
@@ -3107,16 +3107,37 @@
           "type": "array"
         },
         "machineRef": {
-          "type": "string"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "principalRef": {
-          "type": "string"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "realmRef": {
           "type": "string"
         },
         "secretBindingRef": {
-          "type": "string"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "sessionId": {
           "pattern": "^[a-z][a-z0-9-]*$",
@@ -3185,7 +3206,7 @@
       "description": "Deterministic test plan for verifying connector operations on a target machine.",
       "properties": {
         "connectorRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "planDigest": {
           "type": "string"
@@ -3195,7 +3216,14 @@
           "type": "string"
         },
         "targetMachineRef": {
-          "type": "string"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "testCases": {
           "items": {
@@ -3971,7 +3999,7 @@
       "properties": {
         "approverPrincipalRefs": {
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/ContractReference"
           },
           "type": "array"
         },
@@ -6897,8 +6925,7 @@
         },
         "secretBindingRefs": {
           "items": {
-            "pattern": "^[a-z][a-z0-9-]*$",
-            "type": "string"
+            "$ref": "#/$defs/ContractReference"
           },
           "type": "array"
         },
@@ -7323,8 +7350,14 @@
           "type": "string"
         },
         "executionMachineRef": {
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "type": "string"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "inventoryDigest": {
           "type": "string"
@@ -7352,8 +7385,14 @@
           "type": "array"
         },
         "workOrderRef": {
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "type": "string"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -11145,8 +11184,7 @@
           "$ref": "#/$defs/ModelAccessAdapter"
         },
         "executionMachineRef": {
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "expiresAt": {
           "format": "date-time",
@@ -11161,8 +11199,7 @@
           "type": "string"
         },
         "providerAccountRef": {
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "sessionFingerprint": {
           "pattern": "^sha256:[0-9a-f]{64}$",
@@ -12170,8 +12207,7 @@
           "type": "string"
         },
         "executionCellRef": {
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "id": {
           "pattern": "^[a-z][a-z0-9-]*$",
@@ -13861,8 +13897,7 @@
           "type": "string"
         },
         "executionCellRef": {
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "id": {
           "pattern": "^[a-z][a-z0-9-]*$",

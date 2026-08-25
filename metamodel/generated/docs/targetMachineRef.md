@@ -33,7 +33,7 @@ URI: [jumo:targetMachineRef](https://jumo.dev/schemas/jumo-v1/targetMachineRef)
 
 | Property | Value |
 | --- | --- |
-| Range | [String](String.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [ConnectorTestPlan](ConnectorTestPlan.md) |
 
 ### Cardinality and Requirements
@@ -91,7 +91,8 @@ rank: 1000
 owner: ConnectorTestPlan
 domain_of:
 - ConnectorTestPlan
-range: string
+range: ContractReference
+inlined: true
 
 ```
 </details></div>

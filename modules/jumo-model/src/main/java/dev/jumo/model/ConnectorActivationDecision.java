@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Owner approval and activation decision activating a connector package.
  */
-public record ConnectorActivationDecision(String connectorRef, String decision, String appraiserRef, String ownerApproverRef, String appraisalDigest, String inventoryDigest, String decidedAt)  {
+public record ConnectorActivationDecision(ContractReference connectorRef, String decision, ContractReference appraiserRef, ContractReference ownerApproverRef, String appraisalDigest, String inventoryDigest, String decidedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -15,16 +15,16 @@ public record ConnectorActivationDecision(String connectorRef, String decision, 
 
     public static class Builder {
 
-        private String connectorRef = "";
+        private ContractReference connectorRef = null;
         private String decision = "";
-        private String appraiserRef = "";
-        private String ownerApproverRef = "";
+        private ContractReference appraiserRef = null;
+        private ContractReference ownerApproverRef = null;
         private String appraisalDigest = "";
         private String inventoryDigest = "";
         private String decidedAt = "";
 
 
-        public Builder connectorRef(String connectorRef) {
+        public Builder connectorRef(ContractReference connectorRef) {
             this.connectorRef = Objects.requireNonNull(connectorRef);
             return this;
         }
@@ -34,12 +34,12 @@ public record ConnectorActivationDecision(String connectorRef, String decision, 
             return this;
         }
 
-        public Builder appraiserRef(String appraiserRef) {
+        public Builder appraiserRef(ContractReference appraiserRef) {
             this.appraiserRef = Objects.requireNonNull(appraiserRef);
             return this;
         }
 
-        public Builder ownerApproverRef(String ownerApproverRef) {
+        public Builder ownerApproverRef(ContractReference ownerApproverRef) {
             this.ownerApproverRef = Objects.requireNonNull(ownerApproverRef);
             return this;
         }

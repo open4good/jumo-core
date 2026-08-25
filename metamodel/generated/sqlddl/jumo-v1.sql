@@ -175,10 +175,12 @@ CREATE TABLE "ContractReference" (
 	"ExecutionMachineSpec_id" INTEGER,
 	"ConnectorOperation_uid" INTEGER,
 	"ConnectorIntentProposal_id" INTEGER,
+	"McpBundleOperation_uid" INTEGER,
 	"ExecutionCellSpec_id" INTEGER,
 	"SecretBindingSpec_id" INTEGER,
 	"FederatedPeerSpec_id" INTEGER,
 	"ProviderAccountSpec_id" INTEGER,
+	"EffectTestAuthorization_id" INTEGER,
 	PRIMARY KEY (uid)
 );
 CREATE INDEX "ix_ContractReference_uid" ON "ContractReference" (uid);
@@ -195,10 +197,12 @@ COMMENT ON COLUMN "ContractReference"."WorkerQualityRequirement_id" IS 'Autocrea
 COMMENT ON COLUMN "ContractReference"."ExecutionMachineSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ConnectorOperation_uid" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ConnectorIntentProposal_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ContractReference"."McpBundleOperation_uid" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ExecutionCellSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."SecretBindingSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."FederatedPeerSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ProviderAccountSpec_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ContractReference"."EffectTestAuthorization_id" IS 'Autocreated FK slot';
 
 CREATE TABLE "LayerOverride" (
 	uid SERIAL NOT NULL,
@@ -1272,52 +1276,6 @@ CREATE TABLE "ExecutionCellTransport" (
 CREATE INDEX "ix_ExecutionCellTransport_id" ON "ExecutionCellTransport" (id);
 COMMENT ON TABLE "ExecutionCellTransport" IS 'None';
 
-CREATE TABLE "ProviderSessionBinding" (
-	uid SERIAL NOT NULL,
-	id TEXT NOT NULL,
-	"ownerRealm" TEXT NOT NULL,
-	"executionMachineRef" TEXT NOT NULL,
-	adapter "ModelAccessAdapter" NOT NULL,
-	"providerAccountRef" TEXT NOT NULL,
-	"sessionFingerprint" TEXT NOT NULL,
-	status TEXT NOT NULL,
-	"expiresAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-	PRIMARY KEY (uid)
-);
-CREATE INDEX "ix_ProviderSessionBinding_uid" ON "ProviderSessionBinding" (uid);
-COMMENT ON TABLE "ProviderSessionBinding" IS 'Recognized opaque binding between a holder provider session and one ExecutionMachine. It never contains a bearer token, refresh token, or provider credential.';
-
-CREATE TABLE "RoutingDecision" (
-	uid SERIAL NOT NULL,
-	id TEXT NOT NULL,
-	"ownerRealm" TEXT NOT NULL,
-	"conversationTurnRef" TEXT NOT NULL,
-	"executionCellRef" TEXT NOT NULL,
-	adapter "ModelAccessAdapter" NOT NULL,
-	"policyRevision" TEXT NOT NULL,
-	"reasonCode" TEXT NOT NULL,
-	"inputSha256" TEXT NOT NULL,
-	"evaluatedAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-	PRIMARY KEY (uid)
-);
-CREATE INDEX "ix_RoutingDecision_uid" ON "RoutingDecision" (uid);
-COMMENT ON TABLE "RoutingDecision" IS 'Immutable policy-authorized adapter and cell selection for one recognized turn.';
-
-CREATE TABLE "WorkerInvocation" (
-	uid SERIAL NOT NULL,
-	id TEXT NOT NULL,
-	"ownerRealm" TEXT NOT NULL,
-	"routingDecisionRef" TEXT NOT NULL,
-	"executionCellRef" TEXT NOT NULL,
-	"capabilityGrantRef" TEXT NOT NULL,
-	status TEXT NOT NULL,
-	"contextSha256" TEXT NOT NULL,
-	"startedAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-	PRIMARY KEY (uid)
-);
-CREATE INDEX "ix_WorkerInvocation_uid" ON "WorkerInvocation" (uid);
-COMMENT ON TABLE "WorkerInvocation" IS 'Ephemeral recognized binding of a turn, route, cell, grant and execution evidence.';
-
 CREATE TABLE "EvidenceRecord" (
 	uid SERIAL NOT NULL,
 	id TEXT NOT NULL,
@@ -1510,25 +1468,6 @@ CREATE TABLE "McpProtocolProfile" (
 CREATE INDEX "ix_McpProtocolProfile_id" ON "McpProtocolProfile" (id);
 COMMENT ON TABLE "McpProtocolProfile" IS 'Supported MCP protocol capabilities and versions.';
 
-CREATE TABLE "McpInventorySnapshot" (
-	id SERIAL NOT NULL,
-	"serverId" TEXT NOT NULL,
-	"ownerRealm" TEXT,
-	"workOrderRef" TEXT,
-	"executionCellLeaseRef" TEXT,
-	"executionMachineRef" TEXT,
-	"contractRevision" TEXT,
-	"artifactOrEndpoint" TEXT,
-	"serverName" TEXT,
-	"serverVersion" TEXT,
-	"protocolVersion" TEXT,
-	"inventoryDigest" TEXT NOT NULL,
-	"discoveredAt" TEXT NOT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_McpInventorySnapshot_id" ON "McpInventorySnapshot" (id);
-COMMENT ON TABLE "McpInventorySnapshot" IS 'PostgreSQL event recording an MCP inventory discovered under an exact Realm lease; it is not a Git contract.';
-
 CREATE TABLE "ImportedSchemaCandidate" (
 	id SERIAL NOT NULL,
 	"candidateId" TEXT NOT NULL,
@@ -1595,32 +1534,6 @@ CREATE TABLE "OAuthClientBindingSpec" (
 CREATE INDEX "ix_OAuthClientBindingSpec_id" ON "OAuthClientBindingSpec" (id);
 COMMENT ON TABLE "OAuthClientBindingSpec" IS 'Specification for an OAuthClientBinding contract.';
 
-CREATE TABLE "ConnectorSessionBinding" (
-	id SERIAL NOT NULL,
-	"sessionId" TEXT NOT NULL,
-	"connectorRef" TEXT NOT NULL,
-	"principalRef" TEXT,
-	"realmRef" TEXT NOT NULL,
-	"machineRef" TEXT,
-	"secretBindingRef" TEXT,
-	status TEXT NOT NULL,
-	"expiresAt" TEXT,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_ConnectorSessionBinding_id" ON "ConnectorSessionBinding" (id);
-COMMENT ON TABLE "ConnectorSessionBinding" IS 'Active OAuth or API session binding for a Principal/Realm and target machine.';
-
-CREATE TABLE "ConnectorTestPlan" (
-	id SERIAL NOT NULL,
-	"planId" TEXT NOT NULL,
-	"connectorRef" TEXT NOT NULL,
-	"targetMachineRef" TEXT,
-	"planDigest" TEXT NOT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_ConnectorTestPlan_id" ON "ConnectorTestPlan" (id);
-COMMENT ON TABLE "ConnectorTestPlan" IS 'Deterministic test plan for verifying connector operations on a target machine.';
-
 CREATE TABLE "ConnectorTestResult" (
 	id SERIAL NOT NULL,
 	"planId" TEXT NOT NULL,
@@ -1647,20 +1560,6 @@ CREATE TABLE "EffectTestAuthorization" (
 );
 CREATE INDEX "ix_EffectTestAuthorization_id" ON "EffectTestAuthorization" (id);
 COMMENT ON TABLE "EffectTestAuthorization" IS 'Dual-consent authorization record for executing irreversible effect tests.';
-
-CREATE TABLE "ConnectorActivationDecision" (
-	id SERIAL NOT NULL,
-	"connectorRef" TEXT NOT NULL,
-	decision TEXT NOT NULL,
-	"appraiserRef" TEXT NOT NULL,
-	"ownerApproverRef" TEXT NOT NULL,
-	"appraisalDigest" TEXT NOT NULL,
-	"inventoryDigest" TEXT NOT NULL,
-	"decidedAt" TEXT NOT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_ConnectorActivationDecision_id" ON "ConnectorActivationDecision" (id);
-COMMENT ON TABLE "ConnectorActivationDecision" IS 'Owner approval and activation decision activating a connector package.';
 
 CREATE TABLE "InterfaceSurfaceSpec" (
 	id SERIAL NOT NULL,
@@ -2932,6 +2831,56 @@ CREATE INDEX "ix_ExecutionCellSpec_id" ON "ExecutionCellSpec" (id);
 COMMENT ON TABLE "ExecutionCellSpec" IS 'None';
 COMMENT ON COLUMN "ExecutionCellSpec"."credentialCustody" IS 'Must equal LOCAL_CELL_SEALED (Rego, corpus.cell.credential-custody).';
 
+CREATE TABLE "ProviderSessionBinding" (
+	uid SERIAL NOT NULL,
+	id TEXT NOT NULL,
+	"ownerRealm" TEXT NOT NULL,
+	adapter "ModelAccessAdapter" NOT NULL,
+	"sessionFingerprint" TEXT NOT NULL,
+	status TEXT NOT NULL,
+	"expiresAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	"executionMachineRef_uid" INTEGER NOT NULL,
+	"providerAccountRef_uid" INTEGER NOT NULL,
+	PRIMARY KEY (uid),
+	FOREIGN KEY("executionMachineRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("providerAccountRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_ProviderSessionBinding_uid" ON "ProviderSessionBinding" (uid);
+COMMENT ON TABLE "ProviderSessionBinding" IS 'Recognized opaque binding between a holder provider session and one ExecutionMachine. It never contains a bearer token, refresh token, or provider credential.';
+
+CREATE TABLE "RoutingDecision" (
+	uid SERIAL NOT NULL,
+	id TEXT NOT NULL,
+	"ownerRealm" TEXT NOT NULL,
+	"conversationTurnRef" TEXT NOT NULL,
+	adapter "ModelAccessAdapter" NOT NULL,
+	"policyRevision" TEXT NOT NULL,
+	"reasonCode" TEXT NOT NULL,
+	"inputSha256" TEXT NOT NULL,
+	"evaluatedAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	"executionCellRef_uid" INTEGER NOT NULL,
+	PRIMARY KEY (uid),
+	FOREIGN KEY("executionCellRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_RoutingDecision_uid" ON "RoutingDecision" (uid);
+COMMENT ON TABLE "RoutingDecision" IS 'Immutable policy-authorized adapter and cell selection for one recognized turn.';
+
+CREATE TABLE "WorkerInvocation" (
+	uid SERIAL NOT NULL,
+	id TEXT NOT NULL,
+	"ownerRealm" TEXT NOT NULL,
+	"routingDecisionRef" TEXT NOT NULL,
+	"capabilityGrantRef" TEXT NOT NULL,
+	status TEXT NOT NULL,
+	"contextSha256" TEXT NOT NULL,
+	"startedAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	"executionCellRef_uid" INTEGER NOT NULL,
+	PRIMARY KEY (uid),
+	FOREIGN KEY("executionCellRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_WorkerInvocation_uid" ON "WorkerInvocation" (uid);
+COMMENT ON TABLE "WorkerInvocation" IS 'Ephemeral recognized binding of a turn, route, cell, grant and execution evidence.';
+
 CREATE TABLE "SecretBindingSpec" (
 	id SERIAL NOT NULL,
 	"ownerRealm" TEXT NOT NULL,
@@ -3051,6 +3000,27 @@ CREATE INDEX "ix_McpServerDescriptor_id" ON "McpServerDescriptor" (id);
 COMMENT ON TABLE "McpServerDescriptor" IS 'Descriptor specifying MCP server transport and connection target.';
 COMMENT ON COLUMN "McpServerDescriptor"."ConnectorPackageSpec_id" IS 'Autocreated FK slot';
 
+CREATE TABLE "McpInventorySnapshot" (
+	id SERIAL NOT NULL,
+	"serverId" TEXT NOT NULL,
+	"ownerRealm" TEXT,
+	"executionCellLeaseRef" TEXT,
+	"contractRevision" TEXT,
+	"artifactOrEndpoint" TEXT,
+	"serverName" TEXT,
+	"serverVersion" TEXT,
+	"protocolVersion" TEXT,
+	"inventoryDigest" TEXT NOT NULL,
+	"discoveredAt" TEXT NOT NULL,
+	"workOrderRef_uid" INTEGER,
+	"executionMachineRef_uid" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("workOrderRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("executionMachineRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_McpInventorySnapshot_id" ON "McpInventorySnapshot" (id);
+COMMENT ON TABLE "McpInventorySnapshot" IS 'PostgreSQL event recording an MCP inventory discovered under an exact Realm lease; it is not a Git contract.';
+
 CREATE TABLE "ConnectorPackageCertificationSpec" (
 	id SERIAL NOT NULL,
 	"packageDigest" TEXT NOT NULL,
@@ -3066,6 +3036,55 @@ CREATE TABLE "ConnectorPackageCertificationSpec" (
 );
 CREATE INDEX "ix_ConnectorPackageCertificationSpec_id" ON "ConnectorPackageCertificationSpec" (id);
 COMMENT ON TABLE "ConnectorPackageCertificationSpec" IS 'None';
+
+CREATE TABLE "ConnectorSessionBinding" (
+	id SERIAL NOT NULL,
+	"sessionId" TEXT NOT NULL,
+	"realmRef" TEXT NOT NULL,
+	status TEXT NOT NULL,
+	"expiresAt" TEXT,
+	"connectorRef_uid" INTEGER NOT NULL,
+	"principalRef_uid" INTEGER,
+	"machineRef_uid" INTEGER,
+	"secretBindingRef_uid" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("connectorRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("principalRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("machineRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("secretBindingRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_ConnectorSessionBinding_id" ON "ConnectorSessionBinding" (id);
+COMMENT ON TABLE "ConnectorSessionBinding" IS 'Active OAuth or API session binding for a Principal/Realm and target machine.';
+
+CREATE TABLE "ConnectorTestPlan" (
+	id SERIAL NOT NULL,
+	"planId" TEXT NOT NULL,
+	"planDigest" TEXT NOT NULL,
+	"connectorRef_uid" INTEGER NOT NULL,
+	"targetMachineRef_uid" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("connectorRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("targetMachineRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_ConnectorTestPlan_id" ON "ConnectorTestPlan" (id);
+COMMENT ON TABLE "ConnectorTestPlan" IS 'Deterministic test plan for verifying connector operations on a target machine.';
+
+CREATE TABLE "ConnectorActivationDecision" (
+	id SERIAL NOT NULL,
+	decision TEXT NOT NULL,
+	"appraisalDigest" TEXT NOT NULL,
+	"inventoryDigest" TEXT NOT NULL,
+	"decidedAt" TEXT NOT NULL,
+	"connectorRef_uid" INTEGER NOT NULL,
+	"appraiserRef_uid" INTEGER NOT NULL,
+	"ownerApproverRef_uid" INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY("connectorRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("appraiserRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("ownerApproverRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_ConnectorActivationDecision_id" ON "ConnectorActivationDecision" (id);
+COMMENT ON TABLE "ConnectorActivationDecision" IS 'Owner approval and activation decision activating a connector package.';
 
 CREATE TABLE "EntityFacet" (
 	id SERIAL NOT NULL,
@@ -3506,17 +3525,6 @@ CREATE INDEX "ix_McpProtocolProfile_capabilities_capabilities" ON "McpProtocolPr
 COMMENT ON TABLE "McpProtocolProfile_capabilities" IS 'None';
 COMMENT ON COLUMN "McpProtocolProfile_capabilities"."McpProtocolProfile_id" IS 'Autocreated FK slot';
 
-CREATE TABLE "McpInventorySnapshot_capabilities" (
-	"McpInventorySnapshot_id" INTEGER,
-	capabilities TEXT,
-	PRIMARY KEY ("McpInventorySnapshot_id", capabilities),
-	FOREIGN KEY("McpInventorySnapshot_id") REFERENCES "McpInventorySnapshot" (id)
-);
-CREATE INDEX "ix_McpInventorySnapshot_capabilities_McpInventorySnapshot_id" ON "McpInventorySnapshot_capabilities" ("McpInventorySnapshot_id");
-CREATE INDEX "ix_McpInventorySnapshot_capabilities_capabilities" ON "McpInventorySnapshot_capabilities" (capabilities);
-COMMENT ON TABLE "McpInventorySnapshot_capabilities" IS 'None';
-COMMENT ON COLUMN "McpInventorySnapshot_capabilities"."McpInventorySnapshot_id" IS 'Autocreated FK slot';
-
 CREATE TABLE "ConnectorIntegrationSpec_memberConnectorRefs" (
 	"ConnectorIntegrationSpec_id" INTEGER,
 	"memberConnectorRefs" TEXT,
@@ -3571,28 +3579,6 @@ CREATE INDEX "ix_ConnectorCredentialRequirement_requiredScopes_Connec_856d" ON "
 CREATE INDEX "ix_ConnectorCredentialRequirement_requiredScopes_requiredScopes" ON "ConnectorCredentialRequirement_requiredScopes" ("requiredScopes");
 COMMENT ON TABLE "ConnectorCredentialRequirement_requiredScopes" IS 'None';
 COMMENT ON COLUMN "ConnectorCredentialRequirement_requiredScopes"."ConnectorCredentialRequirement_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "ConnectorSessionBinding_grantedScopes" (
-	"ConnectorSessionBinding_id" INTEGER,
-	"grantedScopes" TEXT,
-	PRIMARY KEY ("ConnectorSessionBinding_id", "grantedScopes"),
-	FOREIGN KEY("ConnectorSessionBinding_id") REFERENCES "ConnectorSessionBinding" (id)
-);
-CREATE INDEX "ix_ConnectorSessionBinding_grantedScopes_ConnectorSessi_c39d" ON "ConnectorSessionBinding_grantedScopes" ("ConnectorSessionBinding_id");
-CREATE INDEX "ix_ConnectorSessionBinding_grantedScopes_grantedScopes" ON "ConnectorSessionBinding_grantedScopes" ("grantedScopes");
-COMMENT ON TABLE "ConnectorSessionBinding_grantedScopes" IS 'None';
-COMMENT ON COLUMN "ConnectorSessionBinding_grantedScopes"."ConnectorSessionBinding_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "EffectTestAuthorization_approverPrincipalRefs" (
-	"EffectTestAuthorization_id" INTEGER,
-	"approverPrincipalRefs" TEXT,
-	PRIMARY KEY ("EffectTestAuthorization_id", "approverPrincipalRefs"),
-	FOREIGN KEY("EffectTestAuthorization_id") REFERENCES "EffectTestAuthorization" (id)
-);
-CREATE INDEX "ix_EffectTestAuthorization_approverPrincipalRefs_Effect_0889" ON "EffectTestAuthorization_approverPrincipalRefs" ("EffectTestAuthorization_id");
-CREATE INDEX "ix_EffectTestAuthorization_approverPrincipalRefs_approv_810a" ON "EffectTestAuthorization_approverPrincipalRefs" ("approverPrincipalRefs");
-COMMENT ON TABLE "EffectTestAuthorization_approverPrincipalRefs" IS 'None';
-COMMENT ON COLUMN "EffectTestAuthorization_approverPrincipalRefs"."EffectTestAuthorization_id" IS 'Autocreated FK slot';
 
 CREATE TABLE "ProjectionSpecBody_actions" (
 	"ProjectionSpecBody_id" INTEGER,
@@ -5674,17 +5660,6 @@ CREATE INDEX "ix_McpRegistrySourceSpec_baseUrlAllowlist_baseUrlAllowlist" ON "Mc
 COMMENT ON TABLE "McpRegistrySourceSpec_baseUrlAllowlist" IS 'None';
 COMMENT ON COLUMN "McpRegistrySourceSpec_baseUrlAllowlist"."McpRegistrySourceSpec_id" IS 'Autocreated FK slot';
 
-CREATE TABLE "McpBundleOperation_secretBindingRefs" (
-	"McpBundleOperation_uid" INTEGER,
-	"secretBindingRefs" TEXT,
-	PRIMARY KEY ("McpBundleOperation_uid", "secretBindingRefs"),
-	FOREIGN KEY("McpBundleOperation_uid") REFERENCES "McpBundleOperation" (uid)
-);
-CREATE INDEX "ix_McpBundleOperation_secretBindingRefs_McpBundleOperation_uid" ON "McpBundleOperation_secretBindingRefs" ("McpBundleOperation_uid");
-CREATE INDEX "ix_McpBundleOperation_secretBindingRefs_secretBindingRefs" ON "McpBundleOperation_secretBindingRefs" ("secretBindingRefs");
-COMMENT ON TABLE "McpBundleOperation_secretBindingRefs" IS 'None';
-COMMENT ON COLUMN "McpBundleOperation_secretBindingRefs"."McpBundleOperation_uid" IS 'Autocreated FK slot';
-
 CREATE TABLE "RemoteMcpAppraisalSpec_evidenceRefs" (
 	"RemoteMcpAppraisalSpec_id" INTEGER,
 	"evidenceRefs" TEXT NOT NULL,
@@ -5718,6 +5693,17 @@ CREATE INDEX "ix_SecretBindingSpec_allowedOperationRefs_allowedOperationRefs" ON
 COMMENT ON TABLE "SecretBindingSpec_allowedOperationRefs" IS 'None';
 COMMENT ON COLUMN "SecretBindingSpec_allowedOperationRefs"."SecretBindingSpec_id" IS 'Autocreated FK slot';
 
+CREATE TABLE "McpInventorySnapshot_capabilities" (
+	"McpInventorySnapshot_id" INTEGER,
+	capabilities TEXT,
+	PRIMARY KEY ("McpInventorySnapshot_id", capabilities),
+	FOREIGN KEY("McpInventorySnapshot_id") REFERENCES "McpInventorySnapshot" (id)
+);
+CREATE INDEX "ix_McpInventorySnapshot_capabilities_McpInventorySnapshot_id" ON "McpInventorySnapshot_capabilities" ("McpInventorySnapshot_id");
+CREATE INDEX "ix_McpInventorySnapshot_capabilities_capabilities" ON "McpInventorySnapshot_capabilities" (capabilities);
+COMMENT ON TABLE "McpInventorySnapshot_capabilities" IS 'None';
+COMMENT ON COLUMN "McpInventorySnapshot_capabilities"."McpInventorySnapshot_id" IS 'Autocreated FK slot';
+
 CREATE TABLE "ConnectorPackageCertificationSpec_supportedTransportDigests" (
 	"ConnectorPackageCertificationSpec_id" INTEGER,
 	"supportedTransportDigests" TEXT NOT NULL,
@@ -5729,6 +5715,17 @@ CREATE INDEX "ix_ConnectorPackageCertificationSpec_supportedTransport_8af1" ON "
 COMMENT ON TABLE "ConnectorPackageCertificationSpec_supportedTransportDigests" IS 'None';
 COMMENT ON COLUMN "ConnectorPackageCertificationSpec_supportedTransportDigests"."ConnectorPackageCertificationSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ConnectorPackageCertificationSpec_supportedTransportDigests"."supportedTransportDigests" IS 'One digest per McpServerDescriptor in the certified package''s supportedTransports, each sha256: followed by the SHA-256 of that descriptor''s canonical JSON -- object keys sorted, no insignificant whitespace, absent fields omitted. Certifying a transport the package does not declare, or omitting one it does, is refused by corpus.certification.transport-consistency. Computed by scripts/generate/compute-package-digests.py.';
+
+CREATE TABLE "ConnectorSessionBinding_grantedScopes" (
+	"ConnectorSessionBinding_id" INTEGER,
+	"grantedScopes" TEXT,
+	PRIMARY KEY ("ConnectorSessionBinding_id", "grantedScopes"),
+	FOREIGN KEY("ConnectorSessionBinding_id") REFERENCES "ConnectorSessionBinding" (id)
+);
+CREATE INDEX "ix_ConnectorSessionBinding_grantedScopes_ConnectorSessi_c39d" ON "ConnectorSessionBinding_grantedScopes" ("ConnectorSessionBinding_id");
+CREATE INDEX "ix_ConnectorSessionBinding_grantedScopes_grantedScopes" ON "ConnectorSessionBinding_grantedScopes" ("grantedScopes");
+COMMENT ON TABLE "ConnectorSessionBinding_grantedScopes" IS 'None';
+COMMENT ON COLUMN "ConnectorSessionBinding_grantedScopes"."ConnectorSessionBinding_id" IS 'Autocreated FK slot';
 
 CREATE TABLE "EntityFacet_commands" (
 	"EntityFacet_id" INTEGER,
@@ -6242,9 +6239,11 @@ ALTER TABLE "ContractReference" ADD FOREIGN KEY("AdvisorProfileSpec_id") REFEREN
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorIntentProposal_id") REFERENCES "ConnectorIntentProposal" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorOperation_uid") REFERENCES "ConnectorOperation" (uid);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("DispositionMatch_id") REFERENCES "DispositionMatch" (id);
+ALTER TABLE "ContractReference" ADD FOREIGN KEY("EffectTestAuthorization_id") REFERENCES "EffectTestAuthorization" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ExecutionCellSpec_id") REFERENCES "ExecutionCellSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ExecutionMachineSpec_id") REFERENCES "ExecutionMachineSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("FederatedPeerSpec_id") REFERENCES "FederatedPeerSpec" (id);
+ALTER TABLE "ContractReference" ADD FOREIGN KEY("McpBundleOperation_uid") REFERENCES "McpBundleOperation" (uid);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ProviderAccountSpec_id") REFERENCES "ProviderAccountSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("RealmTemplateSpec_id") REFERENCES "RealmTemplateSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("RoutingEligibilitySpec_id") REFERENCES "RoutingEligibilitySpec" (id);

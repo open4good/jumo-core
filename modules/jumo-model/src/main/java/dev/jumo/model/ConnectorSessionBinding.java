@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Active OAuth or API session binding for a Principal/Realm and target machine.
  */
-public record ConnectorSessionBinding(String sessionId, String connectorRef, String principalRef, String realmRef, String machineRef, String secretBindingRef, List<String> grantedScopes, String status, String expiresAt)  {
+public record ConnectorSessionBinding(String sessionId, ContractReference connectorRef, ContractReference principalRef, String realmRef, ContractReference machineRef, ContractReference secretBindingRef, List<String> grantedScopes, String status, String expiresAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,11 +17,11 @@ public record ConnectorSessionBinding(String sessionId, String connectorRef, Str
     public static class Builder {
 
         private String sessionId = "";
-        private String connectorRef = "";
-        private String principalRef = "";
+        private ContractReference connectorRef = null;
+        private ContractReference principalRef = null;
         private String realmRef = "";
-        private String machineRef = "";
-        private String secretBindingRef = "";
+        private ContractReference machineRef = null;
+        private ContractReference secretBindingRef = null;
         private List<String> grantedScopes = List.of();
         private String status = "";
         private String expiresAt = "";
@@ -32,12 +32,12 @@ public record ConnectorSessionBinding(String sessionId, String connectorRef, Str
             return this;
         }
 
-        public Builder connectorRef(String connectorRef) {
+        public Builder connectorRef(ContractReference connectorRef) {
             this.connectorRef = Objects.requireNonNull(connectorRef);
             return this;
         }
 
-        public Builder principalRef(String principalRef) {
+        public Builder principalRef(ContractReference principalRef) {
             this.principalRef = Objects.requireNonNull(principalRef);
             return this;
         }
@@ -47,12 +47,12 @@ public record ConnectorSessionBinding(String sessionId, String connectorRef, Str
             return this;
         }
 
-        public Builder machineRef(String machineRef) {
+        public Builder machineRef(ContractReference machineRef) {
             this.machineRef = Objects.requireNonNull(machineRef);
             return this;
         }
 
-        public Builder secretBindingRef(String secretBindingRef) {
+        public Builder secretBindingRef(ContractReference secretBindingRef) {
             this.secretBindingRef = Objects.requireNonNull(secretBindingRef);
             return this;
         }

@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * PostgreSQL event recording an MCP inventory discovered under an exact Realm lease; it is not a Git contract.
  */
-public record McpInventorySnapshot(String serverId, String ownerRealm, String workOrderRef, String executionCellLeaseRef, String executionMachineRef, String contractRevision, String artifactOrEndpoint, String serverName, String serverVersion, String protocolVersion, List<String> capabilities, List<McpToolDescriptor> tools, String inventoryDigest, String discoveredAt)  {
+public record McpInventorySnapshot(String serverId, String ownerRealm, ContractReference workOrderRef, String executionCellLeaseRef, ContractReference executionMachineRef, String contractRevision, String artifactOrEndpoint, String serverName, String serverVersion, String protocolVersion, List<String> capabilities, List<McpToolDescriptor> tools, String inventoryDigest, String discoveredAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,9 +19,9 @@ public record McpInventorySnapshot(String serverId, String ownerRealm, String wo
 
         private String serverId = "";
         private String ownerRealm = "";
-        private String workOrderRef = "";
+        private ContractReference workOrderRef = null;
         private String executionCellLeaseRef = "";
-        private String executionMachineRef = "";
+        private ContractReference executionMachineRef = null;
         private String contractRevision = "";
         private String artifactOrEndpoint = "";
         private String serverName = "";
@@ -43,7 +43,7 @@ public record McpInventorySnapshot(String serverId, String ownerRealm, String wo
             return this;
         }
 
-        public Builder workOrderRef(String workOrderRef) {
+        public Builder workOrderRef(ContractReference workOrderRef) {
             this.workOrderRef = Objects.requireNonNull(workOrderRef);
             return this;
         }
@@ -53,7 +53,7 @@ public record McpInventorySnapshot(String serverId, String ownerRealm, String wo
             return this;
         }
 
-        public Builder executionMachineRef(String executionMachineRef) {
+        public Builder executionMachineRef(ContractReference executionMachineRef) {
             this.executionMachineRef = Objects.requireNonNull(executionMachineRef);
             return this;
         }

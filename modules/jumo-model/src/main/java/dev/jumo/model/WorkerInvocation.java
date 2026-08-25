@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Ephemeral recognized binding of a turn, route, cell, grant and execution evidence.
  */
-public record WorkerInvocation(String id, String ownerRealm, String routingDecisionRef, String executionCellRef, String capabilityGrantRef, String status, String contextSha256, ZonedDateTime startedAt)  {
+public record WorkerInvocation(String id, String ownerRealm, String routingDecisionRef, ContractReference executionCellRef, String capabilityGrantRef, String status, String contextSha256, ZonedDateTime startedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,7 +19,7 @@ public record WorkerInvocation(String id, String ownerRealm, String routingDecis
         private String id = "";
         private String ownerRealm = "";
         private String routingDecisionRef = "";
-        private String executionCellRef = "";
+        private ContractReference executionCellRef = null;
         private String capabilityGrantRef = "";
         private String status = "";
         private String contextSha256 = "";
@@ -41,7 +41,7 @@ public record WorkerInvocation(String id, String ownerRealm, String routingDecis
             return this;
         }
 
-        public Builder executionCellRef(String executionCellRef) {
+        public Builder executionCellRef(ContractReference executionCellRef) {
             this.executionCellRef = Objects.requireNonNull(executionCellRef);
             return this;
         }

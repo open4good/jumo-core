@@ -28,7 +28,25 @@ URI: [jumo:ConnectorActivationDecision](https://jumo.dev/schemas/jumo-v1/Connect
 
       ConnectorActivationDecision : appraiserRef
 
+
+
+
+
+        ConnectorActivationDecision --> "1" ContractReference : appraiserRef
+        click ContractReference href "../ContractReference/"
+
+
+
       ConnectorActivationDecision : connectorRef
+
+
+
+
+
+        ConnectorActivationDecision --> "1" ContractReference : connectorRef
+        click ContractReference href "../ContractReference/"
+
+
 
       ConnectorActivationDecision : decidedAt
 
@@ -37,6 +55,15 @@ URI: [jumo:ConnectorActivationDecision](https://jumo.dev/schemas/jumo-v1/Connect
       ConnectorActivationDecision : inventoryDigest
 
       ConnectorActivationDecision : ownerApproverRef
+
+
+
+
+
+        ConnectorActivationDecision --> "1" ContractReference : ownerApproverRef
+        click ContractReference href "../ContractReference/"
+
+
 
 
 ```
@@ -50,10 +77,10 @@ URI: [jumo:ConnectorActivationDecision](https://jumo.dev/schemas/jumo-v1/Connect
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [connectorRef](connectorRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [connectorRef](connectorRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [decision](decision.md) | 1 <br/> [String](String.md) |  | direct |
-| [appraiserRef](appraiserRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [ownerApproverRef](ownerApproverRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [appraiserRef](appraiserRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [ownerApproverRef](ownerApproverRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [appraisalDigest](appraisalDigest.md) | 1 <br/> [String](String.md) |  | direct |
 | [inventoryDigest](inventoryDigest.md) | 1 <br/> [String](String.md) |  | direct |
 | [decidedAt](decidedAt.md) | 1 <br/> [String](String.md) |  | direct |
@@ -149,8 +176,9 @@ attributes:
     - ConnectorSessionBinding
     - ConnectorTestPlan
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   decision:
     name: decision
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -167,8 +195,9 @@ attributes:
     owner: ConnectorActivationDecision
     domain_of:
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   ownerApproverRef:
     name: ownerApproverRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -176,8 +205,9 @@ attributes:
     owner: ConnectorActivationDecision
     domain_of:
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   appraisalDigest:
     name: appraisalDigest
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -245,8 +275,9 @@ attributes:
     - ConnectorSessionBinding
     - ConnectorTestPlan
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   decision:
     name: decision
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -263,8 +294,9 @@ attributes:
     owner: ConnectorActivationDecision
     domain_of:
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   ownerApproverRef:
     name: ownerApproverRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -272,8 +304,9 @@ attributes:
     owner: ConnectorActivationDecision
     domain_of:
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   appraisalDigest:
     name: appraisalDigest
     from_schema: https://jumo.dev/schemas/jumo-v1

@@ -72,6 +72,15 @@ URI: [jumo:McpBundleOperation](https://jumo.dev/schemas/jumo-v1/McpBundleOperati
 
       McpBundleOperation : secretBindingRefs
 
+
+
+
+
+        McpBundleOperation --> "*" ContractReference : secretBindingRefs
+        click ContractReference href "../ContractReference/"
+
+
+
       McpBundleOperation : untrustedOutput
 
       McpBundleOperation : upstreamToolName
@@ -100,7 +109,7 @@ URI: [jumo:McpBundleOperation](https://jumo.dev/schemas/jumo-v1/McpBundleOperati
 | [reconciliation](reconciliation.md) | 1 <br/> [OperationReconciliation](OperationReconciliation.md) |  | direct |
 | [inputSchemaRef](inputSchemaRef.md) | 0..1 <br/> [String](String.md) |  | direct |
 | [outputSchemaRef](outputSchemaRef.md) | 0..1 <br/> [String](String.md) |  | direct |
-| [secretBindingRefs](secretBindingRefs.md) | * <br/> [Identifier](Identifier.md) |  | direct |
+| [secretBindingRefs](secretBindingRefs.md) | * <br/> [ContractReference](ContractReference.md) |  | direct |
 | [recoveryPlanDigest](recoveryPlanDigest.md) | 0..1 <br/> [String](String.md) | Required in Rego when effect is SYSTEM_EFFECT and the bundle is ENABLED (ADR-... | direct |
 | [killSwitchRef](killSwitchRef.md) | 0..1 <br/> [String](String.md) | Required in Rego when effect is SYSTEM_EFFECT and the bundle is ENABLED (ADR-... | direct |
 
@@ -359,8 +368,10 @@ attributes:
     domain_of:
     - ConnectorOperation
     - McpBundleOperation
-    range: Identifier
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   recoveryPlanDigest:
     name: recoveryPlanDigest
     description: Required in Rego when effect is SYSTEM_EFFECT and the bundle is ENABLED
@@ -579,8 +590,10 @@ attributes:
     domain_of:
     - ConnectorOperation
     - McpBundleOperation
-    range: Identifier
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   recoveryPlanDigest:
     name: recoveryPlanDigest
     description: Required in Rego when effect is SYSTEM_EFFECT and the bundle is ENABLED

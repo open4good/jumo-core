@@ -37,6 +37,15 @@ URI: [jumo:ProviderSessionBinding](https://jumo.dev/schemas/jumo-v1/ProviderSess
 
       ProviderSessionBinding : executionMachineRef
 
+
+
+
+
+        ProviderSessionBinding --> "1" ContractReference : executionMachineRef
+        click ContractReference href "../ContractReference/"
+
+
+
       ProviderSessionBinding : expiresAt
 
       ProviderSessionBinding : id
@@ -44,6 +53,15 @@ URI: [jumo:ProviderSessionBinding](https://jumo.dev/schemas/jumo-v1/ProviderSess
       ProviderSessionBinding : ownerRealm
 
       ProviderSessionBinding : providerAccountRef
+
+
+
+
+
+        ProviderSessionBinding --> "1" ContractReference : providerAccountRef
+        click ContractReference href "../ContractReference/"
+
+
 
       ProviderSessionBinding : sessionFingerprint
 
@@ -63,9 +81,9 @@ URI: [jumo:ProviderSessionBinding](https://jumo.dev/schemas/jumo-v1/ProviderSess
 | ---  | --- | --- | --- |
 | [id](id.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [ownerRealm](ownerRealm.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [executionMachineRef](executionMachineRef.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
+| [executionMachineRef](executionMachineRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [adapter](adapter.md) | 1 <br/> [ModelAccessAdapter](ModelAccessAdapter.md) |  | direct |
-| [providerAccountRef](providerAccountRef.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
+| [providerAccountRef](providerAccountRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [sessionFingerprint](sessionFingerprint.md) | 1 <br/> [String](String.md) |  | direct |
 | [status](status.md) | 1 <br/> [String](String.md) |  | direct |
 | [expiresAt](expiresAt.md) | 1 <br/> [Datetime](Datetime.md) |  | direct |
@@ -263,8 +281,9 @@ attributes:
     - ProviderSessionBinding
     - WorkerSubstrateSpec
     - McpInventorySnapshot
-    range: Identifier
+    range: ContractReference
     required: true
+    inlined: true
   adapter:
     name: adapter
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -283,8 +302,9 @@ attributes:
     domain_of:
     - ProviderSessionBinding
     - WorkerModelAccess
-    range: Identifier
+    range: ContractReference
     required: true
+    inlined: true
   sessionFingerprint:
     name: sessionFingerprint
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -476,8 +496,9 @@ attributes:
     - ProviderSessionBinding
     - WorkerSubstrateSpec
     - McpInventorySnapshot
-    range: Identifier
+    range: ContractReference
     required: true
+    inlined: true
   adapter:
     name: adapter
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -496,8 +517,9 @@ attributes:
     domain_of:
     - ProviderSessionBinding
     - WorkerModelAccess
-    range: Identifier
+    range: ContractReference
     required: true
+    inlined: true
   sessionFingerprint:
     name: sessionFingerprint
     from_schema: https://jumo.dev/schemas/jumo-v1

@@ -26,6 +26,15 @@ URI: [jumo:EffectTestAuthorization](https://jumo.dev/schemas/jumo-v1/EffectTestA
     click EffectTestAuthorization href "../EffectTestAuthorization/"
       EffectTestAuthorization : approverPrincipalRefs
 
+
+
+
+
+        EffectTestAuthorization --> "*" ContractReference : approverPrincipalRefs
+        click ContractReference href "../ContractReference/"
+
+
+
       EffectTestAuthorization : authorizationId
 
       EffectTestAuthorization : authorizedAt
@@ -54,7 +63,7 @@ URI: [jumo:EffectTestAuthorization](https://jumo.dev/schemas/jumo-v1/EffectTestA
 | [planDigest](planDigest.md) | 1 <br/> [String](String.md) |  | direct |
 | [inputDigest](inputDigest.md) | 1 <br/> [String](String.md) |  | direct |
 | [targetDigest](targetDigest.md) | 1 <br/> [String](String.md) |  | direct |
-| [approverPrincipalRefs](approverPrincipalRefs.md) | * <br/> [String](String.md) |  | direct |
+| [approverPrincipalRefs](approverPrincipalRefs.md) | * <br/> [ContractReference](ContractReference.md) |  | direct |
 | [authorizedAt](authorizedAt.md) | 1 <br/> [String](String.md) |  | direct |
 | [expiresAt](expiresAt.md) | 1 <br/> [String](String.md) |  | direct |
 
@@ -184,8 +193,10 @@ attributes:
     owner: EffectTestAuthorization
     domain_of:
     - EffectTestAuthorization
-    range: string
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   authorizedAt:
     name: authorizedAt
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -285,8 +296,10 @@ attributes:
     owner: EffectTestAuthorization
     domain_of:
     - EffectTestAuthorization
-    range: string
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   authorizedAt:
     name: authorizedAt
     from_schema: https://jumo.dev/schemas/jumo-v1

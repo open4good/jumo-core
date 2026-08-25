@@ -26,11 +26,29 @@ URI: [jumo:ConnectorTestPlan](https://jumo.dev/schemas/jumo-v1/ConnectorTestPlan
     click ConnectorTestPlan href "../ConnectorTestPlan/"
       ConnectorTestPlan : connectorRef
 
+
+
+
+
+        ConnectorTestPlan --> "1" ContractReference : connectorRef
+        click ContractReference href "../ContractReference/"
+
+
+
       ConnectorTestPlan : planDigest
 
       ConnectorTestPlan : planId
 
       ConnectorTestPlan : targetMachineRef
+
+
+
+
+
+        ConnectorTestPlan --> "0..1" ContractReference : targetMachineRef
+        click ContractReference href "../ContractReference/"
+
+
 
       ConnectorTestPlan : testCases
 
@@ -56,8 +74,8 @@ URI: [jumo:ConnectorTestPlan](https://jumo.dev/schemas/jumo-v1/ConnectorTestPlan
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
 | [planId](planId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [connectorRef](connectorRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [targetMachineRef](targetMachineRef.md) | 0..1 <br/> [String](String.md) |  | direct |
+| [connectorRef](connectorRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [targetMachineRef](targetMachineRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [testCases](testCases.md) | * <br/> [ConnectorTestCase](ConnectorTestCase.md) |  | direct |
 | [planDigest](planDigest.md) | 1 <br/> [String](String.md) |  | direct |
 
@@ -163,8 +181,9 @@ attributes:
     - ConnectorSessionBinding
     - ConnectorTestPlan
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   targetMachineRef:
     name: targetMachineRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -172,7 +191,8 @@ attributes:
     owner: ConnectorTestPlan
     domain_of:
     - ConnectorTestPlan
-    range: string
+    range: ContractReference
+    inlined: true
   testCases:
     name: testCases
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -243,8 +263,9 @@ attributes:
     - ConnectorSessionBinding
     - ConnectorTestPlan
     - ConnectorActivationDecision
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   targetMachineRef:
     name: targetMachineRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -252,7 +273,8 @@ attributes:
     owner: ConnectorTestPlan
     domain_of:
     - ConnectorTestPlan
-    range: string
+    range: ContractReference
+    inlined: true
   testCases:
     name: testCases
     from_schema: https://jumo.dev/schemas/jumo-v1

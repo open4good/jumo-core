@@ -45793,8 +45793,10 @@ classes:
         domain_of:
         - ConnectorOperation
         - McpBundleOperation
-        range: Identifier
+        range: ContractReference
         multivalued: true
+        inlined: true
+        inlined_as_list: true
       recoveryPlanDigest:
         name: recoveryPlanDigest
         description: Required in Rego when effect is SYSTEM_EFFECT and the bundle
@@ -47681,8 +47683,9 @@ classes:
         - ProviderSessionBinding
         - WorkerSubstrateSpec
         - McpInventorySnapshot
-        range: Identifier
+        range: ContractReference
         required: true
+        inlined: true
       adapter:
         name: adapter
         from_schema: https://jumo.dev/schemas/integration
@@ -47700,8 +47703,9 @@ classes:
         domain_of:
         - ProviderSessionBinding
         - WorkerModelAccess
-        range: Identifier
+        range: ContractReference
         required: true
+        inlined: true
       sessionFingerprint:
         name: sessionFingerprint
         from_schema: https://jumo.dev/schemas/integration
@@ -47891,8 +47895,9 @@ classes:
         domain_of:
         - RoutingDecision
         - WorkerInvocation
-        range: Identifier
+        range: ContractReference
         required: true
+        inlined: true
       adapter:
         name: adapter
         from_schema: https://jumo.dev/schemas/integration
@@ -48077,8 +48082,9 @@ classes:
         domain_of:
         - RoutingDecision
         - WorkerInvocation
-        range: Identifier
+        range: ContractReference
         required: true
+        inlined: true
       capabilityGrantRef:
         name: capabilityGrantRef
         from_schema: https://jumo.dev/schemas/integration
@@ -53060,7 +53066,8 @@ classes:
         - McpRegistrySourceSpec
         - McpRegistrySourceBindingSpec
         - McpInventorySnapshot
-        range: Identifier
+        range: ContractReference
+        inlined: true
       executionCellLeaseRef:
         name: executionCellLeaseRef
         from_schema: https://jumo.dev/schemas/integration
@@ -53078,7 +53085,8 @@ classes:
         - ProviderSessionBinding
         - WorkerSubstrateSpec
         - McpInventorySnapshot
-        range: Identifier
+        range: ContractReference
+        inlined: true
       contractRevision:
         name: contractRevision
         from_schema: https://jumo.dev/schemas/integration
@@ -55423,8 +55431,9 @@ classes:
         - ConnectorSessionBinding
         - ConnectorTestPlan
         - ConnectorActivationDecision
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       principalRef:
         name: principalRef
         from_schema: https://jumo.dev/schemas/integration
@@ -55433,7 +55442,8 @@ classes:
         - PrincipalIdentityBindingSpec
         - RoleBearer
         - ConnectorSessionBinding
-        range: string
+        range: ContractReference
+        inlined: true
       realmRef:
         name: realmRef
         from_schema: https://jumo.dev/schemas/integration
@@ -55452,7 +55462,8 @@ classes:
         - CliInstallationObservation
         - CliInvocationRequest
         - ConnectorSessionBinding
-        range: string
+        range: ContractReference
+        inlined: true
       secretBindingRef:
         name: secretBindingRef
         from_schema: https://jumo.dev/schemas/integration
@@ -55462,7 +55473,8 @@ classes:
         - ProviderAccountSpec
         - WorkerModelAccess
         - ConnectorSessionBinding
-        range: string
+        range: ContractReference
+        inlined: true
       grantedScopes:
         name: grantedScopes
         from_schema: https://jumo.dev/schemas/integration
@@ -55625,15 +55637,17 @@ classes:
         - ConnectorSessionBinding
         - ConnectorTestPlan
         - ConnectorActivationDecision
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       targetMachineRef:
         name: targetMachineRef
         from_schema: https://jumo.dev/schemas/integration
         owner: ConnectorTestPlan
         domain_of:
         - ConnectorTestPlan
-        range: string
+        range: ContractReference
+        inlined: true
       testCases:
         name: testCases
         from_schema: https://jumo.dev/schemas/integration
@@ -55813,8 +55827,10 @@ classes:
         owner: EffectTestAuthorization
         domain_of:
         - EffectTestAuthorization
-        range: string
+        range: ContractReference
         multivalued: true
+        inlined: true
+        inlined_as_list: true
       authorizedAt:
         name: authorizedAt
         from_schema: https://jumo.dev/schemas/integration
@@ -55871,8 +55887,9 @@ classes:
         - ConnectorSessionBinding
         - ConnectorTestPlan
         - ConnectorActivationDecision
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       decision:
         name: decision
         from_schema: https://jumo.dev/schemas/integration
@@ -55888,16 +55905,18 @@ classes:
         owner: ConnectorActivationDecision
         domain_of:
         - ConnectorActivationDecision
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       ownerApproverRef:
         name: ownerApproverRef
         from_schema: https://jumo.dev/schemas/integration
         owner: ConnectorActivationDecision
         domain_of:
         - ConnectorActivationDecision
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       appraisalDigest:
         name: appraisalDigest
         from_schema: https://jumo.dev/schemas/integration

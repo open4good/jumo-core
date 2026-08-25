@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Deterministic test plan for verifying connector operations on a target machine.
  */
-public record ConnectorTestPlan(String planId, String connectorRef, String targetMachineRef, List<ConnectorTestCase> testCases, String planDigest)  {
+public record ConnectorTestPlan(String planId, ContractReference connectorRef, ContractReference targetMachineRef, List<ConnectorTestCase> testCases, String planDigest)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,8 +17,8 @@ public record ConnectorTestPlan(String planId, String connectorRef, String targe
     public static class Builder {
 
         private String planId = "";
-        private String connectorRef = "";
-        private String targetMachineRef = "";
+        private ContractReference connectorRef = null;
+        private ContractReference targetMachineRef = null;
         private List<ConnectorTestCase> testCases = List.of();
         private String planDigest = "";
 
@@ -28,12 +28,12 @@ public record ConnectorTestPlan(String planId, String connectorRef, String targe
             return this;
         }
 
-        public Builder connectorRef(String connectorRef) {
+        public Builder connectorRef(ContractReference connectorRef) {
             this.connectorRef = Objects.requireNonNull(connectorRef);
             return this;
         }
 
-        public Builder targetMachineRef(String targetMachineRef) {
+        public Builder targetMachineRef(ContractReference targetMachineRef) {
             this.targetMachineRef = Objects.requireNonNull(targetMachineRef);
             return this;
         }

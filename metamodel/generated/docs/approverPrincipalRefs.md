@@ -33,7 +33,7 @@ URI: [jumo:approverPrincipalRefs](https://jumo.dev/schemas/jumo-v1/approverPrinc
 
 | Property | Value |
 | --- | --- |
-| Range | [String](String.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [EffectTestAuthorization](EffectTestAuthorization.md) |
 
 ### Cardinality and Requirements
@@ -92,8 +92,10 @@ rank: 1000
 owner: EffectTestAuthorization
 domain_of:
 - EffectTestAuthorization
-range: string
+range: ContractReference
 multivalued: true
+inlined: true
+inlined_as_list: true
 
 ```
 </details></div>

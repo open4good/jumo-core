@@ -30,6 +30,15 @@ URI: [jumo:WorkerInvocation](https://jumo.dev/schemas/jumo-v1/WorkerInvocation)
 
       WorkerInvocation : executionCellRef
 
+
+
+
+
+        WorkerInvocation --> "1" ContractReference : executionCellRef
+        click ContractReference href "../ContractReference/"
+
+
+
       WorkerInvocation : id
 
       WorkerInvocation : ownerRealm
@@ -55,7 +64,7 @@ URI: [jumo:WorkerInvocation](https://jumo.dev/schemas/jumo-v1/WorkerInvocation)
 | [id](id.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [ownerRealm](ownerRealm.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [routingDecisionRef](routingDecisionRef.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [executionCellRef](executionCellRef.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
+| [executionCellRef](executionCellRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [capabilityGrantRef](capabilityGrantRef.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [status](status.md) | 1 <br/> [String](String.md) |  | direct |
 | [contextSha256](contextSha256.md) | 1 <br/> [String](String.md) |  | direct |
@@ -261,8 +270,9 @@ attributes:
     domain_of:
     - RoutingDecision
     - WorkerInvocation
-    range: Identifier
+    range: ContractReference
     required: true
+    inlined: true
   capabilityGrantRef:
     name: capabilityGrantRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -463,8 +473,9 @@ attributes:
     domain_of:
     - RoutingDecision
     - WorkerInvocation
-    range: Identifier
+    range: ContractReference
     required: true
+    inlined: true
   capabilityGrantRef:
     name: capabilityGrantRef
     from_schema: https://jumo.dev/schemas/jumo-v1

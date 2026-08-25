@@ -1908,10 +1908,10 @@ type ComplianceProfileSpec
 
 type ConnectorActivationDecision
   {
-    connectorRef: String!
+    connectorRef: ContractReference!
     decision: String!
-    appraiserRef: String!
-    ownerApproverRef: String!
+    appraiserRef: ContractReference!
+    ownerApproverRef: ContractReference!
     appraisalDigest: String!
     inventoryDigest: String!
     decidedAt: String!
@@ -2065,11 +2065,11 @@ type ConnectorPackageSpec
 type ConnectorSessionBinding
   {
     sessionId: Identifier!
-    connectorRef: String!
-    principalRef: String
+    connectorRef: ContractReference!
+    principalRef: ContractReference
     realmRef: String!
-    machineRef: String
-    secretBindingRef: String
+    machineRef: ContractReference
+    secretBindingRef: ContractReference
     grantedScopes: [String]
     status: String!
     expiresAt: String
@@ -2088,8 +2088,8 @@ type ConnectorTestCase
 type ConnectorTestPlan
   {
     planId: Identifier!
-    connectorRef: String!
-    targetMachineRef: String
+    connectorRef: ContractReference!
+    targetMachineRef: ContractReference
     testCases: [ConnectorTestCase]
     planDigest: String!
   }
@@ -2249,7 +2249,7 @@ type EffectTestAuthorization
     planDigest: String!
     inputDigest: String!
     targetDigest: String!
-    approverPrincipalRefs: [String]
+    approverPrincipalRefs: [ContractReference]
     authorizedAt: String!
     expiresAt: String!
   }
@@ -2924,7 +2924,7 @@ type McpBundleOperation
     reconciliation: OperationReconciliation!
     inputSchemaRef: String
     outputSchemaRef: String
-    secretBindingRefs: [Identifier]
+    secretBindingRefs: [ContractReference]
     recoveryPlanDigest: String
     killSwitchRef: String
   }
@@ -3023,9 +3023,9 @@ type McpInventorySnapshot
   {
     serverId: String!
     ownerRealm: Identifier
-    workOrderRef: Identifier
+    workOrderRef: ContractReference
     executionCellLeaseRef: Identifier
-    executionMachineRef: Identifier
+    executionMachineRef: ContractReference
     contractRevision: String
     artifactOrEndpoint: String
     serverName: String
@@ -3916,9 +3916,9 @@ type ProviderSessionBinding
   {
     id: Identifier!
     ownerRealm: Identifier!
-    executionMachineRef: Identifier!
+    executionMachineRef: ContractReference!
     adapter: ModelAccessAdapter!
-    providerAccountRef: Identifier!
+    providerAccountRef: ContractReference!
     sessionFingerprint: String!
     status: String!
     expiresAt: Datetime!
@@ -4138,7 +4138,7 @@ type RoutingDecision
     id: Identifier!
     ownerRealm: Identifier!
     conversationTurnRef: Identifier!
-    executionCellRef: Identifier!
+    executionCellRef: ContractReference!
     adapter: ModelAccessAdapter!
     policyRevision: String!
     reasonCode: String!
@@ -4465,7 +4465,7 @@ type WorkerInvocation
     id: Identifier!
     ownerRealm: Identifier!
     routingDecisionRef: Identifier!
-    executionCellRef: Identifier!
+    executionCellRef: ContractReference!
     capabilityGrantRef: Identifier!
     status: String!
     contextSha256: String!

@@ -830,6 +830,7 @@
       "@id": "desiredState"
     },
     "machineRef": {
+      "@type": "@id",
       "@id": "machineRef"
     },
     "releaseRef": {
@@ -1006,9 +1007,11 @@
       "@id": "appraisalDigest"
     },
     "appraiserRef": {
+      "@type": "@id",
       "@id": "appraiserRef"
     },
     "connectorRef": {
+      "@type": "@id",
       "@id": "connectorRef"
     },
     "decidedAt": {
@@ -1027,6 +1030,7 @@
       "@id": "inventoryDigest"
     },
     "ownerApproverRef": {
+      "@type": "@id",
       "@id": "ownerApproverRef"
     },
     "appraisedAt": {
@@ -1158,6 +1162,7 @@
       "@id": "reconciliation"
     },
     "secretBindingRefs": {
+      "@type": "@id",
       "@id": "secretBindingRefs"
     },
     "licenceDigest": {
@@ -1248,6 +1253,7 @@
       "@id": "planId"
     },
     "targetMachineRef": {
+      "@type": "@id",
       "@id": "targetMachineRef"
     },
     "testCases": {
@@ -1446,6 +1452,7 @@
       "@id": "renders"
     },
     "approverPrincipalRefs": {
+      "@type": "@id",
       "@id": "approverPrincipalRefs"
     },
     "authorizationId": {
@@ -3584,6 +3591,7 @@
       "@id": "evaluatedAt"
     },
     "executionCellRef": {
+      "@type": "@id",
       "@id": "executionCellRef"
     },
     "inputSha256": {

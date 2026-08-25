@@ -1142,8 +1142,9 @@ classes:
         range: string
         pattern: ^.{3,}$
       secretBindingRefs:
-        range: Identifier
+        range: ContractReference
         multivalued: true
+        inlined_as_list: true
       recoveryPlanDigest:
         range: string
         pattern: ^sha256:[0-9a-f]{64}$
@@ -1399,14 +1400,16 @@ classes:
         range: Identifier
         required: true
       executionMachineRef:
-        range: Identifier
+        range: ContractReference
         required: true
+        inlined: true
       adapter:
         range: ModelAccessAdapter
         required: true
       providerAccountRef:
-        range: Identifier
+        range: ContractReference
         required: true
+        inlined: true
       sessionFingerprint:
         range: string
         required: true
@@ -1437,8 +1440,9 @@ classes:
         range: Identifier
         required: true
       executionCellRef:
-        range: Identifier
+        range: ContractReference
         required: true
+        inlined: true
       adapter:
         range: ModelAccessAdapter
         required: true
@@ -1475,8 +1479,9 @@ classes:
         range: Identifier
         required: true
       executionCellRef:
-        range: Identifier
+        range: ContractReference
         required: true
+        inlined: true
       capabilityGrantRef:
         range: Identifier
         required: true
@@ -2467,11 +2472,13 @@ classes:
       ownerRealm:
         range: Identifier
       workOrderRef:
-        range: Identifier
+        range: ContractReference
+        inlined: true
       executionCellLeaseRef:
         range: Identifier
       executionMachineRef:
-        range: Identifier
+        range: ContractReference
+        inlined: true
       contractRevision:
         range: string
       artifactOrEndpoint:
@@ -2834,17 +2841,21 @@ classes:
         range: Identifier
         required: true
       connectorRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       principalRef:
-        range: string
+        range: ContractReference
+        inlined: true
       realmRef:
         range: string
         required: true
       machineRef:
-        range: string
+        range: ContractReference
+        inlined: true
       secretBindingRef:
-        range: string
+        range: ContractReference
+        inlined: true
       grantedScopes:
         range: string
         multivalued: true
@@ -2894,10 +2905,12 @@ classes:
         range: Identifier
         required: true
       connectorRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       targetMachineRef:
-        range: string
+        range: ContractReference
+        inlined: true
       testCases:
         range: ConnectorTestCase
         multivalued: true
@@ -2956,8 +2969,9 @@ classes:
         range: string
         required: true
       approverPrincipalRefs:
-        range: string
+        range: ContractReference
         multivalued: true
+        inlined_as_list: true
       authorizedAt:
         range: string
         required: true
@@ -2975,17 +2989,20 @@ classes:
     description: Owner approval and activation decision activating a connector package.
     attributes:
       connectorRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       decision:
         range: string
         required: true
       appraiserRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       ownerApproverRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       appraisalDigest:
         range: string
         required: true

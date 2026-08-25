@@ -1,0 +1,19 @@
+# Jumo's policy/{lib,corpus,authz} layout is an accepted architecture boundary rather than a
+# package-directory mirror. Incremental set rules are OPA's native way to aggregate violations;
+# their loop-invariant messages stay beside the predicate that emits them. The integration family
+# remains one review unit during the source-message migration, and several policy messages exceed
+# the generic line limit while retaining the inventory's searchable field and rule identifiers.
+rules:
+  idiomatic:
+    directory-package-mismatch:
+      level: ignore
+  performance:
+    non-loop-expression:
+      level: ignore
+  style:
+    file-length:
+      level: ignore
+    line-length:
+      level: ignore
+    messy-rule:
+      level: ignore

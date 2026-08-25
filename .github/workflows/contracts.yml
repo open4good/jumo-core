@@ -108,4 +108,7 @@ jobs:
       - name: Build and publish jumo-model
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -B -f pom.xml -pl modules/jumo-model deploy -DskipTests
+        # -am also deploys the jumo-core-reactor parent POM. Without it the published
+        # jumo-model POM names a parent no consumer can resolve, and every jumo build fails with
+        # "Could not find artifact dev.jumo:jumo-core-reactor:pom:1" after authenticating fine.
+        run: mvn -B -f pom.xml -pl modules/jumo-model -am deploy -DskipTests

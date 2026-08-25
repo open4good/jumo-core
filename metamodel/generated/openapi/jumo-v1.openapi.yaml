@@ -5336,7 +5336,13 @@ components:
         contractRevision:
           type: string
         playbookRef:
-          $ref: '#/components/schemas/ContractReference'
+          type: string
+          description: The playbook's physical execution path (MachineAdminPlaybookSpec.playbookPath),
+            not a second contract reference -- the control plane resolves the MachineAdminRequest's
+            ContractReference to a MachineAdminPlaybook once and forwards the resolved
+            path so the machine-agent has a direct, unambiguous execution instruction
+            rather than needing corpus access itself. ADR-0045 decision 4 treats physical
+            paths as non-contractual scalars.
         playbookDigest:
           type: string
         variables:

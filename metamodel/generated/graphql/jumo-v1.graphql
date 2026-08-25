@@ -2754,7 +2754,7 @@ type MachineAdminCommand
     machineId: Identifier!
     workOrderId: Identifier
     contractRevision: String
-    playbookRef: ContractReference!
+    playbookRef: String!
     playbookDigest: String!
     variables: SchemaBoundPayload
     approvalReference: String

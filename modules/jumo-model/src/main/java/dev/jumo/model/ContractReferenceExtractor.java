@@ -621,12 +621,6 @@ public final class ContractReferenceExtractor {
             refs.add(new OutgoingReference("kitReleaseCertificationRef", obj.kitReleaseCertificationRef()));
         }
     }
-    public static void extractFromMachineAdminCommand(MachineAdminCommand obj, List<OutgoingReference> refs) {
-        if (obj == null) return;
-        if (obj.playbookRef() != null) {
-            refs.add(new OutgoingReference("playbookRef", obj.playbookRef()));
-        }
-    }
     public static void extractFromMachineAdminRequest(MachineAdminRequest obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.playbookRef() != null) {

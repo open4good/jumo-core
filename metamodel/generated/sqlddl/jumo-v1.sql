@@ -4786,19 +4786,19 @@ CREATE TABLE "MachineAdminCommand" (
 	"machineId" TEXT NOT NULL,
 	"workOrderId" TEXT,
 	"contractRevision" TEXT,
+	"playbookRef" TEXT NOT NULL,
 	"playbookDigest" TEXT NOT NULL,
 	"approvalReference" TEXT,
 	"issuedAt" TEXT NOT NULL,
 	"expiresAt" TEXT NOT NULL,
 	"timeoutSeconds" INTEGER,
-	"playbookRef_uid" INTEGER NOT NULL,
 	variables_id INTEGER,
 	PRIMARY KEY (id),
-	FOREIGN KEY("playbookRef_uid") REFERENCES "ContractReference" (uid),
 	FOREIGN KEY(variables_id) REFERENCES "SchemaBoundPayload" (id)
 );
 CREATE INDEX "ix_MachineAdminCommand_id" ON "MachineAdminCommand" (id);
 COMMENT ON TABLE "MachineAdminCommand" IS 'Ansible playbook execution command sent to an enrolled machine.';
+COMMENT ON COLUMN "MachineAdminCommand"."playbookRef" IS 'The playbook''s physical execution path (MachineAdminPlaybookSpec.playbookPath), not a second contract reference -- the control plane resolves the MachineAdminRequest''s ContractReference to a MachineAdminPlaybook once and forwards the resolved path so the machine-agent has a direct, unambiguous execution instruction rather than needing corpus access itself. ADR-0045 decision 4 treats physical paths as non-contractual scalars.';
 
 CREATE TABLE "WorkloadCommand" (
 	id SERIAL NOT NULL,

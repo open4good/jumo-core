@@ -40,15 +40,6 @@ URI: [jumo:MachineAdminCommand](https://jumo.dev/schemas/jumo-v1/MachineAdminCom
 
       MachineAdminCommand : playbookRef
 
-
-
-
-
-        MachineAdminCommand --> "1" ContractReference : playbookRef
-        click ContractReference href "../ContractReference/"
-
-
-
       MachineAdminCommand : timeoutSeconds
 
       MachineAdminCommand : variables
@@ -80,7 +71,7 @@ URI: [jumo:MachineAdminCommand](https://jumo.dev/schemas/jumo-v1/MachineAdminCom
 | [machineId](machineId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [workOrderId](workOrderId.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
 | [contractRevision](contractRevision.md) | 0..1 <br/> [String](String.md) |  | direct |
-| [playbookRef](playbookRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [playbookRef](playbookRef.md) | 1 <br/> [String](String.md) | The playbook's physical execution path (MachineAdminPlaybookSpec | direct |
 | [playbookDigest](playbookDigest.md) | 1 <br/> [String](String.md) |  | direct |
 | [variables](variables.md) | 0..1 <br/> [SchemaBoundPayload](SchemaBoundPayload.md) |  | direct |
 | [approvalReference](approvalReference.md) | 0..1 <br/> [String](String.md) |  | direct |
@@ -226,14 +217,19 @@ attributes:
     range: string
   playbookRef:
     name: playbookRef
+    description: The playbook's physical execution path (MachineAdminPlaybookSpec.playbookPath),
+      not a second contract reference -- the control plane resolves the MachineAdminRequest's
+      ContractReference to a MachineAdminPlaybook once and forwards the resolved path
+      so the machine-agent has a direct, unambiguous execution instruction rather
+      than needing corpus access itself. ADR-0045 decision 4 treats physical paths
+      as non-contractual scalars.
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: MachineAdminCommand
     domain_of:
     - MachineAdminRequest
     - MachineAdminCommand
-    range: ContractReference
+    range: string
     required: true
-    inlined: true
   playbookDigest:
     name: playbookDigest
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -382,14 +378,19 @@ attributes:
     range: string
   playbookRef:
     name: playbookRef
+    description: The playbook's physical execution path (MachineAdminPlaybookSpec.playbookPath),
+      not a second contract reference -- the control plane resolves the MachineAdminRequest's
+      ContractReference to a MachineAdminPlaybook once and forwards the resolved path
+      so the machine-agent has a direct, unambiguous execution instruction rather
+      than needing corpus access itself. ADR-0045 decision 4 treats physical paths
+      as non-contractual scalars.
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: MachineAdminCommand
     domain_of:
     - MachineAdminRequest
     - MachineAdminCommand
-    range: ContractReference
+    range: string
     required: true
-    inlined: true
   playbookDigest:
     name: playbookDigest
     from_schema: https://jumo.dev/schemas/jumo-v1

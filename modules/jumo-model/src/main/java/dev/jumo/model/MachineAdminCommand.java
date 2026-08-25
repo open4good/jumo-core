@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Ansible playbook execution command sent to an enrolled machine.
  */
-public record MachineAdminCommand(String commandId, String machineId, String workOrderId, String contractRevision, ContractReference playbookRef, String playbookDigest, SchemaBoundPayload variables, String approvalReference, String issuedAt, String expiresAt, Integer timeoutSeconds)  {
+public record MachineAdminCommand(String commandId, String machineId, String workOrderId, String contractRevision, String playbookRef, String playbookDigest, SchemaBoundPayload variables, String approvalReference, String issuedAt, String expiresAt, Integer timeoutSeconds)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,7 +19,7 @@ public record MachineAdminCommand(String commandId, String machineId, String wor
         private String machineId = "";
         private String workOrderId = "";
         private String contractRevision = "";
-        private ContractReference playbookRef = null;
+        private String playbookRef = "";
         private String playbookDigest = "";
         private SchemaBoundPayload variables = null;
         private String approvalReference = "";
@@ -48,7 +48,7 @@ public record MachineAdminCommand(String commandId, String machineId, String wor
             return this;
         }
 
-        public Builder playbookRef(ContractReference playbookRef) {
+        public Builder playbookRef(String playbookRef) {
             this.playbookRef = Objects.requireNonNull(playbookRef);
             return this;
         }

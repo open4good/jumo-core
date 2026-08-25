@@ -143,7 +143,6 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [ExecutionMachineSpec](ExecutionMachineSpec.md) | [installedCliRefs](installedCliRefs.md) | range | [ContractReference](ContractReference.md) |
 | [ExecutionMachineSpec](ExecutionMachineSpec.md) | [installedConnectorRefs](installedConnectorRefs.md) | range | [ContractReference](ContractReference.md) |
 | [MachineAdminRequest](MachineAdminRequest.md) | [playbookRef](playbookRef.md) | range | [ContractReference](ContractReference.md) |
-| [MachineAdminCommand](MachineAdminCommand.md) | [playbookRef](playbookRef.md) | range | [ContractReference](ContractReference.md) |
 | [MachineRuntimeInstallation](MachineRuntimeInstallation.md) | [runtimeRef](runtimeRef.md) | range | [ContractReference](ContractReference.md) |
 | [CliReleaseSpec](CliReleaseSpec.md) | [toolRef](toolRef.md) | range | [ContractReference](ContractReference.md) |
 | [CliInstallationDesiredState](CliInstallationDesiredState.md) | [machineRef](machineRef.md) | range | [ContractReference](ContractReference.md) |

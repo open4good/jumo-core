@@ -358,6 +358,12 @@
       ],
       "incoming": [
         {
+          "fromKind": "ConnectorIntegration",
+          "slotName": "memberConnectorRefs",
+          "cardinality": "MANY",
+          "description": ""
+        },
+        {
           "fromKind": "ExecutionCell",
           "slotName": "connectorDefinitionRefs",
           "cardinality": "MANY",
@@ -387,7 +393,15 @@
       "kind": "ConnectorIntegration",
       "composition": "ADDITIVE",
       "stateAuthority": "GIT",
-      "outgoing": [],
+      "outgoing": [
+        {
+          "slotName": "memberConnectorRefs",
+          "targetKind": "ConnectorDefinition",
+          "cardinality": "MANY",
+          "required": false,
+          "description": ""
+        }
+      ],
       "incoming": []
     },
     "ConnectorPackage": {

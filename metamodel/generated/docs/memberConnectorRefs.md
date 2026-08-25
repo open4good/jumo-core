@@ -33,7 +33,7 @@ URI: [jumo:memberConnectorRefs](https://jumo.dev/schemas/jumo-v1/memberConnector
 
 | Property | Value |
 | --- | --- |
-| Range | [String](String.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [ConnectorIntegrationSpec](ConnectorIntegrationSpec.md) |
 
 ### Cardinality and Requirements
@@ -92,8 +92,10 @@ rank: 1000
 owner: ConnectorIntegrationSpec
 domain_of:
 - ConnectorIntegrationSpec
-range: string
+range: ContractReference
 multivalued: true
+inlined: true
+inlined_as_list: true
 
 ```
 </details></div>

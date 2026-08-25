@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Specification for a ConnectorIntegration contract.
  */
-public record ConnectorIntegrationSpec(String ownerRealm, String category, List<String> memberConnectorRefs, String description)  {
+public record ConnectorIntegrationSpec(String ownerRealm, String category, List<ContractReference> memberConnectorRefs, String description)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,7 +18,7 @@ public record ConnectorIntegrationSpec(String ownerRealm, String category, List<
 
         private String ownerRealm = "";
         private String category = "";
-        private List<String> memberConnectorRefs = List.of();
+        private List<ContractReference> memberConnectorRefs = List.of();
         private String description = "";
 
 
@@ -32,7 +32,7 @@ public record ConnectorIntegrationSpec(String ownerRealm, String category, List<
             return this;
         }
 
-        public Builder memberConnectorRefs(List<String> memberConnectorRefs) {
+        public Builder memberConnectorRefs(List<ContractReference> memberConnectorRefs) {
             this.memberConnectorRefs = Objects.requireNonNull(memberConnectorRefs);
             return this;
         }

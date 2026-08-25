@@ -30,6 +30,15 @@ URI: [jumo:ConnectorIntegrationSpec](https://jumo.dev/schemas/jumo-v1/ConnectorI
 
       ConnectorIntegrationSpec : memberConnectorRefs
 
+
+
+
+
+        ConnectorIntegrationSpec --> "*" ContractReference : memberConnectorRefs
+        click ContractReference href "../ContractReference/"
+
+
+
       ConnectorIntegrationSpec : ownerRealm
 
 
@@ -46,7 +55,7 @@ URI: [jumo:ConnectorIntegrationSpec](https://jumo.dev/schemas/jumo-v1/ConnectorI
 | ---  | --- | --- | --- |
 | [ownerRealm](ownerRealm.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [category](category.md) | 1 <br/> [String](String.md) |  | direct |
-| [memberConnectorRefs](memberConnectorRefs.md) | * <br/> [String](String.md) |  | direct |
+| [memberConnectorRefs](memberConnectorRefs.md) | * <br/> [ContractReference](ContractReference.md) |  | direct |
 | [description](description.md) | 0..1 <br/> [String](String.md) |  | direct |
 
 
@@ -217,8 +226,10 @@ attributes:
     owner: ConnectorIntegrationSpec
     domain_of:
     - ConnectorIntegrationSpec
-    range: string
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   description:
     name: description
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -344,8 +355,10 @@ attributes:
     owner: ConnectorIntegrationSpec
     domain_of:
     - ConnectorIntegrationSpec
-    range: string
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   description:
     name: description
     from_schema: https://jumo.dev/schemas/jumo-v1

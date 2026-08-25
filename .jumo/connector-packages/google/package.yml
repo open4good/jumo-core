@@ -7,6 +7,6 @@ metadata:
 spec:
   connectorId: google-workspace
   version: 1.0.0
-  packageDigest: sha256:517272dd1d9ff1b0b46b35e9543c500ff8f720db91d700e0451d40e8e2fb6dc7
+  packageDigest: sha256:b4d7c9bfdadef8b3052a59eb9087c2b407519b638d875b089444a4d8eb8b6945
   manifestPath: .jumo/connector-packages/google/package.yml
   requiresAdapter: false

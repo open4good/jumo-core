@@ -7861,7 +7861,7 @@ components:
           type: string
         memberConnectorRefs:
           items:
-            type: string
+            $ref: '#/components/schemas/ContractReference'
           type: array
         description:
           type: string

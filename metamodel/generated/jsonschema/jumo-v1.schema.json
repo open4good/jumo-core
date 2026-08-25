@@ -2763,7 +2763,7 @@
         },
         "memberConnectorRefs": {
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/ContractReference"
           },
           "type": "array"
         },

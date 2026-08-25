@@ -2570,8 +2570,9 @@ classes:
         range: string
         required: true
       memberConnectorRefs:
-        range: string
+        range: ContractReference
         multivalued: true
+        inlined_as_list: true
       description:
         range: string
     annotations:

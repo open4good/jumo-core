@@ -8,5 +8,7 @@ spec:
   ownerRealm: home
   category: PRODUCTIVITY
   memberConnectorRefs:
-    - google-workspace
+    - kind: ConnectorPackage
+      namespace: dev.jumo.connectors
+      id: google-workspace
   description: Google Workspace integration for calendar and document access

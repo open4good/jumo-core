@@ -53717,8 +53717,10 @@ classes:
         owner: ConnectorIntegrationSpec
         domain_of:
         - ConnectorIntegrationSpec
-        range: string
+        range: ContractReference
         multivalued: true
+        inlined: true
+        inlined_as_list: true
       description:
         name: description
         from_schema: https://jumo.dev/schemas/integration

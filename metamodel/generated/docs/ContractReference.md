@@ -198,6 +198,7 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [WorkerGrantedOperation](WorkerGrantedOperation.md) | [connectorDefinitionRef](connectorDefinitionRef.md) | range | [ContractReference](ContractReference.md) |
 | [McpInventorySnapshot](McpInventorySnapshot.md) | [workOrderRef](workOrderRef.md) | range | [ContractReference](ContractReference.md) |
 | [McpInventorySnapshot](McpInventorySnapshot.md) | [executionMachineRef](executionMachineRef.md) | range | [ContractReference](ContractReference.md) |
+| [ConnectorIntegrationSpec](ConnectorIntegrationSpec.md) | [memberConnectorRefs](memberConnectorRefs.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorPackageCertificationSpec](ConnectorPackageCertificationSpec.md) | [connectorPackageRef](connectorPackageRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorSessionBinding](ConnectorSessionBinding.md) | [connectorRef](connectorRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorSessionBinding](ConnectorSessionBinding.md) | [principalRef](principalRef.md) | range | [ContractReference](ContractReference.md) |

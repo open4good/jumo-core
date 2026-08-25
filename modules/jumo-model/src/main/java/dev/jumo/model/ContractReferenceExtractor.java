@@ -48,6 +48,10 @@ public final class ContractReferenceExtractor {
             extractFromConnectorDefinition(m, refs);
             return refs;
         }
+        if (model instanceof ConnectorIntegration m) {
+            extractFromConnectorIntegration(m, refs);
+            return refs;
+        }
         if (model instanceof ConnectorPackageCertification m) {
             extractFromConnectorPackageCertification(m, refs);
             return refs;
@@ -439,6 +443,18 @@ public final class ContractReferenceExtractor {
         if (obj.operations() != null) {
             for (ConnectorOperation item : obj.operations()) {
                 extractFromConnectorOperation(item, refs);
+            }
+        }
+    }
+    public static void extractFromConnectorIntegration(ConnectorIntegration obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromConnectorIntegrationSpec(obj.spec(), refs);
+    }
+    public static void extractFromConnectorIntegrationSpec(ConnectorIntegrationSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.memberConnectorRefs() != null) {
+            for (ContractReference r : obj.memberConnectorRefs()) {
+                if (r != null) refs.add(new OutgoingReference("memberConnectorRefs", r));
             }
         }
     }

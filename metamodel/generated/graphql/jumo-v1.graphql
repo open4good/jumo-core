@@ -1981,7 +1981,7 @@ type ConnectorIntegrationSpec
   {
     ownerRealm: Identifier!
     category: String!
-    memberConnectorRefs: [String]
+    memberConnectorRefs: [ContractReference]
     description: String
   }
 

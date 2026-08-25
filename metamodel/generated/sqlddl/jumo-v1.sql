@@ -180,6 +180,7 @@ CREATE TABLE "ContractReference" (
 	"SecretBindingSpec_id" INTEGER,
 	"FederatedPeerSpec_id" INTEGER,
 	"ProviderAccountSpec_id" INTEGER,
+	"ConnectorIntegrationSpec_id" INTEGER,
 	"EffectTestAuthorization_id" INTEGER,
 	PRIMARY KEY (uid)
 );
@@ -202,6 +203,7 @@ COMMENT ON COLUMN "ContractReference"."ExecutionCellSpec_id" IS 'Autocreated FK 
 COMMENT ON COLUMN "ContractReference"."SecretBindingSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."FederatedPeerSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ProviderAccountSpec_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ContractReference"."ConnectorIntegrationSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."EffectTestAuthorization_id" IS 'Autocreated FK slot';
 
 CREATE TABLE "LayerOverride" (
@@ -3525,17 +3527,6 @@ CREATE INDEX "ix_McpProtocolProfile_capabilities_capabilities" ON "McpProtocolPr
 COMMENT ON TABLE "McpProtocolProfile_capabilities" IS 'None';
 COMMENT ON COLUMN "McpProtocolProfile_capabilities"."McpProtocolProfile_id" IS 'Autocreated FK slot';
 
-CREATE TABLE "ConnectorIntegrationSpec_memberConnectorRefs" (
-	"ConnectorIntegrationSpec_id" INTEGER,
-	"memberConnectorRefs" TEXT,
-	PRIMARY KEY ("ConnectorIntegrationSpec_id", "memberConnectorRefs"),
-	FOREIGN KEY("ConnectorIntegrationSpec_id") REFERENCES "ConnectorIntegrationSpec" (id)
-);
-CREATE INDEX "ix_ConnectorIntegrationSpec_memberConnectorRefs_Connect_7b62" ON "ConnectorIntegrationSpec_memberConnectorRefs" ("ConnectorIntegrationSpec_id");
-CREATE INDEX "ix_ConnectorIntegrationSpec_memberConnectorRefs_memberC_7ef2" ON "ConnectorIntegrationSpec_memberConnectorRefs" ("memberConnectorRefs");
-COMMENT ON TABLE "ConnectorIntegrationSpec_memberConnectorRefs" IS 'None';
-COMMENT ON COLUMN "ConnectorIntegrationSpec_memberConnectorRefs"."ConnectorIntegrationSpec_id" IS 'Autocreated FK slot';
-
 CREATE TABLE "ConnectorPackageSpec_sourcePaths" (
 	"ConnectorPackageSpec_id" INTEGER,
 	"sourcePaths" TEXT,
@@ -6236,6 +6227,7 @@ ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("mcpBundleRef_uid") REFERE
 ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("remoteMcpServiceRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "ConnectorOperation" ADD FOREIGN KEY("ConnectorDefinitionSpec_id") REFERENCES "ConnectorDefinitionSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("AdvisorProfileSpec_id") REFERENCES "AdvisorProfileSpec" (id);
+ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorIntegrationSpec_id") REFERENCES "ConnectorIntegrationSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorIntentProposal_id") REFERENCES "ConnectorIntentProposal" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorOperation_uid") REFERENCES "ConnectorOperation" (uid);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("DispositionMatch_id") REFERENCES "DispositionMatch" (id);

@@ -8,5 +8,5 @@ spec:
   playbookPath: ansible/provision_vm.yml
   playbookDigest: sha256:a4d05a4635cdf3b7f1350e2e306b85c095c6a4bd6c39afeb1764c98867e46556
   allowedRealms: [home]
-  description: Create a pinned Ubuntu guest on the isolated Jumo network and, only when exactly approved, attach the revalidated Freebox NIC.
+  description: Create a pinned Ubuntu guest on the isolated Jumo network.
   appliesToCapability: execution.cell.vm.provision

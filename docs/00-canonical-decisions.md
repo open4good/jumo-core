@@ -33,8 +33,8 @@ audience: PROJECT_SCOPED
    CI auto-publication of static read-only projections (ADR-0051).
 10. Provider credentials enter only through the owner step-up ingress into their declared OpenBao binding;
     named provider accounts route deterministically and may use only declared fallback accounts (ADR-0052).
-11. KVM guests boot only from verified pinned cloud images and may reach a Freebox only through an approved,
-    dedicated second NIC; Freebox application tokens remain in OpenBao (ADR-0053).
+11. KVM guests boot only from verified pinned cloud images and attach no interface beyond the isolated
+    Jumo control network (ADR-0053).
 12. Nestor coordination profiles may vary latency and cognitive depth, but every action candidate is
     structured, catalog-bound and non-authoritative; contextual risk can only strengthen policy
     obligations and never grants execution authority (ADR-0019).

@@ -712,10 +712,9 @@ deny contains corpus.violation("corpus.certification.platform-only", document, m
 
 # ConnectorPackage is Platform-only too (AC1, mcp-platform-package-certification), but unlike the
 # certification rule above it must not require the exact dev.jumo.core namespace: the two live
-# packages (freebox, google) already use dev.jumo.connectors, a second legitimate Platform
+# live package (google) already uses dev.jumo.connectors, a second legitimate Platform
 # namespace for reusable package manifests (verified against the real composed corpus, not a
-# fixture -- 111 dev.jumo.core docs, 72 home.jumo.dev, 4 dev.jumo.connectors, no other namespace
-# exists). The real Platform/Realm boundary this corpus enforces is "not home.jumo.dev", the one
+# fixture -- the only other namespaces are dev.jumo.core and home.jumo.dev). The real Platform/Realm boundary this corpus enforces is "not home.jumo.dev", the one
 # private Realm namespace (composition.rego's sealed-no-private-reference rule reads it the same
 # way) -- so that is the predicate here, deliberately not mirrored onto the certification rule
 # above, which stays as shipped.

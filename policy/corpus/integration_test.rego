@@ -301,7 +301,7 @@ test_connector_package_platform_only_refused if {
 }
 
 test_connector_package_connectors_namespace_allowed if {
-	real_shape := package_document("dev.jumo.connectors", "freebox", {"connectorId": "freebox", "version": "1.0.0", "packageDigest": "sha256:aa"})
+	real_shape := package_document("dev.jumo.connectors", "google", {"connectorId": "google", "version": "1.0.0", "packageDigest": "sha256:aa"})
 	violations := data.jumo.corpus.deny with input as [real_shape]
 	not has_rule(violations, "corpus.package.platform-only")
 }

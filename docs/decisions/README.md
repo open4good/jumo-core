@@ -31,7 +31,7 @@ audience: PROJECT_SCOPED
 | [ADR-0050](ADR-0050-mcp-connector-factory-and-appraisal.md) | MCP connector factory, target-machine discovery, TypeScript runtime, and dual-consent appraisal | 8 | `ConnectorDefinition`, `ConnectorPackage`, `ExecutionMachine`, `McpBundle`, `McpRegistrySource`, `RemoteMcpService`, `WorkOrder` |
 | [ADR-0051](ADR-0051-public-interoperability-exposition.md) | Governed interoperability exposition under /u/{handle}, sealed adapter registry, and ACS PEP | 9 | `Organization`, `OrganizationPublicationPolicy`, `RealmPublication` |
 | [ADR-0052](ADR-0052-provider-credential-ingress-and-account-routing.md) | Provider credential ingress and named-account routing | 10 | `ProviderAccount` |
-| [ADR-0053](ADR-0053-kvm-cloud-image-and-freebox-lan.md) | Pinned cloud-image KVM and dedicated Freebox LAN | 11 | — |
+| [ADR-0053](ADR-0053-kvm-pinned-cloud-image.md) | Pinned cloud-image KVM | 11 | — |
 | [ADR-0054](ADR-0054-advisor-profiles-and-addressed-conversations.md) | Advisor profiles and addressed conversations | 13 | `AdvisorProfile`, `CapabilityProfile`, `EngagementMethod`, `Practice`, `PrincipalIdentityBinding`, `ProcessSpec`, `Project`, `SolicitationContract` |
 | [ADR-0055](ADR-0055-invocation-attribution-and-grant-ledger.md) | Invocation attribution and recognized grant ledger | 14 | `RoleDefinition` |
 | [ADR-0056](ADR-0056-recovery-gated-root-system-effects.md) | Recovery-gated root system effects on user-provided machines | — | — |

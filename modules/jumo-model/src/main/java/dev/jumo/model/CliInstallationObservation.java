@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Observed installation and doctor health status of a CLI tool on a machine.
  */
-public record CliInstallationObservation(String machineRef, String toolRef, String installedReleaseRef, String status, String doctorSummary, String observedAt)  {
+public record CliInstallationObservation(ContractReference machineRef, ContractReference toolRef, ContractReference installedReleaseRef, String status, String doctorSummary, String observedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -15,25 +15,25 @@ public record CliInstallationObservation(String machineRef, String toolRef, Stri
 
     public static class Builder {
 
-        private String machineRef = "";
-        private String toolRef = "";
-        private String installedReleaseRef = "";
+        private ContractReference machineRef = null;
+        private ContractReference toolRef = null;
+        private ContractReference installedReleaseRef = null;
         private String status = "";
         private String doctorSummary = "";
         private String observedAt = "";
 
 
-        public Builder machineRef(String machineRef) {
+        public Builder machineRef(ContractReference machineRef) {
             this.machineRef = Objects.requireNonNull(machineRef);
             return this;
         }
 
-        public Builder toolRef(String toolRef) {
+        public Builder toolRef(ContractReference toolRef) {
             this.toolRef = Objects.requireNonNull(toolRef);
             return this;
         }
 
-        public Builder installedReleaseRef(String installedReleaseRef) {
+        public Builder installedReleaseRef(ContractReference installedReleaseRef) {
             this.installedReleaseRef = Objects.requireNonNull(installedReleaseRef);
             return this;
         }

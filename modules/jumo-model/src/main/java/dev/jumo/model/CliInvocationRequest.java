@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Structured WorkOrder execution invocation dispatched to a CLI worker container.
  */
-public record CliInvocationRequest(String workOrderId, String leaseId, String machineRef, String toolRef, String releaseRef, String gitCommitSha, String prompt, SchemaBinding inputBinding, SchemaBinding outputBinding, Integer turnLimit, Integer tokenBudget, Integer timeoutSeconds, List<String> grantedCapabilities)  {
+public record CliInvocationRequest(String workOrderId, String leaseId, ContractReference machineRef, ContractReference toolRef, ContractReference releaseRef, String gitCommitSha, String prompt, SchemaBinding inputBinding, SchemaBinding outputBinding, Integer turnLimit, Integer tokenBudget, Integer timeoutSeconds, List<String> grantedCapabilities)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,9 +18,9 @@ public record CliInvocationRequest(String workOrderId, String leaseId, String ma
 
         private String workOrderId = "";
         private String leaseId = "";
-        private String machineRef = "";
-        private String toolRef = "";
-        private String releaseRef = "";
+        private ContractReference machineRef = null;
+        private ContractReference toolRef = null;
+        private ContractReference releaseRef = null;
         private String gitCommitSha = "";
         private String prompt = "";
         private SchemaBinding inputBinding = null;
@@ -41,17 +41,17 @@ public record CliInvocationRequest(String workOrderId, String leaseId, String ma
             return this;
         }
 
-        public Builder machineRef(String machineRef) {
+        public Builder machineRef(ContractReference machineRef) {
             this.machineRef = Objects.requireNonNull(machineRef);
             return this;
         }
 
-        public Builder toolRef(String toolRef) {
+        public Builder toolRef(ContractReference toolRef) {
             this.toolRef = Objects.requireNonNull(toolRef);
             return this;
         }
 
-        public Builder releaseRef(String releaseRef) {
+        public Builder releaseRef(ContractReference releaseRef) {
             this.releaseRef = Objects.requireNonNull(releaseRef);
             return this;
         }

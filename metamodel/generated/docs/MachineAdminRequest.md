@@ -28,6 +28,15 @@ URI: [jumo:MachineAdminRequest](https://jumo.dev/schemas/jumo-v1/MachineAdminReq
 
       MachineAdminRequest : playbookRef
 
+
+
+
+
+        MachineAdminRequest --> "1" ContractReference : playbookRef
+        click ContractReference href "../ContractReference/"
+
+
+
       MachineAdminRequest : stepUpProof
 
       MachineAdminRequest : variables
@@ -56,7 +65,7 @@ URI: [jumo:MachineAdminRequest](https://jumo.dev/schemas/jumo-v1/MachineAdminReq
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
 | [machineId](machineId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [playbookRef](playbookRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [playbookRef](playbookRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [variables](variables.md) | 0..1 <br/> [SchemaBoundPayload](SchemaBoundPayload.md) |  | direct |
 | [workOrderId](workOrderId.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
 | [stepUpProof](stepUpProof.md) | 0..1 <br/> [String](String.md) |  | direct |
@@ -171,8 +180,9 @@ attributes:
     domain_of:
     - MachineAdminRequest
     - MachineAdminCommand
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   variables:
     name: variables
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -263,8 +273,9 @@ attributes:
     domain_of:
     - MachineAdminRequest
     - MachineAdminCommand
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   variables:
     name: variables
     from_schema: https://jumo.dev/schemas/jumo-v1

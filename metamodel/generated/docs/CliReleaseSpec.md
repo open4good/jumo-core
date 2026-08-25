@@ -38,6 +38,15 @@ URI: [jumo:CliReleaseSpec](https://jumo.dev/schemas/jumo-v1/CliReleaseSpec)
 
       CliReleaseSpec : toolRef
 
+
+
+
+
+        CliReleaseSpec --> "1" ContractReference : toolRef
+        click ContractReference href "../ContractReference/"
+
+
+
       CliReleaseSpec : version
 
 
@@ -52,7 +61,7 @@ URI: [jumo:CliReleaseSpec](https://jumo.dev/schemas/jumo-v1/CliReleaseSpec)
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [toolRef](toolRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [toolRef](toolRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [version](version.md) | 1 <br/> [String](String.md) |  | direct |
 | [platform](platform.md) | 1 <br/> [String](String.md) |  | direct |
 | [ociImage](ociImage.md) | 1 <br/> [String](String.md) |  | direct |
@@ -162,8 +171,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   version:
     name: version
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -277,8 +287,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   version:
     name: version
     from_schema: https://jumo.dev/schemas/jumo-v1

@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Specification for an ExecutionMachine contract.
  */
-public record ExecutionMachineSpec(String ownerRealm, MachineOrigin origin, MachineEnvironment environment, MachineDesiredState desiredState, String hostDefinitionRef, List<String> installedCliRefs, List<String> installedConnectorRefs, String ansibleBaselineRef, MachineNetworkConfig network)  {
+public record ExecutionMachineSpec(String ownerRealm, MachineOrigin origin, MachineEnvironment environment, MachineDesiredState desiredState, ContractReference hostDefinitionRef, List<ContractReference> installedCliRefs, List<ContractReference> installedConnectorRefs, String ansibleBaselineRef, MachineNetworkConfig network)  {
 
     public static Builder builder() {
         return new Builder();
@@ -21,9 +21,9 @@ public record ExecutionMachineSpec(String ownerRealm, MachineOrigin origin, Mach
         private MachineOrigin origin = null;
         private MachineEnvironment environment = null;
         private MachineDesiredState desiredState = null;
-        private String hostDefinitionRef = "";
-        private List<String> installedCliRefs = List.of();
-        private List<String> installedConnectorRefs = List.of();
+        private ContractReference hostDefinitionRef = null;
+        private List<ContractReference> installedCliRefs = List.of();
+        private List<ContractReference> installedConnectorRefs = List.of();
         private String ansibleBaselineRef = "";
         private MachineNetworkConfig network = null;
 
@@ -48,17 +48,17 @@ public record ExecutionMachineSpec(String ownerRealm, MachineOrigin origin, Mach
             return this;
         }
 
-        public Builder hostDefinitionRef(String hostDefinitionRef) {
+        public Builder hostDefinitionRef(ContractReference hostDefinitionRef) {
             this.hostDefinitionRef = Objects.requireNonNull(hostDefinitionRef);
             return this;
         }
 
-        public Builder installedCliRefs(List<String> installedCliRefs) {
+        public Builder installedCliRefs(List<ContractReference> installedCliRefs) {
             this.installedCliRefs = Objects.requireNonNull(installedCliRefs);
             return this;
         }
 
-        public Builder installedConnectorRefs(List<String> installedConnectorRefs) {
+        public Builder installedConnectorRefs(List<ContractReference> installedConnectorRefs) {
             this.installedConnectorRefs = Objects.requireNonNull(installedConnectorRefs);
             return this;
         }

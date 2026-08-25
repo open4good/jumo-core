@@ -1978,13 +1978,13 @@
           "type": "string"
         },
         "machineRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "releaseRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "toolRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         }
       },
       "required": [
@@ -2004,10 +2004,10 @@
           "type": "string"
         },
         "installedReleaseRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "machineRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "observedAt": {
           "type": "string"
@@ -2016,7 +2016,7 @@
           "type": "string"
         },
         "toolRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         }
       },
       "required": [
@@ -2088,7 +2088,7 @@
           "type": "string"
         },
         "machineRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "outputBinding": {
           "anyOf": [
@@ -2104,7 +2104,7 @@
           "type": "string"
         },
         "releaseRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "timeoutSeconds": {
           "type": "integer"
@@ -2113,7 +2113,7 @@
           "type": "integer"
         },
         "toolRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "turnLimit": {
           "type": "integer"
@@ -2240,7 +2240,7 @@
           "type": "string"
         },
         "toolRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "version": {
           "type": "string"
@@ -2332,7 +2332,7 @@
           "type": "integer"
         },
         "toolRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         }
       },
       "required": [
@@ -4681,6 +4681,7 @@
       "description": "Specification for an ExecutionMachine contract.",
       "properties": {
         "ansibleBaselineRef": {
+          "description": "No confirmed Git-contract target kind exists for this field yet (ADR-0045 migration audit, contract-reference-migration-execution AC1) -- left as an opaque scalar pending an owner decision on what a machine's Ansible baseline should resolve to.",
           "type": "string"
         },
         "desiredState": {
@@ -4690,17 +4691,24 @@
           "$ref": "#/$defs/MachineEnvironment"
         },
         "hostDefinitionRef": {
-          "type": "string"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "installedCliRefs": {
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/ContractReference"
           },
           "type": "array"
         },
         "installedConnectorRefs": {
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/ContractReference"
           },
           "type": "array"
         },
@@ -6250,7 +6258,7 @@
           "type": "string"
         },
         "playbookRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "timeoutSeconds": {
           "type": "integer"
@@ -6357,7 +6365,7 @@
           "type": "string"
         },
         "playbookRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "stepUpProof": {
           "type": "string"
@@ -6730,7 +6738,8 @@
           "type": "string"
         },
         "runtimeRef": {
-          "type": "string"
+          "$ref": "#/$defs/ContractReference",
+          "description": "Polymorphic on the sibling `kind` field (CLI or connector) -- resolves to a CliToolDefinition or a ConnectorDefinition depending on it."
         },
         "status": {
           "type": "string"
@@ -9964,8 +9973,15 @@
           "type": "string"
         },
         "subprocessReleaseRef": {
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "type": "string"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-SUBPROCESS check in execution.rego; must resolve, see references.rego)."
         },
         "terminalState": {
           "$ref": "#/$defs/ProcessTerminalState",

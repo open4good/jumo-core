@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Observed runtime installation (CLI or connector) on a target machine.
  */
-public record MachineRuntimeInstallation(String installationId, String machineId, String kind, String runtimeRef, String releaseDigest, String status, String installedAt)  {
+public record MachineRuntimeInstallation(String installationId, String machineId, String kind, ContractReference runtimeRef, String releaseDigest, String status, String installedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,7 +18,7 @@ public record MachineRuntimeInstallation(String installationId, String machineId
         private String installationId = "";
         private String machineId = "";
         private String kind = "";
-        private String runtimeRef = "";
+        private ContractReference runtimeRef = null;
         private String releaseDigest = "";
         private String status = "";
         private String installedAt = "";
@@ -39,7 +39,7 @@ public record MachineRuntimeInstallation(String installationId, String machineId
             return this;
         }
 
-        public Builder runtimeRef(String runtimeRef) {
+        public Builder runtimeRef(ContractReference runtimeRef) {
             this.runtimeRef = Objects.requireNonNull(runtimeRef);
             return this;
         }

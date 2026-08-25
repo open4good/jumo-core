@@ -40,6 +40,15 @@ URI: [jumo:MachineAdminCommand](https://jumo.dev/schemas/jumo-v1/MachineAdminCom
 
       MachineAdminCommand : playbookRef
 
+
+
+
+
+        MachineAdminCommand --> "1" ContractReference : playbookRef
+        click ContractReference href "../ContractReference/"
+
+
+
       MachineAdminCommand : timeoutSeconds
 
       MachineAdminCommand : variables
@@ -71,7 +80,7 @@ URI: [jumo:MachineAdminCommand](https://jumo.dev/schemas/jumo-v1/MachineAdminCom
 | [machineId](machineId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [workOrderId](workOrderId.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
 | [contractRevision](contractRevision.md) | 0..1 <br/> [String](String.md) |  | direct |
-| [playbookRef](playbookRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [playbookRef](playbookRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [playbookDigest](playbookDigest.md) | 1 <br/> [String](String.md) |  | direct |
 | [variables](variables.md) | 0..1 <br/> [SchemaBoundPayload](SchemaBoundPayload.md) |  | direct |
 | [approvalReference](approvalReference.md) | 0..1 <br/> [String](String.md) |  | direct |
@@ -222,8 +231,9 @@ attributes:
     domain_of:
     - MachineAdminRequest
     - MachineAdminCommand
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   playbookDigest:
     name: playbookDigest
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -377,8 +387,9 @@ attributes:
     domain_of:
     - MachineAdminRequest
     - MachineAdminCommand
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   playbookDigest:
     name: playbookDigest
     from_schema: https://jumo.dev/schemas/jumo-v1

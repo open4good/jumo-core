@@ -99,6 +99,15 @@ URI: [jumo:ProcessStep](https://jumo.dev/schemas/jumo-v1/ProcessStep)
 
       ProcessStep : subprocessReleaseRef
 
+
+
+
+
+        ProcessStep --> "0..1" ContractReference : subprocessReleaseRef
+        click ContractReference href "../ContractReference/"
+
+
+
       ProcessStep : terminalState
 
 
@@ -136,7 +145,7 @@ URI: [jumo:ProcessStep](https://jumo.dev/schemas/jumo-v1/ProcessStep)
 | [pairedGatewayRef](pairedGatewayRef.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
 | [loopMaximum](loopMaximum.md) | 0..1 <br/> [Integer](Integer.md) |  | direct |
 | [fallbackFlowRef](fallbackFlowRef.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
-| [subprocessReleaseRef](subprocessReleaseRef.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
+| [subprocessReleaseRef](subprocessReleaseRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) | The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-... | direct |
 | [compensationForStepRef](compensationForStepRef.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
 
 
@@ -493,12 +502,15 @@ attributes:
     range: Identifier
   subprocessReleaseRef:
     name: subprocessReleaseRef
+    description: The exact ProcessSpec release this SUBPROCESS step invokes (Rego
+      required-on-SUBPROCESS check in execution.rego; must resolve, see references.rego).
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ProcessStep
     domain_of:
     - ProcessStep
-    range: Identifier
+    range: ContractReference
+    inlined: true
   compensationForStepRef:
     name: compensationForStepRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -801,12 +813,15 @@ attributes:
     range: Identifier
   subprocessReleaseRef:
     name: subprocessReleaseRef
+    description: The exact ProcessSpec release this SUBPROCESS step invokes (Rego
+      required-on-SUBPROCESS check in execution.rego; must resolve, see references.rego).
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ProcessStep
     domain_of:
     - ProcessStep
-    range: Identifier
+    range: ContractReference
+    inlined: true
   compensationForStepRef:
     name: compensationForStepRef
     from_schema: https://jumo.dev/schemas/jumo-v1

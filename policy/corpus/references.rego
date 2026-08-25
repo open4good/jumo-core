@@ -608,6 +608,43 @@ references contains {"document": document, "location": "spec.improvementLoopRef"
 	ref != null
 }
 
+# ExecutionMachine
+references contains {"document": document, "location": "spec.hostDefinitionRef", "expected_kind": "MachineHostDefinition", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "ExecutionMachine"
+	ref := object.get(corpus.spec(document), "hostDefinitionRef", null)
+	ref != null
+}
+
+references contains {"document": document, "location": sprintf("spec.installedCliRefs[%d]", [index]), "expected_kind": "CliToolDefinition", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "ExecutionMachine"
+	some index, ref in object.get(corpus.spec(document), "installedCliRefs", [])
+}
+
+references contains {"document": document, "location": sprintf("spec.installedConnectorRefs[%d]", [index]), "expected_kind": "ConnectorDefinition", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "ExecutionMachine"
+	some index, ref in object.get(corpus.spec(document), "installedConnectorRefs", [])
+}
+
+# CliRelease
+references contains {"document": document, "location": "spec.toolRef", "expected_kind": "CliToolDefinition", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "CliRelease"
+	ref := object.get(corpus.spec(document), "toolRef", null)
+	ref != null
+}
+
+# ProcessSpec (subprocess step target)
+references contains {"document": document, "location": sprintf("spec.steps[%d].subprocessReleaseRef", [index]), "expected_kind": "ProcessSpec", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "ProcessSpec"
+	some index, step in object.get(corpus.spec(document), "steps", [])
+	ref := object.get(step, "subprocessReleaseRef", null)
+	ref != null
+}
+
 # --- Reference Validation Rules ---
 
 target_matches_kind(actual_kind, expected_kind) if {

@@ -28,13 +28,40 @@ URI: [jumo:CliInstallationObservation](https://jumo.dev/schemas/jumo-v1/CliInsta
 
       CliInstallationObservation : installedReleaseRef
 
+
+
+
+
+        CliInstallationObservation --> "1" ContractReference : installedReleaseRef
+        click ContractReference href "../ContractReference/"
+
+
+
       CliInstallationObservation : machineRef
+
+
+
+
+
+        CliInstallationObservation --> "1" ContractReference : machineRef
+        click ContractReference href "../ContractReference/"
+
+
 
       CliInstallationObservation : observedAt
 
       CliInstallationObservation : status
 
       CliInstallationObservation : toolRef
+
+
+
+
+
+        CliInstallationObservation --> "1" ContractReference : toolRef
+        click ContractReference href "../ContractReference/"
+
+
 
 
 ```
@@ -48,9 +75,9 @@ URI: [jumo:CliInstallationObservation](https://jumo.dev/schemas/jumo-v1/CliInsta
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [machineRef](machineRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [toolRef](toolRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [installedReleaseRef](installedReleaseRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [machineRef](machineRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [toolRef](toolRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [installedReleaseRef](installedReleaseRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [status](status.md) | 1 <br/> [String](String.md) |  | direct |
 | [doctorSummary](doctorSummary.md) | 0..1 <br/> [String](String.md) |  | direct |
 | [observedAt](observedAt.md) | 1 <br/> [String](String.md) |  | direct |
@@ -147,8 +174,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   toolRef:
     name: toolRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -159,8 +187,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   installedReleaseRef:
     name: installedReleaseRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -168,8 +197,9 @@ attributes:
     owner: CliInstallationObservation
     domain_of:
     - CliInstallationObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   status:
     name: status
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -256,8 +286,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   toolRef:
     name: toolRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -268,8 +299,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   installedReleaseRef:
     name: installedReleaseRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -277,8 +309,9 @@ attributes:
     owner: CliInstallationObservation
     domain_of:
     - CliInstallationObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   status:
     name: status
     from_schema: https://jumo.dev/schemas/jumo-v1

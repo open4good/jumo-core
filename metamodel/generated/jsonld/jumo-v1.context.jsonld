@@ -833,15 +833,18 @@
       "@id": "machineRef"
     },
     "releaseRef": {
+      "@type": "@id",
       "@id": "releaseRef"
     },
     "toolRef": {
+      "@type": "@id",
       "@id": "toolRef"
     },
     "doctorSummary": {
       "@id": "doctorSummary"
     },
     "installedReleaseRef": {
+      "@type": "@id",
       "@id": "installedReleaseRef"
     },
     "eventType": {
@@ -1660,12 +1663,15 @@
       "@id": "environment"
     },
     "hostDefinitionRef": {
+      "@type": "@id",
       "@id": "hostDefinitionRef"
     },
     "installedCliRefs": {
+      "@type": "@id",
       "@id": "installedCliRefs"
     },
     "installedConnectorRefs": {
+      "@type": "@id",
       "@id": "installedConnectorRefs"
     },
     "network": {
@@ -2005,6 +2011,7 @@
       "@id": "playbookDigest"
     },
     "playbookRef": {
+      "@type": "@id",
       "@id": "playbookRef"
     },
     "variables": {
@@ -3076,6 +3083,7 @@
       "@id": "signalType"
     },
     "subprocessReleaseRef": {
+      "@type": "@id",
       "@id": "subprocessReleaseRef"
     },
     "terminalState": {

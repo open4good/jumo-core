@@ -36,6 +36,15 @@ URI: [jumo:MachineRuntimeInstallation](https://jumo.dev/schemas/jumo-v1/MachineR
 
       MachineRuntimeInstallation : runtimeRef
 
+
+
+
+
+        MachineRuntimeInstallation --> "1" ContractReference : runtimeRef
+        click ContractReference href "../ContractReference/"
+
+
+
       MachineRuntimeInstallation : status
 
 
@@ -53,7 +62,7 @@ URI: [jumo:MachineRuntimeInstallation](https://jumo.dev/schemas/jumo-v1/MachineR
 | [installationId](installationId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [machineId](machineId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [kind](kind.md) | 1 <br/> [String](String.md) |  | direct |
-| [runtimeRef](runtimeRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [runtimeRef](runtimeRef.md) | 1 <br/> [ContractReference](ContractReference.md) | Polymorphic on the sibling `kind` field (CLI or connector) -- resolves to a C... | direct |
 | [releaseDigest](releaseDigest.md) | 1 <br/> [String](String.md) |  | direct |
 | [status](status.md) | 1 <br/> [String](String.md) |  | direct |
 | [installedAt](installedAt.md) | 1 <br/> [String](String.md) |  | direct |
@@ -265,14 +274,17 @@ attributes:
     required: true
   runtimeRef:
     name: runtimeRef
+    description: Polymorphic on the sibling `kind` field (CLI or connector) -- resolves
+      to a CliToolDefinition or a ConnectorDefinition depending on it.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: MachineRuntimeInstallation
     domain_of:
     - MachineRuntimeInstallation
     - SecretBindingSpec
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   releaseDigest:
     name: releaseDigest
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -470,14 +482,17 @@ attributes:
     required: true
   runtimeRef:
     name: runtimeRef
+    description: Polymorphic on the sibling `kind` field (CLI or connector) -- resolves
+      to a CliToolDefinition or a ConnectorDefinition depending on it.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: MachineRuntimeInstallation
     domain_of:
     - MachineRuntimeInstallation
     - SecretBindingSpec
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   releaseDigest:
     name: releaseDigest
     from_schema: https://jumo.dev/schemas/jumo-v1

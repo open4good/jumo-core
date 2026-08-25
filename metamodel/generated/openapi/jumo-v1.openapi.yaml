@@ -4839,7 +4839,11 @@ components:
         fallbackFlowRef:
           type: string
         subprocessReleaseRef:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/ContractReference'
+          description: The exact ProcessSpec release this SUBPROCESS step invokes
+            (Rego required-on-SUBPROCESS check in execution.rego; must resolve, see
+            references.rego).
         compensationForStepRef:
           type: string
       additionalProperties: false
@@ -5063,17 +5067,21 @@ components:
         desiredState:
           $ref: '#/components/schemas/MachineDesiredState'
         hostDefinitionRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         installedCliRefs:
           items:
-            type: string
+            $ref: '#/components/schemas/ContractReference'
           type: array
         installedConnectorRefs:
           items:
-            type: string
+            $ref: '#/components/schemas/ContractReference'
           type: array
         ansibleBaselineRef:
           type: string
+          description: No confirmed Git-contract target kind exists for this field
+            yet (ADR-0045 migration audit, contract-reference-migration-execution
+            AC1) -- left as an opaque scalar pending an owner decision on what a machine's
+            Ansible baseline should resolve to.
         network:
           $ref: '#/components/schemas/MachineNetworkConfig'
       additionalProperties: false
@@ -5302,7 +5310,7 @@ components:
         machineId:
           type: string
         playbookRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         variables:
           $ref: '#/components/schemas/SchemaBoundPayload'
         workOrderId:
@@ -5328,7 +5336,7 @@ components:
         contractRevision:
           type: string
         playbookRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         playbookDigest:
           type: string
         variables:
@@ -5444,7 +5452,11 @@ components:
         kind:
           type: string
         runtimeRef:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/ContractReference'
+          description: Polymorphic on the sibling `kind` field (CLI or connector)
+            -- resolves to a CliToolDefinition or a ConnectorDefinition depending
+            on it.
         releaseDigest:
           type: string
         status:
@@ -5566,7 +5578,7 @@ components:
     CliReleaseSpec:
       properties:
         toolRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         version:
           type: string
         platform:
@@ -5624,11 +5636,11 @@ components:
     CliInstallationDesiredState:
       properties:
         machineRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         toolRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         releaseRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         desiredState:
           type: string
       additionalProperties: false
@@ -5643,11 +5655,11 @@ components:
     CliInstallationObservation:
       properties:
         machineRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         toolRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         installedReleaseRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         status:
           type: string
         doctorSummary:
@@ -5672,11 +5684,11 @@ components:
         leaseId:
           type: string
         machineRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         toolRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         releaseRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         gitCommitSha:
           type: string
         prompt:
@@ -5760,7 +5772,7 @@ components:
     CliUsageObservation:
       properties:
         toolRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         tokensUsed:
           type: integer
         callsCount:

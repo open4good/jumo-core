@@ -35613,11 +35613,14 @@ classes:
         range: Identifier
       subprocessReleaseRef:
         name: subprocessReleaseRef
+        description: The exact ProcessSpec release this SUBPROCESS step invokes (Rego
+          required-on-SUBPROCESS check in execution.rego; must resolve, see references.rego).
         from_schema: https://jumo.dev/schemas/execution
         owner: ProcessStep
         domain_of:
         - ProcessStep
-        range: Identifier
+        range: ContractReference
+        inlined: true
       compensationForStepRef:
         name: compensationForStepRef
         from_schema: https://jumo.dev/schemas/execution
@@ -37191,25 +37194,34 @@ classes:
         owner: ExecutionMachineSpec
         domain_of:
         - ExecutionMachineSpec
-        range: string
+        range: ContractReference
+        inlined: true
       installedCliRefs:
         name: installedCliRefs
         from_schema: https://jumo.dev/schemas/execution
         owner: ExecutionMachineSpec
         domain_of:
         - ExecutionMachineSpec
-        range: string
+        range: ContractReference
         multivalued: true
+        inlined: true
+        inlined_as_list: true
       installedConnectorRefs:
         name: installedConnectorRefs
         from_schema: https://jumo.dev/schemas/execution
         owner: ExecutionMachineSpec
         domain_of:
         - ExecutionMachineSpec
-        range: string
+        range: ContractReference
         multivalued: true
+        inlined: true
+        inlined_as_list: true
       ansibleBaselineRef:
         name: ansibleBaselineRef
+        description: No confirmed Git-contract target kind exists for this field yet
+          (ADR-0045 migration audit, contract-reference-migration-execution AC1) --
+          left as an opaque scalar pending an owner decision on what a machine's Ansible
+          baseline should resolve to.
         from_schema: https://jumo.dev/schemas/execution
         owner: ExecutionMachineSpec
         domain_of:
@@ -38723,8 +38735,9 @@ classes:
         domain_of:
         - MachineAdminRequest
         - MachineAdminCommand
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       variables:
         name: variables
         from_schema: https://jumo.dev/schemas/execution
@@ -38838,8 +38851,9 @@ classes:
         domain_of:
         - MachineAdminRequest
         - MachineAdminCommand
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       playbookDigest:
         name: playbookDigest
         from_schema: https://jumo.dev/schemas/execution
@@ -39401,13 +39415,16 @@ classes:
         required: true
       runtimeRef:
         name: runtimeRef
+        description: Polymorphic on the sibling `kind` field (CLI or connector) --
+          resolves to a CliToolDefinition or a ConnectorDefinition depending on it.
         from_schema: https://jumo.dev/schemas/execution
         owner: MachineRuntimeInstallation
         domain_of:
         - MachineRuntimeInstallation
         - SecretBindingSpec
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       releaseDigest:
         name: releaseDigest
         from_schema: https://jumo.dev/schemas/execution
@@ -40461,8 +40478,9 @@ classes:
         - CliInstallationObservation
         - CliInvocationRequest
         - CliUsageObservation
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       version:
         name: version
         from_schema: https://jumo.dev/schemas/execution
@@ -40656,8 +40674,9 @@ classes:
         - CliInstallationObservation
         - CliInvocationRequest
         - ConnectorSessionBinding
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       toolRef:
         name: toolRef
         from_schema: https://jumo.dev/schemas/execution
@@ -40668,8 +40687,9 @@ classes:
         - CliInstallationObservation
         - CliInvocationRequest
         - CliUsageObservation
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       releaseRef:
         name: releaseRef
         from_schema: https://jumo.dev/schemas/execution
@@ -40677,8 +40697,9 @@ classes:
         domain_of:
         - CliInstallationDesiredState
         - CliInvocationRequest
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       desiredState:
         name: desiredState
         from_schema: https://jumo.dev/schemas/execution
@@ -40723,8 +40744,9 @@ classes:
         - CliInstallationObservation
         - CliInvocationRequest
         - ConnectorSessionBinding
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       toolRef:
         name: toolRef
         from_schema: https://jumo.dev/schemas/execution
@@ -40735,16 +40757,18 @@ classes:
         - CliInstallationObservation
         - CliInvocationRequest
         - CliUsageObservation
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       installedReleaseRef:
         name: installedReleaseRef
         from_schema: https://jumo.dev/schemas/execution
         owner: CliInstallationObservation
         domain_of:
         - CliInstallationObservation
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       status:
         name: status
         from_schema: https://jumo.dev/schemas/execution
@@ -40848,8 +40872,9 @@ classes:
         - CliInstallationObservation
         - CliInvocationRequest
         - ConnectorSessionBinding
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       toolRef:
         name: toolRef
         from_schema: https://jumo.dev/schemas/execution
@@ -40860,8 +40885,9 @@ classes:
         - CliInstallationObservation
         - CliInvocationRequest
         - CliUsageObservation
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       releaseRef:
         name: releaseRef
         from_schema: https://jumo.dev/schemas/execution
@@ -40869,8 +40895,9 @@ classes:
         domain_of:
         - CliInstallationDesiredState
         - CliInvocationRequest
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       gitCommitSha:
         name: gitCommitSha
         from_schema: https://jumo.dev/schemas/execution
@@ -41150,8 +41177,9 @@ classes:
         - CliInstallationObservation
         - CliInvocationRequest
         - CliUsageObservation
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       tokensUsed:
         name: tokensUsed
         from_schema: https://jumo.dev/schemas/execution

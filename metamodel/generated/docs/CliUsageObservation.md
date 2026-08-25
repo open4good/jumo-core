@@ -35,6 +35,15 @@ URI: [jumo:CliUsageObservation](https://jumo.dev/schemas/jumo-v1/CliUsageObserva
       CliUsageObservation : toolRef
 
 
+
+
+
+        CliUsageObservation --> "1" ContractReference : toolRef
+        click ContractReference href "../ContractReference/"
+
+
+
+
 ```
 
 
@@ -46,7 +55,7 @@ URI: [jumo:CliUsageObservation](https://jumo.dev/schemas/jumo-v1/CliUsageObserva
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [toolRef](toolRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [toolRef](toolRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [tokensUsed](tokensUsed.md) | 0..1 <br/> [Integer](Integer.md) |  | direct |
 | [callsCount](callsCount.md) | 0..1 <br/> [Integer](Integer.md) |  | direct |
 | [durationMs](durationMs.md) | 0..1 <br/> [Integer](Integer.md) |  | direct |
@@ -145,8 +154,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   tokensUsed:
     name: tokensUsed
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -223,8 +233,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   tokensUsed:
     name: tokensUsed
     from_schema: https://jumo.dev/schemas/jumo-v1

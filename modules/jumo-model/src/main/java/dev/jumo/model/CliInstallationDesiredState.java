@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Desired CLI installation state on a specific machine.
  */
-public record CliInstallationDesiredState(String machineRef, String toolRef, String releaseRef, String desiredState)  {
+public record CliInstallationDesiredState(ContractReference machineRef, ContractReference toolRef, ContractReference releaseRef, String desiredState)  {
 
     public static Builder builder() {
         return new Builder();
@@ -15,23 +15,23 @@ public record CliInstallationDesiredState(String machineRef, String toolRef, Str
 
     public static class Builder {
 
-        private String machineRef = "";
-        private String toolRef = "";
-        private String releaseRef = "";
+        private ContractReference machineRef = null;
+        private ContractReference toolRef = null;
+        private ContractReference releaseRef = null;
         private String desiredState = "";
 
 
-        public Builder machineRef(String machineRef) {
+        public Builder machineRef(ContractReference machineRef) {
             this.machineRef = Objects.requireNonNull(machineRef);
             return this;
         }
 
-        public Builder toolRef(String toolRef) {
+        public Builder toolRef(ContractReference toolRef) {
             this.toolRef = Objects.requireNonNull(toolRef);
             return this;
         }
 
-        public Builder releaseRef(String releaseRef) {
+        public Builder releaseRef(ContractReference releaseRef) {
             this.releaseRef = Objects.requireNonNull(releaseRef);
             return this;
         }

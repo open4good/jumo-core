@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * One node in the process graph. inputType/outputType/capabilityRef/opaEntrypoint are used selectively by kind: a GATEWAY step names opaEntrypoint (the OPA decision that selects its outgoing flow); a SERVICE step names capabilityRef and inputType/outputType; a TIMER START step carries the schedule fields Practice.processSpecRef (work.yaml) points at. Which fields apply to which kind is a Rego invariant, not encoded structurally here -- LinkML has no tagged-union/discriminated-class construct clean enough to justify one ProcessStep subclass per kind for what is otherwise one shape.
  */
-public record ProcessStep(String id, ProcessStepKind kind, ProcessStepSemanticStage semanticStage, String capabilityRef, Ring ring, String idempotencyKey, String opaEntrypoint, ProcessTerminalState terminalState, String signalType, ProcessGatewayMode gatewayMode, ProcessGatewayRole gatewayRole, String pairedGatewayRef, Integer loopMaximum, String fallbackFlowRef, String subprocessReleaseRef, String compensationForStepRef)  {
+public record ProcessStep(String id, ProcessStepKind kind, ProcessStepSemanticStage semanticStage, String capabilityRef, Ring ring, String idempotencyKey, String opaEntrypoint, ProcessTerminalState terminalState, String signalType, ProcessGatewayMode gatewayMode, ProcessGatewayRole gatewayRole, String pairedGatewayRef, Integer loopMaximum, String fallbackFlowRef, ContractReference subprocessReleaseRef, String compensationForStepRef)  {
 
     public static Builder builder() {
         return new Builder();
@@ -29,7 +29,7 @@ public record ProcessStep(String id, ProcessStepKind kind, ProcessStepSemanticSt
         private String pairedGatewayRef = "";
         private Integer loopMaximum = null;
         private String fallbackFlowRef = "";
-        private String subprocessReleaseRef = "";
+        private ContractReference subprocessReleaseRef = null;
         private String compensationForStepRef = "";
 
 
@@ -103,7 +103,7 @@ public record ProcessStep(String id, ProcessStepKind kind, ProcessStepSemanticSt
             return this;
         }
 
-        public Builder subprocessReleaseRef(String subprocessReleaseRef) {
+        public Builder subprocessReleaseRef(ContractReference subprocessReleaseRef) {
             this.subprocessReleaseRef = Objects.requireNonNull(subprocessReleaseRef);
             return this;
         }

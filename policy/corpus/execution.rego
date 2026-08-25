@@ -193,8 +193,8 @@ deny contains corpus.violation("corpus.process.subprocess", document, message) i
 	some document in processes
 	some step in steps(document)
 	step.kind == "SUBPROCESS"
-	release := object.get(step, "subprocessReleaseRef", "")
-	not release in corpus.ids_of_kind("ProcessSpec")
+	release := object.get(step, "subprocessReleaseRef", null)
+	not is_object(release)
 	message := sprintf("subprocess %q must reference an exact ProcessSpec release", [step.id])
 }
 

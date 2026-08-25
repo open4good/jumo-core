@@ -172,6 +172,7 @@ CREATE TABLE "ContractReference" (
 	"DispositionMatch_id" INTEGER,
 	"WorkOrderSpec_id" INTEGER,
 	"WorkerQualityRequirement_id" INTEGER,
+	"ExecutionMachineSpec_id" INTEGER,
 	"ConnectorOperation_uid" INTEGER,
 	"ConnectorIntentProposal_id" INTEGER,
 	"ExecutionCellSpec_id" INTEGER,
@@ -191,6 +192,7 @@ COMMENT ON COLUMN "ContractReference"."AdvisorProfileSpec_id" IS 'Autocreated FK
 COMMENT ON COLUMN "ContractReference"."DispositionMatch_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."WorkOrderSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."WorkerQualityRequirement_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ContractReference"."ExecutionMachineSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ConnectorOperation_uid" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ConnectorIntentProposal_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ExecutionCellSpec_id" IS 'Autocreated FK slot';
@@ -854,6 +856,21 @@ CREATE TABLE "MachineNetworkConfig" (
 CREATE INDEX "ix_MachineNetworkConfig_id" ON "MachineNetworkConfig" (id);
 COMMENT ON TABLE "MachineNetworkConfig" IS 'Network configuration for an ExecutionMachine.';
 
+CREATE TABLE "ExecutionMachineSpec" (
+	id SERIAL NOT NULL,
+	"ownerRealm" TEXT NOT NULL,
+	origin "MachineOrigin" NOT NULL,
+	environment "MachineEnvironment" NOT NULL,
+	"desiredState" "MachineDesiredState" NOT NULL,
+	"ansibleBaselineRef" TEXT,
+	"hostDefinitionRef_uid" INTEGER,
+	network_id INTEGER,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_ExecutionMachineSpec_id" ON "ExecutionMachineSpec" (id);
+COMMENT ON TABLE "ExecutionMachineSpec" IS 'Specification for an ExecutionMachine contract.';
+COMMENT ON COLUMN "ExecutionMachineSpec"."ansibleBaselineRef" IS 'No confirmed Git-contract target kind exists for this field yet (ADR-0045 migration audit, contract-reference-migration-execution AC1) -- left as an opaque scalar pending an owner decision on what a machine''s Ansible baseline should resolve to.';
+
 CREATE TABLE "MachineHostDefinitionSpec" (
 	id SERIAL NOT NULL,
 	"ownerRealm" TEXT NOT NULL,
@@ -963,20 +980,6 @@ CREATE TABLE "WorkloadCommandResult" (
 CREATE INDEX "ix_WorkloadCommandResult_id" ON "WorkloadCommandResult" (id);
 COMMENT ON TABLE "WorkloadCommandResult" IS 'Terminal outcome of a claimed WorkloadCommand, sanitized before it leaves the machine.';
 
-CREATE TABLE "MachineRuntimeInstallation" (
-	id SERIAL NOT NULL,
-	"installationId" TEXT NOT NULL,
-	"machineId" TEXT NOT NULL,
-	kind TEXT NOT NULL,
-	"runtimeRef" TEXT NOT NULL,
-	"releaseDigest" TEXT NOT NULL,
-	status TEXT NOT NULL,
-	"installedAt" TEXT NOT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_MachineRuntimeInstallation_id" ON "MachineRuntimeInstallation" (id);
-COMMENT ON TABLE "MachineRuntimeInstallation" IS 'Observed runtime installation (CLI or connector) on a target machine.';
-
 CREATE TABLE "ExecutionCellLease" (
 	id SERIAL NOT NULL,
 	"leaseId" TEXT NOT NULL,
@@ -1004,21 +1007,6 @@ CREATE INDEX "ix_CliToolDefinitionSpec_id" ON "CliToolDefinitionSpec" (id);
 COMMENT ON TABLE "CliToolDefinitionSpec" IS 'Specification for a CliToolDefinition contract.';
 COMMENT ON COLUMN "CliToolDefinitionSpec".cli IS 'The WorkerCli value this tool implements. Without it a runtime has to derive the tool from the enum value by naming convention, which is the instance-naming the boundary forbids.';
 
-CREATE TABLE "CliReleaseSpec" (
-	id SERIAL NOT NULL,
-	"toolRef" TEXT NOT NULL,
-	version TEXT NOT NULL,
-	platform TEXT NOT NULL,
-	"ociImage" TEXT NOT NULL,
-	"imageDigest" TEXT NOT NULL,
-	"signatureDigest" TEXT,
-	"sbomDigest" TEXT,
-	"provenanceDigest" TEXT,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_CliReleaseSpec_id" ON "CliReleaseSpec" (id);
-COMMENT ON TABLE "CliReleaseSpec" IS 'Specification for a CliRelease contract.';
-
 CREATE TABLE "CliAdapterProfile" (
 	id SERIAL NOT NULL,
 	"profileId" TEXT NOT NULL,
@@ -1036,30 +1024,6 @@ CREATE TABLE "CliAdapterProfile" (
 CREATE INDEX "ix_CliAdapterProfile_id" ON "CliAdapterProfile" (id);
 COMMENT ON TABLE "CliAdapterProfile" IS 'Adapter execution profile and command template for a CLI worker runtime.';
 
-CREATE TABLE "CliInstallationDesiredState" (
-	id SERIAL NOT NULL,
-	"machineRef" TEXT NOT NULL,
-	"toolRef" TEXT NOT NULL,
-	"releaseRef" TEXT NOT NULL,
-	"desiredState" TEXT NOT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_CliInstallationDesiredState_id" ON "CliInstallationDesiredState" (id);
-COMMENT ON TABLE "CliInstallationDesiredState" IS 'Desired CLI installation state on a specific machine.';
-
-CREATE TABLE "CliInstallationObservation" (
-	id SERIAL NOT NULL,
-	"machineRef" TEXT NOT NULL,
-	"toolRef" TEXT NOT NULL,
-	"installedReleaseRef" TEXT NOT NULL,
-	status TEXT NOT NULL,
-	"doctorSummary" TEXT,
-	"observedAt" TEXT NOT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_CliInstallationObservation_id" ON "CliInstallationObservation" (id);
-COMMENT ON TABLE "CliInstallationObservation" IS 'Observed installation and doctor health status of a CLI tool on a machine.';
-
 CREATE TABLE "CliInvocationEvent" (
 	id SERIAL NOT NULL,
 	"workOrderId" TEXT NOT NULL,
@@ -1071,18 +1035,6 @@ CREATE TABLE "CliInvocationEvent" (
 );
 CREATE INDEX "ix_CliInvocationEvent_id" ON "CliInvocationEvent" (id);
 COMMENT ON TABLE "CliInvocationEvent" IS 'Streaming event produced during an active CLI invocation.';
-
-CREATE TABLE "CliUsageObservation" (
-	id SERIAL NOT NULL,
-	"toolRef" TEXT NOT NULL,
-	"tokensUsed" INTEGER,
-	"callsCount" INTEGER,
-	"durationMs" INTEGER,
-	"capturedAt" TEXT NOT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_CliUsageObservation_id" ON "CliUsageObservation" (id);
-COMMENT ON TABLE "CliUsageObservation" IS 'Observed consumption metrics from CLI tool invocations.';
 
 CREATE TABLE "ProviderQuotaObservation" (
 	id SERIAL NOT NULL,
@@ -2686,21 +2638,6 @@ CREATE TABLE "ExecutionCellProvisioningRef" (
 CREATE INDEX "ix_ExecutionCellProvisioningRef_uid" ON "ExecutionCellProvisioningRef" (uid);
 COMMENT ON TABLE "ExecutionCellProvisioningRef" IS 'Narrow hash-bound reference to one hosted-execution-cell provisioning run. Same narrow shape as ProcessRunRef/ForgeProjectionRef: it never contains VM identifiers, key material, or pairing-code proof -- those stay in ExecutionCell and its pairing ledger.';
 
-CREATE TABLE "ExecutionMachineSpec" (
-	id SERIAL NOT NULL,
-	"ownerRealm" TEXT NOT NULL,
-	origin "MachineOrigin" NOT NULL,
-	environment "MachineEnvironment" NOT NULL,
-	"desiredState" "MachineDesiredState" NOT NULL,
-	"hostDefinitionRef" TEXT,
-	"ansibleBaselineRef" TEXT,
-	network_id INTEGER,
-	PRIMARY KEY (id),
-	FOREIGN KEY(network_id) REFERENCES "MachineNetworkConfig" (id)
-);
-CREATE INDEX "ix_ExecutionMachineSpec_id" ON "ExecutionMachineSpec" (id);
-COMMENT ON TABLE "ExecutionMachineSpec" IS 'Specification for an ExecutionMachine contract.';
-
 CREATE TABLE "MachineEnrollmentRequest" (
 	id SERIAL NOT NULL,
 	"machineId" TEXT NOT NULL,
@@ -2714,26 +2651,104 @@ CREATE TABLE "MachineEnrollmentRequest" (
 CREATE INDEX "ix_MachineEnrollmentRequest_id" ON "MachineEnrollmentRequest" (id);
 COMMENT ON TABLE "MachineEnrollmentRequest" IS 'BYOVM one-shot machine enrollment request carrying CSR and system inventory.';
 
+CREATE TABLE "MachineRuntimeInstallation" (
+	id SERIAL NOT NULL,
+	"installationId" TEXT NOT NULL,
+	"machineId" TEXT NOT NULL,
+	kind TEXT NOT NULL,
+	"releaseDigest" TEXT NOT NULL,
+	status TEXT NOT NULL,
+	"installedAt" TEXT NOT NULL,
+	"runtimeRef_uid" INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY("runtimeRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_MachineRuntimeInstallation_id" ON "MachineRuntimeInstallation" (id);
+COMMENT ON TABLE "MachineRuntimeInstallation" IS 'Observed runtime installation (CLI or connector) on a target machine.';
+COMMENT ON COLUMN "MachineRuntimeInstallation"."runtimeRef_uid" IS 'Polymorphic on the sibling `kind` field (CLI or connector) -- resolves to a CliToolDefinition or a ConnectorDefinition depending on it.';
+
+CREATE TABLE "CliReleaseSpec" (
+	id SERIAL NOT NULL,
+	version TEXT NOT NULL,
+	platform TEXT NOT NULL,
+	"ociImage" TEXT NOT NULL,
+	"imageDigest" TEXT NOT NULL,
+	"signatureDigest" TEXT,
+	"sbomDigest" TEXT,
+	"provenanceDigest" TEXT,
+	"toolRef_uid" INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY("toolRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_CliReleaseSpec_id" ON "CliReleaseSpec" (id);
+COMMENT ON TABLE "CliReleaseSpec" IS 'Specification for a CliRelease contract.';
+
+CREATE TABLE "CliInstallationDesiredState" (
+	id SERIAL NOT NULL,
+	"desiredState" TEXT NOT NULL,
+	"machineRef_uid" INTEGER NOT NULL,
+	"toolRef_uid" INTEGER NOT NULL,
+	"releaseRef_uid" INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY("machineRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("toolRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("releaseRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_CliInstallationDesiredState_id" ON "CliInstallationDesiredState" (id);
+COMMENT ON TABLE "CliInstallationDesiredState" IS 'Desired CLI installation state on a specific machine.';
+
+CREATE TABLE "CliInstallationObservation" (
+	id SERIAL NOT NULL,
+	status TEXT NOT NULL,
+	"doctorSummary" TEXT,
+	"observedAt" TEXT NOT NULL,
+	"machineRef_uid" INTEGER NOT NULL,
+	"toolRef_uid" INTEGER NOT NULL,
+	"installedReleaseRef_uid" INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY("machineRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("toolRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("installedReleaseRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_CliInstallationObservation_id" ON "CliInstallationObservation" (id);
+COMMENT ON TABLE "CliInstallationObservation" IS 'Observed installation and doctor health status of a CLI tool on a machine.';
+
 CREATE TABLE "CliInvocationRequest" (
 	id SERIAL NOT NULL,
 	"workOrderId" TEXT NOT NULL,
 	"leaseId" TEXT NOT NULL,
-	"machineRef" TEXT NOT NULL,
-	"toolRef" TEXT NOT NULL,
-	"releaseRef" TEXT NOT NULL,
 	"gitCommitSha" TEXT NOT NULL,
 	prompt TEXT NOT NULL,
 	"turnLimit" INTEGER,
 	"tokenBudget" INTEGER,
 	"timeoutSeconds" INTEGER,
+	"machineRef_uid" INTEGER NOT NULL,
+	"toolRef_uid" INTEGER NOT NULL,
+	"releaseRef_uid" INTEGER NOT NULL,
 	"inputBinding_id" INTEGER,
 	"outputBinding_id" INTEGER,
 	PRIMARY KEY (id),
+	FOREIGN KEY("machineRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("toolRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("releaseRef_uid") REFERENCES "ContractReference" (uid),
 	FOREIGN KEY("inputBinding_id") REFERENCES "SchemaBinding" (id),
 	FOREIGN KEY("outputBinding_id") REFERENCES "SchemaBinding" (id)
 );
 CREATE INDEX "ix_CliInvocationRequest_id" ON "CliInvocationRequest" (id);
 COMMENT ON TABLE "CliInvocationRequest" IS 'Structured WorkOrder execution invocation dispatched to a CLI worker container.';
+
+CREATE TABLE "CliUsageObservation" (
+	id SERIAL NOT NULL,
+	"tokensUsed" INTEGER,
+	"callsCount" INTEGER,
+	"durationMs" INTEGER,
+	"capturedAt" TEXT NOT NULL,
+	"toolRef_uid" INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY("toolRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_CliUsageObservation_id" ON "CliUsageObservation" (id);
+COMMENT ON TABLE "CliUsageObservation" IS 'Observed consumption metrics from CLI tool invocations.';
 
 CREATE TABLE "McpRegistrySourceSpec" (
 	id SERIAL NOT NULL,
@@ -4661,11 +4676,12 @@ CREATE TABLE "ProcessStep" (
 	"pairedGatewayRef" TEXT,
 	"loopMaximum" INTEGER,
 	"fallbackFlowRef" TEXT,
-	"subprocessReleaseRef" TEXT,
 	"compensationForStepRef" TEXT,
 	"ProcessSpecBody_id" INTEGER,
+	"subprocessReleaseRef_uid" INTEGER,
 	PRIMARY KEY (uid),
-	FOREIGN KEY("ProcessSpecBody_id") REFERENCES "ProcessSpecBody" (id)
+	FOREIGN KEY("ProcessSpecBody_id") REFERENCES "ProcessSpecBody" (id),
+	FOREIGN KEY("subprocessReleaseRef_uid") REFERENCES "ContractReference" (uid)
 );
 CREATE INDEX "ix_ProcessStep_uid" ON "ProcessStep" (uid);
 COMMENT ON TABLE "ProcessStep" IS 'One node in the process graph. inputType/outputType/capabilityRef/opaEntrypoint are used selectively by kind: a GATEWAY step names opaEntrypoint (the OPA decision that selects its outgoing flow); a SERVICE step names capabilityRef and inputType/outputType; a TIMER START step carries the schedule fields Practice.processSpecRef (work.yaml) points at. Which fields apply to which kind is a Rego invariant, not encoded structurally here -- LinkML has no tagged-union/discriminated-class construct clean enough to justify one ProcessStep subclass per kind for what is otherwise one shape.';
@@ -4677,6 +4693,7 @@ COMMENT ON COLUMN "ProcessStep"."opaEntrypoint" IS 'Required on a GATEWAY step (
 COMMENT ON COLUMN "ProcessStep"."terminalState" IS 'Required on END and forbidden elsewhere.';
 COMMENT ON COLUMN "ProcessStep"."signalType" IS 'Required on USER and MESSAGE signals; resolves to a generated LinkML class.';
 COMMENT ON COLUMN "ProcessStep"."ProcessSpecBody_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ProcessStep"."subprocessReleaseRef_uid" IS 'The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-SUBPROCESS check in execution.rego; must resolve, see references.rego).';
 
 CREATE TABLE "ProcessFlow" (
 	uid SERIAL NOT NULL,
@@ -4752,11 +4769,12 @@ COMMENT ON TABLE "MachineAdminPlaybook" IS 'Git-governed allowlisted Ansible pla
 CREATE TABLE "MachineAdminRequest" (
 	id SERIAL NOT NULL,
 	"machineId" TEXT NOT NULL,
-	"playbookRef" TEXT NOT NULL,
 	"workOrderId" TEXT,
 	"stepUpProof" TEXT,
+	"playbookRef_uid" INTEGER NOT NULL,
 	variables_id INTEGER,
 	PRIMARY KEY (id),
+	FOREIGN KEY("playbookRef_uid") REFERENCES "ContractReference" (uid),
 	FOREIGN KEY(variables_id) REFERENCES "SchemaBoundPayload" (id)
 );
 CREATE INDEX "ix_MachineAdminRequest_id" ON "MachineAdminRequest" (id);
@@ -4768,14 +4786,15 @@ CREATE TABLE "MachineAdminCommand" (
 	"machineId" TEXT NOT NULL,
 	"workOrderId" TEXT,
 	"contractRevision" TEXT,
-	"playbookRef" TEXT NOT NULL,
 	"playbookDigest" TEXT NOT NULL,
 	"approvalReference" TEXT,
 	"issuedAt" TEXT NOT NULL,
 	"expiresAt" TEXT NOT NULL,
 	"timeoutSeconds" INTEGER,
+	"playbookRef_uid" INTEGER NOT NULL,
 	variables_id INTEGER,
 	PRIMARY KEY (id),
+	FOREIGN KEY("playbookRef_uid") REFERENCES "ContractReference" (uid),
 	FOREIGN KEY(variables_id) REFERENCES "SchemaBoundPayload" (id)
 );
 CREATE INDEX "ix_MachineAdminCommand_id" ON "MachineAdminCommand" (id);
@@ -5633,28 +5652,6 @@ CREATE INDEX "ix_ControlAssessment_evidenceRefs_evidenceRefs" ON "ControlAssessm
 COMMENT ON TABLE "ControlAssessment_evidenceRefs" IS 'None';
 COMMENT ON COLUMN "ControlAssessment_evidenceRefs"."ControlAssessment_id" IS 'Autocreated FK slot';
 
-CREATE TABLE "ExecutionMachineSpec_installedCliRefs" (
-	"ExecutionMachineSpec_id" INTEGER,
-	"installedCliRefs" TEXT,
-	PRIMARY KEY ("ExecutionMachineSpec_id", "installedCliRefs"),
-	FOREIGN KEY("ExecutionMachineSpec_id") REFERENCES "ExecutionMachineSpec" (id)
-);
-CREATE INDEX "ix_ExecutionMachineSpec_installedCliRefs_ExecutionMachi_b73b" ON "ExecutionMachineSpec_installedCliRefs" ("ExecutionMachineSpec_id");
-CREATE INDEX "ix_ExecutionMachineSpec_installedCliRefs_installedCliRefs" ON "ExecutionMachineSpec_installedCliRefs" ("installedCliRefs");
-COMMENT ON TABLE "ExecutionMachineSpec_installedCliRefs" IS 'None';
-COMMENT ON COLUMN "ExecutionMachineSpec_installedCliRefs"."ExecutionMachineSpec_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "ExecutionMachineSpec_installedConnectorRefs" (
-	"ExecutionMachineSpec_id" INTEGER,
-	"installedConnectorRefs" TEXT,
-	PRIMARY KEY ("ExecutionMachineSpec_id", "installedConnectorRefs"),
-	FOREIGN KEY("ExecutionMachineSpec_id") REFERENCES "ExecutionMachineSpec" (id)
-);
-CREATE INDEX "ix_ExecutionMachineSpec_installedConnectorRefs_Executio_8862" ON "ExecutionMachineSpec_installedConnectorRefs" ("ExecutionMachineSpec_id");
-CREATE INDEX "ix_ExecutionMachineSpec_installedConnectorRefs_installe_3902" ON "ExecutionMachineSpec_installedConnectorRefs" ("installedConnectorRefs");
-COMMENT ON TABLE "ExecutionMachineSpec_installedConnectorRefs" IS 'None';
-COMMENT ON COLUMN "ExecutionMachineSpec_installedConnectorRefs"."ExecutionMachineSpec_id" IS 'Autocreated FK slot';
-
 CREATE TABLE "CliInvocationRequest_grantedCapabilities" (
 	"CliInvocationRequest_id" INTEGER,
 	"grantedCapabilities" TEXT,
@@ -6246,6 +6243,7 @@ ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorIntentProposal_id") RE
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorOperation_uid") REFERENCES "ConnectorOperation" (uid);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("DispositionMatch_id") REFERENCES "DispositionMatch" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ExecutionCellSpec_id") REFERENCES "ExecutionCellSpec" (id);
+ALTER TABLE "ContractReference" ADD FOREIGN KEY("ExecutionMachineSpec_id") REFERENCES "ExecutionMachineSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("FederatedPeerSpec_id") REFERENCES "FederatedPeerSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ProviderAccountSpec_id") REFERENCES "ProviderAccountSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("RealmTemplateSpec_id") REFERENCES "RealmTemplateSpec" (id);
@@ -6253,6 +6251,8 @@ ALTER TABLE "ContractReference" ADD FOREIGN KEY("RoutingEligibilitySpec_id") REF
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("SecretBindingSpec_id") REFERENCES "SecretBindingSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("WorkOrderSpec_id") REFERENCES "WorkOrderSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("WorkerQualityRequirement_id") REFERENCES "WorkerQualityRequirement" (id);
+ALTER TABLE "ExecutionMachineSpec" ADD FOREIGN KEY("hostDefinitionRef_uid") REFERENCES "ContractReference" (uid);
+ALTER TABLE "ExecutionMachineSpec" ADD FOREIGN KEY(network_id) REFERENCES "MachineNetworkConfig" (id);
 ALTER TABLE "ProviderAccountSpec" ADD FOREIGN KEY("quotaWindow_id") REFERENCES "ProviderQuotaWindow" (id);
 ALTER TABLE "ProviderAccountSpec" ADD FOREIGN KEY("secretBindingRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "ProviderAccountSpec" ADD FOREIGN KEY(entitlement_id) REFERENCES "ProviderEntitlement" (id);

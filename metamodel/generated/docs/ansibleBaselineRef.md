@@ -5,6 +5,11 @@ search:
 
 # Slot: ansibleBaselineRef
 
+
+_No confirmed Git-contract target kind exists for this field yet (ADR-0045 migration audit, contract-reference-migration-execution AC1) -- left as an opaque scalar pending an owner decision on what a machine's Ansible baseline should resolve to._
+
+
+
 <div data-search-exclude markdown="1">
 
 
@@ -86,6 +91,10 @@ URI: [jumo:ansibleBaselineRef](https://jumo.dev/schemas/jumo-v1/ansibleBaselineR
 <details>
 ```yaml
 name: ansibleBaselineRef
+description: No confirmed Git-contract target kind exists for this field yet (ADR-0045
+  migration audit, contract-reference-migration-execution AC1) -- left as an opaque
+  scalar pending an owner decision on what a machine's Ansible baseline should resolve
+  to.
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
 owner: ExecutionMachineSpec

@@ -5,7 +5,10 @@ metadata:
   namespace: dev.jumo.core
   name: OpenAI Codex 0.1.0 OCI Release
 spec:
-  toolRef: codex
+  toolRef:
+    kind: CliToolDefinition
+    namespace: dev.jumo.core
+    id: codex
   version: 0.1.0
   platform: linux/amd64
   ociImage: ghcr.io/jumo/runtimes/codex:0.1.0

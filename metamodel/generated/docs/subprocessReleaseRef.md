@@ -5,6 +5,11 @@ search:
 
 # Slot: subprocessReleaseRef
 
+
+_The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-SUBPROCESS check in execution.rego; must resolve, see references.rego)._
+
+
+
 <div data-search-exclude markdown="1">
 
 
@@ -33,7 +38,7 @@ URI: [jumo:subprocessReleaseRef](https://jumo.dev/schemas/jumo-v1/subprocessRele
 
 | Property | Value |
 | --- | --- |
-| Range | [Identifier](Identifier.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [ProcessStep](ProcessStep.md) |
 
 ### Cardinality and Requirements
@@ -86,12 +91,15 @@ URI: [jumo:subprocessReleaseRef](https://jumo.dev/schemas/jumo-v1/subprocessRele
 <details>
 ```yaml
 name: subprocessReleaseRef
+description: The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-SUBPROCESS
+  check in execution.rego; must resolve, see references.rego).
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
 owner: ProcessStep
 domain_of:
 - ProcessStep
-range: Identifier
+range: ContractReference
+inlined: true
 
 ```
 </details></div>

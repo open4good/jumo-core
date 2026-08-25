@@ -28,9 +28,36 @@ URI: [jumo:CliInstallationDesiredState](https://jumo.dev/schemas/jumo-v1/CliInst
 
       CliInstallationDesiredState : machineRef
 
+
+
+
+
+        CliInstallationDesiredState --> "1" ContractReference : machineRef
+        click ContractReference href "../ContractReference/"
+
+
+
       CliInstallationDesiredState : releaseRef
 
+
+
+
+
+        CliInstallationDesiredState --> "1" ContractReference : releaseRef
+        click ContractReference href "../ContractReference/"
+
+
+
       CliInstallationDesiredState : toolRef
+
+
+
+
+
+        CliInstallationDesiredState --> "1" ContractReference : toolRef
+        click ContractReference href "../ContractReference/"
+
+
 
 
 ```
@@ -44,9 +71,9 @@ URI: [jumo:CliInstallationDesiredState](https://jumo.dev/schemas/jumo-v1/CliInst
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [machineRef](machineRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [toolRef](toolRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [releaseRef](releaseRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [machineRef](machineRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [toolRef](toolRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [releaseRef](releaseRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [desiredState](desiredState.md) | 1 <br/> [String](String.md) |  | direct |
 
 
@@ -142,8 +169,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   toolRef:
     name: toolRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -154,8 +182,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   releaseRef:
     name: releaseRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -164,8 +193,9 @@ attributes:
     domain_of:
     - CliInstallationDesiredState
     - CliInvocationRequest
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   desiredState:
     name: desiredState
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -217,8 +247,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   toolRef:
     name: toolRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -229,8 +260,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   releaseRef:
     name: releaseRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -239,8 +271,9 @@ attributes:
     domain_of:
     - CliInstallationDesiredState
     - CliInvocationRequest
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   desiredState:
     name: desiredState
     from_schema: https://jumo.dev/schemas/jumo-v1

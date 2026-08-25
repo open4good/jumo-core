@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Observed consumption metrics from CLI tool invocations.
  */
-public record CliUsageObservation(String toolRef, Integer tokensUsed, Integer callsCount, Integer durationMs, String capturedAt)  {
+public record CliUsageObservation(ContractReference toolRef, Integer tokensUsed, Integer callsCount, Integer durationMs, String capturedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -15,14 +15,14 @@ public record CliUsageObservation(String toolRef, Integer tokensUsed, Integer ca
 
     public static class Builder {
 
-        private String toolRef = "";
+        private ContractReference toolRef = null;
         private Integer tokensUsed = null;
         private Integer callsCount = null;
         private Integer durationMs = null;
         private String capturedAt = "";
 
 
-        public Builder toolRef(String toolRef) {
+        public Builder toolRef(ContractReference toolRef) {
             this.toolRef = Objects.requireNonNull(toolRef);
             return this;
         }

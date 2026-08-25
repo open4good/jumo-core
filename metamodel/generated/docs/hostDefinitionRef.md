@@ -33,7 +33,7 @@ URI: [jumo:hostDefinitionRef](https://jumo.dev/schemas/jumo-v1/hostDefinitionRef
 
 | Property | Value |
 | --- | --- |
-| Range | [String](String.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [ExecutionMachineSpec](ExecutionMachineSpec.md) |
 
 ### Cardinality and Requirements
@@ -91,7 +91,8 @@ rank: 1000
 owner: ExecutionMachineSpec
 domain_of:
 - ExecutionMachineSpec
-range: string
+range: ContractReference
+inlined: true
 
 ```
 </details></div>

@@ -278,7 +278,10 @@ classes:
       fallbackFlowRef:
         range: Identifier
       subprocessReleaseRef:
-        range: Identifier
+        range: ContractReference
+        inlined: true
+        description: The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-SUBPROCESS check
+          in execution.rego; must resolve, see references.rego).
       compensationForStepRef:
         range: Identifier
     annotations:
@@ -537,15 +540,21 @@ classes:
         range: MachineDesiredState
         required: true
       hostDefinitionRef:
-        range: string
+        range: ContractReference
+        inlined: true
       installedCliRefs:
-        range: string
+        range: ContractReference
         multivalued: true
+        inlined_as_list: true
       installedConnectorRefs:
-        range: string
+        range: ContractReference
         multivalued: true
+        inlined_as_list: true
       ansibleBaselineRef:
         range: string
+        description: No confirmed Git-contract target kind exists for this field yet (ADR-0045 migration
+          audit, contract-reference-migration-execution AC1) -- left as an opaque scalar pending an owner
+          decision on what a machine's Ansible baseline should resolve to.
       network:
         range: MachineNetworkConfig
         inlined: true
@@ -805,8 +814,9 @@ classes:
         range: Identifier
         required: true
       playbookRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       variables:
         range: SchemaBoundPayload
         inlined: true
@@ -835,8 +845,9 @@ classes:
       contractRevision:
         range: string
       playbookRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       playbookDigest:
         range: string
         required: true
@@ -965,8 +976,11 @@ classes:
         range: string
         required: true
       runtimeRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
+        description: Polymorphic on the sibling `kind` field (CLI or connector) -- resolves to a
+          CliToolDefinition or a ConnectorDefinition depending on it.
       releaseDigest:
         range: string
         required: true
@@ -1103,8 +1117,9 @@ classes:
     description: Specification for a CliRelease contract.
     attributes:
       toolRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       version:
         range: string
         required: true
@@ -1166,14 +1181,17 @@ classes:
     description: Desired CLI installation state on a specific machine.
     attributes:
       machineRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       toolRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       releaseRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       desiredState:
         range: string
         required: true
@@ -1188,14 +1206,17 @@ classes:
     description: Observed installation and doctor health status of a CLI tool on a machine.
     attributes:
       machineRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       toolRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       installedReleaseRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       status:
         range: string
         required: true
@@ -1221,14 +1242,17 @@ classes:
         range: Identifier
         required: true
       machineRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       toolRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       releaseRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       gitCommitSha:
         range: string
         required: true
@@ -1316,8 +1340,9 @@ classes:
     description: Observed consumption metrics from CLI tool invocations.
     attributes:
       toolRef:
-        range: string
+        range: ContractReference
         required: true
+        inlined: true
       tokensUsed:
         range: integer
       callsCount:

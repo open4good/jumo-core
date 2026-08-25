@@ -50,9 +50,36 @@ URI: [jumo:ExecutionMachineSpec](https://jumo.dev/schemas/jumo-v1/ExecutionMachi
 
       ExecutionMachineSpec : hostDefinitionRef
 
+
+
+
+
+        ExecutionMachineSpec --> "0..1" ContractReference : hostDefinitionRef
+        click ContractReference href "../ContractReference/"
+
+
+
       ExecutionMachineSpec : installedCliRefs
 
+
+
+
+
+        ExecutionMachineSpec --> "*" ContractReference : installedCliRefs
+        click ContractReference href "../ContractReference/"
+
+
+
       ExecutionMachineSpec : installedConnectorRefs
+
+
+
+
+
+        ExecutionMachineSpec --> "*" ContractReference : installedConnectorRefs
+        click ContractReference href "../ContractReference/"
+
+
 
       ExecutionMachineSpec : network
 
@@ -94,10 +121,10 @@ URI: [jumo:ExecutionMachineSpec](https://jumo.dev/schemas/jumo-v1/ExecutionMachi
 | [origin](origin.md) | 1 <br/> [MachineOrigin](MachineOrigin.md) |  | direct |
 | [environment](environment.md) | 1 <br/> [MachineEnvironment](MachineEnvironment.md) |  | direct |
 | [desiredState](desiredState.md) | 1 <br/> [MachineDesiredState](MachineDesiredState.md) |  | direct |
-| [hostDefinitionRef](hostDefinitionRef.md) | 0..1 <br/> [String](String.md) |  | direct |
-| [installedCliRefs](installedCliRefs.md) | * <br/> [String](String.md) |  | direct |
-| [installedConnectorRefs](installedConnectorRefs.md) | * <br/> [String](String.md) |  | direct |
-| [ansibleBaselineRef](ansibleBaselineRef.md) | 0..1 <br/> [String](String.md) |  | direct |
+| [hostDefinitionRef](hostDefinitionRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [installedCliRefs](installedCliRefs.md) | * <br/> [ContractReference](ContractReference.md) |  | direct |
+| [installedConnectorRefs](installedConnectorRefs.md) | * <br/> [ContractReference](ContractReference.md) |  | direct |
+| [ansibleBaselineRef](ansibleBaselineRef.md) | 0..1 <br/> [String](String.md) | No confirmed Git-contract target kind exists for this field yet (ADR-0045 mig... | direct |
 | [network](network.md) | 0..1 <br/> [MachineNetworkConfig](MachineNetworkConfig.md) |  | direct |
 
 
@@ -286,7 +313,8 @@ attributes:
     owner: ExecutionMachineSpec
     domain_of:
     - ExecutionMachineSpec
-    range: string
+    range: ContractReference
+    inlined: true
   installedCliRefs:
     name: installedCliRefs
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -294,8 +322,10 @@ attributes:
     owner: ExecutionMachineSpec
     domain_of:
     - ExecutionMachineSpec
-    range: string
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   installedConnectorRefs:
     name: installedConnectorRefs
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -303,10 +333,16 @@ attributes:
     owner: ExecutionMachineSpec
     domain_of:
     - ExecutionMachineSpec
-    range: string
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   ansibleBaselineRef:
     name: ansibleBaselineRef
+    description: No confirmed Git-contract target kind exists for this field yet (ADR-0045
+      migration audit, contract-reference-migration-execution AC1) -- left as an opaque
+      scalar pending an owner decision on what a machine's Ansible baseline should
+      resolve to.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ExecutionMachineSpec
@@ -450,7 +486,8 @@ attributes:
     owner: ExecutionMachineSpec
     domain_of:
     - ExecutionMachineSpec
-    range: string
+    range: ContractReference
+    inlined: true
   installedCliRefs:
     name: installedCliRefs
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -458,8 +495,10 @@ attributes:
     owner: ExecutionMachineSpec
     domain_of:
     - ExecutionMachineSpec
-    range: string
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   installedConnectorRefs:
     name: installedConnectorRefs
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -467,10 +506,16 @@ attributes:
     owner: ExecutionMachineSpec
     domain_of:
     - ExecutionMachineSpec
-    range: string
+    range: ContractReference
     multivalued: true
+    inlined: true
+    inlined_as_list: true
   ansibleBaselineRef:
     name: ansibleBaselineRef
+    description: No confirmed Git-contract target kind exists for this field yet (ADR-0045
+      migration audit, contract-reference-migration-execution AC1) -- left as an opaque
+      scalar pending an owner decision on what a machine's Ansible baseline should
+      resolve to.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ExecutionMachineSpec

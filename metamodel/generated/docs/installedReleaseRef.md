@@ -33,7 +33,7 @@ URI: [jumo:installedReleaseRef](https://jumo.dev/schemas/jumo-v1/installedReleas
 
 | Property | Value |
 | --- | --- |
-| Range | [String](String.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [CliInstallationObservation](CliInstallationObservation.md) |
 
 ### Cardinality and Requirements
@@ -92,8 +92,9 @@ rank: 1000
 owner: CliInstallationObservation
 domain_of:
 - CliInstallationObservation
-range: string
+range: ContractReference
 required: true
+inlined: true
 
 ```
 </details></div>

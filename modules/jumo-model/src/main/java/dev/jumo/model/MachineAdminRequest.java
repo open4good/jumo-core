@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Web administration request to dispatch an allowlisted Ansible playbook to a machine.
  */
-public record MachineAdminRequest(String machineId, String playbookRef, SchemaBoundPayload variables, String workOrderId, String stepUpProof)  {
+public record MachineAdminRequest(String machineId, ContractReference playbookRef, SchemaBoundPayload variables, String workOrderId, String stepUpProof)  {
 
     public static Builder builder() {
         return new Builder();
@@ -16,7 +16,7 @@ public record MachineAdminRequest(String machineId, String playbookRef, SchemaBo
     public static class Builder {
 
         private String machineId = "";
-        private String playbookRef = "";
+        private ContractReference playbookRef = null;
         private SchemaBoundPayload variables = null;
         private String workOrderId = "";
         private String stepUpProof = "";
@@ -27,7 +27,7 @@ public record MachineAdminRequest(String machineId, String playbookRef, SchemaBo
             return this;
         }
 
-        public Builder playbookRef(String playbookRef) {
+        public Builder playbookRef(ContractReference playbookRef) {
             this.playbookRef = Objects.requireNonNull(playbookRef);
             return this;
         }

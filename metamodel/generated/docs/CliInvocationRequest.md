@@ -43,6 +43,15 @@ URI: [jumo:CliInvocationRequest](https://jumo.dev/schemas/jumo-v1/CliInvocationR
 
       CliInvocationRequest : machineRef
 
+
+
+
+
+        CliInvocationRequest --> "1" ContractReference : machineRef
+        click ContractReference href "../ContractReference/"
+
+
+
       CliInvocationRequest : outputBinding
 
 
@@ -58,11 +67,29 @@ URI: [jumo:CliInvocationRequest](https://jumo.dev/schemas/jumo-v1/CliInvocationR
 
       CliInvocationRequest : releaseRef
 
+
+
+
+
+        CliInvocationRequest --> "1" ContractReference : releaseRef
+        click ContractReference href "../ContractReference/"
+
+
+
       CliInvocationRequest : timeoutSeconds
 
       CliInvocationRequest : tokenBudget
 
       CliInvocationRequest : toolRef
+
+
+
+
+
+        CliInvocationRequest --> "1" ContractReference : toolRef
+        click ContractReference href "../ContractReference/"
+
+
 
       CliInvocationRequest : turnLimit
 
@@ -82,9 +109,9 @@ URI: [jumo:CliInvocationRequest](https://jumo.dev/schemas/jumo-v1/CliInvocationR
 | ---  | --- | --- | --- |
 | [workOrderId](workOrderId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [leaseId](leaseId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [machineRef](machineRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [toolRef](toolRef.md) | 1 <br/> [String](String.md) |  | direct |
-| [releaseRef](releaseRef.md) | 1 <br/> [String](String.md) |  | direct |
+| [machineRef](machineRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [toolRef](toolRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [releaseRef](releaseRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [gitCommitSha](gitCommitSha.md) | 1 <br/> [String](String.md) |  | direct |
 | [prompt](prompt.md) | 1 <br/> [String](String.md) |  | direct |
 | [inputBinding](inputBinding.md) | 0..1 <br/> [SchemaBinding](SchemaBinding.md) |  | direct |
@@ -211,8 +238,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   toolRef:
     name: toolRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -223,8 +251,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   releaseRef:
     name: releaseRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -232,8 +261,9 @@ attributes:
     domain_of:
     - CliInstallationDesiredState
     - CliInvocationRequest
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   gitCommitSha:
     name: gitCommitSha
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -368,8 +398,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - ConnectorSessionBinding
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   toolRef:
     name: toolRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -380,8 +411,9 @@ attributes:
     - CliInstallationObservation
     - CliInvocationRequest
     - CliUsageObservation
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   releaseRef:
     name: releaseRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -389,8 +421,9 @@ attributes:
     domain_of:
     - CliInstallationDesiredState
     - CliInvocationRequest
-    range: string
+    range: ContractReference
     required: true
+    inlined: true
   gitCommitSha:
     name: gitCommitSha
     from_schema: https://jumo.dev/schemas/jumo-v1

@@ -233,15 +233,43 @@
       "kind": "CliRelease",
       "composition": "ADDITIVE",
       "stateAuthority": "GIT",
-      "outgoing": [],
-      "incoming": []
+      "outgoing": [
+        {
+          "slotName": "toolRef",
+          "targetKind": "CliToolDefinition",
+          "cardinality": "ONE",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "incoming": [
+        {
+          "fromKind": "ProcessSpec",
+          "slotName": "subprocessReleaseRef",
+          "cardinality": "ONE",
+          "description": "The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-SUBPROCESS check in execution.rego; must resolve, see references.rego)."
+        }
+      ]
     },
     "CliToolDefinition": {
       "kind": "CliToolDefinition",
       "composition": "ADDITIVE",
       "stateAuthority": "GIT",
       "outgoing": [],
-      "incoming": []
+      "incoming": [
+        {
+          "fromKind": "CliRelease",
+          "slotName": "toolRef",
+          "cardinality": "ONE",
+          "description": ""
+        },
+        {
+          "fromKind": "ExecutionMachine",
+          "slotName": "installedCliRefs",
+          "cardinality": "MANY",
+          "description": ""
+        }
+      ]
     },
     "ComplianceProfile": {
       "kind": "ComplianceProfile",
@@ -332,6 +360,12 @@
         {
           "fromKind": "ExecutionCell",
           "slotName": "connectorDefinitionRefs",
+          "cardinality": "MANY",
+          "description": ""
+        },
+        {
+          "fromKind": "ExecutionMachine",
+          "slotName": "installedConnectorRefs",
           "cardinality": "MANY",
           "description": ""
         },
@@ -515,7 +549,29 @@
       "kind": "ExecutionMachine",
       "composition": "ADDITIVE",
       "stateAuthority": "GIT",
-      "outgoing": [],
+      "outgoing": [
+        {
+          "slotName": "hostDefinitionRef",
+          "targetKind": "MachineHostDefinition",
+          "cardinality": "ONE",
+          "required": false,
+          "description": ""
+        },
+        {
+          "slotName": "installedCliRefs",
+          "targetKind": "CliToolDefinition",
+          "cardinality": "MANY",
+          "required": false,
+          "description": ""
+        },
+        {
+          "slotName": "installedConnectorRefs",
+          "targetKind": "ConnectorDefinition",
+          "cardinality": "MANY",
+          "required": false,
+          "description": ""
+        }
+      ],
       "incoming": [
         {
           "fromKind": "McpRegistrySourceBinding",
@@ -729,7 +785,14 @@
       "composition": "ADDITIVE",
       "stateAuthority": "GIT",
       "outgoing": [],
-      "incoming": []
+      "incoming": [
+        {
+          "fromKind": "ExecutionMachine",
+          "slotName": "hostDefinitionRef",
+          "cardinality": "ONE",
+          "description": ""
+        }
+      ]
     },
     "McpBundle": {
       "kind": "McpBundle",
@@ -1207,6 +1270,13 @@
           "cardinality": "ONE",
           "required": true,
           "description": ""
+        },
+        {
+          "slotName": "subprocessReleaseRef",
+          "targetKind": "CliRelease",
+          "cardinality": "ONE",
+          "required": false,
+          "description": "The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-SUBPROCESS check in execution.rego; must resolve, see references.rego)."
         },
         {
           "slotName": "workerRequirementProfileRef",

@@ -32,6 +32,10 @@ public final class ContractReferenceExtractor {
             extractFromChiefOfStaffProfile(m, refs);
             return refs;
         }
+        if (model instanceof CliRelease m) {
+            extractFromCliRelease(m, refs);
+            return refs;
+        }
         if (model instanceof ComplianceProfile m) {
             extractFromComplianceProfile(m, refs);
             return refs;
@@ -54,6 +58,10 @@ public final class ContractReferenceExtractor {
         }
         if (model instanceof ExecutionCell m) {
             extractFromExecutionCell(m, refs);
+            return refs;
+        }
+        if (model instanceof ExecutionMachine m) {
+            extractFromExecutionMachine(m, refs);
             return refs;
         }
         if (model instanceof FederatedPeer m) {
@@ -318,6 +326,58 @@ public final class ContractReferenceExtractor {
             refs.add(new OutgoingReference("statusPracticeRef", obj.statusPracticeRef()));
         }
     }
+    public static void extractFromCliInstallationDesiredState(CliInstallationDesiredState obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.machineRef() != null) {
+            refs.add(new OutgoingReference("machineRef", obj.machineRef()));
+        }
+        if (obj.toolRef() != null) {
+            refs.add(new OutgoingReference("toolRef", obj.toolRef()));
+        }
+        if (obj.releaseRef() != null) {
+            refs.add(new OutgoingReference("releaseRef", obj.releaseRef()));
+        }
+    }
+    public static void extractFromCliInstallationObservation(CliInstallationObservation obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.machineRef() != null) {
+            refs.add(new OutgoingReference("machineRef", obj.machineRef()));
+        }
+        if (obj.toolRef() != null) {
+            refs.add(new OutgoingReference("toolRef", obj.toolRef()));
+        }
+        if (obj.installedReleaseRef() != null) {
+            refs.add(new OutgoingReference("installedReleaseRef", obj.installedReleaseRef()));
+        }
+    }
+    public static void extractFromCliInvocationRequest(CliInvocationRequest obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.machineRef() != null) {
+            refs.add(new OutgoingReference("machineRef", obj.machineRef()));
+        }
+        if (obj.toolRef() != null) {
+            refs.add(new OutgoingReference("toolRef", obj.toolRef()));
+        }
+        if (obj.releaseRef() != null) {
+            refs.add(new OutgoingReference("releaseRef", obj.releaseRef()));
+        }
+    }
+    public static void extractFromCliRelease(CliRelease obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromCliReleaseSpec(obj.spec(), refs);
+    }
+    public static void extractFromCliReleaseSpec(CliReleaseSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.toolRef() != null) {
+            refs.add(new OutgoingReference("toolRef", obj.toolRef()));
+        }
+    }
+    public static void extractFromCliUsageObservation(CliUsageObservation obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.toolRef() != null) {
+            refs.add(new OutgoingReference("toolRef", obj.toolRef()));
+        }
+    }
     public static void extractFromComplianceProfile(ComplianceProfile obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         extractFromComplianceProfileSpec(obj.spec(), refs);
@@ -474,6 +534,26 @@ public final class ContractReferenceExtractor {
             }
         }
     }
+    public static void extractFromExecutionMachine(ExecutionMachine obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromExecutionMachineSpec(obj.spec(), refs);
+    }
+    public static void extractFromExecutionMachineSpec(ExecutionMachineSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.hostDefinitionRef() != null) {
+            refs.add(new OutgoingReference("hostDefinitionRef", obj.hostDefinitionRef()));
+        }
+        if (obj.installedCliRefs() != null) {
+            for (ContractReference r : obj.installedCliRefs()) {
+                if (r != null) refs.add(new OutgoingReference("installedCliRefs", r));
+            }
+        }
+        if (obj.installedConnectorRefs() != null) {
+            for (ContractReference r : obj.installedConnectorRefs()) {
+                if (r != null) refs.add(new OutgoingReference("installedConnectorRefs", r));
+            }
+        }
+    }
     public static void extractFromFederatedPeer(FederatedPeer obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         extractFromFederatedPeerSpec(obj.spec(), refs);
@@ -539,6 +619,24 @@ public final class ContractReferenceExtractor {
         }
         if (obj.kitReleaseCertificationRef() != null) {
             refs.add(new OutgoingReference("kitReleaseCertificationRef", obj.kitReleaseCertificationRef()));
+        }
+    }
+    public static void extractFromMachineAdminCommand(MachineAdminCommand obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.playbookRef() != null) {
+            refs.add(new OutgoingReference("playbookRef", obj.playbookRef()));
+        }
+    }
+    public static void extractFromMachineAdminRequest(MachineAdminRequest obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.playbookRef() != null) {
+            refs.add(new OutgoingReference("playbookRef", obj.playbookRef()));
+        }
+    }
+    public static void extractFromMachineRuntimeInstallation(MachineRuntimeInstallation obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.runtimeRef() != null) {
+            refs.add(new OutgoingReference("runtimeRef", obj.runtimeRef()));
         }
     }
     public static void extractFromMcpBundle(McpBundle obj, List<OutgoingReference> refs) {
@@ -741,6 +839,11 @@ public final class ContractReferenceExtractor {
         if (obj.projectRef() != null) {
             refs.add(new OutgoingReference("projectRef", obj.projectRef()));
         }
+        if (obj.steps() != null) {
+            for (ProcessStep item : obj.steps()) {
+                extractFromProcessStep(item, refs);
+            }
+        }
         if (obj.stageWorkerRequirementRef() != null) {
             for (ProcessStageWorkerRequirement item : obj.stageWorkerRequirementRef()) {
                 extractFromProcessStageWorkerRequirement(item, refs);
@@ -754,6 +857,12 @@ public final class ContractReferenceExtractor {
         if (obj == null) return;
         if (obj.workerRequirementProfileRef() != null) {
             refs.add(new OutgoingReference("workerRequirementProfileRef", obj.workerRequirementProfileRef()));
+        }
+    }
+    public static void extractFromProcessStep(ProcessStep obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.subprocessReleaseRef() != null) {
+            refs.add(new OutgoingReference("subprocessReleaseRef", obj.subprocessReleaseRef()));
         }
     }
     public static void extractFromProcessingRegisterEntry(ProcessingRegisterEntry obj, List<OutgoingReference> refs) {

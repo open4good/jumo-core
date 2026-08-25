@@ -1780,17 +1780,17 @@ type CliAdapterProfile
 
 type CliInstallationDesiredState
   {
-    machineRef: String!
-    toolRef: String!
-    releaseRef: String!
+    machineRef: ContractReference!
+    toolRef: ContractReference!
+    releaseRef: ContractReference!
     desiredState: String!
   }
 
 type CliInstallationObservation
   {
-    machineRef: String!
-    toolRef: String!
-    installedReleaseRef: String!
+    machineRef: ContractReference!
+    toolRef: ContractReference!
+    installedReleaseRef: ContractReference!
     status: String!
     doctorSummary: String
     observedAt: String!
@@ -1809,9 +1809,9 @@ type CliInvocationRequest
   {
     workOrderId: Identifier!
     leaseId: Identifier!
-    machineRef: String!
-    toolRef: String!
-    releaseRef: String!
+    machineRef: ContractReference!
+    toolRef: ContractReference!
+    releaseRef: ContractReference!
     gitCommitSha: String!
     prompt: String!
     inputBinding: SchemaBinding
@@ -1843,7 +1843,7 @@ type CliRelease
 
 type CliReleaseSpec
   {
-    toolRef: String!
+    toolRef: ContractReference!
     version: String!
     platform: String!
     ociImage: String!
@@ -1872,7 +1872,7 @@ type CliToolDefinitionSpec
 
 type CliUsageObservation
   {
-    toolRef: String!
+    toolRef: ContractReference!
     tokensUsed: Integer
     callsCount: Integer
     durationMs: Integer
@@ -2419,9 +2419,9 @@ type ExecutionMachineSpec
     origin: MachineOrigin!
     environment: MachineEnvironment!
     desiredState: MachineDesiredState!
-    hostDefinitionRef: String
-    installedCliRefs: [String]
-    installedConnectorRefs: [String]
+    hostDefinitionRef: ContractReference
+    installedCliRefs: [ContractReference]
+    installedConnectorRefs: [ContractReference]
     ansibleBaselineRef: String
     network: MachineNetworkConfig
   }
@@ -2754,7 +2754,7 @@ type MachineAdminCommand
     machineId: Identifier!
     workOrderId: Identifier
     contractRevision: String
-    playbookRef: String!
+    playbookRef: ContractReference!
     playbookDigest: String!
     variables: SchemaBoundPayload
     approvalReference: String
@@ -2785,7 +2785,7 @@ type MachineAdminPlaybookSpec
 type MachineAdminRequest
   {
     machineId: Identifier!
-    playbookRef: String!
+    playbookRef: ContractReference!
     variables: SchemaBoundPayload
     workOrderId: Identifier
     stepUpProof: String
@@ -2885,7 +2885,7 @@ type MachineRuntimeInstallation
     installationId: Identifier!
     machineId: Identifier!
     kind: String!
-    runtimeRef: String!
+    runtimeRef: ContractReference!
     releaseDigest: String!
     status: String!
     installedAt: String!
@@ -3672,7 +3672,7 @@ type ProcessStep
     pairedGatewayRef: Identifier
     loopMaximum: Integer
     fallbackFlowRef: Identifier
-    subprocessReleaseRef: Identifier
+    subprocessReleaseRef: ContractReference
     compensationForStepRef: Identifier
   }
 

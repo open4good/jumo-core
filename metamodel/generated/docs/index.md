@@ -420,7 +420,7 @@ Name: jumo_v1
 | [alternativeProviderAccountRefs](alternativeProviderAccountRefs.md) |  |
 | [ambientToolAuthority](ambientToolAuthority.md) | No CLI home, image, plugin, repository file, or provider default silently gra... |
 | [annotations](annotations.md) |  |
-| [ansibleBaselineRef](ansibleBaselineRef.md) |  |
+| [ansibleBaselineRef](ansibleBaselineRef.md) | No confirmed Git-contract target kind exists for this field yet (ADR-0045 mig... |
 | [answers](answers.md) | Questions this document answers, in the words a person would use |
 | [apiVersion](apiVersion.md) |  |
 | [appliedBy](appliedBy.md) | The trusted component that applies the effect |
@@ -1184,7 +1184,7 @@ Name: jumo_v1
 | [rung](rung.md) | Matches a WorkerRequirementProfile |
 | [runtime](runtime.md) |  |
 | [runtimeImageDigest](runtimeImageDigest.md) |  |
-| [runtimeRef](runtimeRef.md) |  |
+| [runtimeRef](runtimeRef.md) | Polymorphic on the sibling `kind` field (CLI or connector) -- resolves to a C... |
 | [sanitizedEvidence](sanitizedEvidence.md) |  |
 | [sanitizedOutputPayload](sanitizedOutputPayload.md) |  |
 | [sbomDigest](sbomDigest.md) |  |
@@ -1269,7 +1269,7 @@ Name: jumo_v1
 | [subject](subject.md) |  |
 | [subjectKind](subjectKind.md) |  |
 | [subjectRef](subjectRef.md) |  |
-| [subprocessReleaseRef](subprocessReleaseRef.md) |  |
+| [subprocessReleaseRef](subprocessReleaseRef.md) | The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-... |
 | [subscriptionAudience](subscriptionAudience.md) |  |
 | [substrate](substrate.md) |  |
 | [suffix](suffix.md) |  |

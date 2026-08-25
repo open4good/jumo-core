@@ -33,7 +33,7 @@ URI: [jumo:installedCliRefs](https://jumo.dev/schemas/jumo-v1/installedCliRefs)
 
 | Property | Value |
 | --- | --- |
-| Range | [String](String.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [ExecutionMachineSpec](ExecutionMachineSpec.md) |
 
 ### Cardinality and Requirements
@@ -92,8 +92,10 @@ rank: 1000
 owner: ExecutionMachineSpec
 domain_of:
 - ExecutionMachineSpec
-range: string
+range: ContractReference
 multivalued: true
+inlined: true
+inlined_as_list: true
 
 ```
 </details></div>

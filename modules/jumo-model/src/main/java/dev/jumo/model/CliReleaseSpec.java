@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Specification for a CliRelease contract.
  */
-public record CliReleaseSpec(String toolRef, String version, String platform, String ociImage, String imageDigest, String signatureDigest, String sbomDigest, String provenanceDigest)  {
+public record CliReleaseSpec(ContractReference toolRef, String version, String platform, String ociImage, String imageDigest, String signatureDigest, String sbomDigest, String provenanceDigest)  {
 
     public static Builder builder() {
         return new Builder();
@@ -15,7 +15,7 @@ public record CliReleaseSpec(String toolRef, String version, String platform, St
 
     public static class Builder {
 
-        private String toolRef = "";
+        private ContractReference toolRef = null;
         private String version = "";
         private String platform = "";
         private String ociImage = "";
@@ -25,7 +25,7 @@ public record CliReleaseSpec(String toolRef, String version, String platform, St
         private String provenanceDigest = "";
 
 
-        public Builder toolRef(String toolRef) {
+        public Builder toolRef(ContractReference toolRef) {
             this.toolRef = Objects.requireNonNull(toolRef);
             return this;
         }

@@ -117,21 +117,37 @@ jobs:
       - name: Decide whether this version still needs publishing
         id: decide
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          published() {
-            local path="$1" status
-            status="$(curl -s -o /dev/null -w '%{http_code}' \
-              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-              "https://maven.pkg.github.com/open4good/jumo-core/${path}")"
-            [ "$status" = "200" ]
+          # The Packages REST API is the authority on what the registry holds. A plain GET against
+          # maven.pkg.github.com is not: it answered "missing" for both jumo-core-reactor:1 and
+          # jumo-model:0.2.0 while both were published, so run 32816182176 deployed the parent and
+          # took a 409 on it. A 404 here means nothing has ever been published under that name,
+          # which is an answer -- gh reports it as "(HTTP 404)"; anything else is a registry we
+          # cannot read, and guessing from that is how the 409 came back.
+          versions_of() {
+            local out status=0
+            out="$(gh api --paginate \
+              "/orgs/${GITHUB_REPOSITORY_OWNER}/packages/maven/$1/versions" \
+              --jq '.[].name' 2>&1)" || status=$?
+            if [ "$status" -ne 0 ]; then
+              case "$out" in
+                *"(HTTP 404)"*) return 0 ;;
+                *) echo "Cannot read the registry for $1: $out" >&2; return 1 ;;
+              esac
+            fi
+            printf '%s\n' "$out"
           }
           parent="$(mvn -B -q -f pom.xml help:evaluate -Dexpression=project.version -DforceStdout)"
           model="$(mvn -B -q -f modules/jumo-model/pom.xml help:evaluate \
             -Dexpression=project.version -DforceStdout)"
           echo "jumo-core-reactor:${parent}, jumo-model:${model}"
-          if published "dev/jumo/jumo-model/${model}/jumo-model-${model}.pom"; then
+          # Captured, not piped: a pipeline in an if-condition swallows the non-zero that
+          # versions_of raises for an unreadable registry, and "unreadable" would read as "absent".
+          model_versions="$(versions_of dev.jumo.jumo-model)"
+          parent_versions="$(versions_of dev.jumo.jumo-core-reactor)"
+          if grep -qx "${model}" <<< "${model_versions}"; then
             echo "needed=false" >> "$GITHUB_OUTPUT"
             echo "dev.jumo:jumo-model:${model} is already published; nothing to deploy."
             echo "Bump the version in modules/jumo-model/pom.xml to publish a new one."
@@ -140,7 +156,7 @@ jobs:
           echo "needed=true" >> "$GITHUB_OUTPUT"
           # -am rebuilds and redeploys the parent, which 409s if it is already there. Only ask for
           # it when the parent is genuinely missing.
-          if published "dev/jumo/jumo-core-reactor/${parent}/jumo-core-reactor-${parent}.pom"; then
+          if grep -qx "${parent}" <<< "${parent_versions}"; then
             echo "projects=-pl modules/jumo-model" >> "$GITHUB_OUTPUT"
             echo "Parent already published; deploying jumo-model alone."
           else

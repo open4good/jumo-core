@@ -20,14 +20,24 @@ spec:
       name: Sélection des connecteurs
       description: Choisissez, dans le catalogue, les connecteurs à mettre en place.
       personaNarration: Confirmons ensemble quels connecteurs nous mettons en place maintenant.
+      stepKind: COLLECT
       requiredFields:
         - selectedConnectorRefs
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: select-connectors
     - id: confirm-connectors
       name: Confirmation
       description: Confirmez la mise en place des connecteurs sélectionnés.
       personaNarration: Récapitulons avant de sceller la configuration de ces connecteurs.
+      stepKind: COLLECT
       requiredFields:
         - confirmed
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: summary-and-activate
   resourceBudgetRef:
     kind: ResourceBudget
     namespace: dev.jumo.core

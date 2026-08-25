@@ -1,0 +1,25 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: select-connectors
+  namespace: dev.jumo.core
+  name: Select connectors form
+spec:
+  ownerRealm: home
+  payloadSchemaRef: select-connectors
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: connectors
+      i18nKey: journeyConnectorsSection
+      columns: 1
+      fields:
+        - path: selectedConnectorRefs
+          representation: ENTITY_COLLECTION
+          optionsFrom: ConnectorDefinition
+          optionsEligibility:
+            - path: spec.lifecycle
+              equalsValue: ENABLED
+          i18nKey: journeyConnectorsField
+          helpI18nKey: journeyConnectorsFieldHelp
+          required: true

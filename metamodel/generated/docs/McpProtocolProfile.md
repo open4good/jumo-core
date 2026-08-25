@@ -146,6 +146,7 @@ attributes:
     owner: McpProtocolProfile
     domain_of:
     - McpProtocolProfile
+    - ConnectorPackageSpec
     range: string
     multivalued: true
   capabilities:
@@ -206,6 +207,7 @@ attributes:
     owner: McpProtocolProfile
     domain_of:
     - McpProtocolProfile
+    - ConnectorPackageSpec
     range: string
     multivalued: true
   capabilities:

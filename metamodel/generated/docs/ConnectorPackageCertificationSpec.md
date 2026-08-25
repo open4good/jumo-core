@@ -66,7 +66,7 @@ URI: [jumo:ConnectorPackageCertificationSpec](https://jumo.dev/schemas/jumo-v1/C
 | [provenanceDigest](provenanceDigest.md) | 1 <br/> [String](String.md) |  | direct |
 | [licenceDigest](licenceDigest.md) | 0..1 <br/> [String](String.md) |  | direct |
 | [testDigest](testDigest.md) | 0..1 <br/> [String](String.md) |  | direct |
-| [supportedTransportDigests](supportedTransportDigests.md) | 1..* <br/> [String](String.md) |  | direct |
+| [supportedTransportDigests](supportedTransportDigests.md) | 1..* <br/> [String](String.md) | One digest per McpServerDescriptor in the certified package's supportedTransp... | direct |
 
 
 
@@ -240,6 +240,11 @@ attributes:
     pattern: ^sha256:[0-9a-f]{64}$
   supportedTransportDigests:
     name: supportedTransportDigests
+    description: 'One digest per McpServerDescriptor in the certified package''s supportedTransports,
+      each sha256: followed by the SHA-256 of that descriptor''s canonical JSON --
+      object keys sorted, no insignificant whitespace, absent fields omitted. Certifying
+      a transport the package does not declare, or omitting one it does, is refused
+      by corpus.certification.transport-consistency. Computed by scripts/generate/compute-package-digests.py.'
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ConnectorPackageCertificationSpec
@@ -363,6 +368,11 @@ attributes:
     pattern: ^sha256:[0-9a-f]{64}$
   supportedTransportDigests:
     name: supportedTransportDigests
+    description: 'One digest per McpServerDescriptor in the certified package''s supportedTransports,
+      each sha256: followed by the SHA-256 of that descriptor''s canonical JSON --
+      object keys sorted, no insignificant whitespace, absent fields omitted. Certifying
+      a transport the package does not declare, or omitting one it does, is refused
+      by corpus.certification.transport-consistency. Computed by scripts/generate/compute-package-digests.py.'
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ConnectorPackageCertificationSpec

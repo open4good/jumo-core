@@ -995,7 +995,7 @@ Name: jumo_v1
 | [ownerPrincipalId](ownerPrincipalId.md) |  |
 | [ownerRealm](ownerRealm.md) |  |
 | [ownership](ownership.md) |  |
-| [packageDigest](packageDigest.md) |  |
+| [packageDigest](packageDigest.md) | SHA-256 of the package's content manifest |
 | [pairedGatewayRef](pairedGatewayRef.md) |  |
 | [pairingMethod](pairingMethod.md) |  |
 | [palette](palette.md) |  |
@@ -1279,7 +1279,7 @@ Name: jumo_v1
 | [supersedesDecisionRef](supersedesDecisionRef.md) |  |
 | [support](support.md) |  |
 | [supportedAdapterProfiles](supportedAdapterProfiles.md) |  |
-| [supportedTransportDigests](supportedTransportDigests.md) |  |
+| [supportedTransportDigests](supportedTransportDigests.md) | One digest per McpServerDescriptor in the certified package's supportedTransp... |
 | [supportedTransports](supportedTransports.md) |  |
 | [supportRequireSubscription](supportRequireSubscription.md) |  |
 | [surfaceId](surfaceId.md) |  |

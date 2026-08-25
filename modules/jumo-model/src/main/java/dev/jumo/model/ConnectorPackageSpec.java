@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.List;
 import java.util.List;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Specification for a ConnectorPackage manifest.
  */
-public record ConnectorPackageSpec(String connectorId, String version, String packageDigest, String manifestPath, String contractsPath, String runtimeImageDigest, String sbomDigest, String provenanceDigest, String signatureDigest, String licenceDigest, String testDigest, List<McpCatalogProvenancePin> provenancePins, List<String> sourcePaths, List<String> contractPaths, List<String> testPlanRefs, String buildRecipeRef, Boolean requiresAdapter)  {
+public record ConnectorPackageSpec(String connectorId, String version, String packageDigest, List<McpServerDescriptor> supportedTransports, String manifestPath, String contractsPath, String runtimeImageDigest, String sbomDigest, String provenanceDigest, String signatureDigest, String licenceDigest, String testDigest, List<McpCatalogProvenancePin> provenancePins, List<String> sourcePaths, List<String> contractPaths, List<String> testPlanRefs, String buildRecipeRef, Boolean requiresAdapter)  {
 
     public static Builder builder() {
         return new Builder();
@@ -22,6 +23,7 @@ public record ConnectorPackageSpec(String connectorId, String version, String pa
         private String connectorId = "";
         private String version = "";
         private String packageDigest = "";
+        private List<McpServerDescriptor> supportedTransports = List.of();
         private String manifestPath = "";
         private String contractsPath = "";
         private String runtimeImageDigest = "";
@@ -50,6 +52,11 @@ public record ConnectorPackageSpec(String connectorId, String version, String pa
 
         public Builder packageDigest(String packageDigest) {
             this.packageDigest = Objects.requireNonNull(packageDigest);
+            return this;
+        }
+
+        public Builder supportedTransports(List<McpServerDescriptor> supportedTransports) {
+            this.supportedTransports = Objects.requireNonNull(supportedTransports);
             return this;
         }
 
@@ -124,7 +131,7 @@ public record ConnectorPackageSpec(String connectorId, String version, String pa
         }
 
     public ConnectorPackageSpec build() {
-            return new ConnectorPackageSpec(connectorId, version, packageDigest, manifestPath, contractsPath, runtimeImageDigest, sbomDigest, provenanceDigest, signatureDigest, licenceDigest, testDigest, provenancePins, sourcePaths, contractPaths, testPlanRefs, buildRecipeRef, requiresAdapter);
+            return new ConnectorPackageSpec(connectorId, version, packageDigest, supportedTransports, manifestPath, contractsPath, runtimeImageDigest, sbomDigest, provenanceDigest, signatureDigest, licenceDigest, testDigest, provenancePins, sourcePaths, contractPaths, testPlanRefs, buildRecipeRef, requiresAdapter);
         }
     }
 }

@@ -61,6 +61,17 @@ URI: [jumo:ConnectorPackageSpec](https://jumo.dev/schemas/jumo-v1/ConnectorPacka
 
       ConnectorPackageSpec : sourcePaths
 
+      ConnectorPackageSpec : supportedTransports
+
+
+
+
+
+        ConnectorPackageSpec --> "*" McpServerDescriptor : supportedTransports
+        click McpServerDescriptor href "../McpServerDescriptor/"
+
+
+
       ConnectorPackageSpec : testDigest
 
       ConnectorPackageSpec : testPlanRefs
@@ -81,7 +92,8 @@ URI: [jumo:ConnectorPackageSpec](https://jumo.dev/schemas/jumo-v1/ConnectorPacka
 | ---  | --- | --- | --- |
 | [connectorId](connectorId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [version](version.md) | 1 <br/> [String](String.md) |  | direct |
-| [packageDigest](packageDigest.md) | 1 <br/> [String](String.md) |  | direct |
+| [packageDigest](packageDigest.md) | 1 <br/> [String](String.md) | SHA-256 of the package's content manifest | direct |
+| [supportedTransports](supportedTransports.md) | * <br/> [McpServerDescriptor](McpServerDescriptor.md) | The MCP transports this package exposes | direct |
 | [manifestPath](manifestPath.md) | 0..1 <br/> [String](String.md) |  | direct |
 | [contractsPath](contractsPath.md) | 0..1 <br/> [String](String.md) |  | direct |
 | [runtimeImageDigest](runtimeImageDigest.md) | 0..1 <br/> [String](String.md) |  | direct |
@@ -209,6 +221,12 @@ attributes:
     required: true
   packageDigest:
     name: packageDigest
+    description: 'SHA-256 of the package''s content manifest. The manifest lists one
+      line per content file, "<sha256 hex>  <path relative to the package directory>",
+      sorted by path, newline terminated; packageDigest is sha256: followed by the
+      SHA-256 of those bytes. Content files are exactly sourcePaths when declared,
+      otherwise every file in the package directory except this manifest, which carries
+      the digest and so cannot hash itself. Computed and checked by scripts/generate/compute-package-digests.py.'
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ConnectorPackageSpec
@@ -217,6 +235,21 @@ attributes:
     - ConnectorPackageCertificationSpec
     range: string
     required: true
+    pattern: ^sha256:[0-9a-f]{64}$
+  supportedTransports:
+    name: supportedTransports
+    description: The MCP transports this package exposes. A ConnectorPackageCertification
+      attests to exactly this set through supportedTransportDigests, one digest per
+      descriptor.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: ConnectorPackageSpec
+    domain_of:
+    - McpProtocolProfile
+    - ConnectorPackageSpec
+    range: McpServerDescriptor
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
   manifestPath:
     name: manifestPath
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -393,6 +426,12 @@ attributes:
     required: true
   packageDigest:
     name: packageDigest
+    description: 'SHA-256 of the package''s content manifest. The manifest lists one
+      line per content file, "<sha256 hex>  <path relative to the package directory>",
+      sorted by path, newline terminated; packageDigest is sha256: followed by the
+      SHA-256 of those bytes. Content files are exactly sourcePaths when declared,
+      otherwise every file in the package directory except this manifest, which carries
+      the digest and so cannot hash itself. Computed and checked by scripts/generate/compute-package-digests.py.'
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ConnectorPackageSpec
@@ -401,6 +440,21 @@ attributes:
     - ConnectorPackageCertificationSpec
     range: string
     required: true
+    pattern: ^sha256:[0-9a-f]{64}$
+  supportedTransports:
+    name: supportedTransports
+    description: The MCP transports this package exposes. A ConnectorPackageCertification
+      attests to exactly this set through supportedTransportDigests, one digest per
+      descriptor.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: ConnectorPackageSpec
+    domain_of:
+    - McpProtocolProfile
+    - ConnectorPackageSpec
+    range: McpServerDescriptor
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
   manifestPath:
     name: manifestPath
     from_schema: https://jumo.dev/schemas/jumo-v1

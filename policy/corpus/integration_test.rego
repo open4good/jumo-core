@@ -306,6 +306,50 @@ test_connector_package_connectors_namespace_allowed if {
 	not has_rule(violations, "corpus.package.platform-only")
 }
 
+# O-A: the certification pins the package's declared transports, so a certifier cannot assert a
+# transport the package never declared -- which is what supportedTransportDigests allowed while it
+# had no stated meaning. The expected digest is computed here the same way
+# scripts/generate/compute-package-digests.py computes it; the two were checked to agree on this
+# exact descriptor before this test was written.
+transport_descriptor := {"transport": "STREAMABLE_HTTP", "endpointUrl": "https://mcp.example.com/", "tlsRequired": true}
+
+transport_package := package_document("dev.jumo.connectors", "pkg-transport", {
+	"connectorId": "pkg-transport",
+	"version": "1.0.0",
+	"packageDigest": "sha256:aaaa",
+	"supportedTransports": [transport_descriptor],
+})
+
+test_certification_pinning_the_declared_transport_is_accepted if {
+	cert := certification_document("cert-transport-ok", {
+		"connectorPackageRef": {"kind": "ConnectorPackage", "namespace": "dev.jumo.connectors", "id": "pkg-transport"},
+		"packageDigest": "sha256:aaaa",
+		"supportedTransportDigests": ["sha256:81e9d53328e6297721f56d2a13c28bae20e80809c818008123df630df730ae45"],
+	})
+	violations := data.jumo.corpus.deny with input as [transport_package, cert]
+	not has_rule(violations, "corpus.certification.transport-consistency")
+}
+
+test_certification_asserting_an_undeclared_transport_is_refused if {
+	cert := certification_document("cert-transport-bad", {
+		"connectorPackageRef": {"kind": "ConnectorPackage", "namespace": "dev.jumo.connectors", "id": "pkg-transport"},
+		"packageDigest": "sha256:aaaa",
+		"supportedTransportDigests": ["sha256:2222"],
+	})
+	violations := data.jumo.corpus.deny with input as [transport_package, cert]
+	has_rule(violations, "corpus.certification.transport-consistency")
+}
+
+test_certification_omitting_a_declared_transport_is_refused if {
+	cert := certification_document("cert-transport-missing", {
+		"connectorPackageRef": {"kind": "ConnectorPackage", "namespace": "dev.jumo.connectors", "id": "pkg-transport"},
+		"packageDigest": "sha256:aaaa",
+		"supportedTransportDigests": [],
+	})
+	violations := data.jumo.corpus.deny with input as [transport_package, cert]
+	has_rule(violations, "corpus.certification.transport-consistency")
+}
+
 test_certification_digest_consistency if {
 	pkg := package_document("dev.jumo.connectors", "pkg1", {
 		"connectorId": "pkg1",

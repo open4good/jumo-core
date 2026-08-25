@@ -68,6 +68,13 @@ URI: [jumo:McpServerDescriptor](https://jumo.dev/schemas/jumo-v1/McpServerDescri
 
 
 
+## Usages
+
+| used by | used in | type | used |
+| ---  | --- | --- | --- |
+| [ConnectorPackageSpec](ConnectorPackageSpec.md) | [supportedTransports](supportedTransports.md) | range | [McpServerDescriptor](McpServerDescriptor.md) |
+
+
 
 
 

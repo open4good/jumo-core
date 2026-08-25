@@ -7884,6 +7884,21 @@ components:
           type: string
         packageDigest:
           type: string
+          pattern: ^sha256:[0-9a-f]{64}$
+          description: 'SHA-256 of the package''s content manifest. The manifest lists
+            one line per content file, "<sha256 hex>  <path relative to the package
+            directory>", sorted by path, newline terminated; packageDigest is sha256:
+            followed by the SHA-256 of those bytes. Content files are exactly sourcePaths
+            when declared, otherwise every file in the package directory except this
+            manifest, which carries the digest and so cannot hash itself. Computed
+            and checked by scripts/generate/compute-package-digests.py.'
+        supportedTransports:
+          items:
+            $ref: '#/components/schemas/McpServerDescriptor'
+          type: array
+          description: The MCP transports this package exposes. A ConnectorPackageCertification
+            attests to exactly this set through supportedTransportDigests, one digest
+            per descriptor.
         manifestPath:
           type: string
         contractsPath:
@@ -7980,6 +7995,12 @@ components:
             type: string
           type: array
           pattern: ^sha256:[0-9a-f]{64}$
+          description: 'One digest per McpServerDescriptor in the certified package''s
+            supportedTransports, each sha256: followed by the SHA-256 of that descriptor''s
+            canonical JSON -- object keys sorted, no insignificant whitespace, absent
+            fields omitted. Certifying a transport the package does not declare, or
+            omitting one it does, is refused by corpus.certification.transport-consistency.
+            Computed by scripts/generate/compute-package-digests.py.'
       additionalProperties: false
       type: object
       required:

@@ -2045,6 +2045,7 @@ type ConnectorPackageSpec
     connectorId: Identifier!
     version: String!
     packageDigest: String!
+    supportedTransports: [McpServerDescriptor]
     manifestPath: String
     contractsPath: String
     runtimeImageDigest: String

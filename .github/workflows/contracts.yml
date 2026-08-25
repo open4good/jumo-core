@@ -84,6 +84,12 @@ jobs:
       - name: Regenerate and diff against the committed tree
         run: bash scripts/generate/generate-metamodel.sh --check
 
+      # O-A: packageDigest stands for the package's content, so it has to be recomputed from that
+      # content rather than trusted. Before this had a recipe, the one declared value matched
+      # neither of the files it covered.
+      - name: Reject a ConnectorPackage digest that does not match its content
+        run: python3 scripts/generate/compute-package-digests.py --check
+
   publish-jumo-model:
     name: Publish dev.jumo:jumo-model to GitHub Packages
     needs: [contracts, metamodel]

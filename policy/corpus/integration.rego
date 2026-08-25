@@ -760,6 +760,33 @@ deny contains corpus.violation("corpus.certification.digest-consistency", docume
 	)
 }
 
+# O-A (owner, 2026-08-25): supportedTransportDigests was required with cardinality 1 and a 64-hex
+# pattern while nothing said what it was a digest of, so no Core certification could be authored
+# without inventing a Platform contract. It pins one McpServerDescriptor per entry from the
+# certified package's supportedTransports -- sha256: followed by the SHA-256 of the descriptor's
+# canonical JSON, which scripts/generate/compute-package-digests.py computes. Certifying a
+# transport the package does not declare, or omitting one it does, is the thing this refuses:
+# without it the field would be a number a certifier could assert about nothing.
+package_transport_digests(package_spec) := {digest |
+	some descriptor in object.get(package_spec, "supportedTransports", [])
+	digest := sprintf("sha256:%s", [crypto.sha256(json.marshal(descriptor))])
+}
+
+deny contains corpus.violation("corpus.certification.transport-consistency", document, message) if {
+	some document in corpus.documents
+	document.kind == "ConnectorPackageCertification"
+	package_id := corpus.ref_id(corpus.spec(document).connectorPackageRef)
+	certified_package := corpus.document_by_kind_id("ConnectorPackage", package_id)
+	expected := package_transport_digests(corpus.spec(certified_package))
+	count(expected) > 0
+	certified := {digest | some digest in object.get(corpus.spec(document), "supportedTransportDigests", [])}
+	certified != expected
+	message := sprintf(
+		"spec.supportedTransportDigests %v does not pin ConnectorPackage %q spec.supportedTransports, whose descriptors digest to %v",
+		[sort(certified), package_id, sort(expected)],
+	)
+}
+
 deny contains corpus.violation("corpus.certification.package-resolves", document, message) if {
 	some document in corpus.documents
 	document.kind == "ConnectorPackageCertification"

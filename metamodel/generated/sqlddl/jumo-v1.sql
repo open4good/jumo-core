@@ -1550,19 +1550,6 @@ CREATE TABLE "WorkerIsolationLimits" (
 CREATE INDEX "ix_WorkerIsolationLimits_id" ON "WorkerIsolationLimits" (id);
 COMMENT ON TABLE "WorkerIsolationLimits" IS 'None';
 
-CREATE TABLE "McpServerDescriptor" (
-	id SERIAL NOT NULL,
-	transport "McpTransportType" NOT NULL,
-	"endpointUrl" TEXT,
-	"ociImage" TEXT,
-	"sourceRepository" TEXT,
-	"sourceCommitSha" TEXT,
-	"tlsRequired" BOOLEAN,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_McpServerDescriptor_id" ON "McpServerDescriptor" (id);
-COMMENT ON TABLE "McpServerDescriptor" IS 'Descriptor specifying MCP server transport and connection target.';
-
 CREATE TABLE "McpProtocolProfile" (
 	id SERIAL NOT NULL,
 	"protocolVersion" TEXT NOT NULL,
@@ -1631,6 +1618,7 @@ CREATE TABLE "ConnectorPackageSpec" (
 );
 CREATE INDEX "ix_ConnectorPackageSpec_id" ON "ConnectorPackageSpec" (id);
 COMMENT ON TABLE "ConnectorPackageSpec" IS 'Specification for a ConnectorPackage manifest.';
+COMMENT ON COLUMN "ConnectorPackageSpec"."packageDigest" IS 'SHA-256 of the package''s content manifest. The manifest lists one line per content file, "<sha256 hex>  <path relative to the package directory>", sorted by path, newline terminated; packageDigest is sha256: followed by the SHA-256 of those bytes. Content files are exactly sourcePaths when declared, otherwise every file in the package directory except this manifest, which carries the digest and so cannot hash itself. Computed and checked by scripts/generate/compute-package-digests.py.';
 
 CREATE TABLE "ConnectorCredentialRequirement" (
 	id SERIAL NOT NULL,
@@ -3031,6 +3019,22 @@ CREATE TABLE "WorkerModelAccess" (
 CREATE INDEX "ix_WorkerModelAccess_id" ON "WorkerModelAccess" (id);
 COMMENT ON TABLE "WorkerModelAccess" IS 'None';
 COMMENT ON COLUMN "WorkerModelAccess"."credentialSource" IS 'MODEL_WORKER_PROCESS may consume only an OpenBao-rendered file bound to this substrate; no environment value, repository mount, or ambient credential is permitted.';
+
+CREATE TABLE "McpServerDescriptor" (
+	id SERIAL NOT NULL,
+	transport "McpTransportType" NOT NULL,
+	"endpointUrl" TEXT,
+	"ociImage" TEXT,
+	"sourceRepository" TEXT,
+	"sourceCommitSha" TEXT,
+	"tlsRequired" BOOLEAN,
+	"ConnectorPackageSpec_id" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("ConnectorPackageSpec_id") REFERENCES "ConnectorPackageSpec" (id)
+);
+CREATE INDEX "ix_McpServerDescriptor_id" ON "McpServerDescriptor" (id);
+COMMENT ON TABLE "McpServerDescriptor" IS 'Descriptor specifying MCP server transport and connection target.';
+COMMENT ON COLUMN "McpServerDescriptor"."ConnectorPackageSpec_id" IS 'Autocreated FK slot';
 
 CREATE TABLE "ConnectorPackageCertificationSpec" (
 	id SERIAL NOT NULL,
@@ -5727,6 +5731,7 @@ CREATE INDEX "ix_ConnectorPackageCertificationSpec_supportedTransport_08dd" ON "
 CREATE INDEX "ix_ConnectorPackageCertificationSpec_supportedTransport_8af1" ON "ConnectorPackageCertificationSpec_supportedTransportDigests" ("ConnectorPackageCertificationSpec_id");
 COMMENT ON TABLE "ConnectorPackageCertificationSpec_supportedTransportDigests" IS 'None';
 COMMENT ON COLUMN "ConnectorPackageCertificationSpec_supportedTransportDigests"."ConnectorPackageCertificationSpec_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ConnectorPackageCertificationSpec_supportedTransportDigests"."supportedTransportDigests" IS 'One digest per McpServerDescriptor in the certified package''s supportedTransports, each sha256: followed by the SHA-256 of that descriptor''s canonical JSON -- object keys sorted, no insignificant whitespace, absent fields omitted. Certifying a transport the package does not declare, or omitting one it does, is refused by corpus.certification.transport-consistency. Computed by scripts/generate/compute-package-digests.py.';
 
 CREATE TABLE "EntityFacet_commands" (
 	"EntityFacet_id" INTEGER,

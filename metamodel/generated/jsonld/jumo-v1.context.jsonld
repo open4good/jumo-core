@@ -1198,6 +1198,9 @@
     "sourcePaths": {
       "@id": "sourcePaths"
     },
+    "supportedTransports": {
+      "@id": "supportedTransports"
+    },
     "testPlanRefs": {
       "@id": "testPlanRefs"
     },
@@ -2287,9 +2290,6 @@
     "workOrderRef": {
       "@type": "@id",
       "@id": "workOrderRef"
-    },
-    "supportedTransports": {
-      "@id": "supportedTransports"
     },
     "algorithmVersion": {
       "@id": "algorithmVersion"

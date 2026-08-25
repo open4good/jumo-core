@@ -21,6 +21,7 @@ URI: [jumo:supportedTransports](https://jumo.dev/schemas/jumo-v1/supportedTransp
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [McpProtocolProfile](McpProtocolProfile.md) | Supported MCP protocol capabilities and versions |  no  |
+| [ConnectorPackageSpec](ConnectorPackageSpec.md) | Specification for a ConnectorPackage manifest |  no  |
 
 
 
@@ -34,20 +35,12 @@ URI: [jumo:supportedTransports](https://jumo.dev/schemas/jumo-v1/supportedTransp
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [McpProtocolProfile](McpProtocolProfile.md) |
+| Domain Of | [McpProtocolProfile](McpProtocolProfile.md), [ConnectorPackageSpec](ConnectorPackageSpec.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-| Multivalued | Yes |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [McpProtocolProfile](McpProtocolProfile.md) |
-
-
 
 
 
@@ -61,13 +54,6 @@ URI: [jumo:supportedTransports](https://jumo.dev/schemas/jumo-v1/supportedTransp
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -87,13 +73,10 @@ URI: [jumo:supportedTransports](https://jumo.dev/schemas/jumo-v1/supportedTransp
 <details>
 ```yaml
 name: supportedTransports
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: McpProtocolProfile
 domain_of:
 - McpProtocolProfile
+- ConnectorPackageSpec
 range: string
-multivalued: true
 
 ```
 </details></div>

@@ -5,6 +5,11 @@ search:
 
 # Slot: supportedTransportDigests
 
+
+_One digest per McpServerDescriptor in the certified package's supportedTransports, each sha256: followed by the SHA-256 of that descriptor's canonical JSON -- object keys sorted, no insignificant whitespace, absent fields omitted. Certifying a transport the package does not declare, or omitting one it does, is refused by corpus.certification.transport-consistency. Computed by scripts/generate/compute-package-digests.py._
+
+
+
 <div data-search-exclude markdown="1">
 
 
@@ -96,6 +101,11 @@ URI: [jumo:supportedTransportDigests](https://jumo.dev/schemas/jumo-v1/supported
 <details>
 ```yaml
 name: supportedTransportDigests
+description: 'One digest per McpServerDescriptor in the certified package''s supportedTransports,
+  each sha256: followed by the SHA-256 of that descriptor''s canonical JSON -- object
+  keys sorted, no insignificant whitespace, absent fields omitted. Certifying a transport
+  the package does not declare, or omitting one it does, is refused by corpus.certification.transport-consistency.
+  Computed by scripts/generate/compute-package-digests.py.'
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
 owner: ConnectorPackageCertificationSpec

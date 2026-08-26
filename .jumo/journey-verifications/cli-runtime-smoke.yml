@@ -5,4 +5,4 @@ metadata:
   namespace: dev.jumo.core
   name: CLI runtime smoke observation
 targetType: CLI_SESSION
-capability: cli.session.smoke
+capability: cli.session.smoke.observe

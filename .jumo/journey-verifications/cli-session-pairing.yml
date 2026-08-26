@@ -5,4 +5,4 @@ metadata:
   namespace: dev.jumo.core
   name: CLI session pairing observation
 targetType: CLI_SESSION
-capability: cli.session.pair
+capability: cli.session.pair.observe

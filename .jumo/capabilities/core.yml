@@ -282,6 +282,18 @@ spec:
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
       appliedBy: dev.jumo.controlplane.web.CliSessionService
+    - name: cli.session.pair.observe
+      description: Confirm a previously-dispatched device-login ceremony was observed on the machine, without dispatching or re-authorizing the ceremony itself.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: cli.session.smoke.observe
+      description: Confirm a previously-dispatched CLI smoke-test outcome was observed on the machine, without dispatching or re-authorizing the smoke test itself.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: machine.drain
       description: Drain execution machine for maintenance.
       riskTier: MEDIUM

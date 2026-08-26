@@ -170,6 +170,24 @@ spec:
       riskTier: LOW
       reversible: true
       minimumAssurance: SELF_REPORTED
+    - name: notification.email.send
+      description: Send one declared transactional or attention email to a Realm principal through the platform's SMTP transport, carrying no secret or conversation transcript.
+      riskTier: MEDIUM
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: notification.push.send
+      description: Send one declared Web Push notification to a Realm principal's subscribed browser via VAPID, carrying no secret or conversation transcript.
+      riskTier: MEDIUM
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: project.create
       description: Record a validated, hash-bound project declaration proposal for separate owner approval and forge projection.
       riskTier: MEDIUM

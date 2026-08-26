@@ -99,6 +99,8 @@ spec:
         - cli.session.smoke.observe
         - contract.change.propose
         - attention.item.read
+        - notification.email.send
+        - notification.push.send
         - context.graph.read
       writePaths:
         - pathGlob: .jumo/agents/**

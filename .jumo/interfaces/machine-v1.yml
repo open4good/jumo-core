@@ -263,3 +263,19 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: Issue a signed MCP gateway session plan scoped to one ExecutionCellLease.
+    - operationId: getMcpGatewaySessionPlanVerificationKey
+      method: GET
+      path: /mcp-gateway/session-plan/verification-key/{leaseId}
+      audience: MACHINE_MTLS
+      authAction: mcp-gateway.session-plan.verification-key.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: SchemaBoundPayload
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/SchemaBoundPayload
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Read the Realm public signing key a lease-local gateway verifies a session plan with.

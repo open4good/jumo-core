@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/cli-worker-engine",
+  "title": "Setup CLI worker step 1 payload (engine and name)",
+  "type": "object",
+  "properties": {
+    "cliEngine": { "type": "string", "minLength": 1 },
+    "workerName": { "type": "string", "minLength": 1 }
+  },
+  "required": ["cliEngine", "workerName"]
+}

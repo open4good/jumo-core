@@ -13,7 +13,7 @@ spec:
   icon: mdi-tune-variant
   interruptible: true
   concurrencyPolicy: SINGLE_ACTIVE_RUN
-  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, provider.account.observe]
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, provider.account.qualify]
   policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   completionMode: OBSERVATION
   steps:
@@ -24,5 +24,5 @@ spec:
       stepKind: COLLECT
       requiredFields: [{field: providerAccountRefs, i18nKey: journeyProviderAccountsField}]
       projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: configure-api-accounts}
-      verificationSpecRef: {kind: JourneyVerificationSpec, namespace: dev.jumo.core, id: provider-account-smoke}
+      verificationSpecRef: {kind: JourneyVerificationSpec, namespace: dev.jumo.core, id: provider-ladder-qualification}
   resourceBudgetRef: {kind: ResourceBudget, namespace: dev.jumo.core, id: interactive}

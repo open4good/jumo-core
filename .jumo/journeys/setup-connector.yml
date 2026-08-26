@@ -3,10 +3,10 @@ kind: AssistedJourney
 metadata:
   id: setup-connector
   namespace: dev.jumo.core
-  name: Setup connector
+  name: Mise en place d'un connecteur
 spec:
   journeyId: setup-connector
-  name: Setup connector
+  name: Mise en place d'un connecteur
   description: 'Parcours réutilisable de mise en place des connecteurs choisis : sélection depuis le catalogue, puis confirmation
     avant appairage. Référencé en tant que sous-parcours (stepKind SUB_JOURNEY) par the-onboarding-trip, il peut aussi être
     démarré seul.'

@@ -3,10 +3,10 @@ kind: AssistedJourney
 metadata:
   id: the-onboarding-trip
   namespace: dev.jumo.core
-  name: The onboarding trip
+  name: Le parcours d'accueil
 spec:
   journeyId: the-onboarding-trip
-  name: The onboarding trip
+  name: Le parcours d'accueil
   description: 'Le parcours d''accueil et d''initialisation de l''environnement Jumo : configuration d''identité, provisioning
     de la VM d''exécution, liaison du dépôt Git racine, appairage des clients IA, captation d''intention pour les connecteurs,
     mise en place de ces connecteurs via le sous-parcours dédié, et bilan d''activation.'

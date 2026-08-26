@@ -3,11 +3,12 @@ kind: AssistedJourney
 metadata:
   id: create-project
   namespace: dev.jumo.core
-  name: Create a project
+  name: Créer un projet
 spec:
   journeyId: create-project
-  name: Create a project
-  description: Declare a new governed project, bind external GitHub repositories, and set up documentation and state authorities.
+  name: Créer un projet
+  description: Déclarez un nouveau projet gouverné, liez des dépôts GitHub externes, et mettez en
+    place la documentation et les autorités d'état.
   category: teamsProjects
   icon: mdi-folder-plus-outline
   interruptible: true

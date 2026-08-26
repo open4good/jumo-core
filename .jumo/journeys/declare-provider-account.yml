@@ -3,12 +3,12 @@ kind: AssistedJourney
 metadata:
   id: declare-provider-account
   namespace: dev.jumo.core
-  name: Declare a provider account
+  name: Déclarer un compte fournisseur
 spec:
   journeyId: declare-provider-account
-  name: Declare a provider account
-  description: Declare an external model or CLI provider account, configure routing aliases, and establish entitlement bounds
-    without accepting raw secret tokens.
+  name: Déclarer un compte fournisseur
+  description: Déclarez un compte fournisseur externe de modèle ou de CLI, configurez les alias de
+    routage, et établissez les bornes d'habilitation sans jamais accepter de jeton secret en clair.
   category: integrations
   icon: mdi-cloud-outline
   interruptible: true

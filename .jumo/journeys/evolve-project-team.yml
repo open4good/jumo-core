@@ -3,11 +3,12 @@ kind: AssistedJourney
 metadata:
   id: evolve-project-team
   namespace: dev.jumo.core
-  name: Evolve project team
+  name: Faire évoluer l'équipe projet
 spec:
   journeyId: evolve-project-team
-  name: Evolve project team
-  description: Modify, add, or reorganize roles and independence groups in an existing project team.
+  name: Faire évoluer l'équipe projet
+  description: Modifiez, ajoutez ou réorganisez les rôles et les groupes d'indépendance d'une équipe
+    projet existante.
   category: teamsProjects
   icon: mdi-account-edit-outline
   interruptible: true

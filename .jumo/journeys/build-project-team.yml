@@ -3,12 +3,12 @@ kind: AssistedJourney
 metadata:
   id: build-project-team
   namespace: dev.jumo.core
-  name: Build a project team
+  name: Constituer une équipe projet
 spec:
   journeyId: build-project-team
-  name: Build a project team
-  description: Compose and configure a governed project team with accountable roles, coordination mechanisms, and independent
-    verification groups.
+  name: Constituer une équipe projet
+  description: Composez et configurez une équipe projet gouvernée avec des rôles responsables, des
+    mécanismes de coordination et des groupes de vérification indépendants.
   category: teamsProjects
   icon: mdi-account-group-outline
   interruptible: true

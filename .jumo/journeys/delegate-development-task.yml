@@ -3,11 +3,12 @@ kind: AssistedJourney
 metadata:
   id: delegate-development-task
   namespace: dev.jumo.core
-  name: Delegate a development task
+  name: Déléguer une tâche de développement
 spec:
   journeyId: delegate-development-task
-  name: Delegate a development task
-  description: Capture, decompose, and specify a software development task as a governed WorkOrder.
+  name: Déléguer une tâche de développement
+  description: Capturez, décomposez et spécifiez une tâche de développement logiciel sous forme de
+    WorkOrder gouverné.
   category: teamsProjects
   icon: mdi-clipboard-arrow-right-outline
   interruptible: true

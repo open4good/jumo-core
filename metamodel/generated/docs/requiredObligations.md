@@ -20,6 +20,7 @@ URI: [jumo:requiredObligations](https://jumo.dev/schemas/jumo-v1/requiredObligat
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
+| [AssistedJourneyStep](AssistedJourneyStep.md) | stepKind/projectionRef/processRef are additive: the model-driven rendering en... |  no  |
 | [ActionCapability](ActionCapability.md) |  |  no  |
 | [ImprovementTarget](ImprovementTarget.md) |  |  no  |
 | [SurfaceWritePath](SurfaceWritePath.md) | Path traversal, editor-to-path compatibility, and required-obligation preserv... |  no  |
@@ -36,7 +37,7 @@ URI: [jumo:requiredObligations](https://jumo.dev/schemas/jumo-v1/requiredObligat
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [ActionCapability](ActionCapability.md), [ImprovementTarget](ImprovementTarget.md), [SurfaceWritePath](SurfaceWritePath.md) |
+| Domain Of | [AssistedJourneyStep](AssistedJourneyStep.md), [ActionCapability](ActionCapability.md), [ImprovementTarget](ImprovementTarget.md), [SurfaceWritePath](SurfaceWritePath.md) |
 
 ### Cardinality and Requirements
 
@@ -75,6 +76,7 @@ URI: [jumo:requiredObligations](https://jumo.dev/schemas/jumo-v1/requiredObligat
 ```yaml
 name: requiredObligations
 domain_of:
+- AssistedJourneyStep
 - ActionCapability
 - ImprovementTarget
 - SurfaceWritePath

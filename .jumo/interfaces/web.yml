@@ -85,6 +85,18 @@ spec:
         - interface.manifest.read
         - execution.cell.pair.confirm
         - conversation.turn.submit
+        - journey.run.start
+        - journey.run.read
+        - journey.run.abandon
+        - journey.step.select
+        - journey.step.submit
+        - journey.proposal.submit
+        - provider.account.observe
+        - provider.account.qualify
+        - cli.session.pair
+        - cli.session.pair.observe
+        - cli.session.smoke
+        - cli.session.smoke.observe
         - contract.change.propose
         - attention.item.read
         - context.graph.read

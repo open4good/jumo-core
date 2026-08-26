@@ -15,9 +15,12 @@ spec:
   icon: mdi-power-plug-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   completionMode: OBSERVATION
   steps:
     - id: select-connectors
+      requiredObligations: []
       name: Sélection des connecteurs
       description: Choisissez, dans le catalogue, les connecteurs à mettre en place.
       personaNarration: Confirmons ensemble quels connecteurs nous mettons en place maintenant.
@@ -29,6 +32,7 @@ spec:
         namespace: dev.jumo.core
         id: select-connectors
     - id: confirm-connectors
+      requiredObligations: []
       name: Confirmation
       description: Confirmez la mise en place des connecteurs sélectionnés.
       personaNarration: Récapitulons avant de sceller la configuration de ces connecteurs.

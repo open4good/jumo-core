@@ -3,10 +3,12 @@ package dev.jumo.model;
 
 
 import java.util.List;
+import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record AssistedJourneySpec(String journeyId, String name, String description, String category, String icon, Boolean interruptible, AssistedJourneyConcurrencyPolicy concurrencyPolicy, Boolean firstRunMandatory, Boolean lifetimeUnique, String heroImage, ContractReference resourceBudgetRef, String emitsCapability, AssistedJourneyCompletionMode completionMode, AssistedJourneyNavigationMode navigationMode, AssistedJourneyEmission emission, List<AssistedJourneyStep> steps, String summaryI18nKey)  {
+public record AssistedJourneySpec(String journeyId, String name, String description, String category, String icon, Boolean interruptible, AssistedJourneyConcurrencyPolicy concurrencyPolicy, Boolean firstRunMandatory, Boolean lifetimeUnique, String heroImage, ContractReference resourceBudgetRef, List<String> requiredCapabilities, List<ContractReference> policySetRefs, String emitsCapability, AssistedJourneyCompletionMode completionMode, AssistedJourneyNavigationMode navigationMode, AssistedJourneyEmission emission, List<AssistedJourneyStep> steps, String summaryI18nKey)  {
 
     public static Builder builder() {
         return new Builder();
@@ -25,6 +27,8 @@ public record AssistedJourneySpec(String journeyId, String name, String descript
         private Boolean lifetimeUnique = null;
         private String heroImage = "";
         private ContractReference resourceBudgetRef = null;
+        private List<String> requiredCapabilities = List.of();
+        private List<ContractReference> policySetRefs = List.of();
         private String emitsCapability = "";
         private AssistedJourneyCompletionMode completionMode = null;
         private AssistedJourneyNavigationMode navigationMode = null;
@@ -88,6 +92,16 @@ public record AssistedJourneySpec(String journeyId, String name, String descript
             return this;
         }
 
+        public Builder requiredCapabilities(List<String> requiredCapabilities) {
+            this.requiredCapabilities = Objects.requireNonNull(requiredCapabilities);
+            return this;
+        }
+
+        public Builder policySetRefs(List<ContractReference> policySetRefs) {
+            this.policySetRefs = Objects.requireNonNull(policySetRefs);
+            return this;
+        }
+
         public Builder emitsCapability(String emitsCapability) {
             this.emitsCapability = Objects.requireNonNull(emitsCapability);
             return this;
@@ -119,7 +133,7 @@ public record AssistedJourneySpec(String journeyId, String name, String descript
         }
 
     public AssistedJourneySpec build() {
-            return new AssistedJourneySpec(journeyId, name, description, category, icon, interruptible, concurrencyPolicy, firstRunMandatory, lifetimeUnique, heroImage, resourceBudgetRef, emitsCapability, completionMode, navigationMode, emission, steps, summaryI18nKey);
+            return new AssistedJourneySpec(journeyId, name, description, category, icon, interruptible, concurrencyPolicy, firstRunMandatory, lifetimeUnique, heroImage, resourceBudgetRef, requiredCapabilities, policySetRefs, emitsCapability, completionMode, navigationMode, emission, steps, summaryI18nKey);
         }
     }
 }

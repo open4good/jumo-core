@@ -86,6 +86,17 @@ URI: [jumo:AssistedJourneyStep](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 
 
 
+      AssistedJourneyStep : requiredObligations
+
+
+
+
+
+        AssistedJourneyStep --> "1..*" Obligation : requiredObligations
+        click Obligation href "../Obligation/"
+
+
+
       AssistedJourneyStep : stepKind
 
 
@@ -141,6 +152,7 @@ URI: [jumo:AssistedJourneyStep](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 | [promptTemplateRef](promptTemplateRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) | The PromptTemplate this step uses when stepKind is DIALOGUE_COLLECT | direct |
 | [subAssistedJourneyRef](subAssistedJourneyRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) | The AssistedJourney this step delegates to when stepKind is SUB_JOURNEY | direct |
 | [verificationSpecRef](verificationSpecRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) | Generic real observation required before this step can advance | direct |
+| [requiredObligations](requiredObligations.md) | 1..* <br/> [Obligation](Obligation.md) | Additional obligations the caller must satisfy before this step is entered, s... | direct |
 | [dependsOn](dependsOn.md) | * <br/> [String](String.md) | Step IDs that must be completed before this step becomes available | direct |
 | [parallelizable](parallelizable.md) | 0..1 <br/> [Boolean](Boolean.md) | Marks a dependency-ready step as part of a parallelizable work group in the r... | direct |
 | [image](image.md) | 0..1 <br/> [String](String.md) | Step-level hero image, overriding the journey's heroImage for this step only | direct |
@@ -385,6 +397,23 @@ attributes:
     - AssistedJourneyStep
     range: ContractReference
     inlined: true
+  requiredObligations:
+    name: requiredObligations
+    description: Additional obligations the caller must satisfy before this step is
+      entered, submitted, selected or invoked. Evaluated with the journey envelope
+      by the single kind-level runtime rule under policy/authz; an empty list is explicit
+      and still fail-closed.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneyStep
+    domain_of:
+    - AssistedJourneyStep
+    - ActionCapability
+    - ImprovementTarget
+    - SurfaceWritePath
+    range: Obligation
+    required: true
+    multivalued: true
   dependsOn:
     name: dependsOn
     description: Step IDs that must be completed before this step becomes available.
@@ -634,6 +663,23 @@ attributes:
     - AssistedJourneyStep
     range: ContractReference
     inlined: true
+  requiredObligations:
+    name: requiredObligations
+    description: Additional obligations the caller must satisfy before this step is
+      entered, submitted, selected or invoked. Evaluated with the journey envelope
+      by the single kind-level runtime rule under policy/authz; an empty list is explicit
+      and still fail-closed.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneyStep
+    domain_of:
+    - AssistedJourneyStep
+    - ActionCapability
+    - ImprovementTarget
+    - SurfaceWritePath
+    range: Obligation
+    required: true
+    multivalued: true
   dependsOn:
     name: dependsOn
     description: Step IDs that must be completed before this step becomes available.

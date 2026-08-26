@@ -72,6 +72,13 @@ capability_references contains {"document": document, "location": location, "nam
 
 capability_references contains {"document": document, "location": location, "name": name} if {
 	some document in corpus.documents
+	document.kind == "AssistedJourney"
+	some name in object.get(corpus.spec(document), "requiredCapabilities", [])
+	location := "spec.requiredCapabilities"
+}
+
+capability_references contains {"document": document, "location": location, "name": name} if {
+	some document in corpus.documents
 	document.kind == "SelfDescription"
 	some skill_index, skill in object.get(object.get(corpus.spec(document), "agentCard", {}), "skills", [])
 	some name in object.get(skill, "capabilityRefs", [])
@@ -427,6 +434,12 @@ references contains {"document": document, "location": "spec.agentDefinitionRef"
 }
 
 # AssistedJourney
+references contains {"document": document, "location": sprintf("spec.policySetRefs[%d]", [index]), "expected_kind": "PolicySet", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "AssistedJourney"
+	some index, ref in object.get(corpus.spec(document), "policySetRefs", [])
+}
+
 references contains {"document": document, "location": "spec.resourceBudgetRef", "expected_kind": "ResourceBudget", "ref": ref} if {
 	some document in corpus.documents
 	document.kind == "AssistedJourney"

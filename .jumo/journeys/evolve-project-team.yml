@@ -14,6 +14,8 @@ spec:
   icon: mdi-account-edit-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
   emission:
     targetKind: TeamSpec
@@ -37,6 +39,7 @@ spec:
           - {field: role, minimumLength: 3}
   steps:
     - id: select-team
+      requiredObligations: []
       name: Sélection de l'équipe
       description: Choisissez l'équipe à faire évoluer et précisez l'intention d'évolution.
       personaNarration: Quelle équipe souhaitez-vous réorganiser ou enrichir de nouveaux jumeaux ?
@@ -44,6 +47,7 @@ spec:
         - {field: teamId, i18nKey: journeyTeamIdField}
         - {field: purpose, i18nKey: journeyTeamEvolutionPurposeField}
     - id: update-members
+      requiredObligations: []
       name: Composition des membres
       description: Ajustez les assignations d'opérateurs et les groupes d'indépendance.
       personaNarration: Ajustons la composition des membres pour respecter l'indépendance de revue.
@@ -55,6 +59,7 @@ spec:
         namespace: dev.jumo.core
         id: select-members
     - id: confirm-evolution
+      requiredObligations: []
       name: Confirmation de l'évolution
       description: Vérifiez le diff contractuel avant d'enregistrer la proposition.
       personaNarration: Tout est prêt pour enregistrer la proposition de modification d'équipe.

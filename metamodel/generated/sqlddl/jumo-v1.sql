@@ -171,6 +171,7 @@ CREATE TABLE "ContractReference" (
 	"DispositionMatch_id" INTEGER,
 	"WorkOrderSpec_id" INTEGER,
 	"WorkerQualityRequirement_id" INTEGER,
+	"AssistedJourneySpec_id" INTEGER,
 	"ExecutionMachineSpec_id" INTEGER,
 	"ConnectorOperation_uid" INTEGER,
 	"ConnectorIntentProposal_id" INTEGER,
@@ -194,6 +195,7 @@ COMMENT ON COLUMN "ContractReference"."AdvisorProfileSpec_id" IS 'Autocreated FK
 COMMENT ON COLUMN "ContractReference"."DispositionMatch_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."WorkOrderSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."WorkerQualityRequirement_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ContractReference"."AssistedJourneySpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ExecutionMachineSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ConnectorOperation_uid" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ConnectorIntentProposal_id" IS 'Autocreated FK slot';
@@ -732,6 +734,52 @@ CREATE TABLE "BudgetLimits" (
 );
 CREATE INDEX "ix_BudgetLimits_id" ON "BudgetLimits" (id);
 COMMENT ON TABLE "BudgetLimits" IS 'None';
+
+CREATE TABLE "AssistedJourneySpec" (
+	id SERIAL NOT NULL,
+	"journeyId" TEXT NOT NULL,
+	name TEXT NOT NULL,
+	description TEXT,
+	category TEXT,
+	icon TEXT,
+	interruptible BOOLEAN,
+	"concurrencyPolicy" "AssistedJourneyConcurrencyPolicy",
+	"firstRunMandatory" BOOLEAN,
+	"lifetimeUnique" BOOLEAN,
+	"heroImage" TEXT,
+	"emitsCapability" TEXT,
+	"completionMode" "AssistedJourneyCompletionMode",
+	"navigationMode" "AssistedJourneyNavigationMode",
+	"summaryI18nKey" TEXT NOT NULL,
+	"resourceBudgetRef_uid" INTEGER NOT NULL,
+	emission_id INTEGER,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_AssistedJourneySpec_id" ON "AssistedJourneySpec" (id);
+COMMENT ON TABLE "AssistedJourneySpec" IS 'None';
+COMMENT ON COLUMN "AssistedJourneySpec".category IS 'Catalog category for this journey.';
+COMMENT ON COLUMN "AssistedJourneySpec".icon IS 'Display icon for this journey.';
+COMMENT ON COLUMN "AssistedJourneySpec"."emitsCapability" IS 'The single capability a proposal journey may invoke. Observation journeys leave this absent.';
+COMMENT ON COLUMN "AssistedJourneySpec"."navigationMode" IS 'FREE permits navigation among dependency-ready steps; dependencies remain mandatory server-side.';
+COMMENT ON COLUMN "AssistedJourneySpec"."summaryI18nKey" IS 'Prefix JourneySummaryStep.vue resolves three keys from at its completion step: `${summaryI18nKey}Title`, `${summaryI18nKey}ConfirmLabel` and `${summaryI18nKey}SuccessMessage`. Lets one generic completion component describe what this journey actually produced instead of fixed onboarding text.';
+COMMENT ON COLUMN "AssistedJourneySpec"."resourceBudgetRef_uid" IS 'Names the ResourceBudget whose modelCalls limit bounds the clarification-turn ceiling (AC1). The journey does not declare its own ceiling.';
+COMMENT ON COLUMN "AssistedJourneySpec".emission_id IS 'What a PROPOSAL journey emits when its run completes: the contract kind, where it is written, the template that renders it, and the checks the collected fields must pass. Rego requires it of every PROPOSAL journey (canonical decision 15) -- without it the platform would have to recognise the journey by name to know what it produces, which is the dispatch this slot exists to remove.';
+
+CREATE TABLE "AssistedJourneyEmission" (
+	id SERIAL NOT NULL,
+	"targetKind" TEXT NOT NULL,
+	"pathTemplate" TEXT NOT NULL,
+	identifier_id INTEGER NOT NULL,
+	"documentTemplateRef_uid" INTEGER,
+	"routingEligibilityCheck_id" INTEGER,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_AssistedJourneyEmission_id" ON "AssistedJourneyEmission" (id);
+COMMENT ON TABLE "AssistedJourneyEmission" IS 'The declarative replacement for a per-journey emission branch. Everything here is read by one generic renderer: nothing in it names a journey, and nothing outside it decides what a journey emits.';
+COMMENT ON COLUMN "AssistedJourneyEmission"."targetKind" IS 'The contract kind the emitted document declares. Must name a declared kind (Rego).';
+COMMENT ON COLUMN "AssistedJourneyEmission"."pathTemplate" IS 'Where the document is written, with ${id} standing for the resolved identifier, e.g. `.jumo/teams/${id}.yml`.';
+COMMENT ON COLUMN "AssistedJourneyEmission"."documentTemplateRef_uid" IS 'The DocumentTemplate that renders the document. Must resolve to a declared template rendering the same kind (Rego). Absent while a journey emits a document this vocabulary cannot yet describe -- the renderer refuses such an emission rather than guessing, and the journey keeps a named branch until a template can replace it, which is exactly what the boundary allowlist records.';
+COMMENT ON COLUMN "AssistedJourneyEmission"."routingEligibilityCheck_id" IS 'Refuses a proposal that would route work to a team the project did not declare eligible. A project with no declared eligibility constrains nothing, as RoutingEligibility itself is additive.';
 
 CREATE TABLE "AssistedJourneyEmittedIdentifier" (
 	id SERIAL NOT NULL,
@@ -2305,24 +2353,100 @@ CREATE INDEX "ix_ResourceBudgetSpec_id" ON "ResourceBudgetSpec" (id);
 COMMENT ON TABLE "ResourceBudgetSpec" IS 'None';
 COMMENT ON COLUMN "ResourceBudgetSpec"."minimumAssurance" IS 'A floor. Exhaustion may never push the Episode below it without explicit policy and approval.';
 
-CREATE TABLE "AssistedJourneyEmission" (
+CREATE TABLE "AssistedJourneyFieldCondition" (
 	id SERIAL NOT NULL,
-	"targetKind" TEXT NOT NULL,
-	"pathTemplate" TEXT NOT NULL,
-	identifier_id INTEGER NOT NULL,
-	"documentTemplateRef_uid" INTEGER,
-	"routingEligibilityCheck_id" INTEGER,
+	field TEXT NOT NULL,
+	"whenField" TEXT NOT NULL,
+	"equalsValue" TEXT NOT NULL,
+	"AssistedJourneyEmission_id" INTEGER,
 	PRIMARY KEY (id),
-	FOREIGN KEY(identifier_id) REFERENCES "AssistedJourneyEmittedIdentifier" (id),
-	FOREIGN KEY("documentTemplateRef_uid") REFERENCES "ContractReference" (uid),
-	FOREIGN KEY("routingEligibilityCheck_id") REFERENCES "AssistedJourneyRoutingEligibilityCheck" (id)
+	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
 );
-CREATE INDEX "ix_AssistedJourneyEmission_id" ON "AssistedJourneyEmission" (id);
-COMMENT ON TABLE "AssistedJourneyEmission" IS 'The declarative replacement for a per-journey emission branch. Everything here is read by one generic renderer: nothing in it names a journey, and nothing outside it decides what a journey emits.';
-COMMENT ON COLUMN "AssistedJourneyEmission"."targetKind" IS 'The contract kind the emitted document declares. Must name a declared kind (Rego).';
-COMMENT ON COLUMN "AssistedJourneyEmission"."pathTemplate" IS 'Where the document is written, with ${id} standing for the resolved identifier, e.g. `.jumo/teams/${id}.yml`.';
-COMMENT ON COLUMN "AssistedJourneyEmission"."documentTemplateRef_uid" IS 'The DocumentTemplate that renders the document. Must resolve to a declared template rendering the same kind (Rego). Absent while a journey emits a document this vocabulary cannot yet describe -- the renderer refuses such an emission rather than guessing, and the journey keeps a named branch until a template can replace it, which is exactly what the boundary allowlist records.';
-COMMENT ON COLUMN "AssistedJourneyEmission"."routingEligibilityCheck_id" IS 'Refuses a proposal that would route work to a team the project did not declare eligible. A project with no declared eligibility constrains nothing, as RoutingEligibility itself is additive.';
+CREATE INDEX "ix_AssistedJourneyFieldCondition_id" ON "AssistedJourneyFieldCondition" (id);
+COMMENT ON TABLE "AssistedJourneyFieldCondition" IS 'One field of the emitted document and the collected value that decides whether it is present at all.';
+COMMENT ON COLUMN "AssistedJourneyFieldCondition"."whenField" IS 'The collected or derived value the presence of `field` depends on.';
+COMMENT ON COLUMN "AssistedJourneyFieldCondition"."equalsValue" IS '`field` is kept when `whenField` equals this value, and removed otherwise.';
+COMMENT ON COLUMN "AssistedJourneyFieldCondition"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
+
+CREATE TABLE "AssistedJourneyReferenceCheck" (
+	id SERIAL NOT NULL,
+	field TEXT NOT NULL,
+	kind TEXT NOT NULL,
+	"itemPath" TEXT,
+	"AssistedJourneyEmission_id" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
+);
+CREATE INDEX "ix_AssistedJourneyReferenceCheck_id" ON "AssistedJourneyReferenceCheck" (id);
+COMMENT ON TABLE "AssistedJourneyReferenceCheck" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyReferenceCheck".kind IS 'The contract kind the value must name. Must be a declared kind (Rego).';
+COMMENT ON COLUMN "AssistedJourneyReferenceCheck"."itemPath" IS 'For a multivalued field, the key inside each item that carries the reference.';
+COMMENT ON COLUMN "AssistedJourneyReferenceCheck"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
+
+CREATE TABLE "AssistedJourneyCollectionProjection" (
+	id SERIAL NOT NULL,
+	field TEXT NOT NULL,
+	"itemReferenceKind" TEXT,
+	"AssistedJourneyEmission_id" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
+);
+CREATE INDEX "ix_AssistedJourneyCollectionProjection_id" ON "AssistedJourneyCollectionProjection" (id);
+COMMENT ON TABLE "AssistedJourneyCollectionProjection" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyCollectionProjection"."itemReferenceKind" IS 'When the collected item is a plain reference id rather than an object (an ENTITY_COLLECTION field submits ids), the declared contract kind it names. Must be a declared kind (Rego). The resolved document supplies each declared key not already carried by the submission itself -- keys read spec.<key>, falling back to metadata.name -- so the emitted item never trusts a client-submitted facet the contract can resolve authoritatively instead.';
+COMMENT ON COLUMN "AssistedJourneyCollectionProjection"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
+
+CREATE TABLE "AssistedJourneyFieldDefault" (
+	id SERIAL NOT NULL,
+	field TEXT NOT NULL,
+	value TEXT NOT NULL,
+	"AssistedJourneyEmission_id" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
+);
+CREATE INDEX "ix_AssistedJourneyFieldDefault_id" ON "AssistedJourneyFieldDefault" (id);
+COMMENT ON TABLE "AssistedJourneyFieldDefault" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyFieldDefault".value IS 'May itself interpolate ${id} or another collected field.';
+COMMENT ON COLUMN "AssistedJourneyFieldDefault"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
+
+CREATE TABLE "AssistedJourneyStep" (
+	uid SERIAL NOT NULL,
+	id TEXT NOT NULL,
+	name TEXT NOT NULL,
+	description TEXT,
+	"personaNarration" TEXT,
+	"stepKind" "AssistedJourneyStepKind",
+	parallelizable BOOLEAN,
+	image TEXT,
+	"descriptionI18nKey" TEXT,
+	"narrationI18nKey" TEXT,
+	"AssistedJourneySpec_id" INTEGER,
+	"projectionSpecRef_uid" INTEGER,
+	"processSpecRef_uid" INTEGER,
+	"promptTemplateRef_uid" INTEGER,
+	"subAssistedJourneyRef_uid" INTEGER,
+	"verificationSpecRef_uid" INTEGER,
+	PRIMARY KEY (uid),
+	FOREIGN KEY("AssistedJourneySpec_id") REFERENCES "AssistedJourneySpec" (id),
+	FOREIGN KEY("projectionSpecRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("processSpecRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("promptTemplateRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("subAssistedJourneyRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("verificationSpecRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_AssistedJourneyStep_uid" ON "AssistedJourneyStep" (uid);
+COMMENT ON TABLE "AssistedJourneyStep" IS 'stepKind/projectionRef/processRef are additive: the model-driven rendering engine that consumes them does not exist yet, so requiredFields stays required and load-bearing -- JourneyService (control-plane) reads it server-side and apps/web/components/journey/JourneyRunner.vue reads it client-side. requiredFields is retired once every AssistedJourney step declares projectionRef/processRef and the renderer that replaces JourneyRunner.vue exists; until then both describe the same steps.';
+COMMENT ON COLUMN "AssistedJourneyStep"."stepKind" IS 'Required from the model-driven renderer onward (Rego).';
+COMMENT ON COLUMN "AssistedJourneyStep".parallelizable IS 'Marks a dependency-ready step as part of a parallelizable work group in the renderer.';
+COMMENT ON COLUMN "AssistedJourneyStep".image IS 'Step-level hero image, overriding the journey''s heroImage for this step only. Falls back to AssistedJourneySpec.heroImage when absent. Not validated by the schema (same convention as heroImage) -- a kit-distributed asset once JumoKit exports binary assets (portability.yaml).';
+COMMENT ON COLUMN "AssistedJourneyStep"."descriptionI18nKey" IS 'i18n key resolving this step''s user-facing description. When present, takes precedence over the literal description string, which remains the fallback for journeys that have not been translated.';
+COMMENT ON COLUMN "AssistedJourneyStep"."narrationI18nKey" IS 'i18n key resolving this step''s personaNarration ("Nestor''s voice"). Same fallback convention as descriptionI18nKey.';
+COMMENT ON COLUMN "AssistedJourneyStep"."AssistedJourneySpec_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "AssistedJourneyStep"."projectionSpecRef_uid" IS 'The ProjectionSpec this step renders. Its `of:` class is the step payload type, so the shape is derived rather than declared twice. Required on COLLECT and CONFIRM once stepKind is set (Rego).';
+COMMENT ON COLUMN "AssistedJourneyStep"."processSpecRef_uid" IS 'The ProcessSpec whose run an AWAIT step observes. Required on AWAIT once stepKind is set (Rego).';
+COMMENT ON COLUMN "AssistedJourneyStep"."promptTemplateRef_uid" IS 'The PromptTemplate this step uses when stepKind is DIALOGUE_COLLECT.';
+COMMENT ON COLUMN "AssistedJourneyStep"."subAssistedJourneyRef_uid" IS 'The AssistedJourney this step delegates to when stepKind is SUB_JOURNEY.';
+COMMENT ON COLUMN "AssistedJourneyStep"."verificationSpecRef_uid" IS 'Generic real observation required before this step can advance.';
 
 CREATE TABLE "ActionCapability" (
 	id SERIAL NOT NULL,
@@ -3491,6 +3615,30 @@ CREATE INDEX "ix_WorkOrderSpec_evidenceRefs_evidenceRefs" ON "WorkOrderSpec_evid
 COMMENT ON TABLE "WorkOrderSpec_evidenceRefs" IS 'None';
 COMMENT ON COLUMN "WorkOrderSpec_evidenceRefs"."WorkOrderSpec_id" IS 'Autocreated FK slot';
 
+CREATE TABLE "AssistedJourneySpec_requiredCapabilities" (
+	"AssistedJourneySpec_id" INTEGER,
+	"requiredCapabilities" TEXT NOT NULL,
+	PRIMARY KEY ("AssistedJourneySpec_id", "requiredCapabilities"),
+	FOREIGN KEY("AssistedJourneySpec_id") REFERENCES "AssistedJourneySpec" (id)
+);
+CREATE INDEX "ix_AssistedJourneySpec_requiredCapabilities_AssistedJou_0988" ON "AssistedJourneySpec_requiredCapabilities" ("AssistedJourneySpec_id");
+CREATE INDEX "ix_AssistedJourneySpec_requiredCapabilities_requiredCap_3995" ON "AssistedJourneySpec_requiredCapabilities" ("requiredCapabilities");
+COMMENT ON TABLE "AssistedJourneySpec_requiredCapabilities" IS 'None';
+COMMENT ON COLUMN "AssistedJourneySpec_requiredCapabilities"."AssistedJourneySpec_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "AssistedJourneySpec_requiredCapabilities"."requiredCapabilities" IS 'Complete capability allowlist for this journey. The runtime journey authorization entrypoint checks every admitted action against it; ProjectionSpec.actions and emitsCapability must be subsets (Rego).';
+
+CREATE TABLE "AssistedJourneyEmission_booleanFields" (
+	"AssistedJourneyEmission_id" INTEGER,
+	"booleanFields" TEXT,
+	PRIMARY KEY ("AssistedJourneyEmission_id", "booleanFields"),
+	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
+);
+CREATE INDEX "ix_AssistedJourneyEmission_booleanFields_AssistedJourne_a9b6" ON "AssistedJourneyEmission_booleanFields" ("AssistedJourneyEmission_id");
+CREATE INDEX "ix_AssistedJourneyEmission_booleanFields_booleanFields" ON "AssistedJourneyEmission_booleanFields" ("booleanFields");
+COMMENT ON TABLE "AssistedJourneyEmission_booleanFields" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyEmission_booleanFields"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "AssistedJourneyEmission_booleanFields"."booleanFields" IS 'Field names whose collected "true"/"false" string is coerced to a real YAML boolean before rendering. The platform compensates here rather than in the renderer: the generic step form has no boolean-aware widget yet (projection-field-options-resolution), so a BOOLEAN_FLAG-shaped value still arrives as free text.';
+
 CREATE TABLE "DataProtectionImpactAssessment_risksToDataSubjects" (
 	"DataProtectionImpactAssessment_id" INTEGER,
 	"risksToDataSubjects" TEXT,
@@ -4396,6 +4544,19 @@ CREATE TABLE "ResourceBudget" (
 CREATE INDEX "ix_ResourceBudget_id" ON "ResourceBudget" (id);
 COMMENT ON TABLE "ResourceBudget" IS 'Per-Episode frugality limits. Assurance may never degrade silently to stay within budget.';
 
+CREATE TABLE "AssistedJourney" (
+	id SERIAL NOT NULL,
+	"apiVersion" TEXT NOT NULL,
+	kind TEXT NOT NULL,
+	metadata_uid INTEGER NOT NULL,
+	spec_id INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(metadata_uid) REFERENCES "Metadata" (uid),
+	FOREIGN KEY(spec_id) REFERENCES "AssistedJourneySpec" (id)
+);
+CREATE INDEX "ix_AssistedJourney_id" ON "AssistedJourney" (id);
+COMMENT ON TABLE "AssistedJourney" IS 'Declaration of a multi-turn governed assisted onboarding journey.';
+
 CREATE TABLE "JourneyVerificationSpec" (
 	id SERIAL NOT NULL,
 	"apiVersion" TEXT NOT NULL,
@@ -4410,93 +4571,23 @@ CREATE INDEX "ix_JourneyVerificationSpec_id" ON "JourneyVerificationSpec" (id);
 COMMENT ON TABLE "JourneyVerificationSpec" IS 'Secret-free declaration of an explicit real observation a journey step may request.';
 COMMENT ON COLUMN "JourneyVerificationSpec".capability IS 'Must resolve in an ActionCapabilitySet (Rego), the same way ProcessStep.capabilityRef is checked.';
 
-CREATE TABLE "AssistedJourneySpec" (
-	id SERIAL NOT NULL,
-	"journeyId" TEXT NOT NULL,
-	name TEXT NOT NULL,
-	description TEXT,
-	category TEXT,
-	icon TEXT,
-	interruptible BOOLEAN,
-	"concurrencyPolicy" "AssistedJourneyConcurrencyPolicy",
-	"firstRunMandatory" BOOLEAN,
-	"lifetimeUnique" BOOLEAN,
-	"heroImage" TEXT,
-	"emitsCapability" TEXT,
-	"completionMode" "AssistedJourneyCompletionMode",
-	"navigationMode" "AssistedJourneyNavigationMode",
-	"summaryI18nKey" TEXT NOT NULL,
-	"resourceBudgetRef_uid" INTEGER NOT NULL,
-	emission_id INTEGER,
-	PRIMARY KEY (id),
-	FOREIGN KEY("resourceBudgetRef_uid") REFERENCES "ContractReference" (uid),
-	FOREIGN KEY(emission_id) REFERENCES "AssistedJourneyEmission" (id)
-);
-CREATE INDEX "ix_AssistedJourneySpec_id" ON "AssistedJourneySpec" (id);
-COMMENT ON TABLE "AssistedJourneySpec" IS 'None';
-COMMENT ON COLUMN "AssistedJourneySpec".category IS 'Catalog category for this journey.';
-COMMENT ON COLUMN "AssistedJourneySpec".icon IS 'Display icon for this journey.';
-COMMENT ON COLUMN "AssistedJourneySpec"."emitsCapability" IS 'The single capability a proposal journey may invoke. Observation journeys leave this absent.';
-COMMENT ON COLUMN "AssistedJourneySpec"."navigationMode" IS 'FREE permits navigation among dependency-ready steps; dependencies remain mandatory server-side.';
-COMMENT ON COLUMN "AssistedJourneySpec"."summaryI18nKey" IS 'Prefix JourneySummaryStep.vue resolves three keys from at its completion step: `${summaryI18nKey}Title`, `${summaryI18nKey}ConfirmLabel` and `${summaryI18nKey}SuccessMessage`. Lets one generic completion component describe what this journey actually produced instead of fixed onboarding text.';
-COMMENT ON COLUMN "AssistedJourneySpec"."resourceBudgetRef_uid" IS 'Names the ResourceBudget whose modelCalls limit bounds the clarification-turn ceiling (AC1). The journey does not declare its own ceiling.';
-COMMENT ON COLUMN "AssistedJourneySpec".emission_id IS 'What a PROPOSAL journey emits when its run completes: the contract kind, where it is written, the template that renders it, and the checks the collected fields must pass. Rego requires it of every PROPOSAL journey (canonical decision 15) -- without it the platform would have to recognise the journey by name to know what it produces, which is the dispatch this slot exists to remove.';
-
-CREATE TABLE "AssistedJourneyFieldCondition" (
+CREATE TABLE "AssistedJourneyFieldValidation" (
 	id SERIAL NOT NULL,
 	field TEXT NOT NULL,
-	"whenField" TEXT NOT NULL,
-	"equalsValue" TEXT NOT NULL,
+	required BOOLEAN,
+	"minimumLength" INTEGER,
+	pattern TEXT,
+	"minimumItems" INTEGER,
 	"AssistedJourneyEmission_id" INTEGER,
+	"AssistedJourneyCollectionProjection_id" INTEGER,
 	PRIMARY KEY (id),
-	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
+	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id),
+	FOREIGN KEY("AssistedJourneyCollectionProjection_id") REFERENCES "AssistedJourneyCollectionProjection" (id)
 );
-CREATE INDEX "ix_AssistedJourneyFieldCondition_id" ON "AssistedJourneyFieldCondition" (id);
-COMMENT ON TABLE "AssistedJourneyFieldCondition" IS 'One field of the emitted document and the collected value that decides whether it is present at all.';
-COMMENT ON COLUMN "AssistedJourneyFieldCondition"."whenField" IS 'The collected or derived value the presence of `field` depends on.';
-COMMENT ON COLUMN "AssistedJourneyFieldCondition"."equalsValue" IS '`field` is kept when `whenField` equals this value, and removed otherwise.';
-COMMENT ON COLUMN "AssistedJourneyFieldCondition"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "AssistedJourneyReferenceCheck" (
-	id SERIAL NOT NULL,
-	field TEXT NOT NULL,
-	kind TEXT NOT NULL,
-	"itemPath" TEXT,
-	"AssistedJourneyEmission_id" INTEGER,
-	PRIMARY KEY (id),
-	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
-);
-CREATE INDEX "ix_AssistedJourneyReferenceCheck_id" ON "AssistedJourneyReferenceCheck" (id);
-COMMENT ON TABLE "AssistedJourneyReferenceCheck" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyReferenceCheck".kind IS 'The contract kind the value must name. Must be a declared kind (Rego).';
-COMMENT ON COLUMN "AssistedJourneyReferenceCheck"."itemPath" IS 'For a multivalued field, the key inside each item that carries the reference.';
-COMMENT ON COLUMN "AssistedJourneyReferenceCheck"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "AssistedJourneyCollectionProjection" (
-	id SERIAL NOT NULL,
-	field TEXT NOT NULL,
-	"itemReferenceKind" TEXT,
-	"AssistedJourneyEmission_id" INTEGER,
-	PRIMARY KEY (id),
-	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
-);
-CREATE INDEX "ix_AssistedJourneyCollectionProjection_id" ON "AssistedJourneyCollectionProjection" (id);
-COMMENT ON TABLE "AssistedJourneyCollectionProjection" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyCollectionProjection"."itemReferenceKind" IS 'When the collected item is a plain reference id rather than an object (an ENTITY_COLLECTION field submits ids), the declared contract kind it names. Must be a declared kind (Rego). The resolved document supplies each declared key not already carried by the submission itself -- keys read spec.<key>, falling back to metadata.name -- so the emitted item never trusts a client-submitted facet the contract can resolve authoritatively instead.';
-COMMENT ON COLUMN "AssistedJourneyCollectionProjection"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "AssistedJourneyFieldDefault" (
-	id SERIAL NOT NULL,
-	field TEXT NOT NULL,
-	value TEXT NOT NULL,
-	"AssistedJourneyEmission_id" INTEGER,
-	PRIMARY KEY (id),
-	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
-);
-CREATE INDEX "ix_AssistedJourneyFieldDefault_id" ON "AssistedJourneyFieldDefault" (id);
-COMMENT ON TABLE "AssistedJourneyFieldDefault" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyFieldDefault".value IS 'May itself interpolate ${id} or another collected field.';
-COMMENT ON COLUMN "AssistedJourneyFieldDefault"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
+CREATE INDEX "ix_AssistedJourneyFieldValidation_id" ON "AssistedJourneyFieldValidation" (id);
+COMMENT ON TABLE "AssistedJourneyFieldValidation" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyFieldValidation"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "AssistedJourneyFieldValidation"."AssistedJourneyCollectionProjection_id" IS 'Autocreated FK slot';
 
 CREATE TABLE "DocumentTemplate" (
 	id SERIAL NOT NULL,
@@ -4510,6 +4601,19 @@ CREATE TABLE "DocumentTemplate" (
 );
 CREATE INDEX "ix_DocumentTemplate_id" ON "DocumentTemplate" (id);
 COMMENT ON TABLE "DocumentTemplate" IS 'A YAML document with ${placeholder} scalars, rendered into the contract a journey proposes. The body is one string rather than a typed nesting because the shape it renders is the shape of whichever kind the journey emits -- the same reason a step payload with no generated class declares payloadSchemaRef against a raw JSON Schema (projection.yaml). Substitution happens after the body is parsed, so a placeholder standing alone as a value may be filled by a list or a mapping, not only by a scalar.';
+
+CREATE TABLE "AssistedJourneyRequiredField" (
+	id SERIAL NOT NULL,
+	field TEXT NOT NULL,
+	"i18nKey" TEXT NOT NULL,
+	"AssistedJourneyStep_uid" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("AssistedJourneyStep_uid") REFERENCES "AssistedJourneyStep" (uid)
+);
+CREATE INDEX "ix_AssistedJourneyRequiredField_id" ON "AssistedJourneyRequiredField" (id);
+COMMENT ON TABLE "AssistedJourneyRequiredField" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyRequiredField"."i18nKey" IS 'Resolved the same way a ProjectionField''s own i18nKey is, so a step rendered by ProjectionRenderer and the same step recapped after completion show the identical label.';
+COMMENT ON COLUMN "AssistedJourneyRequiredField"."AssistedJourneyStep_uid" IS 'Autocreated FK slot';
 
 CREATE TABLE "ActionCapabilitySet" (
 	id SERIAL NOT NULL,
@@ -5586,17 +5690,53 @@ COMMENT ON TABLE "PromptTemplateSpec_mayProposeCapabilities" IS 'None';
 COMMENT ON COLUMN "PromptTemplateSpec_mayProposeCapabilities"."PromptTemplateSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "PromptTemplateSpec_mayProposeCapabilities"."mayProposeCapabilities" IS 'Enforced as a subset of the owning AgentDefinition''s requestedCapabilities (Rego). Proposing is still not granting: policy decides.';
 
-CREATE TABLE "AssistedJourneyEmission_booleanFields" (
-	"AssistedJourneyEmission_id" INTEGER,
-	"booleanFields" TEXT,
-	PRIMARY KEY ("AssistedJourneyEmission_id", "booleanFields"),
-	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id)
+CREATE TABLE "AssistedJourneyCollectionProjection_keys" (
+	"AssistedJourneyCollectionProjection_id" INTEGER,
+	keys TEXT NOT NULL,
+	PRIMARY KEY ("AssistedJourneyCollectionProjection_id", keys),
+	FOREIGN KEY("AssistedJourneyCollectionProjection_id") REFERENCES "AssistedJourneyCollectionProjection" (id)
 );
-CREATE INDEX "ix_AssistedJourneyEmission_booleanFields_AssistedJourne_a9b6" ON "AssistedJourneyEmission_booleanFields" ("AssistedJourneyEmission_id");
-CREATE INDEX "ix_AssistedJourneyEmission_booleanFields_booleanFields" ON "AssistedJourneyEmission_booleanFields" ("booleanFields");
-COMMENT ON TABLE "AssistedJourneyEmission_booleanFields" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyEmission_booleanFields"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
-COMMENT ON COLUMN "AssistedJourneyEmission_booleanFields"."booleanFields" IS 'Field names whose collected "true"/"false" string is coerced to a real YAML boolean before rendering. The platform compensates here rather than in the renderer: the generic step form has no boolean-aware widget yet (projection-field-options-resolution), so a BOOLEAN_FLAG-shaped value still arrives as free text.';
+CREATE INDEX "ix_AssistedJourneyCollectionProjection_keys_AssistedJou_4881" ON "AssistedJourneyCollectionProjection_keys" ("AssistedJourneyCollectionProjection_id");
+CREATE INDEX "ix_AssistedJourneyCollectionProjection_keys_keys" ON "AssistedJourneyCollectionProjection_keys" (keys);
+COMMENT ON TABLE "AssistedJourneyCollectionProjection_keys" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyCollectionProjection_keys"."AssistedJourneyCollectionProjection_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "AssistedJourneyCollectionProjection_keys".keys IS 'The keys each emitted item carries, in the order the document declares them.';
+
+CREATE TABLE "AssistedJourneyCollectionProjection_optionalKeys" (
+	"AssistedJourneyCollectionProjection_id" INTEGER,
+	"optionalKeys" TEXT,
+	PRIMARY KEY ("AssistedJourneyCollectionProjection_id", "optionalKeys"),
+	FOREIGN KEY("AssistedJourneyCollectionProjection_id") REFERENCES "AssistedJourneyCollectionProjection" (id)
+);
+CREATE INDEX "ix_AssistedJourneyCollectionProjection_optionalKeys_Ass_ced3" ON "AssistedJourneyCollectionProjection_optionalKeys" ("AssistedJourneyCollectionProjection_id");
+CREATE INDEX "ix_AssistedJourneyCollectionProjection_optionalKeys_opt_7534" ON "AssistedJourneyCollectionProjection_optionalKeys" ("optionalKeys");
+COMMENT ON TABLE "AssistedJourneyCollectionProjection_optionalKeys" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyCollectionProjection_optionalKeys"."AssistedJourneyCollectionProjection_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "AssistedJourneyCollectionProjection_optionalKeys"."optionalKeys" IS 'Keys carried only when the collected item supplies a non-blank value.';
+
+CREATE TABLE "AssistedJourneyStep_requiredObligations" (
+	"AssistedJourneyStep_uid" INTEGER,
+	"requiredObligations" "Obligation" NOT NULL,
+	PRIMARY KEY ("AssistedJourneyStep_uid", "requiredObligations"),
+	FOREIGN KEY("AssistedJourneyStep_uid") REFERENCES "AssistedJourneyStep" (uid)
+);
+CREATE INDEX "ix_AssistedJourneyStep_requiredObligations_AssistedJour_0112" ON "AssistedJourneyStep_requiredObligations" ("AssistedJourneyStep_uid");
+CREATE INDEX "ix_AssistedJourneyStep_requiredObligations_requiredObligations" ON "AssistedJourneyStep_requiredObligations" ("requiredObligations");
+COMMENT ON TABLE "AssistedJourneyStep_requiredObligations" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyStep_requiredObligations"."AssistedJourneyStep_uid" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "AssistedJourneyStep_requiredObligations"."requiredObligations" IS 'Additional obligations the caller must satisfy before this step is entered, submitted, selected or invoked. Evaluated with the journey envelope by the single kind-level runtime rule under policy/authz; an empty list is explicit and still fail-closed.';
+
+CREATE TABLE "AssistedJourneyStep_dependsOn" (
+	"AssistedJourneyStep_uid" INTEGER,
+	"dependsOn" TEXT,
+	PRIMARY KEY ("AssistedJourneyStep_uid", "dependsOn"),
+	FOREIGN KEY("AssistedJourneyStep_uid") REFERENCES "AssistedJourneyStep" (uid)
+);
+CREATE INDEX "ix_AssistedJourneyStep_dependsOn_AssistedJourneyStep_uid" ON "AssistedJourneyStep_dependsOn" ("AssistedJourneyStep_uid");
+CREATE INDEX "ix_AssistedJourneyStep_dependsOn_dependsOn" ON "AssistedJourneyStep_dependsOn" ("dependsOn");
+COMMENT ON TABLE "AssistedJourneyStep_dependsOn" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyStep_dependsOn"."AssistedJourneyStep_uid" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "AssistedJourneyStep_dependsOn"."dependsOn" IS 'Step IDs that must be completed before this step becomes available.';
 
 CREATE TABLE "ActionCapability_requiredObligations" (
 	"ActionCapability_id" INTEGER,
@@ -5924,76 +6064,6 @@ COMMENT ON TABLE "SelfDescriptionFact" IS 'None';
 COMMENT ON COLUMN "SelfDescriptionFact"."from" IS 'Deterministic source: a contract kind and path such as ''Project.spec.purpose'', or a named recognized-state query. Evaluated without a model.';
 COMMENT ON COLUMN "SelfDescriptionFact"."SelfDescriptionAnswer_id" IS 'Autocreated FK slot';
 
-CREATE TABLE "AssistedJourney" (
-	id SERIAL NOT NULL,
-	"apiVersion" TEXT NOT NULL,
-	kind TEXT NOT NULL,
-	metadata_uid INTEGER NOT NULL,
-	spec_id INTEGER NOT NULL,
-	PRIMARY KEY (id),
-	FOREIGN KEY(metadata_uid) REFERENCES "Metadata" (uid),
-	FOREIGN KEY(spec_id) REFERENCES "AssistedJourneySpec" (id)
-);
-CREATE INDEX "ix_AssistedJourney_id" ON "AssistedJourney" (id);
-COMMENT ON TABLE "AssistedJourney" IS 'Declaration of a multi-turn governed assisted onboarding journey.';
-
-CREATE TABLE "AssistedJourneyFieldValidation" (
-	id SERIAL NOT NULL,
-	field TEXT NOT NULL,
-	required BOOLEAN,
-	"minimumLength" INTEGER,
-	pattern TEXT,
-	"minimumItems" INTEGER,
-	"AssistedJourneyEmission_id" INTEGER,
-	"AssistedJourneyCollectionProjection_id" INTEGER,
-	PRIMARY KEY (id),
-	FOREIGN KEY("AssistedJourneyEmission_id") REFERENCES "AssistedJourneyEmission" (id),
-	FOREIGN KEY("AssistedJourneyCollectionProjection_id") REFERENCES "AssistedJourneyCollectionProjection" (id)
-);
-CREATE INDEX "ix_AssistedJourneyFieldValidation_id" ON "AssistedJourneyFieldValidation" (id);
-COMMENT ON TABLE "AssistedJourneyFieldValidation" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyFieldValidation"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
-COMMENT ON COLUMN "AssistedJourneyFieldValidation"."AssistedJourneyCollectionProjection_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "AssistedJourneyStep" (
-	uid SERIAL NOT NULL,
-	id TEXT NOT NULL,
-	name TEXT NOT NULL,
-	description TEXT,
-	"personaNarration" TEXT,
-	"stepKind" "AssistedJourneyStepKind",
-	parallelizable BOOLEAN,
-	image TEXT,
-	"descriptionI18nKey" TEXT,
-	"narrationI18nKey" TEXT,
-	"AssistedJourneySpec_id" INTEGER,
-	"projectionSpecRef_uid" INTEGER,
-	"processSpecRef_uid" INTEGER,
-	"promptTemplateRef_uid" INTEGER,
-	"subAssistedJourneyRef_uid" INTEGER,
-	"verificationSpecRef_uid" INTEGER,
-	PRIMARY KEY (uid),
-	FOREIGN KEY("AssistedJourneySpec_id") REFERENCES "AssistedJourneySpec" (id),
-	FOREIGN KEY("projectionSpecRef_uid") REFERENCES "ContractReference" (uid),
-	FOREIGN KEY("processSpecRef_uid") REFERENCES "ContractReference" (uid),
-	FOREIGN KEY("promptTemplateRef_uid") REFERENCES "ContractReference" (uid),
-	FOREIGN KEY("subAssistedJourneyRef_uid") REFERENCES "ContractReference" (uid),
-	FOREIGN KEY("verificationSpecRef_uid") REFERENCES "ContractReference" (uid)
-);
-CREATE INDEX "ix_AssistedJourneyStep_uid" ON "AssistedJourneyStep" (uid);
-COMMENT ON TABLE "AssistedJourneyStep" IS 'stepKind/projectionRef/processRef are additive: the model-driven rendering engine that consumes them does not exist yet, so requiredFields stays required and load-bearing -- JourneyService (control-plane) reads it server-side and apps/web/components/journey/JourneyRunner.vue reads it client-side. requiredFields is retired once every AssistedJourney step declares projectionRef/processRef and the renderer that replaces JourneyRunner.vue exists; until then both describe the same steps.';
-COMMENT ON COLUMN "AssistedJourneyStep"."stepKind" IS 'Required from the model-driven renderer onward (Rego).';
-COMMENT ON COLUMN "AssistedJourneyStep".parallelizable IS 'Marks a dependency-ready step as part of a parallelizable work group in the renderer.';
-COMMENT ON COLUMN "AssistedJourneyStep".image IS 'Step-level hero image, overriding the journey''s heroImage for this step only. Falls back to AssistedJourneySpec.heroImage when absent. Not validated by the schema (same convention as heroImage) -- a kit-distributed asset once JumoKit exports binary assets (portability.yaml).';
-COMMENT ON COLUMN "AssistedJourneyStep"."descriptionI18nKey" IS 'i18n key resolving this step''s user-facing description. When present, takes precedence over the literal description string, which remains the fallback for journeys that have not been translated.';
-COMMENT ON COLUMN "AssistedJourneyStep"."narrationI18nKey" IS 'i18n key resolving this step''s personaNarration ("Nestor''s voice"). Same fallback convention as descriptionI18nKey.';
-COMMENT ON COLUMN "AssistedJourneyStep"."AssistedJourneySpec_id" IS 'Autocreated FK slot';
-COMMENT ON COLUMN "AssistedJourneyStep"."projectionSpecRef_uid" IS 'The ProjectionSpec this step renders. Its `of:` class is the step payload type, so the shape is derived rather than declared twice. Required on COLLECT and CONFIRM once stepKind is set (Rego).';
-COMMENT ON COLUMN "AssistedJourneyStep"."processSpecRef_uid" IS 'The ProcessSpec whose run an AWAIT step observes. Required on AWAIT once stepKind is set (Rego).';
-COMMENT ON COLUMN "AssistedJourneyStep"."promptTemplateRef_uid" IS 'The PromptTemplate this step uses when stepKind is DIALOGUE_COLLECT.';
-COMMENT ON COLUMN "AssistedJourneyStep"."subAssistedJourneyRef_uid" IS 'The AssistedJourney this step delegates to when stepKind is SUB_JOURNEY.';
-COMMENT ON COLUMN "AssistedJourneyStep"."verificationSpecRef_uid" IS 'Generic real observation required before this step can advance.';
-
 CREATE TABLE "ConnectorAppraisal" (
 	id SERIAL NOT NULL,
 	"apiVersion" TEXT NOT NULL,
@@ -6166,30 +6236,6 @@ CREATE INDEX "ix_GoldenTaskCase_dimensions_dimensions" ON "GoldenTaskCase_dimens
 COMMENT ON TABLE "GoldenTaskCase_dimensions" IS 'None';
 COMMENT ON COLUMN "GoldenTaskCase_dimensions"."GoldenTaskCase_uid" IS 'Autocreated FK slot';
 
-CREATE TABLE "AssistedJourneyCollectionProjection_keys" (
-	"AssistedJourneyCollectionProjection_id" INTEGER,
-	keys TEXT NOT NULL,
-	PRIMARY KEY ("AssistedJourneyCollectionProjection_id", keys),
-	FOREIGN KEY("AssistedJourneyCollectionProjection_id") REFERENCES "AssistedJourneyCollectionProjection" (id)
-);
-CREATE INDEX "ix_AssistedJourneyCollectionProjection_keys_AssistedJou_4881" ON "AssistedJourneyCollectionProjection_keys" ("AssistedJourneyCollectionProjection_id");
-CREATE INDEX "ix_AssistedJourneyCollectionProjection_keys_keys" ON "AssistedJourneyCollectionProjection_keys" (keys);
-COMMENT ON TABLE "AssistedJourneyCollectionProjection_keys" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyCollectionProjection_keys"."AssistedJourneyCollectionProjection_id" IS 'Autocreated FK slot';
-COMMENT ON COLUMN "AssistedJourneyCollectionProjection_keys".keys IS 'The keys each emitted item carries, in the order the document declares them.';
-
-CREATE TABLE "AssistedJourneyCollectionProjection_optionalKeys" (
-	"AssistedJourneyCollectionProjection_id" INTEGER,
-	"optionalKeys" TEXT,
-	PRIMARY KEY ("AssistedJourneyCollectionProjection_id", "optionalKeys"),
-	FOREIGN KEY("AssistedJourneyCollectionProjection_id") REFERENCES "AssistedJourneyCollectionProjection" (id)
-);
-CREATE INDEX "ix_AssistedJourneyCollectionProjection_optionalKeys_Ass_ced3" ON "AssistedJourneyCollectionProjection_optionalKeys" ("AssistedJourneyCollectionProjection_id");
-CREATE INDEX "ix_AssistedJourneyCollectionProjection_optionalKeys_opt_7534" ON "AssistedJourneyCollectionProjection_optionalKeys" ("optionalKeys");
-COMMENT ON TABLE "AssistedJourneyCollectionProjection_optionalKeys" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyCollectionProjection_optionalKeys"."AssistedJourneyCollectionProjection_id" IS 'Autocreated FK slot';
-COMMENT ON COLUMN "AssistedJourneyCollectionProjection_optionalKeys"."optionalKeys" IS 'Keys carried only when the collected item supplies a non-blank value.';
-
 CREATE TABLE "ImprovementTarget_requiredObligations" (
 	"ImprovementTarget_id" INTEGER,
 	"requiredObligations" "Obligation" NOT NULL,
@@ -6267,37 +6313,18 @@ CREATE INDEX "ix_PolicyInput_obligations_PolicyInput_id" ON "PolicyInput_obligat
 CREATE INDEX "ix_PolicyInput_obligations_obligations" ON "PolicyInput_obligations" (obligations);
 COMMENT ON TABLE "PolicyInput_obligations" IS 'None';
 COMMENT ON COLUMN "PolicyInput_obligations"."PolicyInput_id" IS 'Autocreated FK slot';
-
-CREATE TABLE "AssistedJourneyRequiredField" (
-	id SERIAL NOT NULL,
-	field TEXT NOT NULL,
-	"i18nKey" TEXT NOT NULL,
-	"AssistedJourneyStep_uid" INTEGER,
-	PRIMARY KEY (id),
-	FOREIGN KEY("AssistedJourneyStep_uid") REFERENCES "AssistedJourneyStep" (uid)
-);
-CREATE INDEX "ix_AssistedJourneyRequiredField_id" ON "AssistedJourneyRequiredField" (id);
-COMMENT ON TABLE "AssistedJourneyRequiredField" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyRequiredField"."i18nKey" IS 'Resolved the same way a ProjectionField''s own i18nKey is, so a step rendered by ProjectionRenderer and the same step recapped after completion show the identical label.';
-COMMENT ON COLUMN "AssistedJourneyRequiredField"."AssistedJourneyStep_uid" IS 'Autocreated FK slot';
-
-CREATE TABLE "AssistedJourneyStep_dependsOn" (
-	"AssistedJourneyStep_uid" INTEGER,
-	"dependsOn" TEXT,
-	PRIMARY KEY ("AssistedJourneyStep_uid", "dependsOn"),
-	FOREIGN KEY("AssistedJourneyStep_uid") REFERENCES "AssistedJourneyStep" (uid)
-);
-CREATE INDEX "ix_AssistedJourneyStep_dependsOn_AssistedJourneyStep_uid" ON "AssistedJourneyStep_dependsOn" ("AssistedJourneyStep_uid");
-CREATE INDEX "ix_AssistedJourneyStep_dependsOn_dependsOn" ON "AssistedJourneyStep_dependsOn" ("dependsOn");
-COMMENT ON TABLE "AssistedJourneyStep_dependsOn" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyStep_dependsOn"."AssistedJourneyStep_uid" IS 'Autocreated FK slot';
-COMMENT ON COLUMN "AssistedJourneyStep_dependsOn"."dependsOn" IS 'Step IDs that must be completed before this step becomes available.';
 ALTER TABLE "AdvisorProfileSpec" ADD FOREIGN KEY("roleDefinitionRef_uid") REFERENCES "ContractReference" (uid);
+ALTER TABLE "AssistedJourneyEmission" ADD FOREIGN KEY("documentTemplateRef_uid") REFERENCES "ContractReference" (uid);
+ALTER TABLE "AssistedJourneyEmission" ADD FOREIGN KEY("routingEligibilityCheck_id") REFERENCES "AssistedJourneyRoutingEligibilityCheck" (id);
+ALTER TABLE "AssistedJourneyEmission" ADD FOREIGN KEY(identifier_id) REFERENCES "AssistedJourneyEmittedIdentifier" (id);
+ALTER TABLE "AssistedJourneySpec" ADD FOREIGN KEY("resourceBudgetRef_uid") REFERENCES "ContractReference" (uid);
+ALTER TABLE "AssistedJourneySpec" ADD FOREIGN KEY(emission_id) REFERENCES "AssistedJourneyEmission" (id);
 ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("connectorPackageRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("mcpBundleRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("remoteMcpServiceRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "ConnectorOperation" ADD FOREIGN KEY("ConnectorDefinitionSpec_id") REFERENCES "ConnectorDefinitionSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("AdvisorProfileSpec_id") REFERENCES "AdvisorProfileSpec" (id);
+ALTER TABLE "ContractReference" ADD FOREIGN KEY("AssistedJourneySpec_id") REFERENCES "AssistedJourneySpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorIntegrationSpec_id") REFERENCES "ConnectorIntegrationSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorIntentProposal_id") REFERENCES "ConnectorIntentProposal" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorOperation_uid") REFERENCES "ConnectorOperation" (uid);

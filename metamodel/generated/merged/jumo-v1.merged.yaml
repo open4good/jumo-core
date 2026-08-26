@@ -6007,6 +6007,7 @@ classes:
         owner: RealmTemplateSpec
         domain_of:
         - RealmTemplateSpec
+        - AssistedJourneySpec
         range: ContractReference
         multivalued: true
         inlined: true
@@ -28255,6 +28256,35 @@ classes:
         range: ContractReference
         required: true
         inlined: true
+      requiredCapabilities:
+        name: requiredCapabilities
+        description: Complete capability allowlist for this journey. The runtime journey
+          authorization entrypoint checks every admitted action against it; ProjectionSpec.actions
+          and emitsCapability must be subsets (Rego).
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneySpec
+        domain_of:
+        - AssistedJourneySpec
+        range: CapabilityName
+        required: true
+        multivalued: true
+        minimum_cardinality: 1
+      policySetRefs:
+        name: policySetRefs
+        description: PolicySet contracts that govern every admission to this journey.
+          The runtime refuses the journey unless each reference is active on the addressed
+          RealmTemplate.
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneySpec
+        domain_of:
+        - RealmTemplateSpec
+        - AssistedJourneySpec
+        range: ContractReference
+        required: true
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+        minimum_cardinality: 1
       emitsCapability:
         name: emitsCapability
         description: The single capability a proposal journey may invoke. Observation
@@ -29576,6 +29606,22 @@ classes:
         - AssistedJourneyStep
         range: ContractReference
         inlined: true
+      requiredObligations:
+        name: requiredObligations
+        description: Additional obligations the caller must satisfy before this step
+          is entered, submitted, selected or invoked. Evaluated with the journey envelope
+          by the single kind-level runtime rule under policy/authz; an empty list
+          is explicit and still fail-closed.
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneyStep
+        domain_of:
+        - AssistedJourneyStep
+        - ActionCapability
+        - ImprovementTarget
+        - SurfaceWritePath
+        range: Obligation
+        required: true
+        multivalued: true
       dependsOn:
         name: dependsOn
         description: Step IDs that must be completed before this step becomes available.
@@ -30218,6 +30264,7 @@ classes:
         from_schema: https://jumo.dev/schemas/governance
         owner: ActionCapability
         domain_of:
+        - AssistedJourneyStep
         - ActionCapability
         - ImprovementTarget
         - SurfaceWritePath
@@ -31434,6 +31481,7 @@ classes:
         from_schema: https://jumo.dev/schemas/governance
         owner: ImprovementTarget
         domain_of:
+        - AssistedJourneyStep
         - ActionCapability
         - ImprovementTarget
         - SurfaceWritePath
@@ -57073,6 +57121,7 @@ classes:
         from_schema: https://jumo.dev/schemas/interface
         owner: SurfaceWritePath
         domain_of:
+        - AssistedJourneyStep
         - ActionCapability
         - ImprovementTarget
         - SurfaceWritePath
@@ -60175,16 +60224,18 @@ classes:
         required: true
       sections:
         name: sections
+        description: Rendered fields grouped into sections. May be empty only for
+          an action-only projection, where actions is non-empty and the projection
+          exists solely to anchor a headless journey step's callable capabilities
+          (Rego).
         from_schema: https://jumo.dev/schemas/projection
         owner: ProjectionSpecBody
         domain_of:
         - ProjectionSpecBody
         range: ProjectionSection
-        required: true
         multivalued: true
         inlined: true
         inlined_as_list: true
-        minimum_cardinality: 1
       actions:
         name: actions
         description: Every named action must resolve against a declared ActionCapability

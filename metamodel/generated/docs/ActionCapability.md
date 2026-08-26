@@ -266,9 +266,9 @@ attributes:
   requiredObligations:
     name: requiredObligations
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: ActionCapability
     domain_of:
+    - AssistedJourneyStep
     - ActionCapability
     - ImprovementTarget
     - SurfaceWritePath
@@ -413,9 +413,9 @@ attributes:
   requiredObligations:
     name: requiredObligations
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: ActionCapability
     domain_of:
+    - AssistedJourneyStep
     - ActionCapability
     - ImprovementTarget
     - SurfaceWritePath

@@ -265,6 +265,11 @@ public final class ContractReferenceExtractor {
         if (obj.resourceBudgetRef() != null) {
             refs.add(new OutgoingReference("resourceBudgetRef", obj.resourceBudgetRef()));
         }
+        if (obj.policySetRefs() != null) {
+            for (ContractReference r : obj.policySetRefs()) {
+                if (r != null) refs.add(new OutgoingReference("policySetRefs", r));
+            }
+        }
         extractFromAssistedJourneyEmission(obj.emission(), refs);
         if (obj.steps() != null) {
             for (AssistedJourneyStep item : obj.steps()) {

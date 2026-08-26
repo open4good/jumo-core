@@ -92,6 +92,13 @@
           "description": "Names the ResourceBudget whose modelCalls limit bounds the clarification-turn ceiling (AC1). The journey does not declare its own ceiling."
         },
         {
+          "slotName": "policySetRefs",
+          "targetKind": "PolicySet",
+          "cardinality": "MANY",
+          "required": true,
+          "description": "PolicySet contracts that govern every admission to this journey. The runtime refuses the journey unless each reference is active on the addressed RealmTemplate."
+        },
+        {
           "slotName": "documentTemplateRef",
           "targetKind": "DocumentTemplate",
           "cardinality": "ONE",
@@ -1160,6 +1167,12 @@
       "stateAuthority": "GIT",
       "outgoing": [],
       "incoming": [
+        {
+          "fromKind": "AssistedJourney",
+          "slotName": "policySetRefs",
+          "cardinality": "MANY",
+          "description": "PolicySet contracts that govern every admission to this journey. The runtime refuses the journey unless each reference is active on the addressed RealmTemplate."
+        },
         {
           "fromKind": "RealmTemplate",
           "slotName": "policySetRefs",

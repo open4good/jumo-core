@@ -1145,11 +1145,12 @@ Name: jumo_v1
 | [requestedResponse](requestedResponse.md) |  |
 | [requestsPerMonth](requestsPerMonth.md) |  |
 | [required](required.md) |  |
+| [requiredCapabilities](requiredCapabilities.md) | Complete capability allowlist for this journey |
 | [requiredFields](requiredFields.md) | One entry per field the step collects or confirms, each carrying the i18n key... |
 | [requiredFreshness](requiredFreshness.md) |  |
 | [requiredIndependence](requiredIndependence.md) |  |
 | [requiredIndependenceGroup](requiredIndependenceGroup.md) | Narrows eligible ProviderAccounts to those sharing this independenceGroup (ow... |
-| [requiredObligations](requiredObligations.md) |  |
+| [requiredObligations](requiredObligations.md) | Additional obligations the caller must satisfy before this step is entered, s... |
 | [requiredOwners](requiredOwners.md) |  |
 | [requiredScopes](requiredScopes.md) |  |
 | [requiresAdapter](requiresAdapter.md) |  |
@@ -1211,7 +1212,7 @@ Name: jumo_v1
 | [seatIds](seatIds.md) |  |
 | [secretBindingRef](secretBindingRef.md) |  |
 | [secretBindingRefs](secretBindingRefs.md) |  |
-| [sections](sections.md) |  |
+| [sections](sections.md) | Rendered fields grouped into sections |
 | [security](security.md) | Blast radius per operation, network egress, secret material held, and untrust... |
 | [selectedAt](selectedAt.md) |  |
 | [selectedConnectorDefinitionRefs](selectedConnectorDefinitionRefs.md) | ConnectorDefinition ids proposed, referencing the supplied catalog only |

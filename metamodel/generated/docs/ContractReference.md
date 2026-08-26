@@ -118,6 +118,7 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [PromptTemplateSpec](PromptTemplateSpec.md) | [workerRequirementProfileRef](workerRequirementProfileRef.md) | range | [ContractReference](ContractReference.md) |
 | [PromptTemplateSpec](PromptTemplateSpec.md) | [resourceBudgetRef](resourceBudgetRef.md) | range | [ContractReference](ContractReference.md) |
 | [AssistedJourneySpec](AssistedJourneySpec.md) | [resourceBudgetRef](resourceBudgetRef.md) | range | [ContractReference](ContractReference.md) |
+| [AssistedJourneySpec](AssistedJourneySpec.md) | [policySetRefs](policySetRefs.md) | range | [ContractReference](ContractReference.md) |
 | [AssistedJourneyEmission](AssistedJourneyEmission.md) | [documentTemplateRef](documentTemplateRef.md) | range | [ContractReference](ContractReference.md) |
 | [AssistedJourneyStep](AssistedJourneyStep.md) | [projectionSpecRef](projectionSpecRef.md) | range | [ContractReference](ContractReference.md) |
 | [AssistedJourneyStep](AssistedJourneyStep.md) | [processSpecRef](processSpecRef.md) | range | [ContractReference](ContractReference.md) |

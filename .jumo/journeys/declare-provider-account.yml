@@ -14,6 +14,8 @@ spec:
   icon: mdi-cloud-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
   emission:
     targetKind: ProviderAccount
@@ -29,6 +31,7 @@ spec:
     booleanFields: [permitted]
   steps:
     - id: define-provider
+      requiredObligations: []
       name: Identité du fournisseur
       description: Indiquez l'identifiant du compte, son nom, et la famille de fournisseur (par ex.
         anthropic, openai, google).
@@ -38,6 +41,7 @@ spec:
         - {field: providerName, i18nKey: journeyProviderNameField}
         - {field: provider, i18nKey: journeyProviderFamilyField}
     - id: configure-routing
+      requiredObligations: []
       name: Configuration du routage
       description: Configurez le mode de routage, la référence de passerelle et les alias requis.
       personaNarration: Définissons comment le trafic modèle est routé vers ce fournisseur.
@@ -45,12 +49,14 @@ spec:
         - {field: routingMode, i18nKey: journeyRoutingModeField}
         - {field: gatewayRef, i18nKey: journeyGatewayRefField}
     - id: configure-entitlement
+      requiredObligations: []
       name: Habilitations et quotas
       description: Précisez le statut d'habilitation et les bornes de la fenêtre de quota.
       personaNarration: Configurons les permissions d'usage et les seuils budgétaires.
       requiredFields:
         - {field: permitted, i18nKey: journeyPermittedField}
     - id: confirm-declaration
+      requiredObligations: []
       name: Confirmation
       description: Vérifiez la déclaration structurée du ProviderAccount avant de proposer le
         changement.

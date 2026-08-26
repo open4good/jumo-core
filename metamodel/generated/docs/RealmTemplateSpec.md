@@ -307,6 +307,7 @@ attributes:
     owner: RealmTemplateSpec
     domain_of:
     - RealmTemplateSpec
+    - AssistedJourneySpec
     range: ContractReference
     multivalued: true
     inlined: true
@@ -456,6 +457,7 @@ attributes:
     owner: RealmTemplateSpec
     domain_of:
     - RealmTemplateSpec
+    - AssistedJourneySpec
     range: ContractReference
     multivalued: true
     inlined: true

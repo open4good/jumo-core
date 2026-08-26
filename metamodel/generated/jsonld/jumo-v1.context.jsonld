@@ -491,6 +491,13 @@
       },
       "@id": "navigationMode"
     },
+    "policySetRefs": {
+      "@type": "@id",
+      "@id": "policySetRefs"
+    },
+    "requiredCapabilities": {
+      "@id": "requiredCapabilities"
+    },
     "resourceBudgetRef": {
       "@type": "@id",
       "@id": "resourceBudgetRef"
@@ -3501,10 +3508,6 @@
     },
     "owner": {
       "@id": "owner"
-    },
-    "policySetRefs": {
-      "@type": "@id",
-      "@id": "policySetRefs"
     },
     "principleSetRefs": {
       "@type": "@id",

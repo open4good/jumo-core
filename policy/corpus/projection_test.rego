@@ -58,6 +58,29 @@ test_accepts_a_valid_projection_spec if {
 	count([v | some v in violations; startswith(v.rule, "corpus.projection.")]) == 0
 }
 
+test_accepts_an_action_only_projection_without_payload_shape if {
+	action_only := document(".jumo/projections/action-only.yml", "ProjectionSpec", "action-only", {
+		"ownerRealm": "home", "projectionKind": "FORM", "renderedBy": "cockpit",
+		"actions": ["contract.change.propose"],
+	})
+	violations := data.jumo.corpus.deny with input as [facts, capabilities, surface, action_only]
+	count([v | some v in violations; startswith(v.rule, "corpus.projection.")]) == 0
+}
+
+test_rejects_an_empty_projection_and_action_only_payload_shape if {
+	empty := document(".jumo/projections/empty.yml", "ProjectionSpec", "empty", {
+		"ownerRealm": "home", "projectionKind": "FORM", "renderedBy": "cockpit",
+	})
+	shaped := document(".jumo/projections/shaped-action-only.yml", "ProjectionSpec", "shaped-action-only", {
+		"ownerRealm": "home", "of": "TeamSpec", "projectionKind": "FORM", "renderedBy": "cockpit",
+		"actions": ["contract.change.propose"],
+	})
+	empty_violations := data.jumo.corpus.deny with input as [facts, capabilities, surface, empty]
+	shaped_violations := data.jumo.corpus.deny with input as [facts, capabilities, surface, shaped]
+	has_rule(empty_violations, "corpus.projection.content")
+	has_rule(shaped_violations, "corpus.projection.action-only")
+}
+
 test_rejects_projection_with_unknown_surface if {
 	bad := document(".jumo/projections/bad-surface.yml", "ProjectionSpec", "bad-surface", {
 		"ownerRealm": "home", "of": "TeamSpec", "projectionKind": "FORM", "renderedBy": "no-such-surface",

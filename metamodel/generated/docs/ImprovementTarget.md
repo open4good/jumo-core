@@ -228,6 +228,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ImprovementTarget
     domain_of:
+    - AssistedJourneyStep
     - ActionCapability
     - ImprovementTarget
     - SurfaceWritePath
@@ -327,6 +328,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ImprovementTarget
     domain_of:
+    - AssistedJourneyStep
     - ActionCapability
     - ImprovementTarget
     - SurfaceWritePath

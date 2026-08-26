@@ -13,9 +13,12 @@ spec:
   icon: mdi-tune-variant
   interruptible: true
   concurrencyPolicy: SINGLE_ACTIVE_RUN
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, provider.account.observe]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   completionMode: OBSERVATION
   steps:
     - id: select-api-accounts
+      requiredObligations: []
       name: Qualifier vos comptes API
       description: Sélectionnez plusieurs comptes déclarés, activez chaque clé via l’ingress propriétaire, puis vérifiez réellement les modèles accessibles.
       stepKind: COLLECT

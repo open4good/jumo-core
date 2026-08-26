@@ -14,6 +14,8 @@ spec:
   icon: mdi-clipboard-arrow-right-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
   emission:
     targetKind: WorkOrder
@@ -32,6 +34,7 @@ spec:
     routingEligibilityCheck: {projectField: projectRef, teamField: teamRef}
   steps:
     - id: capture-task-intent
+      requiredObligations: []
       name: Description du besoin
       description: Décrivez l'objectif fonctionnel ou technique à réaliser par un jumeau développeur.
       personaNarration: Expliquez ce que vous souhaitez développer ou corriger. Je vais cadrer le périmètre et la décomposition.
@@ -39,6 +42,7 @@ spec:
         - {field: taskSlug, i18nKey: journeyTaskSlugField}
         - {field: purpose, i18nKey: journeyTaskPurposeField}
     - id: specify-work-order
+      requiredObligations: []
       name: Spécification du lot
       description: Définissez le rôle responsable, l'équipe, le jalon de destination et les critères
         d'acceptation.
@@ -54,6 +58,7 @@ spec:
         namespace: dev.jumo.core
         id: specify-work-order
     - id: confirm-work-order
+      requiredObligations: []
       name: Confirmation de la tâche
       description: Vérifiez la proposition de contrat WorkOrder avant son émission.
       personaNarration: Le contrat de travail est prêt. Validez pour enregistrer la proposition de tâche.

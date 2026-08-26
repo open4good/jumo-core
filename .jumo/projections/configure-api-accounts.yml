@@ -9,6 +9,7 @@ spec:
   payloadSchemaRef: configure-api-accounts
   projectionKind: FORM
   renderedBy: home
+  actions: [provider.account.observe]
   sections:
     - id: accounts
       i18nKey: journeyApiAccountsSection

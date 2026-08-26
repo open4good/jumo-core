@@ -1125,6 +1125,23 @@
           "$ref": "#/$defs/AssistedJourneyNavigationMode",
           "description": "FREE permits navigation among dependency-ready steps; dependencies remain mandatory server-side."
         },
+        "policySetRefs": {
+          "description": "PolicySet contracts that govern every admission to this journey. The runtime refuses the journey unless each reference is active on the addressed RealmTemplate.",
+          "items": {
+            "$ref": "#/$defs/ContractReference"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "requiredCapabilities": {
+          "description": "Complete capability allowlist for this journey. The runtime journey authorization entrypoint checks every admitted action against it; ProjectionSpec.actions and emitsCapability must be subsets (Rego).",
+          "items": {
+            "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*){1,3}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
         "resourceBudgetRef": {
           "$ref": "#/$defs/ContractReference",
           "description": "Names the ResourceBudget whose modelCalls limit bounds the clarification-turn ceiling (AC1). The journey does not declare its own ceiling."
@@ -1145,6 +1162,8 @@
         "journeyId",
         "name",
         "resourceBudgetRef",
+        "requiredCapabilities",
+        "policySetRefs",
         "steps",
         "summaryI18nKey"
       ],
@@ -1230,6 +1249,13 @@
           },
           "type": "array"
         },
+        "requiredObligations": {
+          "description": "Additional obligations the caller must satisfy before this step is entered, submitted, selected or invoked. Evaluated with the journey envelope by the single kind-level runtime rule under policy/authz; an empty list is explicit and still fail-closed.",
+          "items": {
+            "$ref": "#/$defs/Obligation"
+          },
+          "type": "array"
+        },
         "stepKind": {
           "$ref": "#/$defs/AssistedJourneyStepKind",
           "description": "Required from the model-driven renderer onward (Rego)."
@@ -1259,7 +1285,8 @@
       },
       "required": [
         "id",
-        "name"
+        "name",
+        "requiredObligations"
       ],
       "title": "AssistedJourneyStep",
       "type": "object"
@@ -10703,18 +10730,17 @@
           "type": "string"
         },
         "sections": {
+          "description": "Rendered fields grouped into sections. May be empty only for an action-only projection, where actions is non-empty and the projection exists solely to anchor a headless journey step's callable capabilities (Rego).",
           "items": {
             "$ref": "#/$defs/ProjectionSection"
           },
-          "minItems": 1,
           "type": "array"
         }
       },
       "required": [
         "ownerRealm",
         "projectionKind",
-        "renderedBy",
-        "sections"
+        "renderedBy"
       ],
       "title": "ProjectionSpecBody",
       "type": "object"

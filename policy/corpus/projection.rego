@@ -69,7 +69,8 @@ deny contains corpus.violation("corpus.projection.payload-shape", document, mess
 	some document in projection_specs
 	object.get(corpus.spec(document), "of", "") == ""
 	object.get(corpus.spec(document), "payloadSchemaRef", "") == ""
-	message := "spec: exactly one of of or payloadSchemaRef is required"
+	count(object.get(corpus.spec(document), "actions", [])) == 0
+	message := "spec: a field projection requires exactly one of of or payloadSchemaRef"
 }
 
 deny contains corpus.violation("corpus.projection.payload-shape", document, message) if {
@@ -77,6 +78,27 @@ deny contains corpus.violation("corpus.projection.payload-shape", document, mess
 	object.get(corpus.spec(document), "of", "") != ""
 	object.get(corpus.spec(document), "payloadSchemaRef", "") != ""
 	message := "spec: of and payloadSchemaRef are mutually exclusive"
+}
+
+deny contains corpus.violation("corpus.projection.content", document, message) if {
+	some document in projection_specs
+	count(object.get(corpus.spec(document), "sections", [])) == 0
+	count(object.get(corpus.spec(document), "actions", [])) == 0
+	message := "spec: at least one section or action is required"
+}
+
+deny contains corpus.violation("corpus.projection.action-only", document, message) if {
+	some document in projection_specs
+	count(object.get(corpus.spec(document), "sections", [])) == 0
+	object.get(corpus.spec(document), "of", "") != ""
+	message := "spec.of: action-only projections declare no payload shape"
+}
+
+deny contains corpus.violation("corpus.projection.action-only", document, message) if {
+	some document in projection_specs
+	count(object.get(corpus.spec(document), "sections", [])) == 0
+	object.get(corpus.spec(document), "payloadSchemaRef", "") != ""
+	message := "spec.payloadSchemaRef: action-only projections declare no payload shape"
 }
 
 deny contains corpus.violation("corpus.projection.field-path", document, message) if {
@@ -255,6 +277,34 @@ deny contains corpus.violation("corpus.journey.observation-emits-capability", do
 	message := "observation journeys may not declare emitsCapability"
 }
 
+deny contains corpus.violation("corpus.journey.required-capability", document, message) if {
+	some document in corpus.documents
+	document.kind == "AssistedJourney"
+	spec := corpus.spec(document)
+	emitted := object.get(spec, "emitsCapability", "")
+	emitted != ""
+	not emitted in {name | some name in object.get(spec, "requiredCapabilities", [])}
+	message := sprintf("spec.emitsCapability: %q is absent from requiredCapabilities", [emitted])
+}
+
+deny contains corpus.violation("corpus.journey.required-capability", document, message) if {
+	some document in corpus.documents
+	document.kind == "AssistedJourney"
+	spec := corpus.spec(document)
+	required := {name | some name in object.get(spec, "requiredCapabilities", [])}
+	some step_index, step in object.get(spec, "steps", [])
+	projection_id := corpus.ref_id(object.get(step, "projectionSpecRef", object.get(step, "projectionRef", "")))
+	projection_id != ""
+	some projection in projection_specs
+	corpus.id(projection) == projection_id
+	some action in object.get(corpus.spec(projection), "actions", [])
+	not action in required
+	message := sprintf(
+		"spec.steps[%d].projectionSpecRef: action %q is absent from requiredCapabilities",
+		[step_index, action],
+	)
+}
+
 deny contains corpus.violation("corpus.journey.verification-ref", document, message) if {
 	some document in corpus.documents
 	document.kind == "AssistedJourney"
@@ -366,6 +416,8 @@ deny contains corpus.violation("corpus.journey.required-fields-drift", document,
 	step.stepKind in {"COLLECT", "CONFIRM"}
 	projection_ref := corpus.ref_id(object.get(step, "projectionSpecRef", object.get(step, "projectionRef", "")))
 	projection_ref != ""
+	projection := corpus.document_by_kind_id("ProjectionSpec", projection_ref)
+	count(object.get(corpus.spec(projection), "sections", [])) > 0
 	declared := {f.field | some f in object.get(step, "requiredFields", [])}
 	projected := projection_required_paths(projection_ref)
 	declared != projected

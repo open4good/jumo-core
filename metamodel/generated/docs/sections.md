@@ -5,6 +5,11 @@ search:
 
 # Slot: sections
 
+
+_Rendered fields grouped into sections. May be empty only for an action-only projection, where actions is non-empty and the projection exists solely to anchor a headless journey step's callable capabilities (Rego)._
+
+
+
 <div data-search-exclude markdown="1">
 
 
@@ -40,9 +45,7 @@ URI: [jumo:sections](https://jumo.dev/schemas/jumo-v1/sections)
 
 | Property | Value |
 | --- | --- |
-| Required | Yes |
 | Multivalued | Yes |
-| Minimum Cardinality | 1 |
 ### Slot Characteristics
 
 | Property | Value |
@@ -89,17 +92,18 @@ URI: [jumo:sections](https://jumo.dev/schemas/jumo-v1/sections)
 <details>
 ```yaml
 name: sections
+description: Rendered fields grouped into sections. May be empty only for an action-only
+  projection, where actions is non-empty and the projection exists solely to anchor
+  a headless journey step's callable capabilities (Rego).
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
 owner: ProjectionSpecBody
 domain_of:
 - ProjectionSpecBody
 range: ProjectionSection
-required: true
 multivalued: true
 inlined: true
 inlined_as_list: true
-minimum_cardinality: 1
 
 ```
 </details></div>

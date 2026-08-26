@@ -3582,6 +3582,20 @@ components:
           description: Names the ResourceBudget whose modelCalls limit bounds the
             clarification-turn ceiling (AC1). The journey does not declare its own
             ceiling.
+        requiredCapabilities:
+          items:
+            type: string
+          type: array
+          description: Complete capability allowlist for this journey. The runtime
+            journey authorization entrypoint checks every admitted action against
+            it; ProjectionSpec.actions and emitsCapability must be subsets (Rego).
+        policySetRefs:
+          items:
+            $ref: '#/components/schemas/ContractReference'
+          type: array
+          description: PolicySet contracts that govern every admission to this journey.
+            The runtime refuses the journey unless each reference is active on the
+            addressed RealmTemplate.
         emitsCapability:
           type: string
           description: The single capability a proposal journey may invoke. Observation
@@ -3620,6 +3634,8 @@ components:
       - journeyId
       - name
       - resourceBudgetRef
+      - requiredCapabilities
+      - policySetRefs
       - steps
       - summaryI18nKey
       title: AssistedJourneySpec
@@ -3921,6 +3937,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/ContractReference'
           description: Generic real observation required before this step can advance.
+        requiredObligations:
+          items:
+            $ref: '#/components/schemas/Obligation'
+          type: array
+          description: Additional obligations the caller must satisfy before this
+            step is entered, submitted, selected or invoked. Evaluated with the journey
+            envelope by the single kind-level runtime rule under policy/authz; an
+            empty list is explicit and still fail-closed.
         dependsOn:
           items:
             type: string
@@ -3959,6 +3983,7 @@ components:
       required:
       - id
       - name
+      - requiredObligations
       title: AssistedJourneyStep
       description: 'stepKind/projectionRef/processRef are additive: the model-driven
         rendering engine that consumes them does not exist yet, so requiredFields
@@ -9036,6 +9061,10 @@ components:
           items:
             $ref: '#/components/schemas/ProjectionSection'
           type: array
+          description: Rendered fields grouped into sections. May be empty only for
+            an action-only projection, where actions is non-empty and the projection
+            exists solely to anchor a headless journey step's callable capabilities
+            (Rego).
         actions:
           items:
             type: string
@@ -9051,7 +9080,6 @@ components:
       - ownerRealm
       - projectionKind
       - renderedBy
-      - sections
       title: ProjectionSpecBody
     ProjectionSection:
       properties:

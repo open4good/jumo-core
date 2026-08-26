@@ -14,6 +14,8 @@ spec:
   icon: mdi-folder-plus-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
   emission:
     targetKind: Project
@@ -26,6 +28,7 @@ spec:
       - {field: repository, required: true}
   steps:
     - id: define-project
+      requiredObligations: []
       name: Identité du projet
       description: Renseignez l'identifiant technique et la finalité du projet.
       personaNarration: Donnons un nom et une mission claire à votre nouveau projet.
@@ -38,6 +41,7 @@ spec:
         namespace: dev.jumo.core
         id: create-project
     - id: bind-repository
+      requiredObligations: []
       name: Dépôt Git externe
       description: Liez le dépôt GitHub cible qui recevra le code et les artefacts (ex. owner/repo).
       personaNarration: Renseignez les coordonnées de votre dépôt Git externe sous la forme owner/repo.
@@ -49,6 +53,7 @@ spec:
         namespace: dev.jumo.core
         id: bind-repository-form
     - id: confirm-project
+      requiredObligations: []
       name: Confirmation
       description: Validez la création du projet et l'émission du contrat associé.
       personaNarration: Vérifions le contrat de projet avant son scellement déclaratif.

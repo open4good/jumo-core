@@ -30,7 +30,7 @@ URI: [jumo:Obligation](https://jumo.dev/schemas/jumo-v1/Obligation)
 
 | Name | Description |
 | ---  | --- |
-| [requiredObligations](requiredObligations.md) |  |
+| [requiredObligations](requiredObligations.md) | Additional obligations the caller must satisfy before this step is entered, s... |
 | [obligations](obligations.md) |  |
 | [mandatoryObligations](mandatoryObligations.md) |  |
 

@@ -1234,6 +1234,22 @@ classes:
         inlined: true
         description: Names the ResourceBudget whose modelCalls limit bounds the clarification-turn ceiling (AC1). The
           journey does not declare its own ceiling.
+      requiredCapabilities:
+        range: CapabilityName
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+        description: 'Complete capability allowlist for this journey. The runtime journey authorization
+          entrypoint checks every admitted action against it; ProjectionSpec.actions and emitsCapability
+          must be subsets (Rego).'
+      policySetRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+        description: 'PolicySet contracts that govern every admission to this journey. The runtime refuses
+          the journey unless each reference is active on the addressed RealmTemplate.'
       emitsCapability:
         range: CapabilityName
         description: The single capability a proposal journey may invoke. Observation journeys leave this absent.
@@ -1582,6 +1598,13 @@ classes:
         range: ContractReference
         inlined: true
         description: Generic real observation required before this step can advance.
+      requiredObligations:
+        range: Obligation
+        multivalued: true
+        required: true
+        description: 'Additional obligations the caller must satisfy before this step is entered, submitted,
+          selected or invoked. Evaluated with the journey envelope by the single kind-level runtime rule under
+          policy/authz; an empty list is explicit and still fail-closed.'
       dependsOn:
         range: string
         multivalued: true

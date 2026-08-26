@@ -44,6 +44,42 @@ spec:
       reversible: true
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
+    - name: journey.run.start
+      description: Start one declared AssistedJourney run for the authenticated Realm principal.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: journey.run.read
+      description: Read one owned AssistedJourney run and its sanitized execution state.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: journey.run.abandon
+      description: Abandon one interruptible owned AssistedJourney run without applying its proposal.
+      riskTier: MEDIUM
+      reversible: false
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: journey.step.select
+      description: Select one dependency-ready step in a declared free-navigation AssistedJourney.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: journey.step.submit
+      description: Submit bounded fields or a conversational turn to the current declared journey step.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: journey.proposal.submit
+      description: Admit a completed AssistedJourney run to its separately authorized proposal emission checkpoint.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: provider.account.observe
       description: Perform one bounded, credential-custodied model-catalog observation for a declared ProviderAccount without changing its routing contract.
       riskTier: MEDIUM

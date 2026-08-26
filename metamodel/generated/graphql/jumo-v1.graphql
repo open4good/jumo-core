@@ -1592,6 +1592,8 @@ type AssistedJourneySpec
     lifetimeUnique: Boolean
     heroImage: String
     resourceBudgetRef: ContractReference!
+    requiredCapabilities: [CapabilityName]!
+    policySetRefs: [ContractReference]!
     emitsCapability: CapabilityName
     completionMode: AssistedJourneyCompletionMode
     navigationMode: AssistedJourneyNavigationMode
@@ -1612,6 +1614,7 @@ type AssistedJourneyStep
     promptTemplateRef: ContractReference
     subAssistedJourneyRef: ContractReference
     verificationSpecRef: ContractReference
+    requiredObligations: [Obligation]!
     dependsOn: [String]
     parallelizable: Boolean
     image: String
@@ -3759,7 +3762,7 @@ type ProjectionSpecBody
     payloadSchemaRef: String
     projectionKind: ProjectionKind!
     renderedBy: Identifier!
-    sections: [ProjectionSection]!
+    sections: [ProjectionSection]
     actions: [CapabilityName]
   }
 

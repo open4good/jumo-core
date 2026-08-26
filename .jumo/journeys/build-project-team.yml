@@ -14,6 +14,8 @@ spec:
   icon: mdi-account-group-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
   emission:
     targetKind: TeamSpec
@@ -37,6 +39,7 @@ spec:
           - {field: role, minimumLength: 3}
   steps:
     - id: define-team-scope
+      requiredObligations: []
       name: Définition de l'équipe
       description: Renseignez le nom de l'équipe et la mission du projet gouverné.
       personaNarration: Définissons ensemble les objectifs de cette nouvelle équipe projet et son champ d'action.
@@ -49,6 +52,7 @@ spec:
         namespace: dev.jumo.core
         id: build-project-team
     - id: select-members
+      requiredObligations: []
       name: Sélection des membres
       description: Choisissez les opérateurs et définissez leurs rôles et groupes d'indépendance.
       personaNarration: Structurons les membres de l'équipe en veillant à la séparation des responsabilités de production
@@ -61,6 +65,7 @@ spec:
         namespace: dev.jumo.core
         id: select-members
     - id: confirm-team
+      requiredObligations: []
       name: Validation de l'équipe
       description: Vérifiez le récapitulatif de l'équipe avant émission de la proposition contractuelle.
       personaNarration: Tout est en ordre. Validons la création de cette équipe dans votre Realm.

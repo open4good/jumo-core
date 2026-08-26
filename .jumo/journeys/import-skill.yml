@@ -13,6 +13,8 @@ spec:
   icon: package-variant-closed
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
   emission:
     targetKind: KitBinding
@@ -25,6 +27,7 @@ spec:
       - {field: commit, required: true, pattern: '^[0-9a-fA-F]{40}$'}
   steps:
     - id: declare-kit
+      requiredObligations: []
       name: Declaration du kit
       description: Renseignez l'alias local, l'URL du depot Git et le commit SHA du kit.
       personaNarration: Indiquez la source Git du kit de competences a importer dans votre Realm.
@@ -38,6 +41,7 @@ spec:
         namespace: dev.jumo.core
         id: import-skill
     - id: confirm-kit
+      requiredObligations: []
       name: Confirmation
       description: Validez l'importation et l'enregistrement de la liaison du kit.
       personaNarration: Verifions la declaration du kit avant son emission declarative.

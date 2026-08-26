@@ -5,11 +5,6 @@ search:
 
 # Slot: policySetRefs
 
-
-_Relative paths to PolicySet documents. Resolved and existence-checked (Rego)._
-
-
-
 <div data-search-exclude markdown="1">
 
 
@@ -26,6 +21,7 @@ URI: [jumo:policySetRefs](https://jumo.dev/schemas/jumo-v1/policySetRefs)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [RealmTemplateSpec](RealmTemplateSpec.md) |  |  no  |
+| [AssistedJourneySpec](AssistedJourneySpec.md) |  |  no  |
 
 
 
@@ -38,21 +34,13 @@ URI: [jumo:policySetRefs](https://jumo.dev/schemas/jumo-v1/policySetRefs)
 
 | Property | Value |
 | --- | --- |
-| Range | [ContractReference](ContractReference.md) |
-| Domain Of | [RealmTemplateSpec](RealmTemplateSpec.md) |
+| Range | [String](String.md) |
+| Domain Of | [RealmTemplateSpec](RealmTemplateSpec.md), [AssistedJourneySpec](AssistedJourneySpec.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-| Multivalued | Yes |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [RealmTemplateSpec](RealmTemplateSpec.md) |
-
-
 
 
 
@@ -66,13 +54,6 @@ URI: [jumo:policySetRefs](https://jumo.dev/schemas/jumo-v1/policySetRefs)
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -92,17 +73,10 @@ URI: [jumo:policySetRefs](https://jumo.dev/schemas/jumo-v1/policySetRefs)
 <details>
 ```yaml
 name: policySetRefs
-description: Relative paths to PolicySet documents. Resolved and existence-checked
-  (Rego).
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: RealmTemplateSpec
 domain_of:
 - RealmTemplateSpec
-range: ContractReference
-multivalued: true
-inlined: true
-inlined_as_list: true
+- AssistedJourneySpec
+range: string
 
 ```
 </details></div>

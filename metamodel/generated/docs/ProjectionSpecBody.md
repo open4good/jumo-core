@@ -46,7 +46,7 @@ URI: [jumo:ProjectionSpecBody](https://jumo.dev/schemas/jumo-v1/ProjectionSpecBo
 
 
 
-        ProjectionSpecBody --> "1..*" ProjectionSection : sections
+        ProjectionSpecBody --> "*" ProjectionSection : sections
         click ProjectionSection href "../ProjectionSection/"
 
 
@@ -68,7 +68,7 @@ URI: [jumo:ProjectionSpecBody](https://jumo.dev/schemas/jumo-v1/ProjectionSpecBo
 | [payloadSchemaRef](payloadSchemaRef.md) | 0..1 <br/> [String](String.md) | A JSON Schema 2020-12 document declared under a corpus schemas directory (e | direct |
 | [projectionKind](projectionKind.md) | 1 <br/> [ProjectionKind](ProjectionKind.md) |  | direct |
 | [renderedBy](renderedBy.md) | 1 <br/> [Identifier](Identifier.md) | The id of an InterfaceSurface `Surface` this projection is scoped to | direct |
-| [sections](sections.md) | 1..* <br/> [ProjectionSection](ProjectionSection.md) |  | direct |
+| [sections](sections.md) | * <br/> [ProjectionSection](ProjectionSection.md) | Rendered fields grouped into sections | direct |
 | [actions](actions.md) | * <br/> [CapabilityName](CapabilityName.md) | Every named action must resolve against a declared ActionCapability (Rego, sa... | direct |
 
 
@@ -271,17 +271,18 @@ attributes:
     required: true
   sections:
     name: sections
+    description: Rendered fields grouped into sections. May be empty only for an action-only
+      projection, where actions is non-empty and the projection exists solely to anchor
+      a headless journey step's callable capabilities (Rego).
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ProjectionSpecBody
     domain_of:
     - ProjectionSpecBody
     range: ProjectionSection
-    required: true
     multivalued: true
     inlined: true
     inlined_as_list: true
-    minimum_cardinality: 1
   actions:
     name: actions
     description: Every named action must resolve against a declared ActionCapability
@@ -436,17 +437,18 @@ attributes:
     required: true
   sections:
     name: sections
+    description: Rendered fields grouped into sections. May be empty only for an action-only
+      projection, where actions is non-empty and the projection exists solely to anchor
+      a headless journey step's callable capabilities (Rego).
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ProjectionSpecBody
     domain_of:
     - ProjectionSpecBody
     range: ProjectionSection
-    required: true
     multivalued: true
     inlined: true
     inlined_as_list: true
-    minimum_cardinality: 1
   actions:
     name: actions
     description: Every named action must resolve against a declared ActionCapability

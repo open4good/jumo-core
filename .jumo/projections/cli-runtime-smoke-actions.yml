@@ -1,0 +1,13 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: cli-runtime-smoke-actions
+  namespace: dev.jumo.core
+  name: CLI runtime smoke actions
+spec:
+  ownerRealm: home
+  projectionKind: FORM
+  renderedBy: home
+  actions:
+    - cli.session.smoke
+    - cli.session.smoke.observe

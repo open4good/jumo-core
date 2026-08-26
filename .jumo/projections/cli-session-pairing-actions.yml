@@ -1,0 +1,13 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: cli-session-pairing-actions
+  namespace: dev.jumo.core
+  name: CLI session pairing actions
+spec:
+  ownerRealm: home
+  projectionKind: FORM
+  renderedBy: home
+  actions:
+    - cli.session.pair
+    - cli.session.pair.observe

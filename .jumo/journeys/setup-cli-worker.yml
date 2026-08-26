@@ -14,6 +14,8 @@ spec:
   icon: mdi-console-line
   interruptible: true
   concurrencyPolicy: SINGLE_ACTIVE_RUN
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose, cli.session.pair, cli.session.pair.observe, cli.session.smoke, cli.session.smoke.observe]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
   emission:
     targetKind: WorkerSubstrate
@@ -27,6 +29,7 @@ spec:
       - {field: providerSessionRef, required: true}
   steps:
     - id: select-cli-engine
+      requiredObligations: []
       name: Choix du moteur CLI
       description: Sélectionnez le moteur qualifié à initialiser (Codex ou Claude Code). Copilot et Gemini ne sont pas encore activables.
       personaNarration: Choisissons le runtime qualifié que vous souhaitez mettre à disposition de vos agents.
@@ -36,6 +39,7 @@ spec:
         - {field: cliEngine, i18nKey: journeyCliEngineField}
         - {field: workerName, i18nKey: journeyCliWorkerNameField}
     - id: select-execution-machine
+      requiredObligations: []
       name: Machine d'exécution
       description: Choisissez une machine existante, ACTIVE et saine, appartenant à ce Realm. Le parcours ne crée jamais de VM.
       personaNarration: La session et le runtime seront liés à cette machine précise.
@@ -45,6 +49,7 @@ spec:
         - {field: executionMachineRef, i18nKey: journeyCliExecutionMachineField}
         - {field: providerAccountRef, i18nKey: journeyCliProviderAccountField}
     - id: install-cli-runtime
+      requiredObligations: []
       name: Runtime CLI qualifié
       description: Vérifiez le runtime OCI signé sur la machine ; s'il est absent, un WorkOrder approuvé l'installe avant de continuer.
       personaNarration: Nous vérifions l'image immuable qui exécutera le CLI, sans créer de nouvelle machine.
@@ -55,6 +60,9 @@ spec:
         namespace: dev.jumo.core
         id: cli-runtime-installation--1-0-0
     - id: pair-local-session
+      requiredObligations: []
+      stepKind: COLLECT
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: cli-session-pairing-actions}
       name: Connexion locale
       description: Ouvrez le lien temporaire et saisissez le code affiché. La session reste chiffrée sur la machine sélectionnée.
       personaNarration: Votre abonnement est authentifié directement auprès du fournisseur, sans passer par Jumo.
@@ -65,6 +73,9 @@ spec:
         namespace: dev.jumo.core
         id: cli-session-pairing
     - id: smoke-test-cli
+      requiredObligations: []
+      stepKind: COLLECT
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: cli-runtime-smoke-actions}
       name: Test réel de la CLI
       description: Exécutez une commande minimale dans un bail isolé. L'activation reste bloquée tant que cette observation n'est pas réussie.
       personaNarration: Vérifions maintenant la session et le runtime dans les mêmes conditions que l'exécution future.
@@ -74,6 +85,7 @@ spec:
         namespace: dev.jumo.core
         id: cli-runtime-smoke
     - id: confirm-cli-setup
+      requiredObligations: []
       name: Bilan et activation
       description: Vérifiez la déclaration du WorkerSubstrate avant enregistrement dans le Grand Registre.
       personaNarration: Récapitulons les paramètres avant d'enregistrer la proposition.

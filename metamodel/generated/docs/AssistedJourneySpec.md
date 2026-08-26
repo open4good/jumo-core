@@ -83,6 +83,19 @@ URI: [jumo:AssistedJourneySpec](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 
 
 
+      AssistedJourneySpec : policySetRefs
+
+
+
+
+
+        AssistedJourneySpec --> "1..*" ContractReference : policySetRefs
+        click ContractReference href "../ContractReference/"
+
+
+
+      AssistedJourneySpec : requiredCapabilities
+
       AssistedJourneySpec : resourceBudgetRef
 
 
@@ -130,6 +143,8 @@ URI: [jumo:AssistedJourneySpec](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 | [lifetimeUnique](lifetimeUnique.md) | 0..1 <br/> [Boolean](Boolean.md) |  | direct |
 | [heroImage](heroImage.md) | 0..1 <br/> [String](String.md) |  | direct |
 | [resourceBudgetRef](resourceBudgetRef.md) | 1 <br/> [ContractReference](ContractReference.md) | Names the ResourceBudget whose modelCalls limit bounds the clarification-turn... | direct |
+| [requiredCapabilities](requiredCapabilities.md) | 1..* <br/> [CapabilityName](CapabilityName.md) | Complete capability allowlist for this journey | direct |
+| [policySetRefs](policySetRefs.md) | 1..* <br/> [ContractReference](ContractReference.md) | PolicySet contracts that govern every admission to this journey | direct |
 | [emitsCapability](emitsCapability.md) | 0..1 <br/> [CapabilityName](CapabilityName.md) | The single capability a proposal journey may invoke | direct |
 | [completionMode](completionMode.md) | 0..1 <br/> [AssistedJourneyCompletionMode](AssistedJourneyCompletionMode.md) |  | direct |
 | [navigationMode](navigationMode.md) | 0..1 <br/> [AssistedJourneyNavigationMode](AssistedJourneyNavigationMode.md) | FREE permits navigation among dependency-ready steps; dependencies remain man... | direct |
@@ -348,6 +363,36 @@ attributes:
     range: ContractReference
     required: true
     inlined: true
+  requiredCapabilities:
+    name: requiredCapabilities
+    description: Complete capability allowlist for this journey. The runtime journey
+      authorization entrypoint checks every admitted action against it; ProjectionSpec.actions
+      and emitsCapability must be subsets (Rego).
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneySpec
+    domain_of:
+    - AssistedJourneySpec
+    range: CapabilityName
+    required: true
+    multivalued: true
+    minimum_cardinality: 1
+  policySetRefs:
+    name: policySetRefs
+    description: PolicySet contracts that govern every admission to this journey.
+      The runtime refuses the journey unless each reference is active on the addressed
+      RealmTemplate.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: AssistedJourneySpec
+    domain_of:
+    - RealmTemplateSpec
+    - AssistedJourneySpec
+    range: ContractReference
+    required: true
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    minimum_cardinality: 1
   emitsCapability:
     name: emitsCapability
     description: The single capability a proposal journey may invoke. Observation
@@ -572,6 +617,36 @@ attributes:
     range: ContractReference
     required: true
     inlined: true
+  requiredCapabilities:
+    name: requiredCapabilities
+    description: Complete capability allowlist for this journey. The runtime journey
+      authorization entrypoint checks every admitted action against it; ProjectionSpec.actions
+      and emitsCapability must be subsets (Rego).
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneySpec
+    domain_of:
+    - AssistedJourneySpec
+    range: CapabilityName
+    required: true
+    multivalued: true
+    minimum_cardinality: 1
+  policySetRefs:
+    name: policySetRefs
+    description: PolicySet contracts that govern every admission to this journey.
+      The runtime refuses the journey unless each reference is active on the addressed
+      RealmTemplate.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: AssistedJourneySpec
+    domain_of:
+    - RealmTemplateSpec
+    - AssistedJourneySpec
+    range: ContractReference
+    required: true
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    minimum_cardinality: 1
   emitsCapability:
     name: emitsCapability
     description: The single capability a proposal journey may invoke. Observation

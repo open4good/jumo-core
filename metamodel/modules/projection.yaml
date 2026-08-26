@@ -114,8 +114,9 @@ classes:
         range: ProjectionSection
         multivalued: true
         inlined_as_list: true
-        required: true
-        minimum_cardinality: 1
+        description: 'Rendered fields grouped into sections. May be empty only for an action-only projection,
+          where actions is non-empty and the projection exists solely to anchor a headless journey step''s
+          callable capabilities (Rego).'
       actions:
         range: CapabilityName
         multivalued: true

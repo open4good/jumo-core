@@ -19,7 +19,5 @@ disk or libvirt domain. The initial approved release is
 The guest boots with OVMF/UEFI and a signed NoCloud seed. It has a fixed control interface on
 `10.203.11.0/24` and no other network attachment. It exposes no inbound SSH.
 
-The owner withdrew the Freebox subject on 2026-08-25. This decision previously also governed a
-second guest interface bridged onto a dedicated home LAN and the Freebox application-token
-handling behind it; both are removed rather than kept dormant, and no home-LAN attachment path
-remains in the provisioning chain.
+A cell has no second guest interface bridged onto a home LAN, and no application-token handling
+behind one: no home-LAN attachment path exists in the provisioning chain.

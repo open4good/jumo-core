@@ -483,3 +483,95 @@ test_one_playbook_per_capability_accepted if {
 	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [one])
 	not has_rule(violations, "corpus.machine-admin-playbook.capability-unique")
 }
+
+remote_machine(allowlist) := document(".jumo/execution-machines/registry.yml", "ExecutionMachine", "registry", {
+	"ownerRealm": "registry", "origin": "JUMO_MANAGED_CLOUD_RESERVED", "environment": "REMOTE", "desiredState": "DECLARED",
+	"network": {"outboundControlUrl": "https://control-plane.internal", "egressAllowlist": allowlist},
+})
+
+test_https_only_egress_allowlist_accepted if {
+	machine := remote_machine(["https://control-plane.internal", "https://registry.modelcontextprotocol.io"])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [machine])
+	not has_rule(violations, "corpus.machine.egress-scheme")
+}
+
+test_non_https_egress_entry_rejected if {
+	machine := remote_machine(["https://control-plane.internal", "ftp://example.com"])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [machine])
+	has_rule(violations, "corpus.machine.egress-scheme")
+}
+
+test_control_url_in_allowlist_accepted if {
+	machine := remote_machine(["https://control-plane.internal"])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [machine])
+	not has_rule(violations, "corpus.machine.egress-control-url")
+}
+
+test_control_url_missing_from_allowlist_rejected if {
+	machine := remote_machine(["https://registry.modelcontextprotocol.io"])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [machine])
+	has_rule(violations, "corpus.machine.egress-control-url")
+}
+
+test_remote_machine_with_allowlist_accepted if {
+	machine := remote_machine(["https://control-plane.internal"])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [machine])
+	not has_rule(violations, "corpus.machine.egress-required-remote")
+}
+
+test_remote_machine_without_allowlist_rejected if {
+	machine := document(".jumo/execution-machines/registry.yml", "ExecutionMachine", "registry", {
+		"ownerRealm": "registry", "origin": "JUMO_MANAGED_CLOUD_RESERVED", "environment": "REMOTE", "desiredState": "DECLARED",
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [machine])
+	has_rule(violations, "corpus.machine.egress-required-remote")
+}
+
+test_egress_entry_without_wildcard_accepted if {
+	machine := remote_machine(["https://control-plane.internal"])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [machine])
+	not has_rule(violations, "corpus.machine.egress-wildcard")
+}
+
+test_egress_entry_with_wildcard_rejected if {
+	machine := remote_machine(["https://control-plane.internal", "https://*.example.com"])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [machine])
+	has_rule(violations, "corpus.machine.egress-wildcard")
+}
+
+registry_binding_fixtures := [
+	document(".jumo/mcp-registry-sources/official.yml", "McpRegistrySource", "official", {
+		"sourceType": "OFFICIAL_REGISTRY", "adapter": "official-registry-v0.1", "lifecycle": "ENABLED",
+		"baseUrlAllowlist": ["https://registry.modelcontextprotocol.io"],
+		"syncMode": "FULL_THEN_INCREMENTAL", "cadence": "PT1H",
+	}),
+	remote_machine(["https://control-plane.internal", "https://registry.modelcontextprotocol.io"]),
+]
+
+test_registry_source_covered_by_machine_allowlist_accepted if {
+	binding := document(".jumo/mcp-registry-source-bindings/official.yml", "McpRegistrySourceBinding", "official", {
+		"ownerRealm": "registry",
+		"mcpRegistrySourceRef": {"kind": "McpRegistrySource", "namespace": "dev.jumo.test", "id": "official"},
+		"executionMachineRef": {"kind": "ExecutionMachine", "namespace": "dev.jumo.test", "id": "registry"},
+		"lifecycle": "ENABLED",
+		"workOrderRef": {"kind": "WorkOrder", "namespace": "home.jumo.dev", "id": "official-sync"},
+		"roleDefinitionRef": {"kind": "RoleDefinition", "namespace": "dev.jumo.core", "id": "implementer"},
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(registry_binding_fixtures, [binding])
+	not has_rule(violations, "corpus.registry-source.base-url-allowlisted")
+}
+
+test_registry_source_uncovered_by_machine_allowlist_rejected if {
+	narrow_machine := remote_machine(["https://control-plane.internal"])
+	binding := document(".jumo/mcp-registry-source-bindings/official.yml", "McpRegistrySourceBinding", "official", {
+		"ownerRealm": "registry",
+		"mcpRegistrySourceRef": {"kind": "McpRegistrySource", "namespace": "dev.jumo.test", "id": "official"},
+		"executionMachineRef": {"kind": "ExecutionMachine", "namespace": "dev.jumo.test", "id": "registry"},
+		"lifecycle": "ENABLED",
+		"workOrderRef": {"kind": "WorkOrder", "namespace": "home.jumo.dev", "id": "official-sync"},
+		"roleDefinitionRef": {"kind": "RoleDefinition", "namespace": "dev.jumo.core", "id": "implementer"},
+	})
+	source := registry_binding_fixtures[0]
+	violations := data.jumo.corpus.deny with input as array.concat([source, narrow_machine], [binding])
+	has_rule(violations, "corpus.registry-source.base-url-allowlisted")
+}

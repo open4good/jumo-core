@@ -947,3 +947,80 @@ deny contains corpus.violation("corpus.cli-tool.qualified-cli-unique", document,
 	count(peers) > 1
 	message := sprintf("spec.cli: %q is claimed by more than one QUALIFIED CliToolDefinition", [cli])
 }
+
+# egressAllowlist was decorative (mcp-registry-system-realm-worker's A1.2 finding): declared on
+# every ExecutionMachine, read by no Rego and enforced by no code. These five make it binding on
+# the corpus side; the network-level enforcement is the apply-egress-allowlist playbook.
+
+without_egress_scheme(entry) := trim_prefix(trim_prefix(entry, "https://"), "http://")
+
+egress_host(entry) := split(without_egress_scheme(entry), "/")[0]
+
+egress_origin(url) := sprintf("%s://%s", [split(url, "://")[0], egress_host(url)])
+
+valid_egress_scheme(entry, _) if startswith(entry, "https://")
+
+valid_egress_scheme(entry, environment) if {
+	environment == "LOCAL_DEV"
+	startswith(entry, "http://")
+}
+
+deny contains corpus.violation("corpus.machine.egress-scheme", document, message) if {
+	some document in corpus.documents
+	document.kind == "ExecutionMachine"
+	spec := corpus.spec(document)
+	some entry in object.get(object.get(spec, "network", {}), "egressAllowlist", [])
+	not valid_egress_scheme(entry, spec.environment)
+	message := sprintf("spec.network.egressAllowlist: %q is not an absolute https:// URL", [entry])
+}
+
+deny contains corpus.violation("corpus.machine.egress-control-url", document, message) if {
+	some document in corpus.documents
+	document.kind == "ExecutionMachine"
+	network := object.get(corpus.spec(document), "network", {})
+	control_url := object.get(network, "outboundControlUrl", "")
+	control_url != ""
+	not control_url in object.get(network, "egressAllowlist", [])
+	message := sprintf("spec.network.outboundControlUrl %q is absent from spec.network.egressAllowlist", [control_url])
+}
+
+deny contains corpus.violation("corpus.machine.egress-required-remote", document, message) if {
+	some document in corpus.documents
+	document.kind == "ExecutionMachine"
+	corpus.spec(document).environment == "REMOTE"
+	count(object.get(object.get(corpus.spec(document), "network", {}), "egressAllowlist", [])) == 0
+	message := "spec.network.egressAllowlist is required and must be non-empty for a REMOTE ExecutionMachine"
+}
+
+deny contains corpus.violation("corpus.machine.egress-wildcard", document, message) if {
+	some document in corpus.documents
+	document.kind == "ExecutionMachine"
+	some entry in object.get(object.get(corpus.spec(document), "network", {}), "egressAllowlist", [])
+	contains(entry, "*")
+	message := sprintf("spec.network.egressAllowlist: %q must not contain a wildcard", [entry])
+}
+
+deny contains corpus.violation("corpus.machine.egress-wildcard", document, message) if {
+	some document in corpus.documents
+	document.kind == "ExecutionMachine"
+	some entry in object.get(object.get(corpus.spec(document), "network", {}), "egressAllowlist", [])
+	egress_host(entry) == ""
+	message := sprintf("spec.network.egressAllowlist: %q declares no host", [entry])
+}
+
+# McpRegistrySourceBindingSpec.workOrderRef and mcpRegistrySourceRef/executionMachineRef, not the
+# retired McpRegistrySource.workOrderRef (attribution moved to the binding, decision AC1) -- see
+# mcp-registry-system-realm-worker's 2026-08-26 note.
+deny contains corpus.violation("corpus.registry-source.base-url-allowlisted", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpRegistrySourceBinding"
+	spec := corpus.spec(document)
+	source := corpus.document_by_kind_id("McpRegistrySource", corpus.ref_id(object.get(spec, "mcpRegistrySourceRef", null)))
+	machine_id := corpus.ref_id(object.get(spec, "executionMachineRef", null))
+	machine := corpus.document_by_kind_id("ExecutionMachine", machine_id)
+	allowlist := object.get(object.get(corpus.spec(machine), "network", {}), "egressAllowlist", [])
+	covered := {egress_origin(allowed) | some allowed in allowlist}
+	some entry in object.get(corpus.spec(source), "baseUrlAllowlist", [])
+	not egress_origin(entry) in covered
+	message := sprintf("spec.baseUrlAllowlist: %q is not covered by ExecutionMachine %q's egressAllowlist", [entry, machine_id])
+}

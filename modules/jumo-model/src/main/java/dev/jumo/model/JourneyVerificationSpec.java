@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Secret-free declaration of an explicit real observation a journey step may request.
  */
-public record JourneyVerificationSpec(String apiVersion, String kind, Metadata metadata, JourneyVerificationTarget targetType, JourneyVerificationCapability capability)  {
+public record JourneyVerificationSpec(String apiVersion, String kind, Metadata metadata, JourneyVerificationTarget targetType, String capability)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,7 +19,7 @@ public record JourneyVerificationSpec(String apiVersion, String kind, Metadata m
         private String kind = "";
         private Metadata metadata = null;
         private JourneyVerificationTarget targetType = null;
-        private JourneyVerificationCapability capability = null;
+        private String capability = "";
 
 
         public Builder apiVersion(String apiVersion) {
@@ -42,7 +42,7 @@ public record JourneyVerificationSpec(String apiVersion, String kind, Metadata m
             return this;
         }
 
-        public Builder capability(JourneyVerificationCapability capability) {
+        public Builder capability(String capability) {
             this.capability = Objects.requireNonNull(capability);
             return this;
         }

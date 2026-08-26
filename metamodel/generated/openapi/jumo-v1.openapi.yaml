@@ -3537,7 +3537,9 @@ components:
         targetType:
           $ref: '#/components/schemas/JourneyVerificationTarget'
         capability:
-          $ref: '#/components/schemas/JourneyVerificationCapability'
+          type: string
+          description: Must resolve in an ActionCapabilitySet (Rego), the same way
+            ProcessStep.capabilityRef is checked.
       additionalProperties: false
       type: object
       required:
@@ -9592,14 +9594,6 @@ components:
       - CLI_SESSION
       - EXECUTION_CELL
       title: JourneyVerificationTarget
-    JourneyVerificationCapability:
-      type: string
-      enum:
-      - PROVIDER_SMOKE
-      - PROVIDER_LADDER_QUALIFICATION
-      - CLI_SMOKE
-      - SESSION_PAIRING
-      title: JourneyVerificationCapability
     WorkOrderDeclineReason:
       type: string
       enum:

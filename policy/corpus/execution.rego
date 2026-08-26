@@ -5,6 +5,7 @@ import rego.v1
 import data.jumo.lib.corpus
 
 processes := corpus.documents_of_kind("ProcessSpec")
+journey_verifications := corpus.documents_of_kind("JourneyVerificationSpec")
 
 # Process payloads deliberately name generated LinkML classes, rather than an open string protocol.
 # The small, release-bound vocabulary keeps this Rego gate authoritative without creating another
@@ -224,6 +225,12 @@ deny contains corpus.violation("corpus.process.capability", document, message) i
 	step.kind == "SERVICE"
 	not step.capabilityRef in corpus.capability_names
 	message := sprintf("service %q names unknown capability %q", [step.id, step.capabilityRef])
+}
+
+deny contains corpus.violation("corpus.journey-verification.capability", document, message) if {
+	some document in journey_verifications
+	not document.capability in corpus.capability_names
+	message := sprintf("%q names unknown capability %q", [corpus.id(document), document.capability])
 }
 
 deny contains corpus.violation("corpus.process.ring-ceiling", document, message) if {

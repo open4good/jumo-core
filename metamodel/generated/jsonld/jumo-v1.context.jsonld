@@ -185,11 +185,6 @@
       "@id": "responsibilities"
     },
     "capability": {
-      "@context": {
-        "text": "skos:notation",
-        "description": "skos:prefLabel",
-        "meaning": "@id"
-      },
       "@id": "capability"
     },
     "dataScope": {

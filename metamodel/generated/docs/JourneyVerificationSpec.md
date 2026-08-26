@@ -28,15 +28,6 @@ URI: [jumo:JourneyVerificationSpec](https://jumo.dev/schemas/jumo-v1/JourneyVeri
 
       JourneyVerificationSpec : capability
 
-
-
-
-
-        JourneyVerificationSpec --> "1" JourneyVerificationCapability : capability
-        click JourneyVerificationCapability href "../JourneyVerificationCapability/"
-
-
-
       JourneyVerificationSpec : kind
 
       JourneyVerificationSpec : metadata
@@ -77,7 +68,7 @@ URI: [jumo:JourneyVerificationSpec](https://jumo.dev/schemas/jumo-v1/JourneyVeri
 | [kind](kind.md) | 1 <br/> [String](String.md) |  | direct |
 | [metadata](metadata.md) | 1 <br/> [Metadata](Metadata.md) |  | direct |
 | [targetType](targetType.md) | 1 <br/> [JourneyVerificationTarget](JourneyVerificationTarget.md) |  | direct |
-| [capability](capability.md) | 1 <br/> [JourneyVerificationCapability](JourneyVerificationCapability.md) |  | direct |
+| [capability](capability.md) | 1 <br/> [CapabilityName](CapabilityName.md) | Must resolve in an ActionCapabilitySet (Rego), the same way ProcessStep | direct |
 
 
 
@@ -450,12 +441,14 @@ attributes:
     required: true
   capability:
     name: capability
+    description: Must resolve in an ActionCapabilitySet (Rego), the same way ProcessStep.capabilityRef
+      is checked.
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: JourneyVerificationSpec
     domain_of:
     - AllowedRequest
     - JourneyVerificationSpec
-    range: JourneyVerificationCapability
+    range: CapabilityName
     required: true
 
 ```
@@ -775,12 +768,14 @@ attributes:
     required: true
   capability:
     name: capability
+    description: Must resolve in an ActionCapabilitySet (Rego), the same way ProcessStep.capabilityRef
+      is checked.
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: JourneyVerificationSpec
     domain_of:
     - AllowedRequest
     - JourneyVerificationSpec
-    range: JourneyVerificationCapability
+    range: CapabilityName
     required: true
 
 ```

@@ -56,14 +56,6 @@ enums:
       PROVIDER_ACCOUNT: {}
       CLI_SESSION: {}
       EXECUTION_CELL: {}
-  JourneyVerificationCapability:
-    permissible_values:
-      PROVIDER_SMOKE: {}
-      PROVIDER_LADDER_QUALIFICATION:
-        description: Bounded, token-consuming live inference per declared effort rung -- an external
-          effect, unlike PROVIDER_SMOKE's free catalogue discovery. Gated by its own capability.
-      CLI_SMOKE: {}
-      SESSION_PAIRING: {}
   WorkOrderDeclineReason:
     permissible_values:
       OUT_OF_SCOPE: {}
@@ -1203,8 +1195,9 @@ classes:
         range: JourneyVerificationTarget
         required: true
       capability:
-        range: JourneyVerificationCapability
+        range: CapabilityName
         required: true
+        description: Must resolve in an ActionCapabilitySet (Rego), the same way ProcessStep.capabilityRef is checked.
   AssistedJourneySpec:
     attributes:
       journeyId:

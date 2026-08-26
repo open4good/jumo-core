@@ -223,6 +223,29 @@ test_process_rejects_unknown_capability_gateway_and_cycle if {
 	has_rule(violations, "corpus.process.capability")
 }
 
+# JourneyVerificationSpec is a flat document (capability/targetType at the top level, not nested
+# under spec -- additionalProperties: false in the generated schema rejects a spec: key), unlike
+# most other kinds, so this cannot reuse the document() helper above.
+test_journey_verification_rejects_unknown_capability if {
+	bad := {"path": ".jumo/journey-verifications/bad.yml", "contents": {
+		"apiVersion": "jumo.dev/v1", "kind": "JourneyVerificationSpec",
+		"metadata": {"id": "bad", "namespace": "dev.jumo.test"},
+		"targetType": "PROVIDER_ACCOUNT", "capability": "unknown.capability",
+	}}
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [bad])
+	has_rule(violations, "corpus.journey-verification.capability")
+}
+
+test_journey_verification_accepts_declared_capability if {
+	good := {"path": ".jumo/journey-verifications/good.yml", "contents": {
+		"apiVersion": "jumo.dev/v1", "kind": "JourneyVerificationSpec",
+		"metadata": {"id": "good", "namespace": "dev.jumo.test"},
+		"targetType": "PROVIDER_ACCOUNT", "capability": "document.change.propose",
+	}}
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [good])
+	not has_rule(violations, "corpus.journey-verification.capability")
+}
+
 test_provider_routing_and_terms_fail_closed if {
 	context := {"path": "policy-context.json", "contents": {"jumoPolicyContext": {"now": "2026-08-12"}}}
 	other := document(".jumo/providers/other.yml", "ProviderAccount", "other", {"independenceGroup": "other"})

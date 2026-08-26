@@ -5,4 +5,4 @@ metadata:
   namespace: dev.jumo.core
   name: Provider account smoke observation
 targetType: PROVIDER_ACCOUNT
-capability: PROVIDER_SMOKE
+capability: provider.account.observe

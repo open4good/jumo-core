@@ -5,4 +5,4 @@ metadata:
   namespace: dev.jumo.core
   name: Provider effort-ladder qualification
 targetType: PROVIDER_ACCOUNT
-capability: PROVIDER_LADDER_QUALIFICATION
+capability: provider.account.qualify

@@ -1471,7 +1471,6 @@ Name: jumo_v1
 | [IntentKind](IntentKind.md) |  |
 | [InterfaceEntity](InterfaceEntity.md) |  |
 | [InteroperabilityAdapter](InteroperabilityAdapter.md) | Sealed registry of authorized public interoperability adapters |
-| [JourneyVerificationCapability](JourneyVerificationCapability.md) |  |
 | [JourneyVerificationTarget](JourneyVerificationTarget.md) |  |
 | [KitBindingValueType](KitBindingValueType.md) |  |
 | [KitModuleType](KitModuleType.md) |  |

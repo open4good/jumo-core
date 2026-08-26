@@ -1116,21 +1116,6 @@ enums:
         text: CLI_SESSION
       EXECUTION_CELL:
         text: EXECUTION_CELL
-  JourneyVerificationCapability:
-    name: JourneyVerificationCapability
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    permissible_values:
-      PROVIDER_SMOKE:
-        text: PROVIDER_SMOKE
-      PROVIDER_LADDER_QUALIFICATION:
-        text: PROVIDER_LADDER_QUALIFICATION
-        description: Bounded, token-consuming live inference per declared effort rung
-          -- an external effect, unlike PROVIDER_SMOKE's free catalogue discovery.
-          Gated by its own capability.
-      CLI_SMOKE:
-        text: CLI_SMOKE
-      SESSION_PAIRING:
-        text: SESSION_PAIRING
   WorkOrderDeclineReason:
     name: WorkOrderDeclineReason
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -28121,12 +28106,14 @@ classes:
         required: true
       capability:
         name: capability
+        description: Must resolve in an ActionCapabilitySet (Rego), the same way ProcessStep.capabilityRef
+          is checked.
         from_schema: https://jumo.dev/schemas/work
         owner: JourneyVerificationSpec
         domain_of:
         - AllowedRequest
         - JourneyVerificationSpec
-        range: JourneyVerificationCapability
+        range: CapabilityName
         required: true
   AssistedJourneySpec:
     name: AssistedJourneySpec

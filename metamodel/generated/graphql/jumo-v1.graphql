@@ -573,14 +573,6 @@ enum InteroperabilityAdapter
     acs__HYPHEN_MINUS__jumo__HYPHEN_MINUS__opa__HYPHEN_MINUS__v1
   }
 
-enum JourneyVerificationCapability
-  {
-    PROVIDER_SMOKE
-    PROVIDER_LADDER_QUALIFICATION
-    CLI_SMOKE
-    SESSION_PAIRING
-  }
-
 enum JourneyVerificationTarget
   {
     PROVIDER_ACCOUNT
@@ -2629,7 +2621,7 @@ type JourneyVerificationSpec
     kind: String!
     metadata: Metadata!
     targetType: JourneyVerificationTarget!
-    capability: JourneyVerificationCapability!
+    capability: CapabilityName!
   }
 
 type JumoKit

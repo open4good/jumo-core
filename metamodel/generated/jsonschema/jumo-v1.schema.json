@@ -5721,17 +5721,6 @@
       "title": "InvocationAuthorizationReceipt",
       "type": "object"
     },
-    "JourneyVerificationCapability": {
-      "description": "",
-      "enum": [
-        "PROVIDER_SMOKE",
-        "PROVIDER_LADDER_QUALIFICATION",
-        "CLI_SMOKE",
-        "SESSION_PAIRING"
-      ],
-      "title": "JourneyVerificationCapability",
-      "type": "string"
-    },
     "JourneyVerificationSpec": {
       "additionalProperties": false,
       "description": "Secret-free declaration of an explicit real observation a journey step may request.",
@@ -5741,7 +5730,9 @@
           "type": "string"
         },
         "capability": {
-          "$ref": "#/$defs/JourneyVerificationCapability"
+          "description": "Must resolve in an ActionCapabilitySet (Rego), the same way ProcessStep.capabilityRef is checked.",
+          "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9]*){1,3}$",
+          "type": "string"
         },
         "kind": {
           "const": "JourneyVerificationSpec",

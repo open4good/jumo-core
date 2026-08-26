@@ -56,7 +56,6 @@ CREATE TYPE "VariableTrust" AS ENUM ('TRUSTED', 'UNTRUSTED');
 CREATE TYPE "PromptOutputForm" AS ENUM ('STRUCTURED', 'TEXT');
 CREATE TYPE "BudgetOnExhaustion" AS ENUM ('WAIT_FOR_RECOVERY', 'USE_AUTHORIZED_ALTERNATIVE', 'REQUEST_HUMAN_DECISION', 'STOP_CLEANLY');
 CREATE TYPE "JourneyVerificationTarget" AS ENUM ('PROVIDER_ACCOUNT', 'CLI_SESSION', 'EXECUTION_CELL');
-CREATE TYPE "JourneyVerificationCapability" AS ENUM ('PROVIDER_SMOKE', 'PROVIDER_LADDER_QUALIFICATION', 'CLI_SMOKE', 'SESSION_PAIRING');
 CREATE TYPE "AssistedJourneyConcurrencyPolicy" AS ENUM ('SINGLE_ACTIVE_RUN', 'MULTIPLE_ACTIVE_RUNS');
 CREATE TYPE "AssistedJourneyCompletionMode" AS ENUM ('PROPOSAL', 'OBSERVATION');
 CREATE TYPE "AssistedJourneyNavigationMode" AS ENUM ('SEQUENTIAL', 'FREE');
@@ -4338,13 +4337,14 @@ CREATE TABLE "JourneyVerificationSpec" (
 	"apiVersion" TEXT NOT NULL,
 	kind TEXT NOT NULL,
 	"targetType" "JourneyVerificationTarget" NOT NULL,
-	capability "JourneyVerificationCapability" NOT NULL,
+	capability TEXT NOT NULL,
 	metadata_uid INTEGER NOT NULL,
 	PRIMARY KEY (id),
 	FOREIGN KEY(metadata_uid) REFERENCES "Metadata" (uid)
 );
 CREATE INDEX "ix_JourneyVerificationSpec_id" ON "JourneyVerificationSpec" (id);
 COMMENT ON TABLE "JourneyVerificationSpec" IS 'Secret-free declaration of an explicit real observation a journey step may request.';
+COMMENT ON COLUMN "JourneyVerificationSpec".capability IS 'Must resolve in an ActionCapabilitySet (Rego), the same way ProcessStep.capabilityRef is checked.';
 
 CREATE TABLE "AssistedJourneySpec" (
 	id SERIAL NOT NULL,

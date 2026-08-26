@@ -499,6 +499,9 @@
       "@type": "@id",
       "@id": "steps"
     },
+    "summaryI18nKey": {
+      "@id": "summaryI18nKey"
+    },
     "dependsOn": {
       "@id": "dependsOn"
     },

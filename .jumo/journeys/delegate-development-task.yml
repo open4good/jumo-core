@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: delegate-development-task
   name: Déléguer une tâche de développement
+  summaryI18nKey: delegateDevelopmentTaskSummary
   description: Capturez, décomposez et spécifiez une tâche de développement logiciel sous forme de
     WorkOrder gouverné.
   category: teamsProjects

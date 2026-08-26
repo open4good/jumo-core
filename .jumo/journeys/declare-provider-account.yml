@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: declare-provider-account
   name: Déclarer un compte fournisseur
+  summaryI18nKey: declareProviderAccountSummary
   description: Déclarez un compte fournisseur externe de modèle ou de CLI, configurez les alias de
     routage, et établissez les bornes d'habilitation sans jamais accepter de jeton secret en clair.
   category: integrations

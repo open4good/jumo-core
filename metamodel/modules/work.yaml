@@ -1256,6 +1256,13 @@ classes:
         multivalued: true
         inlined_as_list: true
         required: true
+      summaryI18nKey:
+        range: string
+        required: true
+        pattern: ^[a-z][a-zA-Z0-9]*$
+        description: 'Prefix JourneySummaryStep.vue resolves three keys from at its completion step:
+          `${summaryI18nKey}Title`, `${summaryI18nKey}ConfirmLabel` and `${summaryI18nKey}SuccessMessage`. Lets one
+          generic completion component describe what this journey actually produced instead of fixed onboarding text.'
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

@@ -1286,6 +1286,7 @@ Name: jumo_v1
 | [subscriptionAudience](subscriptionAudience.md) |  |
 | [substrate](substrate.md) |  |
 | [suffix](suffix.md) |  |
+| [summaryI18nKey](summaryI18nKey.md) | Prefix JourneySummaryStep |
 | [superseded_by](superseded_by.md) |  |
 | [supersededBy](supersededBy.md) |  |
 | [supersedes](supersedes.md) |  |

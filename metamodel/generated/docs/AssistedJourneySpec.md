@@ -105,6 +105,8 @@ URI: [jumo:AssistedJourneySpec](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 
 
 
+      AssistedJourneySpec : summaryI18nKey
+
 
 ```
 
@@ -133,6 +135,7 @@ URI: [jumo:AssistedJourneySpec](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 | [navigationMode](navigationMode.md) | 0..1 <br/> [AssistedJourneyNavigationMode](AssistedJourneyNavigationMode.md) | FREE permits navigation among dependency-ready steps; dependencies remain man... | direct |
 | [emission](emission.md) | 0..1 <br/> [AssistedJourneyEmission](AssistedJourneyEmission.md) | What a PROPOSAL journey emits when its run completes: the contract kind, wher... | direct |
 | [steps](steps.md) | 1..* <br/> [AssistedJourneyStep](AssistedJourneyStep.md) |  | direct |
+| [summaryI18nKey](summaryI18nKey.md) | 1 <br/> [String](String.md) | Prefix JourneySummaryStep | direct |
 
 
 
@@ -403,6 +406,20 @@ attributes:
     multivalued: true
     inlined: true
     inlined_as_list: true
+  summaryI18nKey:
+    name: summaryI18nKey
+    description: 'Prefix JourneySummaryStep.vue resolves three keys from at its completion
+      step: `${summaryI18nKey}Title`, `${summaryI18nKey}ConfirmLabel` and `${summaryI18nKey}SuccessMessage`.
+      Lets one generic completion component describe what this journey actually produced
+      instead of fixed onboarding text.'
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneySpec
+    domain_of:
+    - AssistedJourneySpec
+    range: string
+    required: true
+    pattern: ^[a-z][a-zA-Z0-9]*$
 
 ```
 </details>
@@ -613,6 +630,20 @@ attributes:
     multivalued: true
     inlined: true
     inlined_as_list: true
+  summaryI18nKey:
+    name: summaryI18nKey
+    description: 'Prefix JourneySummaryStep.vue resolves three keys from at its completion
+      step: `${summaryI18nKey}Title`, `${summaryI18nKey}ConfirmLabel` and `${summaryI18nKey}SuccessMessage`.
+      Lets one generic completion component describe what this journey actually produced
+      instead of fixed onboarding text.'
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneySpec
+    domain_of:
+    - AssistedJourneySpec
+    range: string
+    required: true
+    pattern: ^[a-z][a-zA-Z0-9]*$
 
 ```
 </details></div>

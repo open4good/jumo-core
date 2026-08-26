@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: configure-provider-keys
   name: Configuration des clés
+  summaryI18nKey: configureProviderKeysSummary
   description: Ingress propriétaire des clés déclarées et appairage des sessions CLI.
   category: integrations
   icon: mdi-link-variant

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record AssistedJourneySpec(String journeyId, String name, String description, String category, String icon, Boolean interruptible, AssistedJourneyConcurrencyPolicy concurrencyPolicy, Boolean firstRunMandatory, Boolean lifetimeUnique, String heroImage, ContractReference resourceBudgetRef, String emitsCapability, AssistedJourneyCompletionMode completionMode, AssistedJourneyNavigationMode navigationMode, AssistedJourneyEmission emission, List<AssistedJourneyStep> steps)  {
+public record AssistedJourneySpec(String journeyId, String name, String description, String category, String icon, Boolean interruptible, AssistedJourneyConcurrencyPolicy concurrencyPolicy, Boolean firstRunMandatory, Boolean lifetimeUnique, String heroImage, ContractReference resourceBudgetRef, String emitsCapability, AssistedJourneyCompletionMode completionMode, AssistedJourneyNavigationMode navigationMode, AssistedJourneyEmission emission, List<AssistedJourneyStep> steps, String summaryI18nKey)  {
 
     public static Builder builder() {
         return new Builder();
@@ -30,6 +30,7 @@ public record AssistedJourneySpec(String journeyId, String name, String descript
         private AssistedJourneyNavigationMode navigationMode = null;
         private AssistedJourneyEmission emission = null;
         private List<AssistedJourneyStep> steps = List.of();
+        private String summaryI18nKey = "";
 
 
         public Builder journeyId(String journeyId) {
@@ -112,8 +113,13 @@ public record AssistedJourneySpec(String journeyId, String name, String descript
             return this;
         }
 
+        public Builder summaryI18nKey(String summaryI18nKey) {
+            this.summaryI18nKey = Objects.requireNonNull(summaryI18nKey);
+            return this;
+        }
+
     public AssistedJourneySpec build() {
-            return new AssistedJourneySpec(journeyId, name, description, category, icon, interruptible, concurrencyPolicy, firstRunMandatory, lifetimeUnique, heroImage, resourceBudgetRef, emitsCapability, completionMode, navigationMode, emission, steps);
+            return new AssistedJourneySpec(journeyId, name, description, category, icon, interruptible, concurrencyPolicy, firstRunMandatory, lifetimeUnique, heroImage, resourceBudgetRef, emitsCapability, completionMode, navigationMode, emission, steps, summaryI18nKey);
         }
     }
 }

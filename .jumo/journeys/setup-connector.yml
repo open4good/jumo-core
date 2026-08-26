@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: setup-connector
   name: Mise en place d'un connecteur
+  summaryI18nKey: setupConnectorSummary
   description: 'Parcours réutilisable de mise en place des connecteurs choisis : sélection depuis le catalogue, puis confirmation
     avant appairage. Référencé en tant que sous-parcours (stepKind SUB_JOURNEY) par the-onboarding-trip, il peut aussi être
     démarré seul.'

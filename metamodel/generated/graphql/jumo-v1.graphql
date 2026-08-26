@@ -1597,6 +1597,7 @@ type AssistedJourneySpec
     navigationMode: AssistedJourneyNavigationMode
     emission: AssistedJourneyEmission
     steps: [AssistedJourneyStep]!
+    summaryI18nKey: String!
   }
 
 type AssistedJourneyStep

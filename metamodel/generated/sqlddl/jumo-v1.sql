@@ -4425,6 +4425,7 @@ CREATE TABLE "AssistedJourneySpec" (
 	"emitsCapability" TEXT,
 	"completionMode" "AssistedJourneyCompletionMode",
 	"navigationMode" "AssistedJourneyNavigationMode",
+	"summaryI18nKey" TEXT NOT NULL,
 	"resourceBudgetRef_uid" INTEGER NOT NULL,
 	emission_id INTEGER,
 	PRIMARY KEY (id),
@@ -4437,6 +4438,7 @@ COMMENT ON COLUMN "AssistedJourneySpec".category IS 'Catalog category for this j
 COMMENT ON COLUMN "AssistedJourneySpec".icon IS 'Display icon for this journey.';
 COMMENT ON COLUMN "AssistedJourneySpec"."emitsCapability" IS 'The single capability a proposal journey may invoke. Observation journeys leave this absent.';
 COMMENT ON COLUMN "AssistedJourneySpec"."navigationMode" IS 'FREE permits navigation among dependency-ready steps; dependencies remain mandatory server-side.';
+COMMENT ON COLUMN "AssistedJourneySpec"."summaryI18nKey" IS 'Prefix JourneySummaryStep.vue resolves three keys from at its completion step: `${summaryI18nKey}Title`, `${summaryI18nKey}ConfirmLabel` and `${summaryI18nKey}SuccessMessage`. Lets one generic completion component describe what this journey actually produced instead of fixed onboarding text.';
 COMMENT ON COLUMN "AssistedJourneySpec"."resourceBudgetRef_uid" IS 'Names the ResourceBudget whose modelCalls limit bounds the clarification-turn ceiling (AC1). The journey does not declare its own ceiling.';
 COMMENT ON COLUMN "AssistedJourneySpec".emission_id IS 'What a PROPOSAL journey emits when its run completes: the contract kind, where it is written, the template that renders it, and the checks the collected fields must pass. Rego requires it of every PROPOSAL journey (canonical decision 15) -- without it the platform would have to recognise the journey by name to know what it produces, which is the dispatch this slot exists to remove.';
 

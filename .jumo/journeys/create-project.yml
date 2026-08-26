@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: create-project
   name: Créer un projet
+  summaryI18nKey: createProjectSummary
   description: Déclarez un nouveau projet gouverné, liez des dépôts GitHub externes, et mettez en
     place la documentation et les autorités d'état.
   category: teamsProjects

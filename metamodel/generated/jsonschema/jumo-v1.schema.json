@@ -1134,13 +1134,19 @@
             "$ref": "#/$defs/AssistedJourneyStep"
           },
           "type": "array"
+        },
+        "summaryI18nKey": {
+          "description": "Prefix JourneySummaryStep.vue resolves three keys from at its completion step: `${summaryI18nKey}Title`, `${summaryI18nKey}ConfirmLabel` and `${summaryI18nKey}SuccessMessage`. Lets one generic completion component describe what this journey actually produced instead of fixed onboarding text.",
+          "pattern": "^[a-z][a-zA-Z0-9]*$",
+          "type": "string"
         }
       },
       "required": [
         "journeyId",
         "name",
         "resourceBudgetRef",
-        "steps"
+        "steps",
+        "summaryI18nKey"
       ],
       "title": "AssistedJourneySpec",
       "type": "object"

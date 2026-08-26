@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: build-project-team
   name: Constituer une équipe projet
+  summaryI18nKey: buildProjectTeamSummary
   description: Composez et configurez une équipe projet gouvernée avec des rôles responsables, des
     mécanismes de coordination et des groupes de vérification indépendants.
   category: teamsProjects

@@ -28,30 +28,32 @@ spec:
     booleanFields: [permitted]
   steps:
     - id: define-provider
-      name: Provider identity
-      description: Specify the provider ID, name, and provider family (e.g. anthropic, openai, google).
-      personaNarration: Let's name and categorize the provider account.
+      name: Identité du fournisseur
+      description: Indiquez l'identifiant du compte, son nom, et la famille de fournisseur (par ex.
+        anthropic, openai, google).
+      personaNarration: Nommons et catégorisons ce compte fournisseur.
       requiredFields:
         - providerId
         - providerName
         - provider
     - id: configure-routing
-      name: Routing configuration
-      description: Configure routing mode, gateway reference, and requirement aliases.
-      personaNarration: Define how model traffic is routed to this provider.
+      name: Configuration du routage
+      description: Configurez le mode de routage, la référence de passerelle et les alias requis.
+      personaNarration: Définissons comment le trafic modèle est routé vers ce fournisseur.
       requiredFields:
         - routingMode
         - gatewayRef
     - id: configure-entitlement
-      name: Entitlements and quotas
-      description: Specify entitlement status and quota window bounds.
-      personaNarration: Set up the usage permissions and budget thresholds.
+      name: Habilitations et quotas
+      description: Précisez le statut d'habilitation et les bornes de la fenêtre de quota.
+      personaNarration: Configurons les permissions d'usage et les seuils budgétaires.
       requiredFields:
         - permitted
     - id: confirm-declaration
       name: Confirmation
-      description: Review the structured ProviderAccount declaration before proposing the change.
-      personaNarration: Let's review the provider contract before submission.
+      description: Vérifiez la déclaration structurée du ProviderAccount avant de proposer le
+        changement.
+      personaNarration: Relisons le contrat fournisseur avant soumission.
       requiredFields:
         - confirmed
   resourceBudgetRef:

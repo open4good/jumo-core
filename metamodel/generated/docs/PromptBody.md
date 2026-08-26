@@ -180,6 +180,7 @@ attributes:
     - ApiOperation
     - ChangeSetFile
     - ProjectionOptionCondition
+    - NestedOptionsSource
     - ProjectionField
     range: string
 
@@ -250,6 +251,7 @@ attributes:
     - ApiOperation
     - ChangeSetFile
     - ProjectionOptionCondition
+    - NestedOptionsSource
     - ProjectionField
     range: string
 

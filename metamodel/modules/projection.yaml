@@ -176,6 +176,36 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  NestedOptionsSource:
+    description: 'Resolves a field''s options from a nested multivalued attribute of one specific
+      document, for a value object with no standalone Git contract of its own -- Project.spec.milestones
+      is the motivating case. optionsFrom resolves one option per whole document of a declared kind;
+      this resolves one option per entry of a list nested inside a single document instead.'
+    attributes:
+      sourceKind:
+        range: string
+        required: true
+        description: The declared ContractKind holding the nested list. Must name a declared kind (Rego), the same check optionsFrom uses.
+      sourceId:
+        range: Identifier
+        required: true
+        description: 'The metadata.id of the one document of sourceKind to read. A literal address, not resolved from
+          another field on this same document -- proportionate while exactly one instance of sourceKind is ever
+          declared (true of Project today); broaden to cross-field addressing only if that stops holding.'
+      path:
+        range: string
+        required: true
+        description: Dotted path to the nested multivalued attribute within the resolved document's own spec, e.g. `spec.milestones`.
+      labelPath:
+        range: string
+        description: Dotted path, relative to each nested entry, used as the option's display title. Defaults to the entry's own `id` when absent.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: PROJECTION
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   ProjectionField:
     attributes:
       path:
@@ -202,14 +232,20 @@ classes:
         description: A contract kind whose declared instances populate this field's options, replacing a hardcoded roster
           lookup with a projection over real Git contracts. Must name a declared kind (Rego). An instance is offered as
           its `metadata.id` labelled by its `metadata.name`; a projection selects which instances are offered, never how
-          one is addressed. Mutually exclusive with optionsFromEnum (Rego).
+          one is addressed. Mutually exclusive with optionsFromEnum and optionsFromNested (Rego).
       optionsFromEnum:
         range: string
         description: 'A generated LinkML enumeration whose permissible values populate this field''s options, for a field
-          whose domain is a closed vocabulary rather than a contract kind. Mutually exclusive with optionsFrom (Rego).
-          Rego checks that an ENUMERATION field declares one of the two, not that this names an enumeration rather than
-          a class: the repository facts carry per-class slots, not permissible values, so the narrower check waits on a
-          fact this module does not produce.'
+          whose domain is a closed vocabulary rather than a contract kind. Mutually exclusive with optionsFrom and
+          optionsFromNested (Rego). Rego checks that an ENUMERATION field declares one of the three, not that this names
+          an enumeration rather than a class: the repository facts carry per-class slots, not permissible values, so the
+          narrower check waits on a fact this module does not produce.'
+      optionsFromNested:
+        range: NestedOptionsSource
+        inlined: true
+        description: 'An alternative to optionsFrom for a value object with no standalone Git contract of its own, such
+          as Project.spec.milestones -- see NestedOptionsSource. Mutually exclusive with optionsFrom and optionsFromEnum
+          (Rego).'
       optionsEligibility:
         range: ProjectionOptionCondition
         multivalued: true

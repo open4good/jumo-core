@@ -1679,6 +1679,21 @@ COMMENT ON COLUMN "ProjectionSpecBody"."of" IS 'A generated LinkML class name (m
 COMMENT ON COLUMN "ProjectionSpecBody"."payloadSchemaRef" IS 'A JSON Schema 2020-12 document declared under a corpus schemas directory (e.g. jumo-core:.jumo/schemas), for a step payload with no generated LinkML class of its own -- the metamodel names no such instance-specific class (canonical decision 15). Must resolve to a declared schema file (Rego). Mutually exclusive with of.';
 COMMENT ON COLUMN "ProjectionSpecBody"."renderedBy" IS 'The id of an InterfaceSurface `Surface` this projection is scoped to. Required and checked against every declared surface (Rego), rather than optional, so a projection nobody lists is never silently unconstrained -- the same fail-closed shape as every other reference in this metamodel.';
 
+CREATE TABLE "NestedOptionsSource" (
+	id SERIAL NOT NULL,
+	"sourceKind" TEXT NOT NULL,
+	"sourceId" TEXT NOT NULL,
+	path TEXT NOT NULL,
+	"labelPath" TEXT,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_NestedOptionsSource_id" ON "NestedOptionsSource" (id);
+COMMENT ON TABLE "NestedOptionsSource" IS 'Resolves a field''s options from a nested multivalued attribute of one specific document, for a value object with no standalone Git contract of its own -- Project.spec.milestones is the motivating case. optionsFrom resolves one option per whole document of a declared kind; this resolves one option per entry of a list nested inside a single document instead.';
+COMMENT ON COLUMN "NestedOptionsSource"."sourceKind" IS 'The declared ContractKind holding the nested list. Must name a declared kind (Rego), the same check optionsFrom uses.';
+COMMENT ON COLUMN "NestedOptionsSource"."sourceId" IS 'The metadata.id of the one document of sourceKind to read. A literal address, not resolved from another field on this same document -- proportionate while exactly one instance of sourceKind is ever declared (true of Project today); broaden to cross-field addressing only if that stops holding.';
+COMMENT ON COLUMN "NestedOptionsSource".path IS 'Dotted path to the nested multivalued attribute within the resolved document''s own spec, e.g. `spec.milestones`.';
+COMMENT ON COLUMN "NestedOptionsSource"."labelPath" IS 'Dotted path, relative to each nested entry, used as the option''s display title. Defaults to the entry''s own `id` when absent.';
+
 CREATE TABLE "Metadata" (
 	uid SERIAL NOT NULL,
 	id TEXT NOT NULL,
@@ -5273,16 +5288,19 @@ CREATE TABLE "ProjectionField" (
 	"optionsFromEnum" TEXT,
 	required BOOLEAN,
 	"ProjectionSection_uid" INTEGER,
+	"optionsFromNested_id" INTEGER,
 	PRIMARY KEY (id),
-	FOREIGN KEY("ProjectionSection_uid") REFERENCES "ProjectionSection" (uid)
+	FOREIGN KEY("ProjectionSection_uid") REFERENCES "ProjectionSection" (uid),
+	FOREIGN KEY("optionsFromNested_id") REFERENCES "NestedOptionsSource" (id)
 );
 CREATE INDEX "ix_ProjectionField_id" ON "ProjectionField" (id);
 COMMENT ON TABLE "ProjectionField" IS 'None';
 COMMENT ON COLUMN "ProjectionField".path IS 'A slot of the ProjectionSpecBody.of class this field projects (Rego).';
-COMMENT ON COLUMN "ProjectionField"."optionsFrom" IS 'A contract kind whose declared instances populate this field''s options, replacing a hardcoded roster lookup with a projection over real Git contracts. Must name a declared kind (Rego). An instance is offered as its `metadata.id` labelled by its `metadata.name`; a projection selects which instances are offered, never how one is addressed. Mutually exclusive with optionsFromEnum (Rego).';
-COMMENT ON COLUMN "ProjectionField"."optionsFromEnum" IS 'A generated LinkML enumeration whose permissible values populate this field''s options, for a field whose domain is a closed vocabulary rather than a contract kind. Mutually exclusive with optionsFrom (Rego). Rego checks that an ENUMERATION field declares one of the two, not that this names an enumeration rather than a class: the repository facts carry per-class slots, not permissible values, so the narrower check waits on a fact this module does not produce.';
+COMMENT ON COLUMN "ProjectionField"."optionsFrom" IS 'A contract kind whose declared instances populate this field''s options, replacing a hardcoded roster lookup with a projection over real Git contracts. Must name a declared kind (Rego). An instance is offered as its `metadata.id` labelled by its `metadata.name`; a projection selects which instances are offered, never how one is addressed. Mutually exclusive with optionsFromEnum and optionsFromNested (Rego).';
+COMMENT ON COLUMN "ProjectionField"."optionsFromEnum" IS 'A generated LinkML enumeration whose permissible values populate this field''s options, for a field whose domain is a closed vocabulary rather than a contract kind. Mutually exclusive with optionsFrom and optionsFromNested (Rego). Rego checks that an ENUMERATION field declares one of the three, not that this names an enumeration rather than a class: the repository facts carry per-class slots, not permissible values, so the narrower check waits on a fact this module does not produce.';
 COMMENT ON COLUMN "ProjectionField".required IS 'When an AssistedJourneyStep declares both projectionRef and requiredFields (work.yaml), requiredFields must name exactly the fields marked required here (Rego) -- the two lists describe the same gate and must not be allowed to drift.';
 COMMENT ON COLUMN "ProjectionField"."ProjectionSection_uid" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ProjectionField"."optionsFromNested_id" IS 'An alternative to optionsFrom for a value object with no standalone Git contract of its own, such as Project.spec.milestones -- see NestedOptionsSource. Mutually exclusive with optionsFrom and optionsFromEnum (Rego).';
 
 CREATE TABLE "Principle_inspiresPolicies" (
 	"Principle_uid" INTEGER,

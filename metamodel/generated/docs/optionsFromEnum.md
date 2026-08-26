@@ -6,7 +6,7 @@ search:
 # Slot: optionsFromEnum
 
 
-_A generated LinkML enumeration whose permissible values populate this field's options, for a field whose domain is a closed vocabulary rather than a contract kind. Mutually exclusive with optionsFrom (Rego). Rego checks that an ENUMERATION field declares one of the two, not that this names an enumeration rather than a class: the repository facts carry per-class slots, not permissible values, so the narrower check waits on a fact this module does not produce._
+_A generated LinkML enumeration whose permissible values populate this field's options, for a field whose domain is a closed vocabulary rather than a contract kind. Mutually exclusive with optionsFrom and optionsFromNested (Rego). Rego checks that an ENUMERATION field declares one of the three, not that this names an enumeration rather than a class: the repository facts carry per-class slots, not permissible values, so the narrower check waits on a fact this module does not produce._
 
 
 
@@ -93,10 +93,11 @@ URI: [jumo:optionsFromEnum](https://jumo.dev/schemas/jumo-v1/optionsFromEnum)
 name: optionsFromEnum
 description: 'A generated LinkML enumeration whose permissible values populate this
   field''s options, for a field whose domain is a closed vocabulary rather than a
-  contract kind. Mutually exclusive with optionsFrom (Rego). Rego checks that an ENUMERATION
-  field declares one of the two, not that this names an enumeration rather than a
-  class: the repository facts carry per-class slots, not permissible values, so the
-  narrower check waits on a fact this module does not produce.'
+  contract kind. Mutually exclusive with optionsFrom and optionsFromNested (Rego).
+  Rego checks that an ENUMERATION field declares one of the three, not that this names
+  an enumeration rather than a class: the repository facts carry per-class slots,
+  not permissible values, so the narrower check waits on a fact this module does not
+  produce.'
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
 owner: ProjectionField

@@ -17,5 +17,6 @@ spec:
       purpose: Onboarding trip completion for realm ${realmId}.
       roleRef: nestor
       projectRef: jumo
+      roadmapRef: ${roadmapRef}
       state: PROPOSED
       contractRevision: ${contractRevision}

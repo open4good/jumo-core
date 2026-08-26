@@ -1,0 +1,30 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: specify-work-order
+  namespace: dev.jumo.core
+  name: Specify work order step form
+spec:
+  ownerRealm: home
+  payloadSchemaRef: specify-work-order
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: specification
+      i18nKey: journeySpecifyWorkOrderSection
+      columns: 1
+      fields:
+        - path: roleRef
+          representation: IDENTIFIER
+          i18nKey: journeyRoleRefField
+          required: true
+        - path: teamRef
+          representation: IDENTIFIER
+          i18nKey: journeyTeamRefField
+          required: true
+        - path: roadmapRef
+          representation: ENTITY_REFERENCE
+          i18nKey: journeyRoadmapRefField
+          helpI18nKey: journeyRoadmapRefHelp
+          required: true
+          optionsFromNested: {sourceKind: Project, sourceId: jumo, path: spec.milestones}

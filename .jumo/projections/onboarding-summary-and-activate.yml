@@ -1,0 +1,27 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: onboarding-summary-and-activate
+  namespace: dev.jumo.core
+  name: Onboarding summary and activate confirmation form
+spec:
+  ownerRealm: home
+  payloadSchemaRef: onboarding-summary-and-activate
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: confirmation
+      i18nKey: journeyConfirmationSection
+      columns: 1
+      fields:
+        - path: roadmapRef
+          representation: ENTITY_REFERENCE
+          i18nKey: journeyRoadmapRefField
+          helpI18nKey: journeyRoadmapRefHelp
+          required: true
+          optionsFromNested: {sourceKind: Project, sourceId: jumo, path: spec.milestones}
+        - path: confirmed
+          representation: BOOLEAN_FLAG
+          i18nKey: journeyConfirmField
+          helpI18nKey: journeyConfirmHelp
+          required: true

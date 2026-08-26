@@ -3156,6 +3156,14 @@ type ModuleDigestEntry
     digest: String!
   }
 
+type NestedOptionsSource
+  {
+    sourceKind: String!
+    sourceId: Identifier!
+    path: String!
+    labelPath: String
+  }
+
 type NotificationPreferences
   {
     quietHoursEnabled: Boolean
@@ -3698,6 +3706,7 @@ type ProjectionField
     helpI18nKey: String
     optionsFrom: String
     optionsFromEnum: String
+    optionsFromNested: NestedOptionsSource
     optionsEligibility: [ProjectionOptionCondition]
     required: Boolean
   }

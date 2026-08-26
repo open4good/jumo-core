@@ -24,9 +24,9 @@ spec:
       - {field: purpose, required: true, minimumLength: 10}
       - {field: roleRef, required: true}
       - {field: teamRef, required: true}
+      - {field: roadmapRef, required: true}
     fieldDefaults:
       - {field: projectRef, value: jumo}
-      - {field: roadmapRef, value: v0}
       - {field: ring, value: RING_2_AGENT_BEHAVIOR}
     routingEligibilityCheck: {projectField: projectRef, teamField: teamRef}
   steps:
@@ -39,11 +39,19 @@ spec:
         - purpose
     - id: specify-work-order
       name: Spécification du lot
-      description: Définissez le rôle responsable, l'équipe et les critères d'acceptation.
-      personaNarration: Associons ce lot à un rôle d'implémentation et à un vérificateur indépendant.
+      description: Définissez le rôle responsable, l'équipe, le jalon de destination et les critères
+        d'acceptation.
+      personaNarration: Associons ce lot à un rôle d'implémentation, à un vérificateur indépendant et
+        au jalon de la feuille de route auquel il se rattache.
+      stepKind: COLLECT
       requiredFields:
         - roleRef
         - teamRef
+        - roadmapRef
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: specify-work-order
     - id: confirm-work-order
       name: Confirmation de la tâche
       description: Vérifiez la proposition de contrat WorkOrder avant son émission.

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/specify-work-order",
+  "title": "Specify work order step payload",
+  "type": "object",
+  "properties": {
+    "roleRef": { "type": "string", "minLength": 1 },
+    "teamRef": { "type": "string", "minLength": 1 },
+    "roadmapRef": { "type": "string", "minLength": 1 }
+  },
+  "required": ["roleRef", "teamRef", "roadmapRef"]
+}

@@ -154,11 +154,41 @@ deny contains corpus.violation("corpus.projection.options-source-ambiguous", doc
 	some document in projection_specs
 	some section_index, section in object.get(corpus.spec(document), "sections", [])
 	some field_index, field in object.get(section, "fields", [])
-	object.get(field, "optionsFrom", "") != ""
-	object.get(field, "optionsFromEnum", "") != ""
+	options_source_count(field) > 1
 	message := sprintf(
-		"spec.sections[%d].fields[%d]: optionsFrom and optionsFromEnum are mutually exclusive",
+		"spec.sections[%d].fields[%d]: optionsFrom, optionsFromEnum and optionsFromNested are mutually exclusive",
 		[section_index, field_index],
+	)
+}
+
+# Counts how many of the three option-source attributes a field declares -- optionsFromNested is an
+# inlined object, so its presence check is a null test, not the empty-string test the other two use.
+options_source_count(field) := count([source |
+	some source in ["optionsFrom", "optionsFromEnum"]
+	object.get(field, source, "") != ""
+]) + nested_source_present(field)
+
+nested_source_present(field) := 1 if {
+	object.get(field, "optionsFromNested", null) != null
+}
+
+nested_source_present(field) := 0 if {
+	object.get(field, "optionsFromNested", null) == null
+}
+
+deny contains corpus.violation("corpus.projection.options-nested-kind", document, message) if {
+	some document in projection_specs
+	kinds := object.get(repository_facts, "contractKinds", [])
+	some section_index, section in object.get(corpus.spec(document), "sections", [])
+	some field_index, field in object.get(section, "fields", [])
+	nested := object.get(field, "optionsFromNested", null)
+	nested != null
+	source_kind := object.get(nested, "sourceKind", "")
+	source_kind != ""
+	not source_kind in kinds
+	message := sprintf(
+		"spec.sections[%d].fields[%d].optionsFromNested.sourceKind: %q is not a declared contract kind",
+		[section_index, field_index, source_kind],
 	)
 }
 

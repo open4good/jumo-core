@@ -148,6 +148,7 @@ attributes:
     - ApiOperation
     - ChangeSetFile
     - ProjectionOptionCondition
+    - NestedOptionsSource
     - ProjectionField
     range: string
     required: true
@@ -214,6 +215,7 @@ attributes:
     - ApiOperation
     - ChangeSetFile
     - ProjectionOptionCondition
+    - NestedOptionsSource
     - ProjectionField
     range: string
     required: true

@@ -24,6 +24,7 @@ URI: [jumo:sourceId](https://jumo.dev/schemas/jumo-v1/sourceId)
 | [McpCatalogIdentity](McpCatalogIdentity.md) |  |  no  |
 | [McpCatalogFieldCandidate](McpCatalogFieldCandidate.md) |  |  no  |
 | [McpRegistrySyncStatus](McpRegistrySyncStatus.md) |  |  no  |
+| [NestedOptionsSource](NestedOptionsSource.md) | Resolves a field's options from a nested multivalued attribute of one specifi... |  no  |
 
 
 
@@ -37,7 +38,7 @@ URI: [jumo:sourceId](https://jumo.dev/schemas/jumo-v1/sourceId)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [McpCatalogProvenancePin](McpCatalogProvenancePin.md), [McpCatalogIdentity](McpCatalogIdentity.md), [McpCatalogFieldCandidate](McpCatalogFieldCandidate.md), [McpRegistrySyncStatus](McpRegistrySyncStatus.md) |
+| Domain Of | [McpCatalogProvenancePin](McpCatalogProvenancePin.md), [McpCatalogIdentity](McpCatalogIdentity.md), [McpCatalogFieldCandidate](McpCatalogFieldCandidate.md), [McpRegistrySyncStatus](McpRegistrySyncStatus.md), [NestedOptionsSource](NestedOptionsSource.md) |
 
 ### Cardinality and Requirements
 
@@ -80,6 +81,7 @@ domain_of:
 - McpCatalogIdentity
 - McpCatalogFieldCandidate
 - McpRegistrySyncStatus
+- NestedOptionsSource
 range: string
 
 ```

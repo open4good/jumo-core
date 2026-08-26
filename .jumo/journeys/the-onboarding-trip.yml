@@ -106,11 +106,12 @@ spec:
       stepKind: COLLECT
       dependsOn: [provision-execution-cell, link-repository, configure-api-accounts, capture-connector-intent, setup-connectors]
       requiredFields:
+        - roadmapRef
         - confirmed
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
-        id: summary-and-activate
+        id: onboarding-summary-and-activate
   resourceBudgetRef:
     kind: ResourceBudget
     namespace: dev.jumo.core

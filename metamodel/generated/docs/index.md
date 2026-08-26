@@ -209,6 +209,7 @@ Name: jumo_v1
 | [MethodologySource](MethodologySource.md) |  |
 | [Milestone](Milestone.md) |  |
 | [ModuleDigestEntry](ModuleDigestEntry.md) |  |
+| [NestedOptionsSource](NestedOptionsSource.md) | Resolves a field's options from a nested multivalued attribute of one specifi... |
 | [NotificationPreferences](NotificationPreferences.md) |  |
 | [OAuthClientBinding](OAuthClientBinding.md) | Durable Git contract binding an OAuth client registration to a Realm |
 | [OAuthClientBindingSpec](OAuthClientBindingSpec.md) | Specification for an OAuthClientBinding contract |
@@ -834,6 +835,7 @@ Name: jumo_v1
 | [kitReleaseCertificationRef](kitReleaseCertificationRef.md) |  |
 | [kits](kits.md) |  |
 | [label](label.md) |  |
+| [labelPath](labelPath.md) | Dotted path, relative to each nested entry, used as the option's display titl... |
 | [lang](lang.md) | ISO 639-1 code of the document's prose |
 | [language](language.md) |  |
 | [last_updated](last_updated.md) |  |
@@ -972,6 +974,7 @@ Name: jumo_v1
 | [optionsEligibility](optionsEligibility.md) | Conditions every instance of `optionsFrom` must satisfy to be offered |
 | [optionsFrom](optionsFrom.md) | A contract kind whose declared instances populate this field's options, repla... |
 | [optionsFromEnum](optionsFromEnum.md) | A generated LinkML enumeration whose permissible values populate this field's... |
+| [optionsFromNested](optionsFromNested.md) | An alternative to optionsFrom for a value object with no standalone Git contr... |
 | [order](order.md) | Delivery order |
 | [organizationRef](organizationRef.md) |  |
 | [organizationTemplateRef](organizationTemplateRef.md) | Optional OrganizationTemplate this organization was instantiated from |
@@ -1230,6 +1233,7 @@ Name: jumo_v1
 | [sourceCommitSha](sourceCommitSha.md) |  |
 | [sourceDependence](sourceDependence.md) |  |
 | [sourceId](sourceId.md) |  |
+| [sourceKind](sourceKind.md) | The declared ContractKind holding the nested list |
 | [sourcePath](sourcePath.md) |  |
 | [sourcePaths](sourcePaths.md) |  |
 | [sourceRef](sourceRef.md) |  |

@@ -2424,6 +2424,12 @@
     "moduleId": {
       "@id": "moduleId"
     },
+    "labelPath": {
+      "@id": "labelPath"
+    },
+    "sourceKind": {
+      "@id": "sourceKind"
+    },
     "channels": {
       "@context": {
         "text": "skos:notation",
@@ -3122,6 +3128,10 @@
     },
     "optionsFromEnum": {
       "@id": "optionsFromEnum"
+    },
+    "optionsFromNested": {
+      "@type": "@id",
+      "@id": "optionsFromNested"
     },
     "representation": {
       "@context": {
@@ -4726,6 +4736,9 @@
     },
     "ModuleDigestEntry": {
       "@id": "ModuleDigestEntry"
+    },
+    "NestedOptionsSource": {
+      "@id": "NestedOptionsSource"
     },
     "NotificationPreferences": {
       "@id": "NotificationPreferences"

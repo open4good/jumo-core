@@ -6,7 +6,7 @@ search:
 # Slot: optionsFrom
 
 
-_A contract kind whose declared instances populate this field's options, replacing a hardcoded roster lookup with a projection over real Git contracts. Must name a declared kind (Rego). An instance is offered as its `metadata.id` labelled by its `metadata.name`; a projection selects which instances are offered, never how one is addressed. Mutually exclusive with optionsFromEnum (Rego)._
+_A contract kind whose declared instances populate this field's options, replacing a hardcoded roster lookup with a projection over real Git contracts. Must name a declared kind (Rego). An instance is offered as its `metadata.id` labelled by its `metadata.name`; a projection selects which instances are offered, never how one is addressed. Mutually exclusive with optionsFromEnum and optionsFromNested (Rego)._
 
 
 
@@ -95,7 +95,8 @@ description: A contract kind whose declared instances populate this field's opti
   replacing a hardcoded roster lookup with a projection over real Git contracts. Must
   name a declared kind (Rego). An instance is offered as its `metadata.id` labelled
   by its `metadata.name`; a projection selects which instances are offered, never
-  how one is addressed. Mutually exclusive with optionsFromEnum (Rego).
+  how one is addressed. Mutually exclusive with optionsFromEnum and optionsFromNested
+  (Rego).
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
 owner: ProjectionField

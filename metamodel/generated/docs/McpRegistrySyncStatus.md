@@ -147,6 +147,7 @@ attributes:
     - McpCatalogIdentity
     - McpCatalogFieldCandidate
     - McpRegistrySyncStatus
+    - NestedOptionsSource
     range: Identifier
     required: true
   lifecycle:
@@ -229,6 +230,7 @@ attributes:
     - McpCatalogIdentity
     - McpCatalogFieldCandidate
     - McpRegistrySyncStatus
+    - NestedOptionsSource
     range: Identifier
     required: true
   lifecycle:

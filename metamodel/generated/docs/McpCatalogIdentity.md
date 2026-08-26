@@ -178,6 +178,7 @@ attributes:
     - McpCatalogIdentity
     - McpCatalogFieldCandidate
     - McpRegistrySyncStatus
+    - NestedOptionsSource
     range: Identifier
     required: true
 
@@ -259,6 +260,7 @@ attributes:
     - McpCatalogIdentity
     - McpCatalogFieldCandidate
     - McpRegistrySyncStatus
+    - NestedOptionsSource
     range: Identifier
     required: true
 

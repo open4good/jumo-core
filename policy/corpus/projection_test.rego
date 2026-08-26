@@ -192,6 +192,43 @@ test_rejects_field_declaring_both_options_sources if {
 	has_rule(violations, "corpus.projection.options-source-ambiguous")
 }
 
+test_rejects_unknown_nested_options_kind if {
+	bad := document(".jumo/projections/bad-nested-kind.yml", "ProjectionSpec", "bad-nested-kind", {
+		"ownerRealm": "home", "of": "TeamSpec", "projectionKind": "FORM",
+		"sections": [{"id": "s", "i18nKey": "s", "fields": [{
+			"path": "roadmapRef", "representation": "ENTITY_REFERENCE",
+			"optionsFromNested": {"sourceKind": "NoSuchKind", "sourceId": "jumo", "path": "spec.milestones"},
+		}]}],
+	})
+	violations := data.jumo.corpus.deny with input as [facts, bad]
+	has_rule(violations, "corpus.projection.options-nested-kind")
+}
+
+test_rejects_field_declaring_optionsfrom_and_optionsfromnested if {
+	bad := document(".jumo/projections/both-from-and-nested.yml", "ProjectionSpec", "both-from-and-nested", {
+		"ownerRealm": "home", "of": "TeamSpec", "projectionKind": "FORM",
+		"sections": [{"id": "s", "i18nKey": "s", "fields": [{
+			"path": "roadmapRef", "representation": "ENTITY_REFERENCE", "optionsFrom": "ConnectorDefinition",
+			"optionsFromNested": {"sourceKind": "ConnectorDefinition", "sourceId": "jumo", "path": "spec.milestones"},
+		}]}],
+	})
+	violations := data.jumo.corpus.deny with input as [facts, bad]
+	has_rule(violations, "corpus.projection.options-source-ambiguous")
+}
+
+test_accepts_a_declared_nested_options_source if {
+	good := document(".jumo/projections/good-nested-options.yml", "ProjectionSpec", "good-nested-options", {
+		"ownerRealm": "home", "of": "TeamSpec", "projectionKind": "FORM", "renderedBy": "home",
+		"sections": [{"id": "s", "i18nKey": "s", "fields": [{
+			"path": "roadmapRef", "representation": "ENTITY_REFERENCE",
+			"optionsFromNested": {"sourceKind": "ConnectorDefinition", "sourceId": "jumo", "path": "spec.milestones"},
+		}]}],
+	})
+	violations := data.jumo.corpus.deny with input as [facts, good]
+	not has_rule(violations, "corpus.projection.options-nested-kind")
+	not has_rule(violations, "corpus.projection.options-source-ambiguous")
+}
+
 test_rejects_eligibility_without_a_kind_to_filter if {
 	bad := document(".jumo/projections/loose-eligibility.yml", "ProjectionSpec", "loose-eligibility", {
 		"ownerRealm": "home", "of": "TeamSpec", "projectionKind": "FORM",

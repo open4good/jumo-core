@@ -5437,6 +5437,7 @@ classes:
         - ApiOperation
         - ChangeSetFile
         - ProjectionOptionCondition
+        - NestedOptionsSource
         - ProjectionField
         range: string
         required: true
@@ -26766,6 +26767,7 @@ classes:
         - ApiOperation
         - ChangeSetFile
         - ProjectionOptionCondition
+        - NestedOptionsSource
         - ProjectionField
         range: string
   PromptVariable:
@@ -42519,6 +42521,7 @@ classes:
         - McpCatalogIdentity
         - McpCatalogFieldCandidate
         - McpRegistrySyncStatus
+        - NestedOptionsSource
         range: Identifier
         required: true
       externalId:
@@ -42768,6 +42771,7 @@ classes:
         - McpCatalogIdentity
         - McpCatalogFieldCandidate
         - McpRegistrySyncStatus
+        - NestedOptionsSource
         range: Identifier
         required: true
   McpCatalogAssessment:
@@ -42908,6 +42912,7 @@ classes:
         - McpCatalogIdentity
         - McpCatalogFieldCandidate
         - McpRegistrySyncStatus
+        - NestedOptionsSource
         range: Identifier
         required: true
       observationChecksum:
@@ -43226,6 +43231,7 @@ classes:
         - McpCatalogIdentity
         - McpCatalogFieldCandidate
         - McpRegistrySyncStatus
+        - NestedOptionsSource
         range: Identifier
         required: true
       lifecycle:
@@ -58336,6 +58342,7 @@ classes:
         - ApiOperation
         - ChangeSetFile
         - ProjectionOptionCondition
+        - NestedOptionsSource
         - ProjectionField
         range: string
         required: true
@@ -59084,6 +59091,7 @@ classes:
         - ApiOperation
         - ChangeSetFile
         - ProjectionOptionCondition
+        - NestedOptionsSource
         - ProjectionField
         range: string
         required: true
@@ -59969,6 +59977,7 @@ classes:
         - ApiOperation
         - ChangeSetFile
         - ProjectionOptionCondition
+        - NestedOptionsSource
         - ProjectionField
         range: string
         required: true
@@ -59991,6 +60000,86 @@ classes:
         domain_of:
         - ProjectionOptionCondition
         range: boolean
+  NestedOptionsSource:
+    name: NestedOptionsSource
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: GIT
+      jumo.model_role:
+        tag: jumo.model_role
+        value: PROJECTION
+      jumo.audience:
+        tag: jumo.audience
+        value: REALM_PRIVATE
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: Resolves a field's options from a nested multivalued attribute of
+      one specific document, for a value object with no standalone Git contract of
+      its own -- Project.spec.milestones is the motivating case. optionsFrom resolves
+      one option per whole document of a declared kind; this resolves one option per
+      entry of a list nested inside a single document instead.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      sourceKind:
+        name: sourceKind
+        description: The declared ContractKind holding the nested list. Must name
+          a declared kind (Rego), the same check optionsFrom uses.
+        from_schema: https://jumo.dev/schemas/projection
+        owner: NestedOptionsSource
+        domain_of:
+        - NestedOptionsSource
+        range: string
+        required: true
+      sourceId:
+        name: sourceId
+        description: The metadata.id of the one document of sourceKind to read. A
+          literal address, not resolved from another field on this same document --
+          proportionate while exactly one instance of sourceKind is ever declared
+          (true of Project today); broaden to cross-field addressing only if that
+          stops holding.
+        from_schema: https://jumo.dev/schemas/projection
+        owner: NestedOptionsSource
+        domain_of:
+        - McpCatalogProvenancePin
+        - McpCatalogIdentity
+        - McpCatalogFieldCandidate
+        - McpRegistrySyncStatus
+        - NestedOptionsSource
+        range: Identifier
+        required: true
+      path:
+        name: path
+        description: Dotted path to the nested multivalued attribute within the resolved
+          document's own spec, e.g. `spec.milestones`.
+        from_schema: https://jumo.dev/schemas/projection
+        owner: NestedOptionsSource
+        domain_of:
+        - DocumentationRoot
+        - PromptBody
+        - ApiOperation
+        - ChangeSetFile
+        - ProjectionOptionCondition
+        - NestedOptionsSource
+        - ProjectionField
+        range: string
+        required: true
+      labelPath:
+        name: labelPath
+        description: Dotted path, relative to each nested entry, used as the option's
+          display title. Defaults to the entry's own `id` when absent.
+        from_schema: https://jumo.dev/schemas/projection
+        owner: NestedOptionsSource
+        domain_of:
+        - NestedOptionsSource
+        range: string
   ProjectionField:
     name: ProjectionField
     annotations:
@@ -60026,6 +60115,7 @@ classes:
         - ApiOperation
         - ChangeSetFile
         - ProjectionOptionCondition
+        - NestedOptionsSource
         - ProjectionField
         range: string
         required: true
@@ -60078,7 +60168,7 @@ classes:
           Git contracts. Must name a declared kind (Rego). An instance is offered
           as its `metadata.id` labelled by its `metadata.name`; a projection selects
           which instances are offered, never how one is addressed. Mutually exclusive
-          with optionsFromEnum (Rego).
+          with optionsFromEnum and optionsFromNested (Rego).
         from_schema: https://jumo.dev/schemas/projection
         owner: ProjectionField
         domain_of:
@@ -60088,16 +60178,27 @@ classes:
         name: optionsFromEnum
         description: 'A generated LinkML enumeration whose permissible values populate
           this field''s options, for a field whose domain is a closed vocabulary rather
-          than a contract kind. Mutually exclusive with optionsFrom (Rego). Rego checks
-          that an ENUMERATION field declares one of the two, not that this names an
-          enumeration rather than a class: the repository facts carry per-class slots,
-          not permissible values, so the narrower check waits on a fact this module
-          does not produce.'
+          than a contract kind. Mutually exclusive with optionsFrom and optionsFromNested
+          (Rego). Rego checks that an ENUMERATION field declares one of the three,
+          not that this names an enumeration rather than a class: the repository facts
+          carry per-class slots, not permissible values, so the narrower check waits
+          on a fact this module does not produce.'
         from_schema: https://jumo.dev/schemas/projection
         owner: ProjectionField
         domain_of:
         - ProjectionField
         range: string
+      optionsFromNested:
+        name: optionsFromNested
+        description: An alternative to optionsFrom for a value object with no standalone
+          Git contract of its own, such as Project.spec.milestones -- see NestedOptionsSource.
+          Mutually exclusive with optionsFrom and optionsFromEnum (Rego).
+        from_schema: https://jumo.dev/schemas/projection
+        owner: ProjectionField
+        domain_of:
+        - ProjectionField
+        range: NestedOptionsSource
+        inlined: true
       optionsEligibility:
         name: optionsEligibility
         description: Conditions every instance of `optionsFrom` must satisfy to be

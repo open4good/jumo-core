@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record ProjectionField(String path, FieldRepresentation representation, Integer span, Integer order, String i18nKey, String helpI18nKey, String optionsFrom, String optionsFromEnum, List<ProjectionOptionCondition> optionsEligibility, Boolean required)  {
+public record ProjectionField(String path, FieldRepresentation representation, Integer span, Integer order, String i18nKey, String helpI18nKey, String optionsFrom, String optionsFromEnum, NestedOptionsSource optionsFromNested, List<ProjectionOptionCondition> optionsEligibility, Boolean required)  {
 
     public static Builder builder() {
         return new Builder();
@@ -22,6 +22,7 @@ public record ProjectionField(String path, FieldRepresentation representation, I
         private String helpI18nKey = "";
         private String optionsFrom = "";
         private String optionsFromEnum = "";
+        private NestedOptionsSource optionsFromNested = null;
         private List<ProjectionOptionCondition> optionsEligibility = List.of();
         private Boolean required = null;
 
@@ -66,6 +67,11 @@ public record ProjectionField(String path, FieldRepresentation representation, I
             return this;
         }
 
+        public Builder optionsFromNested(NestedOptionsSource optionsFromNested) {
+            this.optionsFromNested = Objects.requireNonNull(optionsFromNested);
+            return this;
+        }
+
         public Builder optionsEligibility(List<ProjectionOptionCondition> optionsEligibility) {
             this.optionsEligibility = Objects.requireNonNull(optionsEligibility);
             return this;
@@ -77,7 +83,7 @@ public record ProjectionField(String path, FieldRepresentation representation, I
         }
 
     public ProjectionField build() {
-            return new ProjectionField(path, representation, span, order, i18nKey, helpI18nKey, optionsFrom, optionsFromEnum, optionsEligibility, required);
+            return new ProjectionField(path, representation, span, order, i18nKey, helpI18nKey, optionsFrom, optionsFromEnum, optionsFromNested, optionsEligibility, required);
         }
     }
 }

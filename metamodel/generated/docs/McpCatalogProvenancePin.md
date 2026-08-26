@@ -153,6 +153,7 @@ attributes:
     - McpCatalogIdentity
     - McpCatalogFieldCandidate
     - McpRegistrySyncStatus
+    - NestedOptionsSource
     range: Identifier
     required: true
   externalId:
@@ -241,6 +242,7 @@ attributes:
     - McpCatalogIdentity
     - McpCatalogFieldCandidate
     - McpRegistrySyncStatus
+    - NestedOptionsSource
     range: Identifier
     required: true
   externalId:

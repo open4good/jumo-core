@@ -7972,6 +7972,36 @@
       "title": "ModuleDigestEntry",
       "type": "object"
     },
+    "NestedOptionsSource": {
+      "additionalProperties": false,
+      "description": "Resolves a field's options from a nested multivalued attribute of one specific document, for a value object with no standalone Git contract of its own -- Project.spec.milestones is the motivating case. optionsFrom resolves one option per whole document of a declared kind; this resolves one option per entry of a list nested inside a single document instead.",
+      "properties": {
+        "labelPath": {
+          "description": "Dotted path, relative to each nested entry, used as the option's display title. Defaults to the entry's own `id` when absent.",
+          "type": "string"
+        },
+        "path": {
+          "description": "Dotted path to the nested multivalued attribute within the resolved document's own spec, e.g. `spec.milestones`.",
+          "type": "string"
+        },
+        "sourceId": {
+          "description": "The metadata.id of the one document of sourceKind to read. A literal address, not resolved from another field on this same document -- proportionate while exactly one instance of sourceKind is ever declared (true of Project today); broaden to cross-field addressing only if that stops holding.",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "sourceKind": {
+          "description": "The declared ContractKind holding the nested list. Must name a declared kind (Rego), the same check optionsFrom uses.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourceKind",
+        "sourceId",
+        "path"
+      ],
+      "title": "NestedOptionsSource",
+      "type": "object"
+    },
     "NotificationChannel": {
       "description": "",
       "enum": [
@@ -10397,12 +10427,23 @@
           "type": "array"
         },
         "optionsFrom": {
-          "description": "A contract kind whose declared instances populate this field's options, replacing a hardcoded roster lookup with a projection over real Git contracts. Must name a declared kind (Rego). An instance is offered as its `metadata.id` labelled by its `metadata.name`; a projection selects which instances are offered, never how one is addressed. Mutually exclusive with optionsFromEnum (Rego).",
+          "description": "A contract kind whose declared instances populate this field's options, replacing a hardcoded roster lookup with a projection over real Git contracts. Must name a declared kind (Rego). An instance is offered as its `metadata.id` labelled by its `metadata.name`; a projection selects which instances are offered, never how one is addressed. Mutually exclusive with optionsFromEnum and optionsFromNested (Rego).",
           "type": "string"
         },
         "optionsFromEnum": {
-          "description": "A generated LinkML enumeration whose permissible values populate this field's options, for a field whose domain is a closed vocabulary rather than a contract kind. Mutually exclusive with optionsFrom (Rego). Rego checks that an ENUMERATION field declares one of the two, not that this names an enumeration rather than a class: the repository facts carry per-class slots, not permissible values, so the narrower check waits on a fact this module does not produce.",
+          "description": "A generated LinkML enumeration whose permissible values populate this field's options, for a field whose domain is a closed vocabulary rather than a contract kind. Mutually exclusive with optionsFrom and optionsFromNested (Rego). Rego checks that an ENUMERATION field declares one of the three, not that this names an enumeration rather than a class: the repository facts carry per-class slots, not permissible values, so the narrower check waits on a fact this module does not produce.",
           "type": "string"
+        },
+        "optionsFromNested": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NestedOptionsSource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An alternative to optionsFrom for a value object with no standalone Git contract of its own, such as Project.spec.milestones -- see NestedOptionsSource. Mutually exclusive with optionsFrom and optionsFromEnum (Rego)."
         },
         "order": {
           "type": "integer"

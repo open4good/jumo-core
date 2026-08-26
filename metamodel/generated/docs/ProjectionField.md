@@ -38,6 +38,17 @@ URI: [jumo:ProjectionField](https://jumo.dev/schemas/jumo-v1/ProjectionField)
 
       ProjectionField : optionsFromEnum
 
+      ProjectionField : optionsFromNested
+
+
+
+
+
+        ProjectionField --> "0..1" NestedOptionsSource : optionsFromNested
+        click NestedOptionsSource href "../NestedOptionsSource/"
+
+
+
       ProjectionField : order
 
       ProjectionField : path
@@ -77,6 +88,7 @@ URI: [jumo:ProjectionField](https://jumo.dev/schemas/jumo-v1/ProjectionField)
 | [helpI18nKey](helpI18nKey.md) | 0..1 <br/> [String](String.md) |  | direct |
 | [optionsFrom](optionsFrom.md) | 0..1 <br/> [String](String.md) | A contract kind whose declared instances populate this field's options, repla... | direct |
 | [optionsFromEnum](optionsFromEnum.md) | 0..1 <br/> [String](String.md) | A generated LinkML enumeration whose permissible values populate this field's... | direct |
+| [optionsFromNested](optionsFromNested.md) | 0..1 <br/> [NestedOptionsSource](NestedOptionsSource.md) | An alternative to optionsFrom for a value object with no standalone Git contr... | direct |
 | [optionsEligibility](optionsEligibility.md) | * <br/> [ProjectionOptionCondition](ProjectionOptionCondition.md) | Conditions every instance of `optionsFrom` must satisfy to be offered | direct |
 | [required](required.md) | 0..1 <br/> [Boolean](Boolean.md) | When an AssistedJourneyStep declares both projectionRef and requiredFields (w... | direct |
 
@@ -180,6 +192,7 @@ attributes:
     - ApiOperation
     - ChangeSetFile
     - ProjectionOptionCondition
+    - NestedOptionsSource
     - ProjectionField
     range: string
     required: true
@@ -234,7 +247,8 @@ attributes:
       replacing a hardcoded roster lookup with a projection over real Git contracts.
       Must name a declared kind (Rego). An instance is offered as its `metadata.id`
       labelled by its `metadata.name`; a projection selects which instances are offered,
-      never how one is addressed. Mutually exclusive with optionsFromEnum (Rego).
+      never how one is addressed. Mutually exclusive with optionsFromEnum and optionsFromNested
+      (Rego).
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ProjectionField
@@ -245,16 +259,29 @@ attributes:
     name: optionsFromEnum
     description: 'A generated LinkML enumeration whose permissible values populate
       this field''s options, for a field whose domain is a closed vocabulary rather
-      than a contract kind. Mutually exclusive with optionsFrom (Rego). Rego checks
-      that an ENUMERATION field declares one of the two, not that this names an enumeration
-      rather than a class: the repository facts carry per-class slots, not permissible
-      values, so the narrower check waits on a fact this module does not produce.'
+      than a contract kind. Mutually exclusive with optionsFrom and optionsFromNested
+      (Rego). Rego checks that an ENUMERATION field declares one of the three, not
+      that this names an enumeration rather than a class: the repository facts carry
+      per-class slots, not permissible values, so the narrower check waits on a fact
+      this module does not produce.'
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ProjectionField
     domain_of:
     - ProjectionField
     range: string
+  optionsFromNested:
+    name: optionsFromNested
+    description: An alternative to optionsFrom for a value object with no standalone
+      Git contract of its own, such as Project.spec.milestones -- see NestedOptionsSource.
+      Mutually exclusive with optionsFrom and optionsFromEnum (Rego).
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: ProjectionField
+    domain_of:
+    - ProjectionField
+    range: NestedOptionsSource
+    inlined: true
   optionsEligibility:
     name: optionsEligibility
     description: Conditions every instance of `optionsFrom` must satisfy to be offered.
@@ -327,6 +354,7 @@ attributes:
     - ApiOperation
     - ChangeSetFile
     - ProjectionOptionCondition
+    - NestedOptionsSource
     - ProjectionField
     range: string
     required: true
@@ -381,7 +409,8 @@ attributes:
       replacing a hardcoded roster lookup with a projection over real Git contracts.
       Must name a declared kind (Rego). An instance is offered as its `metadata.id`
       labelled by its `metadata.name`; a projection selects which instances are offered,
-      never how one is addressed. Mutually exclusive with optionsFromEnum (Rego).
+      never how one is addressed. Mutually exclusive with optionsFromEnum and optionsFromNested
+      (Rego).
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ProjectionField
@@ -392,16 +421,29 @@ attributes:
     name: optionsFromEnum
     description: 'A generated LinkML enumeration whose permissible values populate
       this field''s options, for a field whose domain is a closed vocabulary rather
-      than a contract kind. Mutually exclusive with optionsFrom (Rego). Rego checks
-      that an ENUMERATION field declares one of the two, not that this names an enumeration
-      rather than a class: the repository facts carry per-class slots, not permissible
-      values, so the narrower check waits on a fact this module does not produce.'
+      than a contract kind. Mutually exclusive with optionsFrom and optionsFromNested
+      (Rego). Rego checks that an ENUMERATION field declares one of the three, not
+      that this names an enumeration rather than a class: the repository facts carry
+      per-class slots, not permissible values, so the narrower check waits on a fact
+      this module does not produce.'
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: ProjectionField
     domain_of:
     - ProjectionField
     range: string
+  optionsFromNested:
+    name: optionsFromNested
+    description: An alternative to optionsFrom for a value object with no standalone
+      Git contract of its own, such as Project.spec.milestones -- see NestedOptionsSource.
+      Mutually exclusive with optionsFrom and optionsFromEnum (Rego).
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: ProjectionField
+    domain_of:
+    - ProjectionField
+    range: NestedOptionsSource
+    inlined: true
   optionsEligibility:
     name: optionsEligibility
     description: Conditions every instance of `optionsFrom` must satisfy to be offered.

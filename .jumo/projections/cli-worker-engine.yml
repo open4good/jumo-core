@@ -6,7 +6,6 @@ metadata:
   name: CLI worker engine and name
 spec:
   ownerRealm: home
-  payloadSchemaRef: setup-cli-worker
   projectionKind: FORM
   renderedBy: home
   sections:

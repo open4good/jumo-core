@@ -40,15 +40,15 @@ spec:
       description: Choisissez l'équipe à faire évoluer et précisez l'intention d'évolution.
       personaNarration: Quelle équipe souhaitez-vous réorganiser ou enrichir de nouveaux jumeaux ?
       requiredFields:
-        - teamId
-        - purpose
+        - {field: teamId, i18nKey: journeyTeamIdField}
+        - {field: purpose, i18nKey: journeyTeamEvolutionPurposeField}
     - id: update-members
       name: Composition des membres
       description: Ajustez les assignations d'opérateurs et les groupes d'indépendance.
       personaNarration: Ajustons la composition des membres pour respecter l'indépendance de revue.
       stepKind: COLLECT
       requiredFields:
-        - members
+        - {field: members, i18nKey: journeySelectRoles}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -58,7 +58,7 @@ spec:
       description: Vérifiez le diff contractuel avant d'enregistrer la proposition.
       personaNarration: Tout est prêt pour enregistrer la proposition de modification d'équipe.
       requiredFields:
-        - confirmed
+        - {field: confirmed, i18nKey: journeyConfirmField}
   resourceBudgetRef:
     kind: ResourceBudget
     namespace: dev.jumo.core

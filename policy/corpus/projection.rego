@@ -366,7 +366,7 @@ deny contains corpus.violation("corpus.journey.required-fields-drift", document,
 	step.stepKind in {"COLLECT", "CONFIRM"}
 	projection_ref := corpus.ref_id(object.get(step, "projectionSpecRef", object.get(step, "projectionRef", "")))
 	projection_ref != ""
-	declared := {f | some f in object.get(step, "requiredFields", [])}
+	declared := {f.field | some f in object.get(step, "requiredFields", [])}
 	projected := projection_required_paths(projection_ref)
 	declared != projected
 	message := sprintf(

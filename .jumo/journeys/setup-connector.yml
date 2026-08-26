@@ -22,7 +22,7 @@ spec:
       personaNarration: Confirmons ensemble quels connecteurs nous mettons en place maintenant.
       stepKind: COLLECT
       requiredFields:
-        - selectedConnectorRefs
+        - {field: selectedConnectorRefs, i18nKey: journeyConnectorsField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -33,7 +33,7 @@ spec:
       personaNarration: Récapitulons avant de sceller la configuration de ces connecteurs.
       stepKind: COLLECT
       requiredFields:
-        - confirmed
+        - {field: confirmed, i18nKey: journeyConfirmField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core

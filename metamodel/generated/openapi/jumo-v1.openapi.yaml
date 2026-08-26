@@ -3938,8 +3938,13 @@ components:
             voice"). Same fallback convention as descriptionI18nKey.
         requiredFields:
           items:
-            type: string
+            $ref: '#/components/schemas/AssistedJourneyRequiredField'
           type: array
+          description: One entry per field the step collects or confirms, each carrying
+            the i18n key journey-generic-step and the completed-step recap render
+            for it. A bare field-name string list let two journeys reusing the same
+            field name for a different meaning (e.g. purpose) collide on one hardcoded
+            label; this does not.
       additionalProperties: false
       type: object
       required:
@@ -3953,6 +3958,22 @@ components:
         requiredFields is retired once every AssistedJourney step declares projectionRef/processRef
         and the renderer that replaces JourneyRunner.vue exists; until then both describe
         the same steps.'
+    AssistedJourneyRequiredField:
+      properties:
+        field:
+          type: string
+        i18nKey:
+          type: string
+          pattern: ^[a-z][a-zA-Z0-9]*$
+          description: Resolved the same way a ProjectionField's own i18nKey is, so
+            a step rendered by ProjectionRenderer and the same step recapped after
+            completion show the identical label.
+      additionalProperties: false
+      type: object
+      required:
+      - field
+      - i18nKey
+      title: AssistedJourneyRequiredField
     ActionCapabilitySet:
       properties:
         apiVersion:

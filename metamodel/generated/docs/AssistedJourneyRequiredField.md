@@ -3,18 +3,13 @@ search:
   boost: 10.0
 ---
 
-# Class: AssistedJourneyFieldCondition
-
-
-_One field of the emitted document and the collected value that decides whether it is present at all._
-
-
+# Class: AssistedJourneyRequiredField
 
 <div data-search-exclude markdown="1">
 
 
 
-URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/AssistedJourneyFieldCondition)
+URI: [jumo:AssistedJourneyRequiredField](https://jumo.dev/schemas/jumo-v1/AssistedJourneyRequiredField)
 
 
 
@@ -22,13 +17,11 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 
 ```mermaid
  classDiagram
-    class AssistedJourneyFieldCondition
-    click AssistedJourneyFieldCondition href "../AssistedJourneyFieldCondition/"
-      AssistedJourneyFieldCondition : equalsValue
+    class AssistedJourneyRequiredField
+    click AssistedJourneyRequiredField href "../AssistedJourneyRequiredField/"
+      AssistedJourneyRequiredField : field
 
-      AssistedJourneyFieldCondition : field
-
-      AssistedJourneyFieldCondition : whenField
+      AssistedJourneyRequiredField : i18nKey
 
 
 ```
@@ -43,8 +36,7 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
 | [field](field.md) | 1 <br/> [String](String.md) |  | direct |
-| [whenField](whenField.md) | 1 <br/> [String](String.md) | The collected or derived value the presence of `field` depends on | direct |
-| [equalsValue](equalsValue.md) | 1 <br/> [String](String.md) | `field` is kept when `whenField` equals this value, and removed otherwise | direct |
+| [i18nKey](i18nKey.md) | 1 <br/> [String](String.md) | Resolved the same way a ProjectionField's own i18nKey is, so a step rendered ... | direct |
 
 
 
@@ -54,7 +46,7 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 
 | used by | used in | type | used |
 | ---  | --- | --- | --- |
-| [AssistedJourneyEmission](AssistedJourneyEmission.md) | [fieldConditions](fieldConditions.md) | range | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md) |
+| [AssistedJourneyStep](AssistedJourneyStep.md) | [requiredFields](requiredFields.md) | range | [AssistedJourneyRequiredField](AssistedJourneyRequiredField.md) |
 
 
 
@@ -97,8 +89,8 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:AssistedJourneyFieldCondition |
-| native | jumo:AssistedJourneyFieldCondition |
+| self | jumo:AssistedJourneyRequiredField |
+| native | jumo:AssistedJourneyRequiredField |
 
 
 
@@ -113,7 +105,7 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 
 <details>
 ```yaml
-name: AssistedJourneyFieldCondition
+name: AssistedJourneyRequiredField
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -133,14 +125,12 @@ annotations:
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: One field of the emitted document and the collected value that decides
-  whether it is present at all.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
   field:
     name: field
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: AssistedJourneyFieldCondition
+    owner: AssistedJourneyRequiredField
     domain_of:
     - AssistedJourneyFieldValidation
     - AssistedJourneyFieldCondition
@@ -150,28 +140,21 @@ attributes:
     - AssistedJourneyRequiredField
     range: string
     required: true
-  whenField:
-    name: whenField
-    description: The collected or derived value the presence of `field` depends on.
+  i18nKey:
+    name: i18nKey
+    description: Resolved the same way a ProjectionField's own i18nKey is, so a step
+      rendered by ProjectionRenderer and the same step recapped after completion show
+      the identical label.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: AssistedJourneyFieldCondition
+    owner: AssistedJourneyRequiredField
     domain_of:
-    - AssistedJourneyFieldCondition
+    - AssistedJourneyRequiredField
+    - ProjectionSection
+    - ProjectionField
     range: string
     required: true
-  equalsValue:
-    name: equalsValue
-    description: '`field` is kept when `whenField` equals this value, and removed
-      otherwise.'
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: AssistedJourneyFieldCondition
-    domain_of:
-    - AssistedJourneyFieldCondition
-    - ProjectionOptionCondition
-    range: string
-    required: true
+    pattern: ^[a-z][a-zA-Z0-9]*$
 
 ```
 </details>
@@ -180,7 +163,7 @@ attributes:
 
 <details>
 ```yaml
-name: AssistedJourneyFieldCondition
+name: AssistedJourneyRequiredField
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -200,14 +183,12 @@ annotations:
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: One field of the emitted document and the collected value that decides
-  whether it is present at all.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
   field:
     name: field
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: AssistedJourneyFieldCondition
+    owner: AssistedJourneyRequiredField
     domain_of:
     - AssistedJourneyFieldValidation
     - AssistedJourneyFieldCondition
@@ -217,28 +198,21 @@ attributes:
     - AssistedJourneyRequiredField
     range: string
     required: true
-  whenField:
-    name: whenField
-    description: The collected or derived value the presence of `field` depends on.
+  i18nKey:
+    name: i18nKey
+    description: Resolved the same way a ProjectionField's own i18nKey is, so a step
+      rendered by ProjectionRenderer and the same step recapped after completion show
+      the identical label.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: AssistedJourneyFieldCondition
+    owner: AssistedJourneyRequiredField
     domain_of:
-    - AssistedJourneyFieldCondition
+    - AssistedJourneyRequiredField
+    - ProjectionSection
+    - ProjectionField
     range: string
     required: true
-  equalsValue:
-    name: equalsValue
-    description: '`field` is kept when `whenField` equals this value, and removed
-      otherwise.'
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: AssistedJourneyFieldCondition
-    domain_of:
-    - AssistedJourneyFieldCondition
-    - ProjectionOptionCondition
-    range: string
-    required: true
+    pattern: ^[a-z][a-zA-Z0-9]*$
 
 ```
 </details></div>

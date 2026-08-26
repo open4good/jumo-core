@@ -77,6 +77,15 @@ URI: [jumo:AssistedJourneyStep](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 
       AssistedJourneyStep : requiredFields
 
+
+
+
+
+        AssistedJourneyStep --> "*" AssistedJourneyRequiredField : requiredFields
+        click AssistedJourneyRequiredField href "../AssistedJourneyRequiredField/"
+
+
+
       AssistedJourneyStep : stepKind
 
 
@@ -137,7 +146,7 @@ URI: [jumo:AssistedJourneyStep](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 | [image](image.md) | 0..1 <br/> [String](String.md) | Step-level hero image, overriding the journey's heroImage for this step only | direct |
 | [descriptionI18nKey](descriptionI18nKey.md) | 0..1 <br/> [String](String.md) | i18n key resolving this step's user-facing description | direct |
 | [narrationI18nKey](narrationI18nKey.md) | 0..1 <br/> [String](String.md) | i18n key resolving this step's personaNarration ("Nestor's voice") | direct |
-| [requiredFields](requiredFields.md) | * <br/> [String](String.md) |  | direct |
+| [requiredFields](requiredFields.md) | * <br/> [AssistedJourneyRequiredField](AssistedJourneyRequiredField.md) | One entry per field the step collects or confirms, each carrying the i18n key... | direct |
 
 
 
@@ -433,13 +442,20 @@ attributes:
     range: string
   requiredFields:
     name: requiredFields
+    description: One entry per field the step collects or confirms, each carrying
+      the i18n key journey-generic-step and the completed-step recap render for it.
+      A bare field-name string list let two journeys reusing the same field name for
+      a different meaning (e.g. purpose) collide on one hardcoded label; this does
+      not.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: AssistedJourneyStep
     domain_of:
     - AssistedJourneyStep
-    range: string
+    range: AssistedJourneyRequiredField
     multivalued: true
+    inlined: true
+    inlined_as_list: true
 
 ```
 </details>
@@ -675,13 +691,20 @@ attributes:
     range: string
   requiredFields:
     name: requiredFields
+    description: One entry per field the step collects or confirms, each carrying
+      the i18n key journey-generic-step and the completed-step recap render for it.
+      A bare field-name string list let two journeys reusing the same field name for
+      a different meaning (e.g. purpose) collide on one hardcoded label; this does
+      not.
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: AssistedJourneyStep
     domain_of:
     - AssistedJourneyStep
-    range: string
+    range: AssistedJourneyRequiredField
     multivalued: true
+    inlined: true
+    inlined_as_list: true
 
 ```
 </details></div>

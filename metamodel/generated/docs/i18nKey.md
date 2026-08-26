@@ -20,6 +20,7 @@ URI: [jumo:i18nKey](https://jumo.dev/schemas/jumo-v1/i18nKey)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
+| [AssistedJourneyRequiredField](AssistedJourneyRequiredField.md) |  |  no  |
 | [ProjectionSection](ProjectionSection.md) |  |  no  |
 | [ProjectionField](ProjectionField.md) |  |  no  |
 
@@ -35,7 +36,7 @@ URI: [jumo:i18nKey](https://jumo.dev/schemas/jumo-v1/i18nKey)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [ProjectionSection](ProjectionSection.md), [ProjectionField](ProjectionField.md) |
+| Domain Of | [AssistedJourneyRequiredField](AssistedJourneyRequiredField.md), [ProjectionSection](ProjectionSection.md), [ProjectionField](ProjectionField.md) |
 
 ### Cardinality and Requirements
 
@@ -74,6 +75,7 @@ URI: [jumo:i18nKey](https://jumo.dev/schemas/jumo-v1/i18nKey)
 ```yaml
 name: i18nKey
 domain_of:
+- AssistedJourneyRequiredField
 - ProjectionSection
 - ProjectionField
 range: string

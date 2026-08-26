@@ -35,8 +35,8 @@ spec:
       description: Décrivez l'objectif fonctionnel ou technique à réaliser par un jumeau développeur.
       personaNarration: Expliquez ce que vous souhaitez développer ou corriger. Je vais cadrer le périmètre et la décomposition.
       requiredFields:
-        - taskSlug
-        - purpose
+        - {field: taskSlug, i18nKey: journeyTaskSlugField}
+        - {field: purpose, i18nKey: journeyTaskPurposeField}
     - id: specify-work-order
       name: Spécification du lot
       description: Définissez le rôle responsable, l'équipe, le jalon de destination et les critères
@@ -45,9 +45,9 @@ spec:
         au jalon de la feuille de route auquel il se rattache.
       stepKind: COLLECT
       requiredFields:
-        - roleRef
-        - teamRef
-        - roadmapRef
+        - {field: roleRef, i18nKey: journeyRoleRefField}
+        - {field: teamRef, i18nKey: journeyTeamRefField}
+        - {field: roadmapRef, i18nKey: journeyRoadmapRefField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -57,7 +57,7 @@ spec:
       description: Vérifiez la proposition de contrat WorkOrder avant son émission.
       personaNarration: Le contrat de travail est prêt. Validez pour enregistrer la proposition de tâche.
       requiredFields:
-        - confirmed
+        - {field: confirmed, i18nKey: journeyConfirmField}
   resourceBudgetRef:
     kind: ResourceBudget
     namespace: dev.jumo.core

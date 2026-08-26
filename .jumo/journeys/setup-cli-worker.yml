@@ -32,8 +32,8 @@ spec:
       stepKind: COLLECT
       projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: cli-worker-engine}
       requiredFields:
-        - cliEngine
-        - workerName
+        - {field: cliEngine, i18nKey: journeyCliEngineField}
+        - {field: workerName, i18nKey: journeyCliWorkerNameField}
     - id: select-execution-machine
       name: Machine d'exécution
       description: Choisissez une machine existante, ACTIVE et saine, appartenant à ce Realm. Le parcours ne crée jamais de VM.
@@ -41,8 +41,8 @@ spec:
       stepKind: COLLECT
       projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: cli-worker-execution-machine}
       requiredFields:
-        - executionMachineRef
-        - providerAccountRef
+        - {field: executionMachineRef, i18nKey: journeyCliExecutionMachineField}
+        - {field: providerAccountRef, i18nKey: journeyCliProviderAccountField}
     - id: install-cli-runtime
       name: Runtime CLI qualifié
       description: Vérifiez le runtime OCI signé sur la machine ; s'il est absent, un WorkOrder approuvé l'installe avant de continuer.
@@ -58,7 +58,7 @@ spec:
       description: Ouvrez le lien temporaire et saisissez le code affiché. La session reste chiffrée sur la machine sélectionnée.
       personaNarration: Votre abonnement est authentifié directement auprès du fournisseur, sans passer par Jumo.
       requiredFields:
-        - providerSessionRef
+        - {field: providerSessionRef, i18nKey: journeyProviderSessionField}
       verificationSpecRef:
         kind: JourneyVerificationSpec
         namespace: dev.jumo.core
@@ -77,7 +77,7 @@ spec:
       description: Vérifiez la déclaration du WorkerSubstrate avant enregistrement dans le Grand Registre.
       personaNarration: Récapitulons les paramètres avant d'enregistrer la proposition.
       requiredFields:
-        - confirmed
+        - {field: confirmed, i18nKey: journeyConfirmField}
   resourceBudgetRef:
     kind: ResourceBudget
     namespace: dev.jumo.core

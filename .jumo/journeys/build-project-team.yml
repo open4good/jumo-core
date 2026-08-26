@@ -41,8 +41,8 @@ spec:
       personaNarration: Définissons ensemble les objectifs de cette nouvelle équipe projet et son champ d'action.
       stepKind: COLLECT
       requiredFields:
-        - teamName
-        - projectPurpose
+        - {field: teamName, i18nKey: journeyTeamNameField}
+        - {field: projectPurpose, i18nKey: journeyProjectPurposeField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -54,7 +54,7 @@ spec:
         et de revue.
       stepKind: COLLECT
       requiredFields:
-        - members
+        - {field: members, i18nKey: journeySelectRoles}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -65,7 +65,7 @@ spec:
       personaNarration: Tout est en ordre. Validons la création de cette équipe dans votre Realm.
       stepKind: COLLECT
       requiredFields:
-        - confirmed
+        - {field: confirmed, i18nKey: journeyConfirmField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core

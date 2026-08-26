@@ -30,8 +30,8 @@ spec:
       personaNarration: Donnons un nom et une mission claire à votre nouveau projet.
       stepKind: COLLECT
       requiredFields:
-        - projectId
-        - purpose
+        - {field: projectId, i18nKey: journeyProjectIdField}
+        - {field: purpose, i18nKey: journeyProjectPurposeField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -42,7 +42,7 @@ spec:
       personaNarration: Renseignez les coordonnées de votre dépôt Git externe sous la forme owner/repo.
       stepKind: COLLECT
       requiredFields:
-        - repository
+        - {field: repository, i18nKey: journeyGitRepoField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -53,7 +53,7 @@ spec:
       personaNarration: Vérifions le contrat de projet avant son scellement déclaratif.
       stepKind: COLLECT
       requiredFields:
-        - confirmed
+        - {field: confirmed, i18nKey: journeyConfirmField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core

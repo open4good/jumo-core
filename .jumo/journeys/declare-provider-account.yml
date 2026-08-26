@@ -33,29 +33,29 @@ spec:
         anthropic, openai, google).
       personaNarration: Nommons et catégorisons ce compte fournisseur.
       requiredFields:
-        - providerId
-        - providerName
-        - provider
+        - {field: providerId, i18nKey: journeyProviderIdField}
+        - {field: providerName, i18nKey: journeyProviderNameField}
+        - {field: provider, i18nKey: journeyProviderFamilyField}
     - id: configure-routing
       name: Configuration du routage
       description: Configurez le mode de routage, la référence de passerelle et les alias requis.
       personaNarration: Définissons comment le trafic modèle est routé vers ce fournisseur.
       requiredFields:
-        - routingMode
-        - gatewayRef
+        - {field: routingMode, i18nKey: journeyRoutingModeField}
+        - {field: gatewayRef, i18nKey: journeyGatewayRefField}
     - id: configure-entitlement
       name: Habilitations et quotas
       description: Précisez le statut d'habilitation et les bornes de la fenêtre de quota.
       personaNarration: Configurons les permissions d'usage et les seuils budgétaires.
       requiredFields:
-        - permitted
+        - {field: permitted, i18nKey: journeyPermittedField}
     - id: confirm-declaration
       name: Confirmation
       description: Vérifiez la déclaration structurée du ProviderAccount avant de proposer le
         changement.
       personaNarration: Relisons le contrat fournisseur avant soumission.
       requiredFields:
-        - confirmed
+        - {field: confirmed, i18nKey: journeyConfirmField}
   resourceBudgetRef:
     kind: ResourceBudget
     namespace: dev.jumo.core

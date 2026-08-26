@@ -42,6 +42,7 @@ Name: jumo_v1
 | [AssistedJourneyFieldDefault](AssistedJourneyFieldDefault.md) |  |
 | [AssistedJourneyFieldValidation](AssistedJourneyFieldValidation.md) |  |
 | [AssistedJourneyReferenceCheck](AssistedJourneyReferenceCheck.md) |  |
+| [AssistedJourneyRequiredField](AssistedJourneyRequiredField.md) |  |
 | [AssistedJourneyRoutingEligibilityCheck](AssistedJourneyRoutingEligibilityCheck.md) |  |
 | [AssistedJourneySpec](AssistedJourneySpec.md) |  |
 | [AssistedJourneyStep](AssistedJourneyStep.md) | stepKind/projectionRef/processRef are additive: the model-driven rendering en... |
@@ -762,7 +763,7 @@ Name: jumo_v1
 | [hostDefinitionRef](hostDefinitionRef.md) |  |
 | [hostname](hostname.md) |  |
 | [humanSeat](humanSeat.md) | True for the human-owner seat, which is never filled by an AgentDefinition be... |
-| [i18nKey](i18nKey.md) |  |
+| [i18nKey](i18nKey.md) | Resolved the same way a ProjectionField's own i18nKey is, so a step rendered ... |
 | [icon](icon.md) | Display icon for this journey |
 | [id](id.md) | Target contract identifier |
 | [idempotency](idempotency.md) |  |
@@ -1144,7 +1145,7 @@ Name: jumo_v1
 | [requestedResponse](requestedResponse.md) |  |
 | [requestsPerMonth](requestsPerMonth.md) |  |
 | [required](required.md) |  |
-| [requiredFields](requiredFields.md) |  |
+| [requiredFields](requiredFields.md) | One entry per field the step collects or confirms, each carrying the i18n key... |
 | [requiredFreshness](requiredFreshness.md) |  |
 | [requiredIndependence](requiredIndependence.md) |  |
 | [requiredIndependenceGroup](requiredIndependenceGroup.md) | Narrows eligible ProviderAccounts to those sharing this independenceGroup (ow... |

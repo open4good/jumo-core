@@ -28550,6 +28550,7 @@ classes:
         - AssistedJourneyReferenceCheck
         - AssistedJourneyCollectionProjection
         - AssistedJourneyFieldDefault
+        - AssistedJourneyRequiredField
         range: string
         required: true
       required:
@@ -28621,6 +28622,7 @@ classes:
         - AssistedJourneyReferenceCheck
         - AssistedJourneyCollectionProjection
         - AssistedJourneyFieldDefault
+        - AssistedJourneyRequiredField
         range: string
         required: true
       whenField:
@@ -28680,6 +28682,7 @@ classes:
         - AssistedJourneyReferenceCheck
         - AssistedJourneyCollectionProjection
         - AssistedJourneyFieldDefault
+        - AssistedJourneyRequiredField
         range: string
         required: true
       kind:
@@ -28821,6 +28824,7 @@ classes:
         - AssistedJourneyReferenceCheck
         - AssistedJourneyCollectionProjection
         - AssistedJourneyFieldDefault
+        - AssistedJourneyRequiredField
         range: string
         required: true
       keys:
@@ -28941,6 +28945,7 @@ classes:
         - AssistedJourneyReferenceCheck
         - AssistedJourneyCollectionProjection
         - AssistedJourneyFieldDefault
+        - AssistedJourneyRequiredField
         range: string
         required: true
       value:
@@ -29609,12 +29614,69 @@ classes:
         range: string
       requiredFields:
         name: requiredFields
+        description: One entry per field the step collects or confirms, each carrying
+          the i18n key journey-generic-step and the completed-step recap render for
+          it. A bare field-name string list let two journeys reusing the same field
+          name for a different meaning (e.g. purpose) collide on one hardcoded label;
+          this does not.
         from_schema: https://jumo.dev/schemas/work
         owner: AssistedJourneyStep
         domain_of:
         - AssistedJourneyStep
-        range: string
+        range: AssistedJourneyRequiredField
         multivalued: true
+        inlined: true
+        inlined_as_list: true
+  AssistedJourneyRequiredField:
+    name: AssistedJourneyRequiredField
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: GIT
+      jumo.model_role:
+        tag: jumo.model_role
+        value: VALUE_OBJECT
+      jumo.audience:
+        tag: jumo.audience
+        value: REALM_PRIVATE
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      field:
+        name: field
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneyRequiredField
+        domain_of:
+        - AssistedJourneyFieldValidation
+        - AssistedJourneyFieldCondition
+        - AssistedJourneyReferenceCheck
+        - AssistedJourneyCollectionProjection
+        - AssistedJourneyFieldDefault
+        - AssistedJourneyRequiredField
+        range: string
+        required: true
+      i18nKey:
+        name: i18nKey
+        description: Resolved the same way a ProjectionField's own i18nKey is, so
+          a step rendered by ProjectionRenderer and the same step recapped after completion
+          show the identical label.
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneyRequiredField
+        domain_of:
+        - AssistedJourneyRequiredField
+        - ProjectionSection
+        - ProjectionField
+        range: string
+        required: true
+        pattern: ^[a-z][a-zA-Z0-9]*$
   ActionCapabilitySet:
     name: ActionCapabilitySet
     annotations:
@@ -60189,6 +60251,7 @@ classes:
         from_schema: https://jumo.dev/schemas/projection
         owner: ProjectionSection
         domain_of:
+        - AssistedJourneyRequiredField
         - ProjectionSection
         - ProjectionField
         range: string
@@ -60423,6 +60486,7 @@ classes:
         from_schema: https://jumo.dev/schemas/projection
         owner: ProjectionField
         domain_of:
+        - AssistedJourneyRequiredField
         - ProjectionSection
         - ProjectionField
         range: string

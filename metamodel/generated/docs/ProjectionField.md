@@ -228,6 +228,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ProjectionField
     domain_of:
+    - AssistedJourneyRequiredField
     - ProjectionSection
     - ProjectionField
     range: string
@@ -390,6 +391,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ProjectionField
     domain_of:
+    - AssistedJourneyRequiredField
     - ProjectionSection
     - ProjectionField
     range: string

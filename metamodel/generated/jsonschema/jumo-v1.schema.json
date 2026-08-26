@@ -1027,6 +1027,26 @@
       "title": "AssistedJourneyReferenceCheck",
       "type": "object"
     },
+    "AssistedJourneyRequiredField": {
+      "additionalProperties": false,
+      "description": "",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "i18nKey": {
+          "description": "Resolved the same way a ProjectionField's own i18nKey is, so a step rendered by ProjectionRenderer and the same step recapped after completion show the identical label.",
+          "pattern": "^[a-z][a-zA-Z0-9]*$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "i18nKey"
+      ],
+      "title": "AssistedJourneyRequiredField",
+      "type": "object"
+    },
     "AssistedJourneyRoutingEligibilityCheck": {
       "additionalProperties": false,
       "description": "",
@@ -1198,8 +1218,9 @@
           "description": "The PromptTemplate this step uses when stepKind is DIALOGUE_COLLECT."
         },
         "requiredFields": {
+          "description": "One entry per field the step collects or confirms, each carrying the i18n key journey-generic-step and the completed-step recap render for it. A bare field-name string list let two journeys reusing the same field name for a different meaning (e.g. purpose) collide on one hardcoded label; this does not.",
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/AssistedJourneyRequiredField"
           },
           "type": "array"
         },

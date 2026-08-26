@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * stepKind/projectionRef/processRef are additive: the model-driven rendering engine that consumes them does not exist yet, so requiredFields stays required and load-bearing -- JourneyService (control-plane) reads it server-side and apps/web/components/journey/JourneyRunner.vue reads it client-side. requiredFields is retired once every AssistedJourney step declares projectionRef/processRef and the renderer that replaces JourneyRunner.vue exists; until then both describe the same steps.
  */
-public record AssistedJourneyStep(String id, String name, String description, String personaNarration, AssistedJourneyStepKind stepKind, ContractReference projectionSpecRef, ContractReference processSpecRef, ContractReference promptTemplateRef, ContractReference subAssistedJourneyRef, ContractReference verificationSpecRef, List<String> dependsOn, Boolean parallelizable, String image, String descriptionI18nKey, String narrationI18nKey, List<String> requiredFields)  {
+public record AssistedJourneyStep(String id, String name, String description, String personaNarration, AssistedJourneyStepKind stepKind, ContractReference projectionSpecRef, ContractReference processSpecRef, ContractReference promptTemplateRef, ContractReference subAssistedJourneyRef, ContractReference verificationSpecRef, List<String> dependsOn, Boolean parallelizable, String image, String descriptionI18nKey, String narrationI18nKey, List<AssistedJourneyRequiredField> requiredFields)  {
 
     public static Builder builder() {
         return new Builder();
@@ -32,7 +32,7 @@ public record AssistedJourneyStep(String id, String name, String description, St
         private String image = "";
         private String descriptionI18nKey = "";
         private String narrationI18nKey = "";
-        private List<String> requiredFields = List.of();
+        private List<AssistedJourneyRequiredField> requiredFields = List.of();
 
 
         public Builder id(String id) {
@@ -110,7 +110,7 @@ public record AssistedJourneyStep(String id, String name, String description, St
             return this;
         }
 
-        public Builder requiredFields(List<String> requiredFields) {
+        public Builder requiredFields(List<AssistedJourneyRequiredField> requiredFields) {
             this.requiredFields = Objects.requireNonNull(requiredFields);
             return this;
         }

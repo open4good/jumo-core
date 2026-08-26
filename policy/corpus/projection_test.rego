@@ -512,7 +512,7 @@ test_accepts_required_fields_matching_projection if {
 		"emitsCapability": "contract.change.propose",
 		"steps": [{
 			"id": "s", "name": "S", "stepKind": "COLLECT", "projectionRef": "required-form",
-			"requiredFields": ["teamName"],
+			"requiredFields": [{"field": "teamName", "i18nKey": "journeyTeamNameField"}],
 		}],
 	})
 	violations := data.jumo.corpus.deny with input as [facts, required_fields_projection, ok]
@@ -525,7 +525,7 @@ test_rejects_required_fields_diverging_from_projection if {
 		"emitsCapability": "contract.change.propose",
 		"steps": [{
 			"id": "s", "name": "S", "stepKind": "COLLECT", "projectionRef": "required-form",
-			"requiredFields": ["members"],
+			"requiredFields": [{"field": "members", "i18nKey": "journeySelectRoles"}],
 		}],
 	})
 	violations := data.jumo.corpus.deny with input as [facts, required_fields_projection, bad]

@@ -25,6 +25,7 @@ URI: [jumo:field](https://jumo.dev/schemas/jumo-v1/field)
 | [AssistedJourneyReferenceCheck](AssistedJourneyReferenceCheck.md) |  |  no  |
 | [AssistedJourneyCollectionProjection](AssistedJourneyCollectionProjection.md) |  |  no  |
 | [AssistedJourneyFieldDefault](AssistedJourneyFieldDefault.md) |  |  no  |
+| [AssistedJourneyRequiredField](AssistedJourneyRequiredField.md) |  |  no  |
 
 
 
@@ -38,7 +39,7 @@ URI: [jumo:field](https://jumo.dev/schemas/jumo-v1/field)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [AssistedJourneyFieldValidation](AssistedJourneyFieldValidation.md), [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md), [AssistedJourneyReferenceCheck](AssistedJourneyReferenceCheck.md), [AssistedJourneyCollectionProjection](AssistedJourneyCollectionProjection.md), [AssistedJourneyFieldDefault](AssistedJourneyFieldDefault.md) |
+| Domain Of | [AssistedJourneyFieldValidation](AssistedJourneyFieldValidation.md), [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md), [AssistedJourneyReferenceCheck](AssistedJourneyReferenceCheck.md), [AssistedJourneyCollectionProjection](AssistedJourneyCollectionProjection.md), [AssistedJourneyFieldDefault](AssistedJourneyFieldDefault.md), [AssistedJourneyRequiredField](AssistedJourneyRequiredField.md) |
 
 ### Cardinality and Requirements
 
@@ -82,6 +83,7 @@ domain_of:
 - AssistedJourneyReferenceCheck
 - AssistedJourneyCollectionProjection
 - AssistedJourneyFieldDefault
+- AssistedJourneyRequiredField
 range: string
 
 ```

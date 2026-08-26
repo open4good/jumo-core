@@ -6266,6 +6266,19 @@ CREATE INDEX "ix_PolicyInput_obligations_obligations" ON "PolicyInput_obligation
 COMMENT ON TABLE "PolicyInput_obligations" IS 'None';
 COMMENT ON COLUMN "PolicyInput_obligations"."PolicyInput_id" IS 'Autocreated FK slot';
 
+CREATE TABLE "AssistedJourneyRequiredField" (
+	id SERIAL NOT NULL,
+	field TEXT NOT NULL,
+	"i18nKey" TEXT NOT NULL,
+	"AssistedJourneyStep_uid" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("AssistedJourneyStep_uid") REFERENCES "AssistedJourneyStep" (uid)
+);
+CREATE INDEX "ix_AssistedJourneyRequiredField_id" ON "AssistedJourneyRequiredField" (id);
+COMMENT ON TABLE "AssistedJourneyRequiredField" IS 'None';
+COMMENT ON COLUMN "AssistedJourneyRequiredField"."i18nKey" IS 'Resolved the same way a ProjectionField''s own i18nKey is, so a step rendered by ProjectionRenderer and the same step recapped after completion show the identical label.';
+COMMENT ON COLUMN "AssistedJourneyRequiredField"."AssistedJourneyStep_uid" IS 'Autocreated FK slot';
+
 CREATE TABLE "AssistedJourneyStep_dependsOn" (
 	"AssistedJourneyStep_uid" INTEGER,
 	"dependsOn" TEXT,
@@ -6277,17 +6290,6 @@ CREATE INDEX "ix_AssistedJourneyStep_dependsOn_dependsOn" ON "AssistedJourneySte
 COMMENT ON TABLE "AssistedJourneyStep_dependsOn" IS 'None';
 COMMENT ON COLUMN "AssistedJourneyStep_dependsOn"."AssistedJourneyStep_uid" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "AssistedJourneyStep_dependsOn"."dependsOn" IS 'Step IDs that must be completed before this step becomes available.';
-
-CREATE TABLE "AssistedJourneyStep_requiredFields" (
-	"AssistedJourneyStep_uid" INTEGER,
-	"requiredFields" TEXT,
-	PRIMARY KEY ("AssistedJourneyStep_uid", "requiredFields"),
-	FOREIGN KEY("AssistedJourneyStep_uid") REFERENCES "AssistedJourneyStep" (uid)
-);
-CREATE INDEX "ix_AssistedJourneyStep_requiredFields_AssistedJourneyStep_uid" ON "AssistedJourneyStep_requiredFields" ("AssistedJourneyStep_uid");
-CREATE INDEX "ix_AssistedJourneyStep_requiredFields_requiredFields" ON "AssistedJourneyStep_requiredFields" ("requiredFields");
-COMMENT ON TABLE "AssistedJourneyStep_requiredFields" IS 'None';
-COMMENT ON COLUMN "AssistedJourneyStep_requiredFields"."AssistedJourneyStep_uid" IS 'Autocreated FK slot';
 ALTER TABLE "AdvisorProfileSpec" ADD FOREIGN KEY("roleDefinitionRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("connectorPackageRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("mcpBundleRef_uid") REFERENCES "ContractReference" (uid);

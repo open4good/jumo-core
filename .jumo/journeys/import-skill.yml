@@ -29,9 +29,9 @@ spec:
       personaNarration: Indiquez la source Git du kit de competences a importer dans votre Realm.
       stepKind: COLLECT
       requiredFields:
-        - alias
-        - repository
-        - commit
+        - {field: alias, i18nKey: journeySkillAliasField}
+        - {field: repository, i18nKey: journeySkillRepositoryField}
+        - {field: commit, i18nKey: journeySkillCommitField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -42,7 +42,7 @@ spec:
       personaNarration: Verifions la declaration du kit avant son emission declarative.
       stepKind: COLLECT
       requiredFields:
-        - confirmed
+        - {field: confirmed, i18nKey: journeyConfirmField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core

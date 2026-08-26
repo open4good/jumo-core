@@ -1567,6 +1567,12 @@ type AssistedJourneyReferenceCheck
     itemPath: String
   }
 
+type AssistedJourneyRequiredField
+  {
+    field: String!
+    i18nKey: String!
+  }
+
 type AssistedJourneyRoutingEligibilityCheck
   {
     projectField: String!
@@ -1610,7 +1616,7 @@ type AssistedJourneyStep
     image: String
     descriptionI18nKey: String
     narrationI18nKey: String
-    requiredFields: [String]
+    requiredFields: [AssistedJourneyRequiredField]
   }
 
 type AttentionDecisionOption

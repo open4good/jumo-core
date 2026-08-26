@@ -155,6 +155,7 @@ attributes:
     - AssistedJourneyReferenceCheck
     - AssistedJourneyCollectionProjection
     - AssistedJourneyFieldDefault
+    - AssistedJourneyRequiredField
     range: string
     required: true
   keys:
@@ -246,6 +247,7 @@ attributes:
     - AssistedJourneyReferenceCheck
     - AssistedJourneyCollectionProjection
     - AssistedJourneyFieldDefault
+    - AssistedJourneyRequiredField
     range: string
     required: true
   keys:

@@ -184,9 +184,9 @@ attributes:
   i18nKey:
     name: i18nKey
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: ProjectionSection
     domain_of:
+    - AssistedJourneyRequiredField
     - ProjectionSection
     - ProjectionField
     range: string
@@ -287,9 +287,9 @@ attributes:
   i18nKey:
     name: i18nKey
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: ProjectionSection
     domain_of:
+    - AssistedJourneyRequiredField
     - ProjectionSection
     - ProjectionField
     range: string

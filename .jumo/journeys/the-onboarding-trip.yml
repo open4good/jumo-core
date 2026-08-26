@@ -32,7 +32,7 @@ spec:
         préparer votre espace.
       stepKind: COLLECT
       requiredFields:
-        - nickname
+        - {field: nickname, i18nKey: journeyNicknameField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -58,8 +58,8 @@ spec:
       dependsOn: [setup-identity]
       parallelizable: true
       requiredFields:
-        - gitRepoUrl
-        - gitBranch
+        - {field: gitRepoUrl, i18nKey: journeyGitRepoUrlField}
+        - {field: gitBranch, i18nKey: journeyGitBranchField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core
@@ -81,7 +81,7 @@ spec:
       dependsOn: [setup-identity]
       parallelizable: true
       requiredFields:
-        - selectedConnectors
+        - {field: selectedConnectors, i18nKey: journeyConnectorsField}
       promptTemplateRef:
         kind: PromptTemplate
         namespace: dev.jumo.core
@@ -106,8 +106,8 @@ spec:
       stepKind: COLLECT
       dependsOn: [provision-execution-cell, link-repository, configure-api-accounts, capture-connector-intent, setup-connectors]
       requiredFields:
-        - roadmapRef
-        - confirmed
+        - {field: roadmapRef, i18nKey: journeyRoadmapRefField}
+        - {field: confirmed, i18nKey: journeyConfirmField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core

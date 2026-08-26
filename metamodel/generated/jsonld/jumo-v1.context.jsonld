@@ -427,6 +427,9 @@
     "itemPath": {
       "@id": "itemPath"
     },
+    "i18nKey": {
+      "@id": "i18nKey"
+    },
     "projectField": {
       "@id": "projectField"
     },
@@ -529,6 +532,7 @@
       "@id": "promptTemplateRef"
     },
     "requiredFields": {
+      "@type": "@id",
       "@id": "requiredFields"
     },
     "stepKind": {
@@ -3117,9 +3121,6 @@
     "helpI18nKey": {
       "@id": "helpI18nKey"
     },
-    "i18nKey": {
-      "@id": "i18nKey"
-    },
     "optionsEligibility": {
       "@type": "@id",
       "@id": "optionsEligibility"
@@ -4248,6 +4249,9 @@
     },
     "AssistedJourneyReferenceCheck": {
       "@id": "AssistedJourneyReferenceCheck"
+    },
+    "AssistedJourneyRequiredField": {
+      "@id": "AssistedJourneyRequiredField"
     },
     "AssistedJourneyRoutingEligibilityCheck": {
       "@id": "AssistedJourneyRoutingEligibilityCheck"

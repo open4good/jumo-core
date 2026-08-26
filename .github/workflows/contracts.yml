@@ -7,9 +7,14 @@ name: contracts
 # `metamodel` proves modules/jumo-model/src/main/java is reproducible from metamodel/jumo-v1.yaml,
 # the same gate jumo's own corpus-validate.yml runs on itself. `publish-jumo-model` (AC2) is the
 # one place this repository builds and ships code: dev.jumo:jumo-model to GitHub Packages, so jumo
-# depends on it instead of generating it in-tree. Corpus-instance validation (WorkOrders,
-# journeys, the composed negative fixtures) stays jumo's job in corpus-validate.yml, against its
-# own tree.
+# depends on it instead of generating it in-tree. `publish-metamodel-generated`
+# (metamodel-generated-publish-boundary AC1a) mirrors that same registry and auth for
+# metamodel/generated/** itself -- not a Java artifact, so it ships as a tar.gz under
+# dev.jumo:metamodel-generated:<VERSION> via mvn deploy:deploy-file rather than a real Maven
+# build; purely additive alongside the still-committed directory until a later AC switches
+# consumption to the published artifact and only then untracks it. Corpus-instance validation
+# (WorkOrders, journeys, the composed negative fixtures) stays jumo's job in corpus-validate.yml,
+# against its own tree.
 #
 # Every job runs on ubuntu-latest, not on the org's self-hosted runners as jumo's workflows do.
 # jumo-core is the only one of the three repositories that is public, and the org's single runner
@@ -175,3 +180,74 @@ jobs:
         # artifact dev.jumo:jumo-core-reactor:pom:1" after authenticating fine. The step above
         # decides whether it still needs sending.
         run: mvn -B -f pom.xml ${{ steps.decide.outputs.projects }} deploy -DskipTests
+
+  publish-metamodel-generated:
+    name: Publish dev.jumo:metamodel-generated to GitHub Packages
+    needs: [contracts, metamodel]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      # Same 409-on-overwrite shape as publish-jumo-model above: metamodel/VERSION is the fixed
+      # coordinate, and publishing is a version-bump event, not a per-commit one -- decide first.
+      - name: Decide whether this version still needs publishing
+        id: decide
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          version="$(cat metamodel/VERSION)"
+          status=0
+          out="$(gh api --paginate \
+            "/orgs/${GITHUB_REPOSITORY_OWNER}/packages/maven/dev.jumo.metamodel-generated/versions" \
+            --jq '.[].name' 2>&1)" || status=$?
+          if [ "$status" -ne 0 ]; then
+            case "$out" in
+              *"(HTTP 404)"*) out="" ;;
+              *) echo "Cannot read the registry for dev.jumo.metamodel-generated: $out" >&2; exit 1 ;;
+            esac
+          fi
+          echo "metamodel/VERSION=${version}"
+          if grep -qx "${version}" <<< "${out}"; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            echo "dev.jumo:metamodel-generated:${version} is already published; nothing to deploy."
+            echo "Bump metamodel/VERSION to publish a new one."
+            exit 0
+          fi
+          echo "needed=true" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      # metamodel/generated/** is already the committed, reproducibility-checked output the
+      # metamodel job above just verified -- this job archives and ships it, it does not
+      # regenerate it. Not a Java artifact, so no real mvn build: GitHub Packages has no
+      # dedicated generic-file type, so the tar.gz rides the same Maven-hosted registry and auth
+      # dev.jumo:jumo-model already publishes to, via deploy:deploy-file instead of deploy.
+      - name: Archive metamodel/generated
+        if: steps.decide.outputs.needed == 'true'
+        run: tar -czf metamodel-generated.tar.gz -C metamodel generated
+
+      - name: Publish metamodel-generated
+        if: steps.decide.outputs.needed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mvn -B deploy:deploy-file \
+            -Dfile=metamodel-generated.tar.gz \
+            -DgroupId=dev.jumo \
+            -DartifactId=metamodel-generated \
+            -Dversion="${{ steps.decide.outputs.version }}" \
+            -Dpackaging=tar.gz \
+            -DrepositoryId=github \
+            -Durl=https://maven.pkg.github.com/open4good/jumo-core

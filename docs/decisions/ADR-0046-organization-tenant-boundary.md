@@ -4,7 +4,7 @@ status: accepted
 normative: true
 audience: PROJECT_SCOPED
 decisions: [16]
-enforced_by: metamodel/modules/organization.yaml,modules/project-contract/src/main/java/dev/jumo/contract/ContractLayer.java,modules/control-plane/src/main/resources/db/migration/V15__organization_membership_and_audit_ledger.sql
+enforced_by: metamodel/modules/organization.yaml,modules/project-contract/src/main/java/dev/jumo/contract/ContractLayer.java,modules/control-plane/src/main/resources/db/migration/V1__baseline.sql
 ---
 
 # ADR-0046 — Organization tenant boundary and complete audit ledger

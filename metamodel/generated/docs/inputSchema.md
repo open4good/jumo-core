@@ -21,6 +21,7 @@ URI: [jumo:inputSchema](https://jumo.dev/schemas/jumo-v1/inputSchema)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [McpToolDescriptor](McpToolDescriptor.md) | Tool schema and metadata captured during MCP discovery |  no  |
+| [PlannedOperation](PlannedOperation.md) | One operation exposed by a signed MCP gateway session plan, resolved from a v... |  no  |
 
 
 
@@ -33,20 +34,13 @@ URI: [jumo:inputSchema](https://jumo.dev/schemas/jumo-v1/inputSchema)
 
 | Property | Value |
 | --- | --- |
-| Range | [SchemaBoundPayload](SchemaBoundPayload.md) |
-| Domain Of | [McpToolDescriptor](McpToolDescriptor.md) |
+| Range | [String](String.md) |
+| Domain Of | [McpToolDescriptor](McpToolDescriptor.md), [PlannedOperation](PlannedOperation.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [McpToolDescriptor](McpToolDescriptor.md) |
-
-
 
 
 
@@ -60,13 +54,6 @@ URI: [jumo:inputSchema](https://jumo.dev/schemas/jumo-v1/inputSchema)
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -86,13 +73,10 @@ URI: [jumo:inputSchema](https://jumo.dev/schemas/jumo-v1/inputSchema)
 <details>
 ```yaml
 name: inputSchema
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: McpToolDescriptor
 domain_of:
 - McpToolDescriptor
-range: SchemaBoundPayload
-inlined: true
+- PlannedOperation
+range: string
 
 ```
 </details></div>

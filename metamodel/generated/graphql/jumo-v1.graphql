@@ -3470,6 +3470,17 @@ type PersonalSpaceSpec
     preferencesRef: ContractReference
   }
 
+type PlannedOperation
+  {
+    grantId: Identifier!
+    exposedName: String!
+    upstreamToolName: String!
+    description: String
+    inputSchema: String!
+    outputSchema: String
+    producesExternalEffect: Boolean!
+  }
+
 type PolicyInput
   {
     action: String!
@@ -4259,6 +4270,23 @@ type SelfDescriptionSubject
   {
     kind: SelfDescriptionSubjectKind!
     id: Identifier!
+  }
+
+type SessionPlan
+  {
+    planId: Identifier!
+    realmId: Identifier!
+    leaseId: Identifier!
+    operations: [PlannedOperation]
+    planExpiresAt: String!
+    signingKeyName: String!
+    planSignature: String!
+  }
+
+type SessionPlanRequest
+  {
+    leaseId: Identifier!
+    grantIds: [Identifier]
   }
 
 type SolicitationApproval

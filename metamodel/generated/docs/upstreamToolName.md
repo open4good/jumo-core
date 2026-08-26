@@ -22,6 +22,7 @@ URI: [jumo:upstreamToolName](https://jumo.dev/schemas/jumo-v1/upstreamToolName)
 | --- | --- | --- |
 | [UpstreamToolEntry](UpstreamToolEntry.md) | Reason required when disposition is WITHHELD or QUARANTINED (Rego): exposing ... |  no  |
 | [McpBundleOperation](McpBundleOperation.md) |  |  no  |
+| [PlannedOperation](PlannedOperation.md) | One operation exposed by a signed MCP gateway session plan, resolved from a v... |  no  |
 
 
 
@@ -35,7 +36,7 @@ URI: [jumo:upstreamToolName](https://jumo.dev/schemas/jumo-v1/upstreamToolName)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [UpstreamToolEntry](UpstreamToolEntry.md), [McpBundleOperation](McpBundleOperation.md) |
+| Domain Of | [UpstreamToolEntry](UpstreamToolEntry.md), [McpBundleOperation](McpBundleOperation.md), [PlannedOperation](PlannedOperation.md) |
 
 ### Cardinality and Requirements
 
@@ -76,6 +77,7 @@ name: upstreamToolName
 domain_of:
 - UpstreamToolEntry
 - McpBundleOperation
+- PlannedOperation
 range: string
 
 ```

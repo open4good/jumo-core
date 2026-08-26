@@ -248,6 +248,7 @@ attributes:
     owner: McpBundleOperation
     domain_of:
     - McpBundleOperation
+    - PlannedOperation
     range: string
     required: true
     pattern: ^.{3,}$
@@ -260,6 +261,7 @@ attributes:
     domain_of:
     - UpstreamToolEntry
     - McpBundleOperation
+    - PlannedOperation
     range: string
     required: true
     pattern: ^.{1,}$
@@ -311,6 +313,7 @@ attributes:
     - ConnectorOperation
     - McpBundleOperation
     - McpToolDescriptor
+    - PlannedOperation
     - ConnectorIntegrationSpec
     - ApiResponseBinding
     range: string
@@ -470,6 +473,7 @@ attributes:
     owner: McpBundleOperation
     domain_of:
     - McpBundleOperation
+    - PlannedOperation
     range: string
     required: true
     pattern: ^.{3,}$
@@ -482,6 +486,7 @@ attributes:
     domain_of:
     - UpstreamToolEntry
     - McpBundleOperation
+    - PlannedOperation
     range: string
     required: true
     pattern: ^.{1,}$
@@ -533,6 +538,7 @@ attributes:
     - ConnectorOperation
     - McpBundleOperation
     - McpToolDescriptor
+    - PlannedOperation
     - ConnectorIntegrationSpec
     - ApiResponseBinding
     range: string

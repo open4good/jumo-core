@@ -166,9 +166,9 @@ attributes:
   planId:
     name: planId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: ConnectorTestPlan
     domain_of:
+    - SessionPlan
     - ConnectorTestPlan
     - ConnectorTestResult
     range: Identifier
@@ -248,9 +248,9 @@ attributes:
   planId:
     name: planId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: ConnectorTestPlan
     domain_of:
+    - SessionPlan
     - ConnectorTestPlan
     - ConnectorTestResult
     range: Identifier

@@ -3,13 +3,13 @@ search:
   boost: 5.0
 ---
 
-# Slot: planId
+# Slot: planSignature
 
 <div data-search-exclude markdown="1">
 
 
 
-URI: [jumo:planId](https://jumo.dev/schemas/jumo-v1/planId)
+URI: [jumo:planSignature](https://jumo.dev/schemas/jumo-v1/planSignature)
 <!-- no inheritance hierarchy -->
 
 
@@ -21,8 +21,6 @@ URI: [jumo:planId](https://jumo.dev/schemas/jumo-v1/planId)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [SessionPlan](SessionPlan.md) | Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway... |  no  |
-| [ConnectorTestPlan](ConnectorTestPlan.md) | Deterministic test plan for verifying connector operations on a target machin... |  no  |
-| [ConnectorTestResult](ConnectorTestResult.md) | Observed result and evidence of a connector test case execution |  no  |
 
 
 
@@ -36,12 +34,20 @@ URI: [jumo:planId](https://jumo.dev/schemas/jumo-v1/planId)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [SessionPlan](SessionPlan.md), [ConnectorTestPlan](ConnectorTestPlan.md), [ConnectorTestResult](ConnectorTestResult.md) |
+| Domain Of | [SessionPlan](SessionPlan.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
+| Required | Yes |
+### Slot Characteristics
+
+| Property | Value |
+| --- | --- |
+| Owner | [SessionPlan](SessionPlan.md) |
+
+
 
 
 
@@ -58,13 +64,20 @@ URI: [jumo:planId](https://jumo.dev/schemas/jumo-v1/planId)
 
 
 
+### Schema Source
+
+
+* from schema: https://jumo.dev/schemas/jumo-v1
+
+
+
 
 ## Mappings
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:planId |
-| native | jumo:planId |
+| self | jumo:planSignature |
+| native | jumo:planSignature |
 
 
 
@@ -73,12 +86,14 @@ URI: [jumo:planId](https://jumo.dev/schemas/jumo-v1/planId)
 
 <details>
 ```yaml
-name: planId
+name: planSignature
+from_schema: https://jumo.dev/schemas/jumo-v1
+rank: 1000
+owner: SessionPlan
 domain_of:
 - SessionPlan
-- ConnectorTestPlan
-- ConnectorTestResult
 range: string
+required: true
 
 ```
 </details></div>

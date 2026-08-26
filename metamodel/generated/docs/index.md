@@ -246,6 +246,7 @@ Name: jumo_v1
 | [OrganizationTemplateSpec](OrganizationTemplateSpec.md) |  |
 | [PersonalSpace](PersonalSpace.md) | Mandatory personal space declaration for a human or agent principal within a ... |
 | [PersonalSpaceSpec](PersonalSpaceSpec.md) |  |
+| [PlannedOperation](PlannedOperation.md) | One operation exposed by a signed MCP gateway session plan, resolved from a v... |
 | [PolicyInput](PolicyInput.md) | Typed input structure evaluated by OPA policies |
 | [PolicyRule](PolicyRule.md) | Conditional requiredness (ALLOW_WITH_OBLIGATIONS / REQUIRE_APPROVAL require o... |
 | [PolicySet](PolicySet.md) | Executable authorization |
@@ -336,6 +337,8 @@ Name: jumo_v1
 | [SelfDescriptionFact](SelfDescriptionFact.md) |  |
 | [SelfDescriptionSpec](SelfDescriptionSpec.md) |  |
 | [SelfDescriptionSubject](SelfDescriptionSubject.md) |  |
+| [SessionPlan](SessionPlan.md) | Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway... |
+| [SessionPlanRequest](SessionPlanRequest.md) | Request to issue a signed MCP gateway session plan for one ExecutionCellLease... |
 | [SolicitationApproval](SolicitationApproval.md) |  |
 | [SolicitationContract](SolicitationContract.md) | The only way one Project or Realm may solicit another (canonical decision 25) |
 | [SolicitationContractSpec](SolicitationContractSpec.md) |  |
@@ -742,6 +745,8 @@ Name: jumo_v1
 | [grantedCapabilities](grantedCapabilities.md) |  |
 | [grantedOperationRefs](grantedOperationRefs.md) | The only external reach available to the substrate |
 | [grantedScopes](grantedScopes.md) |  |
+| [grantId](grantId.md) |  |
+| [grantIds](grantIds.md) |  |
 | [guidedMinutes](guidedMinutes.md) |  |
 | [handlerModuleRef](handlerModuleRef.md) |  |
 | [handoff](handoff.md) |  |
@@ -1025,7 +1030,9 @@ Name: jumo_v1
 | [pids](pids.md) |  |
 | [placement](placement.md) |  |
 | [planDigest](planDigest.md) |  |
+| [planExpiresAt](planExpiresAt.md) |  |
 | [planId](planId.md) |  |
+| [planSignature](planSignature.md) |  |
 | [platform](platform.md) |  |
 | [platformRef](platformRef.md) | The ProviderPlatform catalog entry this account was opened against |
 | [playbookDigest](playbookDigest.md) |  |
@@ -1227,6 +1234,7 @@ Name: jumo_v1
 | [signatureRef](signatureRef.md) |  |
 | [signedBy](signedBy.md) |  |
 | [signing](signing.md) |  |
+| [signingKeyName](signingKeyName.md) |  |
 | [skills](skills.md) |  |
 | [sla](sla.md) |  |
 | [source](source.md) |  |

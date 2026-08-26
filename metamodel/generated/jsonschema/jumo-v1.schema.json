@@ -9207,6 +9207,43 @@
       "title": "PersonalSpaceSpec",
       "type": "object"
     },
+    "PlannedOperation": {
+      "additionalProperties": false,
+      "description": "One operation exposed by a signed MCP gateway session plan, resolved from a validated InvocationCapabilityGrant (mcp-gateway-session-plan-signing AC2). Mirrors dev.jumo.mcpgateway.plan.PlannedOperation on the gateway side.",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "exposedName": {
+          "type": "string"
+        },
+        "grantId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "inputSchema": {
+          "type": "string"
+        },
+        "outputSchema": {
+          "type": "string"
+        },
+        "producesExternalEffect": {
+          "type": "boolean"
+        },
+        "upstreamToolName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "grantId",
+        "exposedName",
+        "upstreamToolName",
+        "inputSchema",
+        "producesExternalEffect"
+      ],
+      "title": "PlannedOperation",
+      "type": "object"
+    },
     "PolicyInput": {
       "additionalProperties": false,
       "description": "Typed input structure evaluated by OPA policies.",
@@ -12771,6 +12808,71 @@
       ],
       "title": "SelfDescriptionSubjectKind",
       "type": "string"
+    },
+    "SessionPlan": {
+      "additionalProperties": false,
+      "description": "Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope dev.jumo.mcpgateway.plan.SessionPlan's javadoc names but does not yet have a field for.",
+      "properties": {
+        "leaseId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "operations": {
+          "items": {
+            "$ref": "#/$defs/PlannedOperation"
+          },
+          "type": "array"
+        },
+        "planExpiresAt": {
+          "type": "string"
+        },
+        "planId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "planSignature": {
+          "type": "string"
+        },
+        "realmId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "signingKeyName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "planId",
+        "realmId",
+        "leaseId",
+        "planExpiresAt",
+        "signingKeyName",
+        "planSignature"
+      ],
+      "title": "SessionPlan",
+      "type": "object"
+    },
+    "SessionPlanRequest": {
+      "additionalProperties": false,
+      "description": "Request to issue a signed MCP gateway session plan for one ExecutionCellLease (mcp-gateway-session-plan-signing AC2).",
+      "properties": {
+        "grantIds": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9-]*$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "leaseId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "leaseId"
+      ],
+      "title": "SessionPlanRequest",
+      "type": "object"
     },
     "SharedRepositoryApprovalPolicy": {
       "description": "Who must approve a forge-write against a shared repository binding. OWNER_ONLY applies when a single Realm owns the binding. MUTUAL_CONSENT blocks merge until all co-owner Realms have acknowledged.",

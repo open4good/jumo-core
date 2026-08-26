@@ -22,6 +22,7 @@ URI: [jumo:operations](https://jumo.dev/schemas/jumo-v1/operations)
 | --- | --- | --- |
 | [ConnectorDefinitionSpec](ConnectorDefinitionSpec.md) |  |  no  |
 | [McpBundleSemanticProfile](McpBundleSemanticProfile.md) |  |  no  |
+| [SessionPlan](SessionPlan.md) | Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway... |  no  |
 | [ApiSurfaceSpec](ApiSurfaceSpec.md) | Specification of an ApiSurface contract |  no  |
 
 
@@ -36,7 +37,7 @@ URI: [jumo:operations](https://jumo.dev/schemas/jumo-v1/operations)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [ConnectorDefinitionSpec](ConnectorDefinitionSpec.md), [McpBundleSemanticProfile](McpBundleSemanticProfile.md), [ApiSurfaceSpec](ApiSurfaceSpec.md) |
+| Domain Of | [ConnectorDefinitionSpec](ConnectorDefinitionSpec.md), [McpBundleSemanticProfile](McpBundleSemanticProfile.md), [SessionPlan](SessionPlan.md), [ApiSurfaceSpec](ApiSurfaceSpec.md) |
 
 ### Cardinality and Requirements
 
@@ -77,6 +78,7 @@ name: operations
 domain_of:
 - ConnectorDefinitionSpec
 - McpBundleSemanticProfile
+- SessionPlan
 - ApiSurfaceSpec
 range: string
 

@@ -2392,11 +2392,9 @@
       "@id": "annotations"
     },
     "inputSchema": {
-      "@type": "@id",
       "@id": "inputSchema"
     },
     "outputSchema": {
-      "@type": "@id",
       "@id": "outputSchema"
     },
     "defaultDisplayName": {
@@ -2890,6 +2888,9 @@
     },
     "workspacePath": {
       "@id": "workspacePath"
+    },
+    "grantId": {
+      "@id": "grantId"
     },
     "action": {
       "@id": "action"
@@ -3703,6 +3704,18 @@
     "agentCard": {
       "@type": "@id",
       "@id": "agentCard"
+    },
+    "planExpiresAt": {
+      "@id": "planExpiresAt"
+    },
+    "planSignature": {
+      "@id": "planSignature"
+    },
+    "signingKeyName": {
+      "@id": "signingKeyName"
+    },
+    "grantIds": {
+      "@id": "grantIds"
     },
     "requiredOwners": {
       "@context": {
@@ -4848,6 +4861,9 @@
     "PersonalSpaceSpec": {
       "@id": "PersonalSpaceSpec"
     },
+    "PlannedOperation": {
+      "@id": "PlannedOperation"
+    },
     "PolicyInput": {
       "@id": "PolicyInput"
     },
@@ -5117,6 +5133,12 @@
     },
     "SelfDescriptionSubject": {
       "@id": "SelfDescriptionSubject"
+    },
+    "SessionPlan": {
+      "@id": "SessionPlan"
+    },
+    "SessionPlanRequest": {
+      "@id": "SessionPlanRequest"
     },
     "SolicitationApproval": {
       "@id": "SolicitationApproval"

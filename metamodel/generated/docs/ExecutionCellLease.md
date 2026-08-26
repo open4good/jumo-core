@@ -156,6 +156,8 @@ attributes:
     - WorkloadCommand
     - ExecutionCellLease
     - CliInvocationRequest
+    - SessionPlanRequest
+    - SessionPlan
     range: Identifier
     required: true
   machineId:
@@ -307,6 +309,8 @@ attributes:
     - WorkloadCommand
     - ExecutionCellLease
     - CliInvocationRequest
+    - SessionPlanRequest
+    - SessionPlan
     range: Identifier
     required: true
   machineId:

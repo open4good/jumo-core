@@ -205,6 +205,8 @@ attributes:
     - WorkloadCommand
     - ExecutionCellLease
     - CliInvocationRequest
+    - SessionPlanRequest
+    - SessionPlan
     range: Identifier
     required: true
   driverKind:
@@ -344,6 +346,8 @@ attributes:
     - WorkloadCommand
     - ExecutionCellLease
     - CliInvocationRequest
+    - SessionPlanRequest
+    - SessionPlan
     range: Identifier
     required: true
   driverKind:

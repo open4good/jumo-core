@@ -181,6 +181,7 @@ attributes:
     domain_of:
     - ConnectorDefinitionSpec
     - McpBundleSemanticProfile
+    - SessionPlan
     - ApiSurfaceSpec
     range: McpBundleOperation
     required: true
@@ -251,6 +252,7 @@ attributes:
     domain_of:
     - ConnectorDefinitionSpec
     - McpBundleSemanticProfile
+    - SessionPlan
     - ApiSurfaceSpec
     range: McpBundleOperation
     required: true

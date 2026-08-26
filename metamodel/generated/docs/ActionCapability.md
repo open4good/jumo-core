@@ -216,6 +216,7 @@ attributes:
     - ConnectorOperation
     - McpBundleOperation
     - McpToolDescriptor
+    - PlannedOperation
     - ConnectorIntegrationSpec
     - ApiResponseBinding
     range: string
@@ -252,6 +253,7 @@ attributes:
     owner: ActionCapability
     domain_of:
     - ActionCapability
+    - PlannedOperation
     range: boolean
   maximumGrantDuration:
     name: maximumGrantDuration
@@ -361,6 +363,7 @@ attributes:
     - ConnectorOperation
     - McpBundleOperation
     - McpToolDescriptor
+    - PlannedOperation
     - ConnectorIntegrationSpec
     - ApiResponseBinding
     range: string
@@ -397,6 +400,7 @@ attributes:
     owner: ActionCapability
     domain_of:
     - ActionCapability
+    - PlannedOperation
     range: boolean
   maximumGrantDuration:
     name: maximumGrantDuration

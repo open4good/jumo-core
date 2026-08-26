@@ -23,6 +23,8 @@ URI: [jumo:leaseId](https://jumo.dev/schemas/jumo-v1/leaseId)
 | [WorkloadCommand](WorkloadCommand.md) | Typed workload command claimed by pull from an ExecutionMachine, distinct fro... |  no  |
 | [ExecutionCellLease](ExecutionCellLease.md) | Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and con... |  no  |
 | [CliInvocationRequest](CliInvocationRequest.md) | Structured WorkOrder execution invocation dispatched to a CLI worker containe... |  no  |
+| [SessionPlanRequest](SessionPlanRequest.md) | Request to issue a signed MCP gateway session plan for one ExecutionCellLease... |  no  |
+| [SessionPlan](SessionPlan.md) | Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway... |  no  |
 
 
 
@@ -36,7 +38,7 @@ URI: [jumo:leaseId](https://jumo.dev/schemas/jumo-v1/leaseId)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [CliInvocationRequest](CliInvocationRequest.md) |
+| Domain Of | [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [CliInvocationRequest](CliInvocationRequest.md), [SessionPlanRequest](SessionPlanRequest.md), [SessionPlan](SessionPlan.md) |
 
 ### Cardinality and Requirements
 
@@ -78,6 +80,8 @@ domain_of:
 - WorkloadCommand
 - ExecutionCellLease
 - CliInvocationRequest
+- SessionPlanRequest
+- SessionPlan
 range: string
 
 ```

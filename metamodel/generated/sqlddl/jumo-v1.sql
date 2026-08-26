@@ -1469,6 +1469,27 @@ CREATE TABLE "McpProtocolProfile" (
 CREATE INDEX "ix_McpProtocolProfile_id" ON "McpProtocolProfile" (id);
 COMMENT ON TABLE "McpProtocolProfile" IS 'Supported MCP protocol capabilities and versions.';
 
+CREATE TABLE "SessionPlanRequest" (
+	id SERIAL NOT NULL,
+	"leaseId" TEXT NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_SessionPlanRequest_id" ON "SessionPlanRequest" (id);
+COMMENT ON TABLE "SessionPlanRequest" IS 'Request to issue a signed MCP gateway session plan for one ExecutionCellLease (mcp-gateway-session-plan-signing AC2).';
+
+CREATE TABLE "SessionPlan" (
+	id SERIAL NOT NULL,
+	"planId" TEXT NOT NULL,
+	"realmId" TEXT NOT NULL,
+	"leaseId" TEXT NOT NULL,
+	"planExpiresAt" TEXT NOT NULL,
+	"signingKeyName" TEXT NOT NULL,
+	"planSignature" TEXT NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_SessionPlan_id" ON "SessionPlan" (id);
+COMMENT ON TABLE "SessionPlan" IS 'Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope dev.jumo.mcpgateway.plan.SessionPlan''s javadoc names but does not yet have a field for.';
+
 CREATE TABLE "ImportedSchemaCandidate" (
 	id SERIAL NOT NULL,
 	"candidateId" TEXT NOT NULL,
@@ -3037,6 +3058,23 @@ CREATE TABLE "McpInventorySnapshot" (
 CREATE INDEX "ix_McpInventorySnapshot_id" ON "McpInventorySnapshot" (id);
 COMMENT ON TABLE "McpInventorySnapshot" IS 'PostgreSQL event recording an MCP inventory discovered under an exact Realm lease; it is not a Git contract.';
 
+CREATE TABLE "PlannedOperation" (
+	id SERIAL NOT NULL,
+	"grantId" TEXT NOT NULL,
+	"exposedName" TEXT NOT NULL,
+	"upstreamToolName" TEXT NOT NULL,
+	description TEXT,
+	"inputSchema" TEXT NOT NULL,
+	"outputSchema" TEXT,
+	"producesExternalEffect" BOOLEAN NOT NULL,
+	"SessionPlan_id" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("SessionPlan_id") REFERENCES "SessionPlan" (id)
+);
+CREATE INDEX "ix_PlannedOperation_id" ON "PlannedOperation" (id);
+COMMENT ON TABLE "PlannedOperation" IS 'One operation exposed by a signed MCP gateway session plan, resolved from a validated InvocationCapabilityGrant (mcp-gateway-session-plan-signing AC2). Mirrors dev.jumo.mcpgateway.plan.PlannedOperation on the gateway side.';
+COMMENT ON COLUMN "PlannedOperation"."SessionPlan_id" IS 'Autocreated FK slot';
+
 CREATE TABLE "ConnectorPackageCertificationSpec" (
 	id SERIAL NOT NULL,
 	"packageDigest" TEXT NOT NULL,
@@ -3540,6 +3578,17 @@ CREATE INDEX "ix_McpProtocolProfile_capabilities_McpProtocolProfile_id" ON "McpP
 CREATE INDEX "ix_McpProtocolProfile_capabilities_capabilities" ON "McpProtocolProfile_capabilities" (capabilities);
 COMMENT ON TABLE "McpProtocolProfile_capabilities" IS 'None';
 COMMENT ON COLUMN "McpProtocolProfile_capabilities"."McpProtocolProfile_id" IS 'Autocreated FK slot';
+
+CREATE TABLE "SessionPlanRequest_grantIds" (
+	"SessionPlanRequest_id" INTEGER,
+	"grantIds" TEXT,
+	PRIMARY KEY ("SessionPlanRequest_id", "grantIds"),
+	FOREIGN KEY("SessionPlanRequest_id") REFERENCES "SessionPlanRequest" (id)
+);
+CREATE INDEX "ix_SessionPlanRequest_grantIds_SessionPlanRequest_id" ON "SessionPlanRequest_grantIds" ("SessionPlanRequest_id");
+CREATE INDEX "ix_SessionPlanRequest_grantIds_grantIds" ON "SessionPlanRequest_grantIds" ("grantIds");
+COMMENT ON TABLE "SessionPlanRequest_grantIds" IS 'None';
+COMMENT ON COLUMN "SessionPlanRequest_grantIds"."SessionPlanRequest_id" IS 'Autocreated FK slot';
 
 CREATE TABLE "ConnectorPackageSpec_sourcePaths" (
 	"ConnectorPackageSpec_id" INTEGER,

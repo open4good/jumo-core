@@ -155,6 +155,7 @@ attributes:
     domain_of:
     - UpstreamToolEntry
     - McpBundleOperation
+    - PlannedOperation
     range: string
     required: true
     pattern: ^.{1,}$
@@ -218,6 +219,7 @@ attributes:
     domain_of:
     - UpstreamToolEntry
     - McpBundleOperation
+    - PlannedOperation
     range: string
     required: true
     pattern: ^.{1,}$

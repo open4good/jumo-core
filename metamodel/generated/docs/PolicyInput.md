@@ -173,6 +173,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - SessionPlan
     - ApiProblem
     - PolicyInput
     - ChangeSetProjection
@@ -263,6 +264,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - SessionPlan
     - ApiProblem
     - PolicyInput
     - ChangeSetProjection

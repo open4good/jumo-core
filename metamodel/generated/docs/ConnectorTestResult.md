@@ -146,6 +146,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ConnectorTestResult
     domain_of:
+    - SessionPlan
     - ConnectorTestPlan
     - ConnectorTestResult
     range: Identifier
@@ -253,6 +254,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ConnectorTestResult
     domain_of:
+    - SessionPlan
     - ConnectorTestPlan
     - ConnectorTestResult
     range: Identifier

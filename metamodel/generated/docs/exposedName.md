@@ -21,6 +21,7 @@ URI: [jumo:exposedName](https://jumo.dev/schemas/jumo-v1/exposedName)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [McpBundleOperation](McpBundleOperation.md) |  |  no  |
+| [PlannedOperation](PlannedOperation.md) | One operation exposed by a signed MCP gateway session plan, resolved from a v... |  no  |
 
 
 
@@ -34,27 +35,12 @@ URI: [jumo:exposedName](https://jumo.dev/schemas/jumo-v1/exposedName)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [McpBundleOperation](McpBundleOperation.md) |
+| Domain Of | [McpBundleOperation](McpBundleOperation.md), [PlannedOperation](PlannedOperation.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-| Required | Yes |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [McpBundleOperation](McpBundleOperation.md) |
-
-
-### Value Constraints
-
-| Property | Value |
-| --- | --- |
-| Regex Pattern | `^.{3,}$` |
-
-
 
 
 
@@ -68,13 +54,6 @@ URI: [jumo:exposedName](https://jumo.dev/schemas/jumo-v1/exposedName)
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -94,14 +73,10 @@ URI: [jumo:exposedName](https://jumo.dev/schemas/jumo-v1/exposedName)
 <details>
 ```yaml
 name: exposedName
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: McpBundleOperation
 domain_of:
 - McpBundleOperation
+- PlannedOperation
 range: string
-required: true
-pattern: ^.{3,}$
 
 ```
 </details></div>

@@ -242,3 +242,24 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: Retrieve short-lived OpenBao token for WorkOrder secret bindings.
+    - operationId: issueMcpGatewaySessionPlan
+      method: POST
+      path: /mcp-gateway/session-plan
+      audience: MACHINE_MTLS
+      authAction: mcp-gateway.session-plan.issue
+      requestBinding:
+        modelClass: SessionPlanRequest
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/SessionPlanRequest
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: SessionPlan
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/SessionPlan
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Issue a signed MCP gateway session plan scoped to one ExecutionCellLease.

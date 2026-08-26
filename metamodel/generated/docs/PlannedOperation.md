@@ -3,10 +3,10 @@ search:
   boost: 10.0
 ---
 
-# Class: McpToolDescriptor
+# Class: PlannedOperation
 
 
-_Tool schema and metadata captured during MCP discovery._
+_One operation exposed by a signed MCP gateway session plan, resolved from a validated InvocationCapabilityGrant (mcp-gateway-session-plan-signing AC2). Mirrors dev.jumo.mcpgateway.plan.PlannedOperation on the gateway side._
 
 
 
@@ -14,7 +14,7 @@ _Tool schema and metadata captured during MCP discovery._
 
 
 
-URI: [jumo:McpToolDescriptor](https://jumo.dev/schemas/jumo-v1/McpToolDescriptor)
+URI: [jumo:PlannedOperation](https://jumo.dev/schemas/jumo-v1/PlannedOperation)
 
 
 
@@ -22,35 +22,21 @@ URI: [jumo:McpToolDescriptor](https://jumo.dev/schemas/jumo-v1/McpToolDescriptor
 
 ```mermaid
  classDiagram
-    class McpToolDescriptor
-    click McpToolDescriptor href "../McpToolDescriptor/"
-      McpToolDescriptor : annotations
+    class PlannedOperation
+    click PlannedOperation href "../PlannedOperation/"
+      PlannedOperation : description
 
-      McpToolDescriptor : description
+      PlannedOperation : exposedName
 
-      McpToolDescriptor : inputSchema
+      PlannedOperation : grantId
 
+      PlannedOperation : inputSchema
 
+      PlannedOperation : outputSchema
 
+      PlannedOperation : producesExternalEffect
 
-
-        McpToolDescriptor --> "0..1" SchemaBoundPayload : inputSchema
-        click SchemaBoundPayload href "../SchemaBoundPayload/"
-
-
-
-      McpToolDescriptor : name
-
-      McpToolDescriptor : outputSchema
-
-
-
-
-
-        McpToolDescriptor --> "0..1" SchemaBoundPayload : outputSchema
-        click SchemaBoundPayload href "../SchemaBoundPayload/"
-
-
+      PlannedOperation : upstreamToolName
 
 
 ```
@@ -64,11 +50,13 @@ URI: [jumo:McpToolDescriptor](https://jumo.dev/schemas/jumo-v1/McpToolDescriptor
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [name](name.md) | 1 <br/> [String](String.md) |  | direct |
+| [grantId](grantId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
+| [exposedName](exposedName.md) | 1 <br/> [String](String.md) |  | direct |
+| [upstreamToolName](upstreamToolName.md) | 1 <br/> [String](String.md) |  | direct |
 | [description](description.md) | 0..1 <br/> [String](String.md) |  | direct |
-| [inputSchema](inputSchema.md) | 0..1 <br/> [SchemaBoundPayload](SchemaBoundPayload.md) |  | direct |
-| [outputSchema](outputSchema.md) | 0..1 <br/> [SchemaBoundPayload](SchemaBoundPayload.md) |  | direct |
-| [annotations](annotations.md) | * <br/> [String](String.md) |  | direct |
+| [inputSchema](inputSchema.md) | 1 <br/> [String](String.md) |  | direct |
+| [outputSchema](outputSchema.md) | 0..1 <br/> [String](String.md) |  | direct |
+| [producesExternalEffect](producesExternalEffect.md) | 1 <br/> [Boolean](Boolean.md) |  | direct |
 
 
 
@@ -78,7 +66,7 @@ URI: [jumo:McpToolDescriptor](https://jumo.dev/schemas/jumo-v1/McpToolDescriptor
 
 | used by | used in | type | used |
 | ---  | --- | --- | --- |
-| [McpInventorySnapshot](McpInventorySnapshot.md) | [tools](tools.md) | range | [McpToolDescriptor](McpToolDescriptor.md) |
+| [SessionPlan](SessionPlan.md) | [operations](operations.md) | range | [PlannedOperation](PlannedOperation.md) |
 
 
 
@@ -99,9 +87,9 @@ URI: [jumo:McpToolDescriptor](https://jumo.dev/schemas/jumo-v1/McpToolDescriptor
 
 | property | value |
 | --- | --- |
-| jumo.state_authority | GIT |
+| jumo.state_authority | NONE |
 | jumo.model_role | VALUE_OBJECT |
-| jumo.audience | REALM_PRIVATE |
+| jumo.audience | MACHINE_MTLS |
 | jumo.sensitivity | INTERNAL |
 | jumo.boundary_eligible | True |
 | jumo.schema_profiles | draft-2020-12,native-json-schema,prompted-json-validated |
@@ -121,8 +109,8 @@ URI: [jumo:McpToolDescriptor](https://jumo.dev/schemas/jumo-v1/McpToolDescriptor
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:McpToolDescriptor |
-| native | jumo:McpToolDescriptor |
+| self | jumo:PlannedOperation |
+| native | jumo:PlannedOperation |
 
 
 
@@ -137,17 +125,17 @@ URI: [jumo:McpToolDescriptor](https://jumo.dev/schemas/jumo-v1/McpToolDescriptor
 
 <details>
 ```yaml
-name: McpToolDescriptor
+name: PlannedOperation
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
-    value: GIT
+    value: NONE
   jumo.model_role:
     tag: jumo.model_role
     value: VALUE_OBJECT
   jumo.audience:
     tag: jumo.audience
-    value: REALM_PRIVATE
+    value: MACHINE_MTLS
   jumo.sensitivity:
     tag: jumo.sensitivity
     value: INTERNAL
@@ -157,29 +145,43 @@ annotations:
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: Tool schema and metadata captured during MCP discovery.
+description: One operation exposed by a signed MCP gateway session plan, resolved
+  from a validated InvocationCapabilityGrant (mcp-gateway-session-plan-signing AC2).
+  Mirrors dev.jumo.mcpgateway.plan.PlannedOperation on the gateway side.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
-  name:
-    name: name
+  grantId:
+    name: grantId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: McpToolDescriptor
+    rank: 1000
+    owner: PlannedOperation
     domain_of:
-    - Metadata
-    - MethodologySource
-    - SelfDescriptionFact
-    - AgentCardSkill
-    - PromptVariable
-    - AssistedJourneySpec
-    - AssistedJourneyStep
-    - ActionCapability
-    - McpToolDescriptor
+    - PlannedOperation
+    range: Identifier
+    required: true
+  exposedName:
+    name: exposedName
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: PlannedOperation
+    domain_of:
+    - McpBundleOperation
+    - PlannedOperation
+    range: string
+    required: true
+  upstreamToolName:
+    name: upstreamToolName
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: PlannedOperation
+    domain_of:
+    - UpstreamToolEntry
+    - McpBundleOperation
+    - PlannedOperation
     range: string
     required: true
   description:
     name: description
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: McpToolDescriptor
+    owner: PlannedOperation
     domain_of:
     - PromptVariable
     - AssistedJourneySpec
@@ -196,32 +198,29 @@ attributes:
   inputSchema:
     name: inputSchema
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: McpToolDescriptor
+    owner: PlannedOperation
     domain_of:
     - McpToolDescriptor
     - PlannedOperation
-    range: SchemaBoundPayload
-    inlined: true
+    range: string
+    required: true
   outputSchema:
     name: outputSchema
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: McpToolDescriptor
+    owner: PlannedOperation
     domain_of:
     - McpToolDescriptor
     - PlannedOperation
-    range: SchemaBoundPayload
-    inlined: true
-  annotations:
-    name: annotations
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: McpToolDescriptor
-    domain_of:
-    - McpToolDescriptor
     range: string
-    multivalued: true
+  producesExternalEffect:
+    name: producesExternalEffect
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: PlannedOperation
+    domain_of:
+    - ActionCapability
+    - PlannedOperation
+    range: boolean
+    required: true
 
 ```
 </details>
@@ -230,17 +229,17 @@ attributes:
 
 <details>
 ```yaml
-name: McpToolDescriptor
+name: PlannedOperation
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
-    value: GIT
+    value: NONE
   jumo.model_role:
     tag: jumo.model_role
     value: VALUE_OBJECT
   jumo.audience:
     tag: jumo.audience
-    value: REALM_PRIVATE
+    value: MACHINE_MTLS
   jumo.sensitivity:
     tag: jumo.sensitivity
     value: INTERNAL
@@ -250,29 +249,43 @@ annotations:
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: Tool schema and metadata captured during MCP discovery.
+description: One operation exposed by a signed MCP gateway session plan, resolved
+  from a validated InvocationCapabilityGrant (mcp-gateway-session-plan-signing AC2).
+  Mirrors dev.jumo.mcpgateway.plan.PlannedOperation on the gateway side.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
-  name:
-    name: name
+  grantId:
+    name: grantId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: McpToolDescriptor
+    rank: 1000
+    owner: PlannedOperation
     domain_of:
-    - Metadata
-    - MethodologySource
-    - SelfDescriptionFact
-    - AgentCardSkill
-    - PromptVariable
-    - AssistedJourneySpec
-    - AssistedJourneyStep
-    - ActionCapability
-    - McpToolDescriptor
+    - PlannedOperation
+    range: Identifier
+    required: true
+  exposedName:
+    name: exposedName
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: PlannedOperation
+    domain_of:
+    - McpBundleOperation
+    - PlannedOperation
+    range: string
+    required: true
+  upstreamToolName:
+    name: upstreamToolName
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: PlannedOperation
+    domain_of:
+    - UpstreamToolEntry
+    - McpBundleOperation
+    - PlannedOperation
     range: string
     required: true
   description:
     name: description
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: McpToolDescriptor
+    owner: PlannedOperation
     domain_of:
     - PromptVariable
     - AssistedJourneySpec
@@ -289,32 +302,29 @@ attributes:
   inputSchema:
     name: inputSchema
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: McpToolDescriptor
+    owner: PlannedOperation
     domain_of:
     - McpToolDescriptor
     - PlannedOperation
-    range: SchemaBoundPayload
-    inlined: true
+    range: string
+    required: true
   outputSchema:
     name: outputSchema
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: McpToolDescriptor
+    owner: PlannedOperation
     domain_of:
     - McpToolDescriptor
     - PlannedOperation
-    range: SchemaBoundPayload
-    inlined: true
-  annotations:
-    name: annotations
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: McpToolDescriptor
-    domain_of:
-    - McpToolDescriptor
     range: string
-    multivalued: true
+  producesExternalEffect:
+    name: producesExternalEffect
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: PlannedOperation
+    domain_of:
+    - ActionCapability
+    - PlannedOperation
+    range: boolean
+    required: true
 
 ```
 </details></div>

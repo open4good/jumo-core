@@ -23,6 +23,7 @@ URI: [jumo:realmId](https://jumo.dev/schemas/jumo-v1/realmId)
 | [AttentionSource](AttentionSource.md) |  |  no  |
 | [MachineEnrollmentRequest](MachineEnrollmentRequest.md) | BYOVM one-shot machine enrollment request carrying CSR and system inventory |  no  |
 | [MachineEnrollmentChallenge](MachineEnrollmentChallenge.md) | Short-lived enrollment challenge issued by the control plane |  no  |
+| [SessionPlan](SessionPlan.md) | Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway... |  no  |
 | [ApiProblem](ApiProblem.md) | RFC 9457 compliant problem details model for API errors without unconstrained... |  no  |
 | [PolicyInput](PolicyInput.md) | Typed input structure evaluated by OPA policies |  no  |
 | [ChangeSetProjection](ChangeSetProjection.md) | Observed record of the single atomic PR ForgeApplier opened for a ChangeSetPr... |  no  |
@@ -39,7 +40,7 @@ URI: [jumo:realmId](https://jumo.dev/schemas/jumo-v1/realmId)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [AttentionSource](AttentionSource.md), [MachineEnrollmentRequest](MachineEnrollmentRequest.md), [MachineEnrollmentChallenge](MachineEnrollmentChallenge.md), [ApiProblem](ApiProblem.md), [PolicyInput](PolicyInput.md), [ChangeSetProjection](ChangeSetProjection.md) |
+| Domain Of | [AttentionSource](AttentionSource.md), [MachineEnrollmentRequest](MachineEnrollmentRequest.md), [MachineEnrollmentChallenge](MachineEnrollmentChallenge.md), [SessionPlan](SessionPlan.md), [ApiProblem](ApiProblem.md), [PolicyInput](PolicyInput.md), [ChangeSetProjection](ChangeSetProjection.md) |
 
 ### Cardinality and Requirements
 
@@ -81,6 +82,7 @@ domain_of:
 - AttentionSource
 - MachineEnrollmentRequest
 - MachineEnrollmentChallenge
+- SessionPlan
 - ApiProblem
 - PolicyInput
 - ChangeSetProjection

@@ -3,13 +3,13 @@ search:
   boost: 5.0
 ---
 
-# Slot: producesExternalEffect
+# Slot: grantId
 
 <div data-search-exclude markdown="1">
 
 
 
-URI: [jumo:producesExternalEffect](https://jumo.dev/schemas/jumo-v1/producesExternalEffect)
+URI: [jumo:grantId](https://jumo.dev/schemas/jumo-v1/grantId)
 <!-- no inheritance hierarchy -->
 
 
@@ -20,7 +20,6 @@ URI: [jumo:producesExternalEffect](https://jumo.dev/schemas/jumo-v1/producesExte
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [ActionCapability](ActionCapability.md) |  |  no  |
 | [PlannedOperation](PlannedOperation.md) | One operation exposed by a signed MCP gateway session plan, resolved from a v... |  no  |
 
 
@@ -34,13 +33,21 @@ URI: [jumo:producesExternalEffect](https://jumo.dev/schemas/jumo-v1/producesExte
 
 | Property | Value |
 | --- | --- |
-| Range | [String](String.md) |
-| Domain Of | [ActionCapability](ActionCapability.md), [PlannedOperation](PlannedOperation.md) |
+| Range | [Identifier](Identifier.md) |
+| Domain Of | [PlannedOperation](PlannedOperation.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
+| Required | Yes |
+### Slot Characteristics
+
+| Property | Value |
+| --- | --- |
+| Owner | [PlannedOperation](PlannedOperation.md) |
+
+
 
 
 
@@ -57,13 +64,20 @@ URI: [jumo:producesExternalEffect](https://jumo.dev/schemas/jumo-v1/producesExte
 
 
 
+### Schema Source
+
+
+* from schema: https://jumo.dev/schemas/jumo-v1
+
+
+
 
 ## Mappings
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:producesExternalEffect |
-| native | jumo:producesExternalEffect |
+| self | jumo:grantId |
+| native | jumo:grantId |
 
 
 
@@ -72,11 +86,14 @@ URI: [jumo:producesExternalEffect](https://jumo.dev/schemas/jumo-v1/producesExte
 
 <details>
 ```yaml
-name: producesExternalEffect
+name: grantId
+from_schema: https://jumo.dev/schemas/jumo-v1
+rank: 1000
+owner: PlannedOperation
 domain_of:
-- ActionCapability
 - PlannedOperation
-range: string
+range: Identifier
+required: true
 
 ```
 </details></div>

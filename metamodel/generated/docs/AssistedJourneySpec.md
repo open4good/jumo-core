@@ -262,6 +262,7 @@ attributes:
     - ConnectorOperation
     - McpBundleOperation
     - McpToolDescriptor
+    - PlannedOperation
     - ConnectorIntegrationSpec
     - ApiResponseBinding
     range: string
@@ -471,6 +472,7 @@ attributes:
     - ConnectorOperation
     - McpBundleOperation
     - McpToolDescriptor
+    - PlannedOperation
     - ConnectorIntegrationSpec
     - ApiResponseBinding
     range: string

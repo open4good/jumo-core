@@ -7813,6 +7813,81 @@ components:
       title: McpInventorySnapshot
       description: PostgreSQL event recording an MCP inventory discovered under an
         exact Realm lease; it is not a Git contract.
+    PlannedOperation:
+      properties:
+        grantId:
+          type: string
+        exposedName:
+          type: string
+        upstreamToolName:
+          type: string
+        description:
+          type: string
+        inputSchema:
+          type: string
+        outputSchema:
+          type: string
+        producesExternalEffect:
+          type: boolean
+      additionalProperties: false
+      type: object
+      required:
+      - grantId
+      - exposedName
+      - upstreamToolName
+      - inputSchema
+      - producesExternalEffect
+      title: PlannedOperation
+      description: One operation exposed by a signed MCP gateway session plan, resolved
+        from a validated InvocationCapabilityGrant (mcp-gateway-session-plan-signing
+        AC2). Mirrors dev.jumo.mcpgateway.plan.PlannedOperation on the gateway side.
+    SessionPlanRequest:
+      properties:
+        leaseId:
+          type: string
+        grantIds:
+          items:
+            type: string
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - leaseId
+      title: SessionPlanRequest
+      description: Request to issue a signed MCP gateway session plan for one ExecutionCellLease
+        (mcp-gateway-session-plan-signing AC2).
+    SessionPlan:
+      properties:
+        planId:
+          type: string
+        realmId:
+          type: string
+        leaseId:
+          type: string
+        operations:
+          items:
+            $ref: '#/components/schemas/PlannedOperation'
+          type: array
+        planExpiresAt:
+          type: string
+        signingKeyName:
+          type: string
+        planSignature:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - planId
+      - realmId
+      - leaseId
+      - planExpiresAt
+      - signingKeyName
+      - planSignature
+      title: SessionPlan
+      description: Signed MCP gateway session plan scoped to one ExecutionCellLease
+        (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope
+        dev.jumo.mcpgateway.plan.SessionPlan's javadoc names but does not yet have
+        a field for.
     ImportedSchemaCandidate:
       properties:
         candidateId:

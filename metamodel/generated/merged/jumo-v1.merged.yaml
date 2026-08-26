@@ -26823,6 +26823,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -28178,6 +28179,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -29486,6 +29488,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -30090,6 +30093,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -30124,6 +30128,7 @@ classes:
         owner: ActionCapability
         domain_of:
         - ActionCapability
+        - PlannedOperation
         range: boolean
       maximumGrantDuration:
         name: maximumGrantDuration
@@ -32544,6 +32549,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - SessionPlan
         - ApiProblem
         - PolicyInput
         - ChangeSetProjection
@@ -37988,6 +37994,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - SessionPlan
         - ApiProblem
         - PolicyInput
         - ChangeSetProjection
@@ -38057,6 +38064,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - SessionPlan
         - ApiProblem
         - PolicyInput
         - ChangeSetProjection
@@ -38658,6 +38666,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -39087,6 +39096,8 @@ classes:
         - WorkloadCommand
         - ExecutionCellLease
         - CliInvocationRequest
+        - SessionPlanRequest
+        - SessionPlan
         range: Identifier
         required: true
       driverKind:
@@ -39492,6 +39503,8 @@ classes:
         - WorkloadCommand
         - ExecutionCellLease
         - CliInvocationRequest
+        - SessionPlanRequest
+        - SessionPlan
         range: Identifier
         required: true
       machineId:
@@ -40855,6 +40868,8 @@ classes:
         - WorkloadCommand
         - ExecutionCellLease
         - CliInvocationRequest
+        - SessionPlanRequest
+        - SessionPlan
         range: Identifier
         required: true
       machineRef:
@@ -43827,6 +43842,7 @@ classes:
         domain_of:
         - ConnectorDefinitionSpec
         - McpBundleSemanticProfile
+        - SessionPlan
         - ApiSurfaceSpec
         range: ConnectorOperation
         required: true
@@ -43922,6 +43938,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -44814,6 +44831,7 @@ classes:
         domain_of:
         - UpstreamToolEntry
         - McpBundleOperation
+        - PlannedOperation
         range: string
         required: true
         pattern: ^.{1,}$
@@ -45592,6 +45610,7 @@ classes:
         domain_of:
         - ConnectorDefinitionSpec
         - McpBundleSemanticProfile
+        - SessionPlan
         - ApiSurfaceSpec
         range: McpBundleOperation
         required: true
@@ -45667,6 +45686,7 @@ classes:
         owner: McpBundleOperation
         domain_of:
         - McpBundleOperation
+        - PlannedOperation
         range: string
         required: true
         pattern: ^.{3,}$
@@ -45680,6 +45700,7 @@ classes:
         domain_of:
         - UpstreamToolEntry
         - McpBundleOperation
+        - PlannedOperation
         range: string
         required: true
         pattern: ^.{1,}$
@@ -45729,6 +45750,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -52931,6 +52953,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -52940,6 +52963,7 @@ classes:
         owner: McpToolDescriptor
         domain_of:
         - McpToolDescriptor
+        - PlannedOperation
         range: SchemaBoundPayload
         inlined: true
       outputSchema:
@@ -52948,6 +52972,7 @@ classes:
         owner: McpToolDescriptor
         domain_of:
         - McpToolDescriptor
+        - PlannedOperation
         range: SchemaBoundPayload
         inlined: true
       annotations:
@@ -53155,6 +53180,247 @@ classes:
         owner: McpInventorySnapshot
         domain_of:
         - McpInventorySnapshot
+        range: string
+        required: true
+  PlannedOperation:
+    name: PlannedOperation
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: NONE
+      jumo.model_role:
+        tag: jumo.model_role
+        value: VALUE_OBJECT
+      jumo.audience:
+        tag: jumo.audience
+        value: MACHINE_MTLS
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: One operation exposed by a signed MCP gateway session plan, resolved
+      from a validated InvocationCapabilityGrant (mcp-gateway-session-plan-signing
+      AC2). Mirrors dev.jumo.mcpgateway.plan.PlannedOperation on the gateway side.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      grantId:
+        name: grantId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: PlannedOperation
+        domain_of:
+        - PlannedOperation
+        range: Identifier
+        required: true
+      exposedName:
+        name: exposedName
+        from_schema: https://jumo.dev/schemas/integration
+        owner: PlannedOperation
+        domain_of:
+        - McpBundleOperation
+        - PlannedOperation
+        range: string
+        required: true
+      upstreamToolName:
+        name: upstreamToolName
+        from_schema: https://jumo.dev/schemas/integration
+        owner: PlannedOperation
+        domain_of:
+        - UpstreamToolEntry
+        - McpBundleOperation
+        - PlannedOperation
+        range: string
+        required: true
+      description:
+        name: description
+        from_schema: https://jumo.dev/schemas/integration
+        owner: PlannedOperation
+        domain_of:
+        - PromptVariable
+        - AssistedJourneySpec
+        - AssistedJourneyStep
+        - ActionCapability
+        - MachineAdminPlaybookSpec
+        - ConnectorOperation
+        - McpBundleOperation
+        - McpToolDescriptor
+        - PlannedOperation
+        - ConnectorIntegrationSpec
+        - ApiResponseBinding
+        range: string
+      inputSchema:
+        name: inputSchema
+        from_schema: https://jumo.dev/schemas/integration
+        owner: PlannedOperation
+        domain_of:
+        - McpToolDescriptor
+        - PlannedOperation
+        range: string
+        required: true
+      outputSchema:
+        name: outputSchema
+        from_schema: https://jumo.dev/schemas/integration
+        owner: PlannedOperation
+        domain_of:
+        - McpToolDescriptor
+        - PlannedOperation
+        range: string
+      producesExternalEffect:
+        name: producesExternalEffect
+        from_schema: https://jumo.dev/schemas/integration
+        owner: PlannedOperation
+        domain_of:
+        - ActionCapability
+        - PlannedOperation
+        range: boolean
+        required: true
+  SessionPlanRequest:
+    name: SessionPlanRequest
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: NONE
+      jumo.model_role:
+        tag: jumo.model_role
+        value: COMMAND
+      jumo.audience:
+        tag: jumo.audience
+        value: MACHINE_MTLS
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: Request to issue a signed MCP gateway session plan for one ExecutionCellLease
+      (mcp-gateway-session-plan-signing AC2).
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      leaseId:
+        name: leaseId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlanRequest
+        domain_of:
+        - WorkloadCommand
+        - ExecutionCellLease
+        - CliInvocationRequest
+        - SessionPlanRequest
+        - SessionPlan
+        range: Identifier
+        required: true
+      grantIds:
+        name: grantIds
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlanRequest
+        domain_of:
+        - SessionPlanRequest
+        range: Identifier
+        multivalued: true
+  SessionPlan:
+    name: SessionPlan
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: NONE
+      jumo.model_role:
+        tag: jumo.model_role
+        value: COMMAND
+      jumo.audience:
+        tag: jumo.audience
+        value: MACHINE_MTLS
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: Signed MCP gateway session plan scoped to one ExecutionCellLease
+      (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope
+      dev.jumo.mcpgateway.plan.SessionPlan's javadoc names but does not yet have a
+      field for.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      planId:
+        name: planId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlan
+        domain_of:
+        - SessionPlan
+        - ConnectorTestPlan
+        - ConnectorTestResult
+        range: Identifier
+        required: true
+      realmId:
+        name: realmId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlan
+        domain_of:
+        - AttentionSource
+        - MachineEnrollmentRequest
+        - MachineEnrollmentChallenge
+        - SessionPlan
+        - ApiProblem
+        - PolicyInput
+        - ChangeSetProjection
+        range: Identifier
+        required: true
+      leaseId:
+        name: leaseId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlan
+        domain_of:
+        - WorkloadCommand
+        - ExecutionCellLease
+        - CliInvocationRequest
+        - SessionPlanRequest
+        - SessionPlan
+        range: Identifier
+        required: true
+      operations:
+        name: operations
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlan
+        domain_of:
+        - ConnectorDefinitionSpec
+        - McpBundleSemanticProfile
+        - SessionPlan
+        - ApiSurfaceSpec
+        range: PlannedOperation
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      planExpiresAt:
+        name: planExpiresAt
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlan
+        domain_of:
+        - SessionPlan
+        range: string
+        required: true
+      signingKeyName:
+        name: signingKeyName
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlan
+        domain_of:
+        - SessionPlan
+        range: string
+        required: true
+      planSignature:
+        name: planSignature
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlan
+        domain_of:
+        - SessionPlan
         range: string
         required: true
   ImportedSchemaCandidate:
@@ -53727,6 +53993,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -55620,6 +55887,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: ConnectorTestPlan
         domain_of:
+        - SessionPlan
         - ConnectorTestPlan
         - ConnectorTestResult
         range: Identifier
@@ -55690,6 +55958,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: ConnectorTestResult
         domain_of:
+        - SessionPlan
         - ConnectorTestPlan
         - ConnectorTestResult
         range: Identifier
@@ -58287,6 +58556,7 @@ classes:
         - ConnectorOperation
         - McpBundleOperation
         - McpToolDescriptor
+        - PlannedOperation
         - ConnectorIntegrationSpec
         - ApiResponseBinding
         range: string
@@ -58856,6 +59126,7 @@ classes:
         domain_of:
         - ConnectorDefinitionSpec
         - McpBundleSemanticProfile
+        - SessionPlan
         - ApiSurfaceSpec
         range: ApiOperation
         multivalued: true
@@ -58963,6 +59234,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - SessionPlan
         - ApiProblem
         - PolicyInput
         - ChangeSetProjection
@@ -59023,6 +59295,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - SessionPlan
         - ApiProblem
         - PolicyInput
         - ChangeSetProjection
@@ -59234,6 +59507,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - SessionPlan
         - ApiProblem
         - PolicyInput
         - ChangeSetProjection

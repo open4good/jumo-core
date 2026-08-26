@@ -37,6 +37,8 @@ Name: jumo_v1
 | [AssistedJourney](AssistedJourney.md) | Declaration of a multi-turn governed assisted onboarding journey |
 | [AssistedJourneyCollectionProjection](AssistedJourneyCollectionProjection.md) |  |
 | [AssistedJourneyEmission](AssistedJourneyEmission.md) | The declarative replacement for a per-journey emission branch |
+| [AssistedJourneyEmissionBundleItem](AssistedJourneyEmissionBundleItem.md) | One ordered document of an atomic same-repository bundle |
+| [AssistedJourneyEmissionCondition](AssistedJourneyEmissionCondition.md) | An equality condition deciding whether a bundle item is emitted at all, check... |
 | [AssistedJourneyEmittedIdentifier](AssistedJourneyEmittedIdentifier.md) | How the emitted document's identifier is derived from the run, always by slug... |
 | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md) | One field of the emitted document and the collected value that decides whethe... |
 | [AssistedJourneyFieldDefault](AssistedJourneyFieldDefault.md) |  |
@@ -653,6 +655,7 @@ Name: jumo_v1
 | [eligibleRoleDefinitionRefs](eligibleRoleDefinitionRefs.md) |  |
 | [eligibleTeamSpecRefs](eligibleTeamSpecRefs.md) |  |
 | [emission](emission.md) | What a PROPOSAL journey emits when its run completes: the contract kind, wher... |
+| [emissionBundle](emissionBundle.md) | The atomic same-repository alternative to emission: an ordered list of docume... |
 | [emitsCapability](emitsCapability.md) | The single capability a proposal journey may invoke |
 | [enabled](enabled.md) | Source schema pins this to `const: true`; enforced in Rego, not expressible a... |
 | [enabledAdapters](enabledAdapters.md) |  |
@@ -714,6 +717,7 @@ Name: jumo_v1
 | [facts](facts.md) |  |
 | [fallbackDelaySeconds](fallbackDelaySeconds.md) |  |
 | [fallbackFlowRef](fallbackFlowRef.md) |  |
+| [fanOutCollection](fanOutCollection.md) | The collected multivalued field this item emits one document per item of |
 | [federatedPeerRef](federatedPeerRef.md) | Required when kind is FEDERATED_PEER |
 | [federationProfileRefs](federationProfileRefs.md) |  |
 | [field](field.md) |  |

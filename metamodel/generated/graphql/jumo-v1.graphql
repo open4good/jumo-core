@@ -1531,6 +1531,19 @@ type AssistedJourneyEmission
     booleanFields: [String]
   }
 
+type AssistedJourneyEmissionBundleItem
+  {
+    emission: AssistedJourneyEmission!
+    fanOutCollection: String
+    condition: AssistedJourneyEmissionCondition
+  }
+
+type AssistedJourneyEmissionCondition
+  {
+    whenField: String!
+    equalsValue: String!
+  }
+
 type AssistedJourneyEmittedIdentifier
   {
     fromField: String!
@@ -1598,6 +1611,7 @@ type AssistedJourneySpec
     completionMode: AssistedJourneyCompletionMode
     navigationMode: AssistedJourneyNavigationMode
     emission: AssistedJourneyEmission
+    emissionBundle: [AssistedJourneyEmissionBundleItem]
     steps: [AssistedJourneyStep]!
     summaryI18nKey: String!
   }

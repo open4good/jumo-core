@@ -151,6 +151,7 @@ URI: [jumo:AssistedJourneyEmission](https://jumo.dev/schemas/jumo-v1/AssistedJou
 | used by | used in | type | used |
 | ---  | --- | --- | --- |
 | [AssistedJourneySpec](AssistedJourneySpec.md) | [emission](emission.md) | range | [AssistedJourneyEmission](AssistedJourneyEmission.md) |
+| [AssistedJourneyEmissionBundleItem](AssistedJourneyEmissionBundleItem.md) | [emission](emission.md) | range | [AssistedJourneyEmission](AssistedJourneyEmission.md) |
 
 
 

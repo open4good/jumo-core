@@ -1266,7 +1266,16 @@ classes:
         description: 'What a PROPOSAL journey emits when its run completes: the contract kind, where it is written,
           the template that renders it, and the checks the collected fields must pass. Rego requires it of every
           PROPOSAL journey (canonical decision 15) -- without it the platform would have to recognise the journey by
-          name to know what it produces, which is the dispatch this slot exists to remove.'
+          name to know what it produces, which is the dispatch this slot exists to remove. A journey declares
+          emission or emissionBundle, never both (Rego).'
+      emissionBundle:
+        range: AssistedJourneyEmissionBundleItem
+        multivalued: true
+        inlined_as_list: true
+        description: 'The atomic same-repository alternative to emission: an ordered list of documents one run
+          writes together, each reusing AssistedJourneyEmission unchanged and optionally fanning out over a
+          collected collection field or gated by an equality condition. Runtime path resolution and atomic intake
+          are a later lot; this vocabulary only.'
       steps:
         range: AssistedJourneyStep
         multivalued: true
@@ -1502,6 +1511,49 @@ classes:
         range: string
         required: true
         description: May itself interpolate ${id} or another collected field.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyEmissionCondition:
+    description: An equality condition deciding whether a bundle item is emitted at all, checked before any
+      fan-out over its collection.
+    attributes:
+      whenField:
+        range: string
+        required: true
+        description: The collected or derived value this bundle item's presence depends on.
+      equalsValue:
+        range: string
+        required: true
+        description: The bundle item is emitted when whenField equals this value, and skipped otherwise.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyEmissionBundleItem:
+    description: One ordered document of an atomic same-repository bundle. emission reuses AssistedJourneyEmission
+      unchanged; fanOutCollection and condition are the only bundle-specific additions.
+    attributes:
+      emission:
+        range: AssistedJourneyEmission
+        required: true
+        inlined: true
+      fanOutCollection:
+        range: string
+        description: 'The collected multivalued field this item emits one document per item of. Identifiers,
+          paths, validations and template values resolve in the current item''s scope. Absent means the item
+          emits at most once.'
+      condition:
+        range: AssistedJourneyEmissionCondition
+        inlined: true
+        description: Skips this item, and its whole fan-out when declared, unless met.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

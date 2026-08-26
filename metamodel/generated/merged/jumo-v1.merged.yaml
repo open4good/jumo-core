@@ -22309,6 +22309,7 @@ classes:
         owner: WorkOrderSpec
         domain_of:
         - WorkOrderSpec
+        - AssistedJourneyEmissionBundleItem
         range: string
       acceptanceCriteria:
         name: acceptanceCriteria
@@ -28319,13 +28320,30 @@ classes:
           the collected fields must pass. Rego requires it of every PROPOSAL journey
           (canonical decision 15) -- without it the platform would have to recognise
           the journey by name to know what it produces, which is the dispatch this
-          slot exists to remove.'
+          slot exists to remove. A journey declares emission or emissionBundle, never
+          both (Rego).'
         from_schema: https://jumo.dev/schemas/work
         owner: AssistedJourneySpec
         domain_of:
         - AssistedJourneySpec
+        - AssistedJourneyEmissionBundleItem
         range: AssistedJourneyEmission
         inlined: true
+      emissionBundle:
+        name: emissionBundle
+        description: 'The atomic same-repository alternative to emission: an ordered
+          list of documents one run writes together, each reusing AssistedJourneyEmission
+          unchanged and optionally fanning out over a collected collection field or
+          gated by an equality condition. Runtime path resolution and atomic intake
+          are a later lot; this vocabulary only.'
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneySpec
+        domain_of:
+        - AssistedJourneySpec
+        range: AssistedJourneyEmissionBundleItem
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
       steps:
         name: steps
         from_schema: https://jumo.dev/schemas/work
@@ -28677,6 +28695,7 @@ classes:
         owner: AssistedJourneyFieldCondition
         domain_of:
         - AssistedJourneyFieldCondition
+        - AssistedJourneyEmissionCondition
         range: string
         required: true
       equalsValue:
@@ -28687,6 +28706,7 @@ classes:
         owner: AssistedJourneyFieldCondition
         domain_of:
         - AssistedJourneyFieldCondition
+        - AssistedJourneyEmissionCondition
         - ProjectionOptionCondition
         range: string
         required: true
@@ -29003,6 +29023,111 @@ classes:
         - ImprovementObservation
         range: string
         required: true
+  AssistedJourneyEmissionCondition:
+    name: AssistedJourneyEmissionCondition
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: GIT
+      jumo.model_role:
+        tag: jumo.model_role
+        value: VALUE_OBJECT
+      jumo.audience:
+        tag: jumo.audience
+        value: REALM_PRIVATE
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: An equality condition deciding whether a bundle item is emitted at
+      all, checked before any fan-out over its collection.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      whenField:
+        name: whenField
+        description: The collected or derived value this bundle item's presence depends
+          on.
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneyEmissionCondition
+        domain_of:
+        - AssistedJourneyFieldCondition
+        - AssistedJourneyEmissionCondition
+        range: string
+        required: true
+      equalsValue:
+        name: equalsValue
+        description: The bundle item is emitted when whenField equals this value,
+          and skipped otherwise.
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneyEmissionCondition
+        domain_of:
+        - AssistedJourneyFieldCondition
+        - AssistedJourneyEmissionCondition
+        - ProjectionOptionCondition
+        range: string
+        required: true
+  AssistedJourneyEmissionBundleItem:
+    name: AssistedJourneyEmissionBundleItem
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: GIT
+      jumo.model_role:
+        tag: jumo.model_role
+        value: VALUE_OBJECT
+      jumo.audience:
+        tag: jumo.audience
+        value: REALM_PRIVATE
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: One ordered document of an atomic same-repository bundle. emission
+      reuses AssistedJourneyEmission unchanged; fanOutCollection and condition are
+      the only bundle-specific additions.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      emission:
+        name: emission
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneyEmissionBundleItem
+        domain_of:
+        - AssistedJourneySpec
+        - AssistedJourneyEmissionBundleItem
+        range: AssistedJourneyEmission
+        required: true
+        inlined: true
+      fanOutCollection:
+        name: fanOutCollection
+        description: The collected multivalued field this item emits one document
+          per item of. Identifiers, paths, validations and template values resolve
+          in the current item's scope. Absent means the item emits at most once.
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneyEmissionBundleItem
+        domain_of:
+        - AssistedJourneyEmissionBundleItem
+        range: string
+      condition:
+        name: condition
+        description: Skips this item, and its whole fan-out when declared, unless
+          met.
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneyEmissionBundleItem
+        domain_of:
+        - WorkOrderSpec
+        - AssistedJourneyEmissionBundleItem
+        range: AssistedJourneyEmissionCondition
+        inlined: true
   DocumentTemplate:
     name: DocumentTemplate
     annotations:
@@ -60391,6 +60516,7 @@ classes:
         owner: ProjectionOptionCondition
         domain_of:
         - AssistedJourneyFieldCondition
+        - AssistedJourneyEmissionCondition
         - ProjectionOptionCondition
         range: string
       present:

@@ -5,11 +5,6 @@ search:
 
 # Slot: emission
 
-
-_What a PROPOSAL journey emits when its run completes: the contract kind, where it is written, the template that renders it, and the checks the collected fields must pass. Rego requires it of every PROPOSAL journey (canonical decision 15) -- without it the platform would have to recognise the journey by name to know what it produces, which is the dispatch this slot exists to remove._
-
-
-
 <div data-search-exclude markdown="1">
 
 
@@ -26,6 +21,7 @@ URI: [jumo:emission](https://jumo.dev/schemas/jumo-v1/emission)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [AssistedJourneySpec](AssistedJourneySpec.md) |  |  no  |
+| [AssistedJourneyEmissionBundleItem](AssistedJourneyEmissionBundleItem.md) | One ordered document of an atomic same-repository bundle |  no  |
 
 
 
@@ -38,20 +34,13 @@ URI: [jumo:emission](https://jumo.dev/schemas/jumo-v1/emission)
 
 | Property | Value |
 | --- | --- |
-| Range | [AssistedJourneyEmission](AssistedJourneyEmission.md) |
-| Domain Of | [AssistedJourneySpec](AssistedJourneySpec.md) |
+| Range | [String](String.md) |
+| Domain Of | [AssistedJourneySpec](AssistedJourneySpec.md), [AssistedJourneyEmissionBundleItem](AssistedJourneyEmissionBundleItem.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [AssistedJourneySpec](AssistedJourneySpec.md) |
-
-
 
 
 
@@ -65,13 +54,6 @@ URI: [jumo:emission](https://jumo.dev/schemas/jumo-v1/emission)
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -91,18 +73,10 @@ URI: [jumo:emission](https://jumo.dev/schemas/jumo-v1/emission)
 <details>
 ```yaml
 name: emission
-description: 'What a PROPOSAL journey emits when its run completes: the contract kind,
-  where it is written, the template that renders it, and the checks the collected
-  fields must pass. Rego requires it of every PROPOSAL journey (canonical decision
-  15) -- without it the platform would have to recognise the journey by name to know
-  what it produces, which is the dispatch this slot exists to remove.'
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: AssistedJourneySpec
 domain_of:
 - AssistedJourneySpec
-range: AssistedJourneyEmission
-inlined: true
+- AssistedJourneyEmissionBundleItem
+range: string
 
 ```
 </details></div>

@@ -56,6 +56,17 @@ URI: [jumo:AssistedJourneySpec](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 
 
 
+      AssistedJourneySpec : emissionBundle
+
+
+
+
+
+        AssistedJourneySpec --> "*" AssistedJourneyEmissionBundleItem : emissionBundle
+        click AssistedJourneyEmissionBundleItem href "../AssistedJourneyEmissionBundleItem/"
+
+
+
       AssistedJourneySpec : emitsCapability
 
       AssistedJourneySpec : firstRunMandatory
@@ -149,6 +160,7 @@ URI: [jumo:AssistedJourneySpec](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 | [completionMode](completionMode.md) | 0..1 <br/> [AssistedJourneyCompletionMode](AssistedJourneyCompletionMode.md) |  | direct |
 | [navigationMode](navigationMode.md) | 0..1 <br/> [AssistedJourneyNavigationMode](AssistedJourneyNavigationMode.md) | FREE permits navigation among dependency-ready steps; dependencies remain man... | direct |
 | [emission](emission.md) | 0..1 <br/> [AssistedJourneyEmission](AssistedJourneyEmission.md) | What a PROPOSAL journey emits when its run completes: the contract kind, wher... | direct |
+| [emissionBundle](emissionBundle.md) | * <br/> [AssistedJourneyEmissionBundleItem](AssistedJourneyEmissionBundleItem.md) | The atomic same-repository alternative to emission: an ordered list of docume... | direct |
 | [steps](steps.md) | 1..* <br/> [AssistedJourneyStep](AssistedJourneyStep.md) |  | direct |
 | [summaryI18nKey](summaryI18nKey.md) | 1 <br/> [String](String.md) | Prefix JourneySummaryStep | direct |
 
@@ -430,14 +442,31 @@ attributes:
       collected fields must pass. Rego requires it of every PROPOSAL journey (canonical
       decision 15) -- without it the platform would have to recognise the journey
       by name to know what it produces, which is the dispatch this slot exists to
-      remove.'
+      remove. A journey declares emission or emissionBundle, never both (Rego).'
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: AssistedJourneySpec
     domain_of:
     - AssistedJourneySpec
+    - AssistedJourneyEmissionBundleItem
     range: AssistedJourneyEmission
     inlined: true
+  emissionBundle:
+    name: emissionBundle
+    description: 'The atomic same-repository alternative to emission: an ordered list
+      of documents one run writes together, each reusing AssistedJourneyEmission unchanged
+      and optionally fanning out over a collected collection field or gated by an
+      equality condition. Runtime path resolution and atomic intake are a later lot;
+      this vocabulary only.'
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneySpec
+    domain_of:
+    - AssistedJourneySpec
+    range: AssistedJourneyEmissionBundleItem
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
   steps:
     name: steps
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -684,14 +713,31 @@ attributes:
       collected fields must pass. Rego requires it of every PROPOSAL journey (canonical
       decision 15) -- without it the platform would have to recognise the journey
       by name to know what it produces, which is the dispatch this slot exists to
-      remove.'
+      remove. A journey declares emission or emissionBundle, never both (Rego).'
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: AssistedJourneySpec
     domain_of:
     - AssistedJourneySpec
+    - AssistedJourneyEmissionBundleItem
     range: AssistedJourneyEmission
     inlined: true
+  emissionBundle:
+    name: emissionBundle
+    description: 'The atomic same-repository alternative to emission: an ordered list
+      of documents one run writes together, each reusing AssistedJourneyEmission unchanged
+      and optionally fanning out over a collected collection field or gated by an
+      equality condition. Runtime path resolution and atomic intake are a later lot;
+      this vocabulary only.'
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneySpec
+    domain_of:
+    - AssistedJourneySpec
+    range: AssistedJourneyEmissionBundleItem
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
   steps:
     name: steps
     from_schema: https://jumo.dev/schemas/jumo-v1

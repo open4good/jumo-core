@@ -440,73 +440,121 @@ proposal_journeys := [document |
 	object.get(corpus.spec(document), "completionMode", "PROPOSAL") == "PROPOSAL"
 ]
 
+# Every check below that used to read spec.emission alone now reads every (label, emission) pair a
+# document declares -- one pair for a singular emission, one per item for a bundle -- so a bundle
+# document is held to exactly the same targetKind, template, referenceChecks and pathTemplate rules
+# as a singular one, with no separate rule set to keep in sync.
+document_emissions(document) := pairs if {
+	emission := object.get(corpus.spec(document), "emission", null)
+	emission != null
+	pairs := [["spec.emission", emission]]
+} else := pairs if {
+	bundle := object.get(corpus.spec(document), "emissionBundle", [])
+	count(bundle) > 0
+	pairs := [[sprintf("spec.emissionBundle[%d].emission", [item_index]), item.emission] |
+		some item_index, item in bundle
+		item.emission != null
+	]
+} else := []
+
 deny contains corpus.violation("corpus.journey.emission-missing", document, message) if {
 	some document in proposal_journeys
 	object.get(corpus.spec(document), "emission", null) == null
-	message := "spec.emission: a PROPOSAL journey must declare what it emits"
+	count(object.get(corpus.spec(document), "emissionBundle", [])) == 0
+	message := "spec.emission: a PROPOSAL journey must declare what it emits, singly or as a bundle"
+}
+
+deny contains corpus.violation("corpus.journey.emission-and-bundle", document, message) if {
+	some document in proposal_journeys
+	object.get(corpus.spec(document), "emission", null) != null
+	count(object.get(corpus.spec(document), "emissionBundle", [])) > 0
+	message := "spec.emission: a PROPOSAL journey declares emission or emissionBundle, never both"
+}
+
+deny contains corpus.violation("corpus.journey.emission-bundle-empty", document, message) if {
+	some document in proposal_journeys
+	"emissionBundle" in object.keys(corpus.spec(document))
+	count(object.get(corpus.spec(document), "emissionBundle", [])) == 0
+	message := "spec.emissionBundle: an empty bundle is not a valid emission; omit it or declare a singular emission"
+}
+
+deny contains corpus.violation("corpus.journey.emission-bundle-invalid-fanout", document, message) if {
+	some document in proposal_journeys
+	some item_index, item in object.get(corpus.spec(document), "emissionBundle", [])
+	"fanOutCollection" in object.keys(item)
+	trim_space(item.fanOutCollection) == ""
+	message := sprintf("spec.emissionBundle[%d].fanOutCollection: declared but blank", [item_index])
 }
 
 deny contains corpus.violation("corpus.journey.emission-kind", document, message) if {
 	some document in proposal_journeys
-	emission := object.get(corpus.spec(document), "emission", null)
-	emission != null
+	some pair in document_emissions(document)
+	label := pair[0]
+	emission := pair[1]
 	kinds := object.get(repository_facts, "contractKinds", [])
 	not emission.targetKind in kinds
-	message := sprintf("spec.emission.targetKind: %q is not a declared contract kind", [emission.targetKind])
+	message := sprintf("%s.targetKind: %q is not a declared contract kind", [label, emission.targetKind])
 }
 
 deny contains corpus.violation("corpus.journey.emission-reference-kind", document, message) if {
 	some document in proposal_journeys
-	emission := object.get(corpus.spec(document), "emission", null)
-	emission != null
+	some pair in document_emissions(document)
+	label := pair[0]
+	emission := pair[1]
 	kinds := object.get(repository_facts, "contractKinds", [])
 	some check_index, check in object.get(emission, "referenceChecks", [])
 	not check.kind in kinds
 	message := sprintf(
-		"spec.emission.referenceChecks[%d].kind: %q is not a declared contract kind",
-		[check_index, check.kind],
+		"%s.referenceChecks[%d].kind: %q is not a declared contract kind",
+		[label, check_index, check.kind],
 	)
 }
 
 deny contains corpus.violation("corpus.journey.emission-template", document, message) if {
 	some document in proposal_journeys
-	emission := object.get(corpus.spec(document), "emission", null)
-	emission != null
+	some pair in document_emissions(document)
+	label := pair[0]
+	emission := pair[1]
 	template_id := object.get(object.get(emission, "documentTemplateRef", {}), "id", "")
 	template_id != ""
 	not template_id in corpus.ids_of_kind("DocumentTemplate")
-	message := sprintf("spec.emission.documentTemplateRef: %q is not a declared DocumentTemplate", [template_id])
+	message := sprintf("%s.documentTemplateRef: %q is not a declared DocumentTemplate", [label, template_id])
 }
 
 # A template renders one kind. Naming a template that renders another is how an emission would
 # quietly produce a document of a kind its own journey never declared.
 deny contains corpus.violation("corpus.journey.emission-template-kind", document, message) if {
 	some document in proposal_journeys
-	emission := object.get(corpus.spec(document), "emission", null)
-	emission != null
+	some pair in document_emissions(document)
+	label := pair[0]
+	emission := pair[1]
 	template_id := object.get(object.get(emission, "documentTemplateRef", {}), "id", "")
 	template_id != ""
 	template := corpus.document_by_kind_id("DocumentTemplate", template_id)
 	renders := object.get(corpus.spec(template), "renders", "")
 	renders != emission.targetKind
 	message := sprintf(
-		"spec.emission.documentTemplateRef: %q renders %q, not the declared %q",
-		[template_id, renders, emission.targetKind],
+		"%s.documentTemplateRef: %q renders %q, not the declared %q",
+		[label, template_id, renders, emission.targetKind],
 	)
 }
 
+# pathTemplate has no repository-qualifier syntax -- only a bare .jumo/-rooted path -- so this same
+# check is also what makes every bundle document same-repository: nothing in this vocabulary can
+# address another repository's tree for one item and not another.
 deny contains corpus.violation("corpus.journey.emission-path", document, message) if {
 	some document in proposal_journeys
-	emission := object.get(corpus.spec(document), "emission", null)
-	emission != null
+	some pair in document_emissions(document)
+	label := pair[0]
+	emission := pair[1]
 	not startswith(object.get(emission, "pathTemplate", ""), ".jumo/")
-	message := "spec.emission.pathTemplate: an emitted contract is written under .jumo/"
+	message := sprintf("%s.pathTemplate: an emitted contract is written under .jumo/", [label])
 }
 
 deny contains corpus.violation("corpus.journey.emission-without-proposal", document, message) if {
 	some document in corpus.documents
 	document.kind == "AssistedJourney"
 	object.get(corpus.spec(document), "completionMode", "PROPOSAL") != "PROPOSAL"
-	object.get(corpus.spec(document), "emission", null) != null
+	count(document_emissions(document)) > 0
 	message := "spec.emission: an observation journey emits nothing"
 }

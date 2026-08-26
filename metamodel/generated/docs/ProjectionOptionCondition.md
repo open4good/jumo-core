@@ -160,6 +160,7 @@ attributes:
     owner: ProjectionOptionCondition
     domain_of:
     - AssistedJourneyFieldCondition
+    - AssistedJourneyEmissionCondition
     - ProjectionOptionCondition
     range: string
   present:
@@ -227,6 +228,7 @@ attributes:
     owner: ProjectionOptionCondition
     domain_of:
     - AssistedJourneyFieldCondition
+    - AssistedJourneyEmissionCondition
     - ProjectionOptionCondition
     range: string
   present:

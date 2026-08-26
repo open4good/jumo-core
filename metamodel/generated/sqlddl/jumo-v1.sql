@@ -763,7 +763,7 @@ COMMENT ON COLUMN "AssistedJourneySpec"."emitsCapability" IS 'The single capabil
 COMMENT ON COLUMN "AssistedJourneySpec"."navigationMode" IS 'FREE permits navigation among dependency-ready steps; dependencies remain mandatory server-side.';
 COMMENT ON COLUMN "AssistedJourneySpec"."summaryI18nKey" IS 'Prefix JourneySummaryStep.vue resolves three keys from at its completion step: `${summaryI18nKey}Title`, `${summaryI18nKey}ConfirmLabel` and `${summaryI18nKey}SuccessMessage`. Lets one generic completion component describe what this journey actually produced instead of fixed onboarding text.';
 COMMENT ON COLUMN "AssistedJourneySpec"."resourceBudgetRef_uid" IS 'Names the ResourceBudget whose modelCalls limit bounds the clarification-turn ceiling (AC1). The journey does not declare its own ceiling.';
-COMMENT ON COLUMN "AssistedJourneySpec".emission_id IS 'What a PROPOSAL journey emits when its run completes: the contract kind, where it is written, the template that renders it, and the checks the collected fields must pass. Rego requires it of every PROPOSAL journey (canonical decision 15) -- without it the platform would have to recognise the journey by name to know what it produces, which is the dispatch this slot exists to remove.';
+COMMENT ON COLUMN "AssistedJourneySpec".emission_id IS 'What a PROPOSAL journey emits when its run completes: the contract kind, where it is written, the template that renders it, and the checks the collected fields must pass. Rego requires it of every PROPOSAL journey (canonical decision 15) -- without it the platform would have to recognise the journey by name to know what it produces, which is the dispatch this slot exists to remove. A journey declares emission or emissionBundle, never both (Rego).';
 
 CREATE TABLE "AssistedJourneyEmission" (
 	id SERIAL NOT NULL,
@@ -800,6 +800,17 @@ CREATE TABLE "AssistedJourneyRoutingEligibilityCheck" (
 );
 CREATE INDEX "ix_AssistedJourneyRoutingEligibilityCheck_id" ON "AssistedJourneyRoutingEligibilityCheck" (id);
 COMMENT ON TABLE "AssistedJourneyRoutingEligibilityCheck" IS 'None';
+
+CREATE TABLE "AssistedJourneyEmissionCondition" (
+	id SERIAL NOT NULL,
+	"whenField" TEXT NOT NULL,
+	"equalsValue" TEXT NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_AssistedJourneyEmissionCondition_id" ON "AssistedJourneyEmissionCondition" (id);
+COMMENT ON TABLE "AssistedJourneyEmissionCondition" IS 'An equality condition deciding whether a bundle item is emitted at all, checked before any fan-out over its collection.';
+COMMENT ON COLUMN "AssistedJourneyEmissionCondition"."whenField" IS 'The collected or derived value this bundle item''s presence depends on.';
+COMMENT ON COLUMN "AssistedJourneyEmissionCondition"."equalsValue" IS 'The bundle item is emitted when whenField equals this value, and skipped otherwise.';
 
 CREATE TABLE "DocumentTemplateBody" (
 	id SERIAL NOT NULL,
@@ -2408,6 +2419,23 @@ CREATE INDEX "ix_AssistedJourneyFieldDefault_id" ON "AssistedJourneyFieldDefault
 COMMENT ON TABLE "AssistedJourneyFieldDefault" IS 'None';
 COMMENT ON COLUMN "AssistedJourneyFieldDefault".value IS 'May itself interpolate ${id} or another collected field.';
 COMMENT ON COLUMN "AssistedJourneyFieldDefault"."AssistedJourneyEmission_id" IS 'Autocreated FK slot';
+
+CREATE TABLE "AssistedJourneyEmissionBundleItem" (
+	id SERIAL NOT NULL,
+	"fanOutCollection" TEXT,
+	"AssistedJourneySpec_id" INTEGER,
+	emission_id INTEGER NOT NULL,
+	condition_id INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("AssistedJourneySpec_id") REFERENCES "AssistedJourneySpec" (id),
+	FOREIGN KEY(emission_id) REFERENCES "AssistedJourneyEmission" (id),
+	FOREIGN KEY(condition_id) REFERENCES "AssistedJourneyEmissionCondition" (id)
+);
+CREATE INDEX "ix_AssistedJourneyEmissionBundleItem_id" ON "AssistedJourneyEmissionBundleItem" (id);
+COMMENT ON TABLE "AssistedJourneyEmissionBundleItem" IS 'One ordered document of an atomic same-repository bundle. emission reuses AssistedJourneyEmission unchanged; fanOutCollection and condition are the only bundle-specific additions.';
+COMMENT ON COLUMN "AssistedJourneyEmissionBundleItem"."fanOutCollection" IS 'The collected multivalued field this item emits one document per item of. Identifiers, paths, validations and template values resolve in the current item''s scope. Absent means the item emits at most once.';
+COMMENT ON COLUMN "AssistedJourneyEmissionBundleItem"."AssistedJourneySpec_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "AssistedJourneyEmissionBundleItem".condition_id IS 'Skips this item, and its whole fan-out when declared, unless met.';
 
 CREATE TABLE "AssistedJourneyStep" (
 	uid SERIAL NOT NULL,

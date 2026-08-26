@@ -386,6 +386,22 @@
       "@type": "@id",
       "@id": "validations"
     },
+    "condition": {
+      "@id": "condition"
+    },
+    "emission": {
+      "@type": "@id",
+      "@id": "emission"
+    },
+    "fanOutCollection": {
+      "@id": "fanOutCollection"
+    },
+    "equalsValue": {
+      "@id": "equalsValue"
+    },
+    "whenField": {
+      "@id": "whenField"
+    },
     "defaultValue": {
       "@id": "defaultValue"
     },
@@ -399,12 +415,6 @@
         "meaning": "@id"
       },
       "@id": "suffix"
-    },
-    "equalsValue": {
-      "@id": "equalsValue"
-    },
-    "whenField": {
-      "@id": "whenField"
     },
     "value": {
       "@id": "value"
@@ -455,9 +465,9 @@
       },
       "@id": "concurrencyPolicy"
     },
-    "emission": {
+    "emissionBundle": {
       "@type": "@id",
-      "@id": "emission"
+      "@id": "emissionBundle"
     },
     "emitsCapability": {
       "@id": "emitsCapability"
@@ -4110,9 +4120,6 @@
       "@type": "@id",
       "@id": "acceptanceCriteria"
     },
-    "condition": {
-      "@id": "condition"
-    },
     "consumption": {
       "@type": "@id",
       "@id": "consumption"
@@ -4240,6 +4247,12 @@
     },
     "AssistedJourneyEmission": {
       "@id": "AssistedJourneyEmission"
+    },
+    "AssistedJourneyEmissionBundleItem": {
+      "@id": "AssistedJourneyEmissionBundleItem"
+    },
+    "AssistedJourneyEmissionCondition": {
+      "@id": "AssistedJourneyEmissionCondition"
     },
     "AssistedJourneyEmittedIdentifier": {
       "@id": "AssistedJourneyEmittedIdentifier"

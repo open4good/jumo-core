@@ -462,6 +462,7 @@ attributes:
     owner: WorkOrderSpec
     domain_of:
     - WorkOrderSpec
+    - AssistedJourneyEmissionBundleItem
     range: string
   acceptanceCriteria:
     name: acceptanceCriteria
@@ -789,6 +790,7 @@ attributes:
     owner: WorkOrderSpec
     domain_of:
     - WorkOrderSpec
+    - AssistedJourneyEmissionBundleItem
     range: string
   acceptanceCriteria:
     name: acceptanceCriteria

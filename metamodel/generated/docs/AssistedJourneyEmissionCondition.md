@@ -3,10 +3,10 @@ search:
   boost: 10.0
 ---
 
-# Class: AssistedJourneyFieldCondition
+# Class: AssistedJourneyEmissionCondition
 
 
-_One field of the emitted document and the collected value that decides whether it is present at all._
+_An equality condition deciding whether a bundle item is emitted at all, checked before any fan-out over its collection._
 
 
 
@@ -14,7 +14,7 @@ _One field of the emitted document and the collected value that decides whether 
 
 
 
-URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/AssistedJourneyFieldCondition)
+URI: [jumo:AssistedJourneyEmissionCondition](https://jumo.dev/schemas/jumo-v1/AssistedJourneyEmissionCondition)
 
 
 
@@ -22,13 +22,11 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 
 ```mermaid
  classDiagram
-    class AssistedJourneyFieldCondition
-    click AssistedJourneyFieldCondition href "../AssistedJourneyFieldCondition/"
-      AssistedJourneyFieldCondition : equalsValue
+    class AssistedJourneyEmissionCondition
+    click AssistedJourneyEmissionCondition href "../AssistedJourneyEmissionCondition/"
+      AssistedJourneyEmissionCondition : equalsValue
 
-      AssistedJourneyFieldCondition : field
-
-      AssistedJourneyFieldCondition : whenField
+      AssistedJourneyEmissionCondition : whenField
 
 
 ```
@@ -42,9 +40,8 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [field](field.md) | 1 <br/> [String](String.md) |  | direct |
-| [whenField](whenField.md) | 1 <br/> [String](String.md) | The collected or derived value the presence of `field` depends on | direct |
-| [equalsValue](equalsValue.md) | 1 <br/> [String](String.md) | `field` is kept when `whenField` equals this value, and removed otherwise | direct |
+| [whenField](whenField.md) | 1 <br/> [String](String.md) | The collected or derived value this bundle item's presence depends on | direct |
+| [equalsValue](equalsValue.md) | 1 <br/> [String](String.md) | The bundle item is emitted when whenField equals this value, and skipped othe... | direct |
 
 
 
@@ -54,7 +51,7 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 
 | used by | used in | type | used |
 | ---  | --- | --- | --- |
-| [AssistedJourneyEmission](AssistedJourneyEmission.md) | [fieldConditions](fieldConditions.md) | range | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md) |
+| [AssistedJourneyEmissionBundleItem](AssistedJourneyEmissionBundleItem.md) | [condition](condition.md) | range | [AssistedJourneyEmissionCondition](AssistedJourneyEmissionCondition.md) |
 
 
 
@@ -97,8 +94,8 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:AssistedJourneyFieldCondition |
-| native | jumo:AssistedJourneyFieldCondition |
+| self | jumo:AssistedJourneyEmissionCondition |
+| native | jumo:AssistedJourneyEmissionCondition |
 
 
 
@@ -113,7 +110,7 @@ URI: [jumo:AssistedJourneyFieldCondition](https://jumo.dev/schemas/jumo-v1/Assis
 
 <details>
 ```yaml
-name: AssistedJourneyFieldCondition
+name: AssistedJourneyEmissionCondition
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -133,29 +130,16 @@ annotations:
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: One field of the emitted document and the collected value that decides
-  whether it is present at all.
+description: An equality condition deciding whether a bundle item is emitted at all,
+  checked before any fan-out over its collection.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
-  field:
-    name: field
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: AssistedJourneyFieldCondition
-    domain_of:
-    - AssistedJourneyFieldValidation
-    - AssistedJourneyFieldCondition
-    - AssistedJourneyReferenceCheck
-    - AssistedJourneyCollectionProjection
-    - AssistedJourneyFieldDefault
-    - AssistedJourneyRequiredField
-    range: string
-    required: true
   whenField:
     name: whenField
-    description: The collected or derived value the presence of `field` depends on.
+    description: The collected or derived value this bundle item's presence depends
+      on.
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: AssistedJourneyFieldCondition
+    owner: AssistedJourneyEmissionCondition
     domain_of:
     - AssistedJourneyFieldCondition
     - AssistedJourneyEmissionCondition
@@ -163,11 +147,10 @@ attributes:
     required: true
   equalsValue:
     name: equalsValue
-    description: '`field` is kept when `whenField` equals this value, and removed
-      otherwise.'
+    description: The bundle item is emitted when whenField equals this value, and
+      skipped otherwise.
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: AssistedJourneyFieldCondition
+    owner: AssistedJourneyEmissionCondition
     domain_of:
     - AssistedJourneyFieldCondition
     - AssistedJourneyEmissionCondition
@@ -182,7 +165,7 @@ attributes:
 
 <details>
 ```yaml
-name: AssistedJourneyFieldCondition
+name: AssistedJourneyEmissionCondition
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -202,29 +185,16 @@ annotations:
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: One field of the emitted document and the collected value that decides
-  whether it is present at all.
+description: An equality condition deciding whether a bundle item is emitted at all,
+  checked before any fan-out over its collection.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
-  field:
-    name: field
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: AssistedJourneyFieldCondition
-    domain_of:
-    - AssistedJourneyFieldValidation
-    - AssistedJourneyFieldCondition
-    - AssistedJourneyReferenceCheck
-    - AssistedJourneyCollectionProjection
-    - AssistedJourneyFieldDefault
-    - AssistedJourneyRequiredField
-    range: string
-    required: true
   whenField:
     name: whenField
-    description: The collected or derived value the presence of `field` depends on.
+    description: The collected or derived value this bundle item's presence depends
+      on.
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: AssistedJourneyFieldCondition
+    owner: AssistedJourneyEmissionCondition
     domain_of:
     - AssistedJourneyFieldCondition
     - AssistedJourneyEmissionCondition
@@ -232,11 +202,10 @@ attributes:
     required: true
   equalsValue:
     name: equalsValue
-    description: '`field` is kept when `whenField` equals this value, and removed
-      otherwise.'
+    description: The bundle item is emitted when whenField equals this value, and
+      skipped otherwise.
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: AssistedJourneyFieldCondition
+    owner: AssistedJourneyEmissionCondition
     domain_of:
     - AssistedJourneyFieldCondition
     - AssistedJourneyEmissionCondition

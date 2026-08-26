@@ -21,6 +21,7 @@ URI: [jumo:equalsValue](https://jumo.dev/schemas/jumo-v1/equalsValue)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md) | One field of the emitted document and the collected value that decides whethe... |  no  |
+| [AssistedJourneyEmissionCondition](AssistedJourneyEmissionCondition.md) | An equality condition deciding whether a bundle item is emitted at all, check... |  no  |
 | [ProjectionOptionCondition](ProjectionOptionCondition.md) | One condition a candidate instance must satisfy to be offered as a field's op... |  no  |
 
 
@@ -35,7 +36,7 @@ URI: [jumo:equalsValue](https://jumo.dev/schemas/jumo-v1/equalsValue)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md), [ProjectionOptionCondition](ProjectionOptionCondition.md) |
+| Domain Of | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md), [AssistedJourneyEmissionCondition](AssistedJourneyEmissionCondition.md), [ProjectionOptionCondition](ProjectionOptionCondition.md) |
 
 ### Cardinality and Requirements
 
@@ -75,6 +76,7 @@ URI: [jumo:equalsValue](https://jumo.dev/schemas/jumo-v1/equalsValue)
 name: equalsValue
 domain_of:
 - AssistedJourneyFieldCondition
+- AssistedJourneyEmissionCondition
 - ProjectionOptionCondition
 range: string
 

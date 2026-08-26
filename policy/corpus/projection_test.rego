@@ -389,6 +389,92 @@ test_accepts_an_emission_naming_a_template_that_renders_its_kind if {
 	not has_rule(violations, "corpus.journey.emission-path")
 }
 
+emitting_journey_bundle_spec(bundle) := {
+	"journeyId": "emitter", "name": "Emitter", "budgetRef": "interactive",
+	"emitsCapability": "contract.change.propose",
+	"steps": [{"id": "s", "name": "S", "requiredFields": []}],
+	"emissionBundle": bundle,
+}
+
+bundle_emission(path) := {
+	"targetKind": "ConnectorDefinition", "pathTemplate": path, "identifier": {"fromField": "name"},
+}
+
+test_accepts_a_bundle_of_two_documents_reusing_the_emission_shape if {
+	good := journey("emitter", emitting_journey_bundle_spec([
+		{"emission": bundle_emission(".jumo/x/${id}.yml")},
+		{"emission": bundle_emission(".jumo/y/${id}.yml")},
+	]))
+	violations := data.jumo.corpus.deny with input as [facts, capabilities, good]
+	not has_rule(violations, "corpus.journey.emission-missing")
+	not has_rule(violations, "corpus.journey.emission-and-bundle")
+	not has_rule(violations, "corpus.journey.emission-bundle-empty")
+	not has_rule(violations, "corpus.journey.emission-kind")
+	not has_rule(violations, "corpus.journey.emission-path")
+}
+
+test_accepts_a_bundle_item_with_a_fanout_collection_and_a_condition if {
+	good := journey("emitter", emitting_journey_bundle_spec([{
+		"emission": bundle_emission(".jumo/x/${id}.yml"),
+		"fanOutCollection": "members",
+		"condition": {"whenField": "kind", "equalsValue": "team"},
+	}]))
+	violations := data.jumo.corpus.deny with input as [facts, capabilities, good]
+	not has_rule(violations, "corpus.journey.emission-bundle-invalid-fanout")
+	not has_rule(violations, "corpus.journey.emission-kind")
+}
+
+test_rejects_a_bundle_item_naming_an_undeclared_kind if {
+	bad := journey("emitter", emitting_journey_bundle_spec([
+		{"emission": bundle_emission(".jumo/x/${id}.yml")},
+		{"emission": {"targetKind": "NoSuchKind", "pathTemplate": ".jumo/y/${id}.yml", "identifier": {"fromField": "name"}}},
+	]))
+	violations := data.jumo.corpus.deny with input as [facts, capabilities, bad]
+	has_rule(violations, "corpus.journey.emission-kind")
+}
+
+test_rejects_a_bundle_item_writing_outside_the_contract_directory if {
+	bad := journey("emitter", emitting_journey_bundle_spec([{"emission": bundle_emission("other-repo:.jumo/x/${id}.yml")}]))
+	violations := data.jumo.corpus.deny with input as [facts, capabilities, bad]
+	has_rule(violations, "corpus.journey.emission-path")
+}
+
+test_rejects_a_journey_declaring_both_emission_and_bundle if {
+	spec := object.union(
+		emitting_journey_spec(bundle_emission(".jumo/x/${id}.yml")),
+		{"emissionBundle": [{"emission": bundle_emission(".jumo/y/${id}.yml")}]},
+	)
+	bad := journey("emitter", spec)
+	violations := data.jumo.corpus.deny with input as [facts, capabilities, bad]
+	has_rule(violations, "corpus.journey.emission-and-bundle")
+}
+
+test_rejects_an_empty_emission_bundle if {
+	bad := journey("emitter", emitting_journey_bundle_spec([]))
+	violations := data.jumo.corpus.deny with input as [facts, capabilities, bad]
+	has_rule(violations, "corpus.journey.emission-bundle-empty")
+}
+
+test_rejects_a_bundle_item_with_a_blank_fanout_collection if {
+	bad := journey("emitter", emitting_journey_bundle_spec([{
+		"emission": bundle_emission(".jumo/x/${id}.yml"),
+		"fanOutCollection": "  ",
+	}]))
+	violations := data.jumo.corpus.deny with input as [facts, capabilities, bad]
+	has_rule(violations, "corpus.journey.emission-bundle-invalid-fanout")
+}
+
+test_rejects_an_observation_journey_that_declares_a_bundle if {
+	bad := journey("observer", {
+		"journeyId": "observer", "name": "Observer", "budgetRef": "interactive",
+		"completionMode": "OBSERVATION",
+		"steps": [{"id": "s", "name": "S", "requiredFields": []}],
+		"emissionBundle": [{"emission": bundle_emission(".jumo/x/${id}.yml")}],
+	})
+	violations := data.jumo.corpus.deny with input as [facts, bad]
+	has_rule(violations, "corpus.journey.emission-without-proposal")
+}
+
 test_rejects_collect_step_missing_projection_ref if {
 	bad := document(".jumo/journeys/bad.yml", "AssistedJourney", "bad", {
 		"journeyId": "bad", "name": "Bad", "budgetRef": "interactive",

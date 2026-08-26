@@ -260,6 +260,10 @@ public final class ContractReferenceExtractor {
             refs.add(new OutgoingReference("documentTemplateRef", obj.documentTemplateRef()));
         }
     }
+    public static void extractFromAssistedJourneyEmissionBundleItem(AssistedJourneyEmissionBundleItem obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromAssistedJourneyEmission(obj.emission(), refs);
+    }
     public static void extractFromAssistedJourneySpec(AssistedJourneySpec obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.resourceBudgetRef() != null) {
@@ -271,6 +275,11 @@ public final class ContractReferenceExtractor {
             }
         }
         extractFromAssistedJourneyEmission(obj.emission(), refs);
+        if (obj.emissionBundle() != null) {
+            for (AssistedJourneyEmissionBundleItem item : obj.emissionBundle()) {
+                extractFromAssistedJourneyEmissionBundleItem(item, refs);
+            }
+        }
         if (obj.steps() != null) {
             for (AssistedJourneyStep item : obj.steps()) {
                 extractFromAssistedJourneyStep(item, refs);

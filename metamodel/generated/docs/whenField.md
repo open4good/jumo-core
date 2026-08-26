@@ -5,11 +5,6 @@ search:
 
 # Slot: whenField
 
-
-_The collected or derived value the presence of `field` depends on._
-
-
-
 <div data-search-exclude markdown="1">
 
 
@@ -26,6 +21,7 @@ URI: [jumo:whenField](https://jumo.dev/schemas/jumo-v1/whenField)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md) | One field of the emitted document and the collected value that decides whethe... |  no  |
+| [AssistedJourneyEmissionCondition](AssistedJourneyEmissionCondition.md) | An equality condition deciding whether a bundle item is emitted at all, check... |  no  |
 
 
 
@@ -39,20 +35,12 @@ URI: [jumo:whenField](https://jumo.dev/schemas/jumo-v1/whenField)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md) |
+| Domain Of | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md), [AssistedJourneyEmissionCondition](AssistedJourneyEmissionCondition.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-| Required | Yes |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [AssistedJourneyFieldCondition](AssistedJourneyFieldCondition.md) |
-
-
 
 
 
@@ -66,13 +54,6 @@ URI: [jumo:whenField](https://jumo.dev/schemas/jumo-v1/whenField)
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -92,14 +73,10 @@ URI: [jumo:whenField](https://jumo.dev/schemas/jumo-v1/whenField)
 <details>
 ```yaml
 name: whenField
-description: The collected or derived value the presence of `field` depends on.
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: AssistedJourneyFieldCondition
 domain_of:
 - AssistedJourneyFieldCondition
+- AssistedJourneyEmissionCondition
 range: string
-required: true
 
 ```
 </details></div>

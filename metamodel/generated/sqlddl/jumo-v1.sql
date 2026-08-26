@@ -608,7 +608,7 @@ COMMENT ON COLUMN "WorkOrderSpec".creditor IS 'The role, team, or Project the wo
 COMMENT ON COLUMN "WorkOrderSpec".condition IS 'The condition under which this commitment is discharged, in addition to (not instead of) acceptanceCriteria -- acceptanceCriteria is what is checked; condition is the commitment-theoretic statement of when the debt is considered settled.';
 COMMENT ON COLUMN "WorkOrderSpec".ring IS 'The ring this work acts on. RING_0_ROOT_OF_TRUST exclusion (source schema''s `not: const`) moves to Rego.';
 COMMENT ON COLUMN "WorkOrderSpec"."contractRevision" IS 'Commit the contracts were read at.';
-COMMENT ON COLUMN "WorkOrderSpec"."ledgerSourceRevision" IS 'Commit that carried the last full (pre-compaction) revision of this record, for a COMPLETED WorkOrder compacted into .jumo/work/ledger/. Set by scripts/migrate/compact-completed-work.py, never by hand.';
+COMMENT ON COLUMN "WorkOrderSpec"."ledgerSourceRevision" IS 'Commit that carried the last full (pre-compaction) revision of this record, for a COMPLETED WorkOrder compacted into .jumo/work/ledger/. Set by the closure tooling that writes the record, never by hand.';
 COMMENT ON COLUMN "WorkOrderSpec"."producerRoleDefinitionRef_uid" IS 'The individual accountable role. A team is never the final accountable addressee.';
 COMMENT ON COLUMN "WorkOrderSpec"."verifierRoleDefinitionRef_uid" IS 'The role that checks the result against the criteria below. May not be the producer; resolves through teamSpecRef to prove a different independence group (Rego).';
 COMMENT ON COLUMN "WorkOrderSpec"."parentWorkOrderRef_uid" IS 'The larger item this decomposes.';

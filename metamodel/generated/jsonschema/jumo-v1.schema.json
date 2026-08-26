@@ -13641,7 +13641,7 @@
           "type": "array"
         },
         "ledgerSourceRevision": {
-          "description": "Commit that carried the last full (pre-compaction) revision of this record, for a COMPLETED WorkOrder compacted into .jumo/work/ledger/. Set by scripts/migrate/compact-completed-work.py, never by hand.",
+          "description": "Commit that carried the last full (pre-compaction) revision of this record, for a COMPLETED WorkOrder compacted into .jumo/work/ledger/. Set by the closure tooling that writes the record, never by hand.",
           "pattern": "^.{7,}$",
           "type": "string"
         },

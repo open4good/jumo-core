@@ -6,7 +6,7 @@ search:
 # Slot: ledgerSourceRevision
 
 
-_Commit that carried the last full (pre-compaction) revision of this record, for a COMPLETED WorkOrder compacted into .jumo/work/ledger/. Set by scripts/migrate/compact-completed-work.py, never by hand._
+_Commit that carried the last full (pre-compaction) revision of this record, for a COMPLETED WorkOrder compacted into .jumo/work/ledger/. Set by the closure tooling that writes the record, never by hand._
 
 
 
@@ -99,8 +99,8 @@ URI: [jumo:ledgerSourceRevision](https://jumo.dev/schemas/jumo-v1/ledgerSourceRe
 ```yaml
 name: ledgerSourceRevision
 description: Commit that carried the last full (pre-compaction) revision of this record,
-  for a COMPLETED WorkOrder compacted into .jumo/work/ledger/. Set by scripts/migrate/compact-completed-work.py,
-  never by hand.
+  for a COMPLETED WorkOrder compacted into .jumo/work/ledger/. Set by the closure
+  tooling that writes the record, never by hand.
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
 owner: WorkOrderSpec

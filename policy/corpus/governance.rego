@@ -146,7 +146,7 @@ deny contains corpus.violation("corpus.work.completed-in-ledger", document, mess
 	spec := corpus.spec(document)
 	spec.state == "COMPLETED"
 	not contains(corpus.path(document), "/work/ledger/")
-	message := "a COMPLETED WorkOrder must be a closure record under .jumo/work/ledger/ (scripts/migrate/compact-completed-work.py)"
+	message := "a COMPLETED WorkOrder must be a closure record under .jumo/work/ledger/"
 }
 
 deny contains corpus.violation("corpus.work.decline-reason-required", document, message) if {
@@ -180,9 +180,8 @@ declared_milestone_ids contains milestone.id if {
 	some milestone in object.get(corpus.spec(project), "milestones", [])
 }
 
-# Scoped to open work only: a closure record under .jumo/work/ledger/ is a frozen historical fact
-# (scripts/migrate/compact-completed-work.py), not active work subject to the current milestone
-# taxonomy. A ledgered WorkOrder keeps whatever roadmapRef it carried when it closed.
+# Scoped to open work only: a closure record under .jumo/work/ledger/ is a frozen historical fact,
+# not active work subject to the current milestone taxonomy. A ledgered WorkOrder keeps whatever roadmapRef it carried when it closed.
 deny contains corpus.violation("corpus.work.roadmap-ref-declared", document, message) if {
 	some document in corpus.documents
 	document.kind == "WorkOrder"

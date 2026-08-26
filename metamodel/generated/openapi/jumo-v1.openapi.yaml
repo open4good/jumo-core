@@ -2820,7 +2820,7 @@ components:
           pattern: ^.{7,}$
           description: Commit that carried the last full (pre-compaction) revision
             of this record, for a COMPLETED WorkOrder compacted into .jumo/work/ledger/.
-            Set by scripts/migrate/compact-completed-work.py, never by hand.
+            Set by the closure tooling that writes the record, never by hand.
         consumption:
           $ref: '#/components/schemas/ConsumptionReport'
         resourceBudgetRef:

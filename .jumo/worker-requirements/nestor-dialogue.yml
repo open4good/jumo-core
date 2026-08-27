@@ -25,5 +25,11 @@ spec:
     reasoningEffort: LOW
   limits:
     maximumLatency: PT10S
-    maximumCostClass: LOW
+    # MEDIUM, not LOW: ConversationService.attemptBoundedEscalation reads this ceiling against the
+    # same LOW/MEDIUM/HIGH vocabulary as reasoningEffort to bound AUTO_BOUNDED's retry rung (ADR-0019
+    # -- "no higher than the profile ceiling"). A LOW ceiling on a LOW-effort profile would make the
+    # onInsufficiency below permanently unreachable: every escalation attempt would be refused by its
+    # own declared cost limit before ever checking budget. MEDIUM keeps a real ceiling below the
+    # ladder's own HIGH top while letting the one bounded retry actually occur.
+    maximumCostClass: MEDIUM
   onInsufficiency: AUTO_BOUNDED

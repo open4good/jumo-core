@@ -4122,6 +4122,14 @@
       },
       "@id": "modalities"
     },
+    "onInsufficiency": {
+      "@context": {
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      },
+      "@id": "onInsufficiency"
+    },
     "quality": {
       "@type": "@id",
       "@id": "quality"

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record WorkerRequirementProfileSpec(String ownerRealm, List<TaskClass> taskClasses, List<Modality> modalities, DataScope dataScopeCeiling, WorkerContextRequirement context, WorkerInteractionRequirement interaction, WorkerQualityRequirement quality, WorkerLimits limits, String requiredIndependenceGroup)  {
+public record WorkerRequirementProfileSpec(String ownerRealm, List<TaskClass> taskClasses, List<Modality> modalities, DataScope dataScopeCeiling, WorkerContextRequirement context, WorkerInteractionRequirement interaction, WorkerQualityRequirement quality, WorkerLimits limits, String requiredIndependenceGroup, SufficiencyEscalationPolicy onInsufficiency)  {
 
     public static Builder builder() {
         return new Builder();
@@ -24,6 +24,7 @@ public record WorkerRequirementProfileSpec(String ownerRealm, List<TaskClass> ta
         private WorkerQualityRequirement quality = null;
         private WorkerLimits limits = null;
         private String requiredIndependenceGroup = "";
+        private SufficiencyEscalationPolicy onInsufficiency = null;
 
 
         public Builder ownerRealm(String ownerRealm) {
@@ -71,8 +72,13 @@ public record WorkerRequirementProfileSpec(String ownerRealm, List<TaskClass> ta
             return this;
         }
 
+        public Builder onInsufficiency(SufficiencyEscalationPolicy onInsufficiency) {
+            this.onInsufficiency = Objects.requireNonNull(onInsufficiency);
+            return this;
+        }
+
     public WorkerRequirementProfileSpec build() {
-            return new WorkerRequirementProfileSpec(ownerRealm, taskClasses, modalities, dataScopeCeiling, context, interaction, quality, limits, requiredIndependenceGroup);
+            return new WorkerRequirementProfileSpec(ownerRealm, taskClasses, modalities, dataScopeCeiling, context, interaction, quality, limits, requiredIndependenceGroup, onInsufficiency);
         }
     }
 }

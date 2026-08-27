@@ -16,7 +16,7 @@ spec:
     minimumTokens: 8192
   interaction:
     toolUse: NONE
-    structuredOutput: OPTIONAL
+    structuredOutput: REQUIRED
   quality:
     minimumAssurance: OBSERVED
     minimumReliability: 0.7
@@ -26,3 +26,4 @@ spec:
   limits:
     maximumLatency: PT10S
     maximumCostClass: LOW
+  onInsufficiency: AUTO_BOUNDED

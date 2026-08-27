@@ -1274,6 +1274,31 @@ enums:
         text: OPTIONAL
       REQUIRED:
         text: REQUIRED
+  ResponseSufficiency:
+    name: ResponseSufficiency
+    description: A worker's own structured signal about whether its answer, as given,
+      is sufficient (worker-sufficiency-bounded-escalation AC1). Reported only when
+      the declaring WorkerRequirementProfile's interaction.structuredOutput is REQUIRED.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    permissible_values:
+      SUFFICIENT:
+        text: SUFFICIENT
+      INSUFFICIENT_NEEDS_DEPTH:
+        text: INSUFFICIENT_NEEDS_DEPTH
+  SufficiencyEscalationPolicy:
+    name: SufficiencyEscalationPolicy
+    description: 'A profile''s disposition on an INSUFFICIENT_NEEDS_DEPTH signal (ADR-0019).
+      NONE is the default: no automatic retry, the existing human-decision path applies.
+      AUTO_BOUNDED retries the same invocation once at the next effort rung, never
+      above the ladder''s own ceiling and only while the declared ResourceBudget still
+      has model-call budget for it -- otherwise it falls back to the same human-decision
+      path as NONE.'
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    permissible_values:
+      NONE:
+        text: NONE
+      AUTO_BOUNDED:
+        text: AUTO_BOUNDED
   ReasoningEffort:
     name: ReasoningEffort
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -25459,6 +25484,17 @@ classes:
         domain_of:
         - WorkerRequirementProfileSpec
         range: Identifier
+      onInsufficiency:
+        name: onInsufficiency
+        description: How this profile responds to its own worker's INSUFFICIENT_NEEDS_DEPTH
+          signal (ADR-0019, worker-sufficiency-bounded-escalation). Absent defaults
+          to NONE -- most profiles take the existing human-decision path rather than
+          an automatic bounded retry.
+        from_schema: https://jumo.dev/schemas/work
+        owner: WorkerRequirementProfileSpec
+        domain_of:
+        - WorkerRequirementProfileSpec
+        range: SufficiencyEscalationPolicy
   WorkerContextRequirement:
     name: WorkerContextRequirement
     annotations:

@@ -46,6 +46,7 @@ CREATE TYPE "DeliveryMode" AS ENUM ('LIVE', 'DIGEST', 'ESCALATION_ONLY', 'DELEGA
 CREATE TYPE "DurableWorkflowEngine" AS ENUM ('temporal', 'none');
 CREATE TYPE "BusinessStateStore" AS ENUM ('postgresql', 'none');
 CREATE TYPE "ExecutionStateStore" AS ENUM ('temporal', 'none');
+CREATE TYPE "SufficiencyEscalationPolicy" AS ENUM ('NONE', 'AUTO_BOUNDED');
 CREATE TYPE "ToolUseRequirement" AS ENUM ('NONE', 'OPTIONAL', 'REQUIRED');
 CREATE TYPE "ReasoningEffort" AS ENUM ('LOW', 'MEDIUM', 'HIGH');
 CREATE TYPE "CostClass" AS ENUM ('LOW', 'MEDIUM', 'HIGH');
@@ -2375,6 +2376,7 @@ CREATE TABLE "WorkerRequirementProfileSpec" (
 	"ownerRealm" TEXT NOT NULL,
 	"dataScopeCeiling" "DataScope" NOT NULL,
 	"requiredIndependenceGroup" TEXT,
+	"onInsufficiency" "SufficiencyEscalationPolicy",
 	context_id INTEGER NOT NULL,
 	interaction_id INTEGER NOT NULL,
 	quality_id INTEGER NOT NULL,
@@ -2388,6 +2390,7 @@ CREATE TABLE "WorkerRequirementProfileSpec" (
 CREATE INDEX "ix_WorkerRequirementProfileSpec_id" ON "WorkerRequirementProfileSpec" (id);
 COMMENT ON TABLE "WorkerRequirementProfileSpec" IS 'None';
 COMMENT ON COLUMN "WorkerRequirementProfileSpec"."requiredIndependenceGroup" IS 'Narrows eligible ProviderAccounts to those sharing this independenceGroup (own, or inherited from their ProviderPlatform). Two profiles at the same reasoningEffort rung are otherwise indistinguishable for routing purposes (provider-platform-catalog lot); a producing and a verifying role''s profiles declare disjoint values here when ADR-0019''s independence separation must hold operationally, not just architecturally. Absent by default -- most profiles route on rung alone.';
+COMMENT ON COLUMN "WorkerRequirementProfileSpec"."onInsufficiency" IS 'How this profile responds to its own worker''s INSUFFICIENT_NEEDS_DEPTH signal (ADR-0019, worker-sufficiency-bounded-escalation). Absent defaults to NONE -- most profiles take the existing human-decision path rather than an automatic bounded retry.';
 
 CREATE TABLE "GoldenTaskSetSpec" (
 	id SERIAL NOT NULL,

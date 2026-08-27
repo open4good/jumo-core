@@ -1097,6 +1097,12 @@ enum RequiredOwners
     TARGET_ONLY
   }
 
+enum ResponseSufficiency
+  {
+    SUFFICIENT
+    INSUFFICIENT_NEEDS_DEPTH
+  }
+
 enum Reversibility
   {
     REVERSIBLE
@@ -1199,6 +1205,12 @@ enum SubJourneyOpenMode
   {
     INLINE
     MODAL
+  }
+
+enum SufficiencyEscalationPolicy
+  {
+    NONE
+    AUTO_BOUNDED
   }
 
 enum TaskClass
@@ -4682,6 +4694,7 @@ type WorkerRequirementProfileSpec
     quality: WorkerQualityRequirement!
     limits: WorkerLimits!
     requiredIndependenceGroup: Identifier
+    onInsufficiency: SufficiencyEscalationPolicy
   }
 
 type WorkerSubstrate

@@ -74,6 +74,17 @@ URI: [jumo:WorkerRequirementProfileSpec](https://jumo.dev/schemas/jumo-v1/Worker
 
 
 
+      WorkerRequirementProfileSpec : onInsufficiency
+
+
+
+
+
+        WorkerRequirementProfileSpec --> "0..1" SufficiencyEscalationPolicy : onInsufficiency
+        click SufficiencyEscalationPolicy href "../SufficiencyEscalationPolicy/"
+
+
+
       WorkerRequirementProfileSpec : ownerRealm
 
       WorkerRequirementProfileSpec : quality
@@ -121,6 +132,7 @@ URI: [jumo:WorkerRequirementProfileSpec](https://jumo.dev/schemas/jumo-v1/Worker
 | [quality](quality.md) | 1 <br/> [WorkerQualityRequirement](WorkerQualityRequirement.md) |  | direct |
 | [limits](limits.md) | 1 <br/> [WorkerLimits](WorkerLimits.md) |  | direct |
 | [requiredIndependenceGroup](requiredIndependenceGroup.md) | 0..1 <br/> [Identifier](Identifier.md) | Narrows eligible ProviderAccounts to those sharing this independenceGroup (ow... | direct |
+| [onInsufficiency](onInsufficiency.md) | 0..1 <br/> [SufficiencyEscalationPolicy](SufficiencyEscalationPolicy.md) | How this profile responds to its own worker's INSUFFICIENT_NEEDS_DEPTH signal... | direct |
 
 
 
@@ -360,6 +372,18 @@ attributes:
     domain_of:
     - WorkerRequirementProfileSpec
     range: Identifier
+  onInsufficiency:
+    name: onInsufficiency
+    description: How this profile responds to its own worker's INSUFFICIENT_NEEDS_DEPTH
+      signal (ADR-0019, worker-sufficiency-bounded-escalation). Absent defaults to
+      NONE -- most profiles take the existing human-decision path rather than an automatic
+      bounded retry.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: WorkerRequirementProfileSpec
+    domain_of:
+    - WorkerRequirementProfileSpec
+    range: SufficiencyEscalationPolicy
 
 ```
 </details>
@@ -539,6 +563,18 @@ attributes:
     domain_of:
     - WorkerRequirementProfileSpec
     range: Identifier
+  onInsufficiency:
+    name: onInsufficiency
+    description: How this profile responds to its own worker's INSUFFICIENT_NEEDS_DEPTH
+      signal (ADR-0019, worker-sufficiency-bounded-escalation). Absent defaults to
+      NONE -- most profiles take the existing human-decision path rather than an automatic
+      bounded retry.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: WorkerRequirementProfileSpec
+    domain_of:
+    - WorkerRequirementProfileSpec
+    range: SufficiencyEscalationPolicy
 
 ```
 </details></div>

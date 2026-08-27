@@ -984,6 +984,7 @@ Name: jumo_v1
 | [oidcSubject](oidcSubject.md) |  |
 | [onboarding](onboarding.md) |  |
 | [onExhaustion](onExhaustion.md) |  |
+| [onInsufficiency](onInsufficiency.md) | How this profile responds to its own worker's INSUFFICIENT_NEEDS_DEPTH signal... |
 | [onInsufficientInformation](onInsufficientInformation.md) |  |
 | [opaEntrypoint](opaEntrypoint.md) | Required on a GATEWAY step (Rego): the Rego rule the ProcessSpec compiler wir... |
 | [openBao](openBao.md) |  |
@@ -1577,6 +1578,7 @@ Name: jumo_v1
 | [RepositoryOwnership](RepositoryOwnership.md) |  |
 | [RepositoryVisibility](RepositoryVisibility.md) |  |
 | [RequiredOwners](RequiredOwners.md) |  |
+| [ResponseSufficiency](ResponseSufficiency.md) | A worker's own structured signal about whether its answer, as given, is suffi... |
 | [Reversibility](Reversibility.md) |  |
 | [Ring](Ring.md) | Self-modification ring (ADR-0008) |
 | [RiskTier](RiskTier.md) | ROOT capabilities are Ring 0 and are never grantable through an ordinary work... |
@@ -1591,6 +1593,7 @@ Name: jumo_v1
 | [SourceVisibility](SourceVisibility.md) |  |
 | [StructuredOutputMode](StructuredOutputMode.md) |  |
 | [SubJourneyOpenMode](SubJourneyOpenMode.md) | How a SUB_JOURNEY step opens its child run |
+| [SufficiencyEscalationPolicy](SufficiencyEscalationPolicy.md) | A profile's disposition on an INSUFFICIENT_NEEDS_DEPTH signal (ADR-0019) |
 | [TaskClass](TaskClass.md) |  |
 | [ToolUseRequirement](ToolUseRequirement.md) |  |
 | [TopologyPlacement](TopologyPlacement.md) |  |

@@ -3211,6 +3211,13 @@ components:
             declare disjoint values here when ADR-0019's independence separation must
             hold operationally, not just architecturally. Absent by default -- most
             profiles route on rung alone.
+        onInsufficiency:
+          allOf:
+          - $ref: '#/components/schemas/SufficiencyEscalationPolicy'
+          description: How this profile responds to its own worker's INSUFFICIENT_NEEDS_DEPTH
+            signal (ADR-0019, worker-sufficiency-bounded-escalation). Absent defaults
+            to NONE -- most profiles take the existing human-decision path rather
+            than an automatic bounded retry.
       additionalProperties: false
       type: object
       required:
@@ -10130,6 +10137,27 @@ components:
       - OPTIONAL
       - REQUIRED
       title: ToolUseRequirement
+    ResponseSufficiency:
+      type: string
+      enum:
+      - SUFFICIENT
+      - INSUFFICIENT_NEEDS_DEPTH
+      title: ResponseSufficiency
+      description: A worker's own structured signal about whether its answer, as given,
+        is sufficient (worker-sufficiency-bounded-escalation AC1). Reported only when
+        the declaring WorkerRequirementProfile's interaction.structuredOutput is REQUIRED.
+    SufficiencyEscalationPolicy:
+      type: string
+      enum:
+      - NONE
+      - AUTO_BOUNDED
+      title: SufficiencyEscalationPolicy
+      description: 'A profile''s disposition on an INSUFFICIENT_NEEDS_DEPTH signal
+        (ADR-0019). NONE is the default: no automatic retry, the existing human-decision
+        path applies. AUTO_BOUNDED retries the same invocation once at the next effort
+        rung, never above the ladder''s own ceiling and only while the declared ResourceBudget
+        still has model-call budget for it -- otherwise it falls back to the same
+        human-decision path as NONE.'
     ReasoningEffort:
       type: string
       enum:

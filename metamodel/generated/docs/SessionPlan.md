@@ -174,6 +174,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
     - SessionPlan
     - ApiProblem
     - PolicyInput
@@ -187,6 +188,7 @@ attributes:
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
@@ -300,6 +302,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
     - SessionPlan
     - ApiProblem
     - PolicyInput
@@ -313,6 +316,7 @@ attributes:
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan

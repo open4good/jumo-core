@@ -190,6 +190,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   workOrderId:
@@ -201,6 +202,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - CliInvocationEvent
     - CliInvocationResult
@@ -265,6 +267,7 @@ attributes:
     domain_of:
     - MachineAdminCommand
     - WorkloadCommand
+    - DelegatedSecretGrant
     range: string
     required: true
   expiresAt:
@@ -277,6 +280,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt
@@ -352,6 +356,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   workOrderId:
@@ -363,6 +368,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - CliInvocationEvent
     - CliInvocationResult
@@ -427,6 +433,7 @@ attributes:
     domain_of:
     - MachineAdminCommand
     - WorkloadCommand
+    - DelegatedSecretGrant
     range: string
     required: true
   expiresAt:
@@ -439,6 +446,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt

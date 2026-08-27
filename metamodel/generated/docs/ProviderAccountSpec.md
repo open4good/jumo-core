@@ -241,6 +241,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ProviderAccountSpec
     domain_of:
+    - DelegatedSecretGrant
     - McpRegistrySourceSpec
     - ProviderAccountSpec
     - WorkerModelAccess
@@ -373,6 +374,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ProviderAccountSpec
     domain_of:
+    - DelegatedSecretGrant
     - McpRegistrySourceSpec
     - ProviderAccountSpec
     - WorkerModelAccess

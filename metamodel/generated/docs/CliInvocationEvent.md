@@ -144,6 +144,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - CliInvocationEvent
     - CliInvocationResult
@@ -227,6 +228,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - CliInvocationEvent
     - CliInvocationResult

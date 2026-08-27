@@ -292,9 +292,9 @@ attributes:
   secretBindingRefs:
     name: secretBindingRefs
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: ConnectorOperation
     domain_of:
+    - WorkOrderSpec
     - ConnectorOperation
     - McpBundleOperation
     range: ContractReference
@@ -448,9 +448,9 @@ attributes:
   secretBindingRefs:
     name: secretBindingRefs
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: ConnectorOperation
     domain_of:
+    - WorkOrderSpec
     - ConnectorOperation
     - McpBundleOperation
     range: ContractReference

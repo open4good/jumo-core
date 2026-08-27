@@ -160,6 +160,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   realmId:
@@ -170,6 +171,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
     - SessionPlan
     - ApiProblem
     - PolicyInput
@@ -250,6 +252,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   realmId:
@@ -260,6 +263,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
     - SessionPlan
     - ApiProblem
     - PolicyInput

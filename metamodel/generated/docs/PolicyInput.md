@@ -173,6 +173,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
     - SessionPlan
     - ApiProblem
     - PolicyInput
@@ -264,6 +265,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
     - SessionPlan
     - ApiProblem
     - PolicyInput

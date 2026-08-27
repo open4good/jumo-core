@@ -289,6 +289,13 @@ classes:
         multivalued: true
         pattern: ^.{1,}$
         description: Glob patterns the work may touch.
+      secretBindingRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+        description: SecretBindings this WorkOrder is authorized to request a delegated lease
+          grant for. Empty by default. Reciprocity with SecretBindingSpec.allowedWorkOrderRefs
+          is required by policy (openbao-delegated-lease AC2).
       ring:
         range: Ring
         description: 'The ring this work acts on. RING_0_ROOT_OF_TRUST exclusion (source schema''s `not: const`) moves to

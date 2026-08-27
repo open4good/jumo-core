@@ -423,3 +423,85 @@ test_bundle_package_certified if {
 	violations_no_ref := data.jumo.corpus.deny with input as [pkg, no_ref]
 	not has_rule(violations_no_ref, "corpus.bundle.package-certified")
 }
+
+# openbao-delegated-lease AC2: WorkOrder.secretBindingRefs <-> SecretBinding.allowedWorkOrderRefs.
+work_order_document(identifier, namespace, spec) := {
+	"path": sprintf(".jumo/work/%s.yml", [identifier]),
+	"contents": {
+		"apiVersion": "jumo.dev/v1",
+		"kind": "WorkOrder",
+		"metadata": {"id": identifier, "namespace": namespace},
+		"spec": spec,
+	},
+}
+
+test_secret_work_order_reciprocity_satisfied_raises_nothing if {
+	wo := work_order_document("wo-good", "home.jumo.dev", {"secretBindingRefs": ["secret-good"]})
+	secret := document(".jumo/secrets/good.yml", "SecretBinding", "secret-good", {
+		"ownerRealm": "home",
+		"lifecycle": "ENABLED",
+		"allowedWorkOrderRefs": ["wo-good"],
+	})
+	violations := data.jumo.corpus.deny with input as [wo, secret]
+	not has_rule(violations, "corpus.secret.work-order-reciprocity")
+	not has_rule(violations, "corpus.secret.binding-work-order-reciprocity")
+	not has_rule(violations, "corpus.secret.work-order-realm")
+	not has_rule(violations, "corpus.secret.work-order-lifecycle")
+	not has_rule(violations, "corpus.secret.work-order-kind")
+	not has_rule(violations, "corpus.secret.binding-work-order-kind")
+}
+
+test_secret_work_order_reciprocity_one_sided_from_work_order_fails if {
+	wo := work_order_document("wo-one-sided", "home.jumo.dev", {"secretBindingRefs": ["secret-no-reciprocate"]})
+	secret := document(".jumo/secrets/no-reciprocate.yml", "SecretBinding", "secret-no-reciprocate", {
+		"ownerRealm": "home",
+		"lifecycle": "ENABLED",
+	})
+	violations := data.jumo.corpus.deny with input as [wo, secret]
+	has_rule(violations, "corpus.secret.work-order-reciprocity")
+}
+
+test_secret_work_order_reciprocity_one_sided_from_binding_fails if {
+	wo := work_order_document("wo-not-declared", "home.jumo.dev", {})
+	secret := document(".jumo/secrets/declares-wo.yml", "SecretBinding", "secret-declares-wo", {
+		"ownerRealm": "home",
+		"lifecycle": "ENABLED",
+		"allowedWorkOrderRefs": ["wo-not-declared"],
+	})
+	violations := data.jumo.corpus.deny with input as [wo, secret]
+	has_rule(violations, "corpus.secret.binding-work-order-reciprocity")
+}
+
+test_secret_work_order_cross_realm_fails if {
+	wo := work_order_document("wo-cross-realm", "other.jumo.dev", {"secretBindingRefs": ["secret-home"]})
+	secret := document(".jumo/secrets/home-only.yml", "SecretBinding", "secret-home", {
+		"ownerRealm": "home",
+		"lifecycle": "ENABLED",
+		"allowedWorkOrderRefs": ["wo-cross-realm"],
+	})
+	violations := data.jumo.corpus.deny with input as [wo, secret]
+	has_rule(violations, "corpus.secret.work-order-realm")
+}
+
+test_secret_work_order_binding_not_enabled_fails if {
+	wo := work_order_document("wo-declared-lifecycle", "home.jumo.dev", {"secretBindingRefs": ["secret-suspended"]})
+	secret := document(".jumo/secrets/suspended.yml", "SecretBinding", "secret-suspended", {
+		"ownerRealm": "home",
+		"lifecycle": "SUSPENDED",
+		"allowedWorkOrderRefs": ["wo-declared-lifecycle"],
+	})
+	violations := data.jumo.corpus.deny with input as [wo, secret]
+	has_rule(violations, "corpus.secret.work-order-lifecycle")
+}
+
+test_secret_work_order_unresolved_refs_fail if {
+	wo := work_order_document("wo-dangling", "home.jumo.dev", {"secretBindingRefs": ["missing-secret"]})
+	secret := document(".jumo/secrets/dangling-wo-ref.yml", "SecretBinding", "secret-dangling-wo-ref", {
+		"ownerRealm": "home",
+		"lifecycle": "ENABLED",
+		"allowedWorkOrderRefs": ["missing-wo"],
+	})
+	violations := data.jumo.corpus.deny with input as [wo, secret]
+	has_rule(violations, "corpus.secret.work-order-kind")
+	has_rule(violations, "corpus.secret.binding-work-order-kind")
+}

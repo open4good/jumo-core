@@ -153,9 +153,9 @@ attributes:
   grantId:
     name: grantId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: PlannedOperation
     domain_of:
+    - DelegatedSecretGrant
     - PlannedOperation
     - McpInvocationAuthorizationRequest
     - McpInvocationAuthorizationReceipt
@@ -259,9 +259,9 @@ attributes:
   grantId:
     name: grantId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: PlannedOperation
     domain_of:
+    - DelegatedSecretGrant
     - PlannedOperation
     - McpInvocationAuthorizationRequest
     - McpInvocationAuthorizationReceipt

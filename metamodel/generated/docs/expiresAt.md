@@ -25,6 +25,7 @@ URI: [jumo:expiresAt](https://jumo.dev/schemas/jumo-v1/expiresAt)
 | [MachineAdminCommand](MachineAdminCommand.md) | Ansible playbook execution command sent to an enrolled machine |  no  |
 | [WorkloadCommand](WorkloadCommand.md) | Typed workload command claimed by pull from an ExecutionMachine, distinct fro... |  no  |
 | [ExecutionCellLease](ExecutionCellLease.md) | Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and con... |  no  |
+| [DelegatedSecretGrant](DelegatedSecretGrant.md) | One response-wrapped OpenBao child token grant issued for a lease and SecretB... |  no  |
 | [ProviderSessionBinding](ProviderSessionBinding.md) | Recognized opaque binding between a holder provider session and one Execution... |  no  |
 | [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md) | Signed, single-use MCP invocation authorization (ADR-0055) |  no  |
 | [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) | Signed, short-lived authorization receipt bound to exactly one MCP invocation |  no  |
@@ -43,7 +44,7 @@ URI: [jumo:expiresAt](https://jumo.dev/schemas/jumo-v1/expiresAt)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [OrganizationRetentionHoldSpec](OrganizationRetentionHoldSpec.md), [MachineEnrollmentChallenge](MachineEnrollmentChallenge.md), [MachineAdminCommand](MachineAdminCommand.md), [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [ProviderSessionBinding](ProviderSessionBinding.md), [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md), [ConnectorSessionBinding](ConnectorSessionBinding.md), [EffectTestAuthorization](EffectTestAuthorization.md) |
+| Domain Of | [OrganizationRetentionHoldSpec](OrganizationRetentionHoldSpec.md), [MachineEnrollmentChallenge](MachineEnrollmentChallenge.md), [MachineAdminCommand](MachineAdminCommand.md), [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [DelegatedSecretGrant](DelegatedSecretGrant.md), [ProviderSessionBinding](ProviderSessionBinding.md), [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md), [ConnectorSessionBinding](ConnectorSessionBinding.md), [EffectTestAuthorization](EffectTestAuthorization.md) |
 
 ### Cardinality and Requirements
 
@@ -87,6 +88,7 @@ domain_of:
 - MachineAdminCommand
 - WorkloadCommand
 - ExecutionCellLease
+- DelegatedSecretGrant
 - ProviderSessionBinding
 - InvocationAuthorizationReceipt
 - McpInvocationAuthorizationReceipt

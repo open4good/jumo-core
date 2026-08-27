@@ -106,6 +106,7 @@ Name: jumo_v1
 | [CoordinationProfile](CoordinationProfile.md) | A named, reusable coordination profile: authorized mechanisms, target depende... |
 | [CoordinationProfileSpec](CoordinationProfileSpec.md) |  |
 | [DataProtectionImpactAssessment](DataProtectionImpactAssessment.md) |  |
+| [DelegatedSecretGrant](DelegatedSecretGrant.md) | One response-wrapped OpenBao child token grant issued for a lease and SecretB... |
 | [DispositionMatch](DispositionMatch.md) | minProperties:1 in the source (at least one match field present) moves to Reg... |
 | [DispositionRule](DispositionRule.md) |  |
 | [DocumentationRoot](DocumentationRoot.md) |  |
@@ -397,6 +398,7 @@ Name: jumo_v1
 | Slot | Description |
 | --- | --- |
 | [acceptanceCriteria](acceptanceCriteria.md) | What the result is checked against |
+| [accessorCiphertext](accessorCiphertext.md) |  |
 | [accountUse](accountUse.md) | Which ProviderAccount use context this substrate is authorized to consume, ex... |
 | [acknowledgement](acknowledgement.md) |  |
 | [action](action.md) |  |
@@ -429,6 +431,7 @@ Name: jumo_v1
 | [allowedRemoteMcpServiceRefs](allowedRemoteMcpServiceRefs.md) |  |
 | [allowedRequests](allowedRequests.md) |  |
 | [allowedWorkerSubstrateRefs](allowedWorkerSubstrateRefs.md) |  |
+| [allowedWorkOrderRefs](allowedWorkOrderRefs.md) | WorkOrders authorized to request a delegated lease grant of this binding |
 | [alternativeProviderAccountRefs](alternativeProviderAccountRefs.md) |  |
 | [ambientToolAuthority](ambientToolAuthority.md) | No CLI home, image, plugin, repository file, or provider default silently gra... |
 | [annotations](annotations.md) |  |
@@ -553,6 +556,7 @@ Name: jumo_v1
 | [connectorPackageRef](connectorPackageRef.md) |  |
 | [connectorRef](connectorRef.md) |  |
 | [consentState](consentState.md) | NOT_APPLICABLE for OWNER and MEMBER, who consented by joining the Realm |
+| [consumedAt](consumedAt.md) |  |
 | [consumerIdentityRouting](consumerIdentityRouting.md) |  |
 | [consumption](consumption.md) |  |
 | [containerRuntimeSocket](containerRuntimeSocket.md) | A runtime socket mount hands the container authority over its own sandbox |
@@ -983,6 +987,7 @@ Name: jumo_v1
 | [onInsufficientInformation](onInsufficientInformation.md) |  |
 | [opaEntrypoint](opaEntrypoint.md) | Required on a GATEWAY step (Rego): the Rego rule the ProcessSpec compiler wir... |
 | [openBao](openBao.md) |  |
+| [openBaoAccessorDigest](openBaoAccessorDigest.md) |  |
 | [openQuestion](openQuestion.md) | A clarifying question to continue the dialogue when intent is still ambiguous |
 | [operationId](operationId.md) |  |
 | [operationName](operationName.md) |  |
@@ -1186,6 +1191,8 @@ Name: jumo_v1
 | [reviewedAt](reviewedAt.md) |  |
 | [reviewer](reviewer.md) |  |
 | [revision](revision.md) |  |
+| [revocationReason](revocationReason.md) |  |
+| [revokedAt](revokedAt.md) |  |
 | [rhythm](rhythm.md) |  |
 | [rightCatalogId](rightCatalogId.md) |  |
 | [ring](ring.md) | The ring this work acts on |
@@ -1229,7 +1236,7 @@ Name: jumo_v1
 | [seatId](seatId.md) | A named seat in this organization, e |
 | [seatIds](seatIds.md) |  |
 | [secretBindingRef](secretBindingRef.md) |  |
-| [secretBindingRefs](secretBindingRefs.md) |  |
+| [secretBindingRefs](secretBindingRefs.md) | SecretBindings this WorkOrder is authorized to request a delegated lease gran... |
 | [sections](sections.md) | Rendered fields grouped into sections |
 | [security](security.md) | Blast radius per operation, network egress, secret material held, and untrust... |
 | [selectedAt](selectedAt.md) |  |

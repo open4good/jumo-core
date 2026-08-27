@@ -2787,6 +2787,13 @@ components:
           type: array
           pattern: ^.{1,}$
           description: Glob patterns the work may touch.
+        secretBindingRefs:
+          items:
+            $ref: '#/components/schemas/ContractReference'
+          type: array
+          description: SecretBindings this WorkOrder is authorized to request a delegated
+            lease grant for. Empty by default. Reciprocity with SecretBindingSpec.allowedWorkOrderRefs
+            is required by policy (openbao-delegated-lease AC2).
         ring:
           allOf:
           - $ref: '#/components/schemas/Ring'
@@ -5662,6 +5669,52 @@ components:
       title: ExecutionCellLease
       description: Ephemeral sandbox execution lease bound to a machine, WorkOrder,
         SHA, and contract digest.
+    DelegatedSecretGrant:
+      properties:
+        grantId:
+          type: string
+        leaseId:
+          type: string
+        realmId:
+          type: string
+        machineId:
+          type: string
+        workOrderId:
+          type: string
+        secretBindingRef:
+          type: string
+        openBaoAccessorDigest:
+          type: string
+        accessorCiphertext:
+          type: string
+        issuedAt:
+          type: string
+        expiresAt:
+          type: string
+        consumedAt:
+          type: string
+        revokedAt:
+          type: string
+        revocationReason:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - grantId
+      - leaseId
+      - realmId
+      - machineId
+      - workOrderId
+      - secretBindingRef
+      - openBaoAccessorDigest
+      - accessorCiphertext
+      - issuedAt
+      - expiresAt
+      title: DelegatedSecretGrant
+      description: One response-wrapped OpenBao child token grant issued for a lease
+        and SecretBinding pair (openbao-delegated-lease). Never carries the token
+        or accessor value itself -- only an envelope-encrypted accessor ciphertext
+        and its digest, for restart-safe revocation and audit.
     CliToolDefinition:
       properties:
         apiVersion:
@@ -7195,6 +7248,13 @@ components:
           items:
             $ref: '#/components/schemas/ContractReference'
           type: array
+        allowedWorkOrderRefs:
+          items:
+            $ref: '#/components/schemas/ContractReference'
+          type: array
+          description: WorkOrders authorized to request a delegated lease grant of
+            this binding. Reciprocity with WorkOrderSpec.secretBindingRefs is required
+            by policy (openbao-delegated-lease AC2).
         injection:
           $ref: '#/components/schemas/SecretInjection'
         rotation:

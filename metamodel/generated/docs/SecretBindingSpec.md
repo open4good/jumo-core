@@ -70,6 +70,17 @@ URI: [jumo:SecretBindingSpec](https://jumo.dev/schemas/jumo-v1/SecretBindingSpec
 
 
 
+      SecretBindingSpec : allowedWorkOrderRefs
+
+
+
+
+
+        SecretBindingSpec --> "*" ContractReference : allowedWorkOrderRefs
+        click ContractReference href "../ContractReference/"
+
+
+
       SecretBindingSpec : injection
 
 
@@ -127,6 +138,7 @@ URI: [jumo:SecretBindingSpec](https://jumo.dev/schemas/jumo-v1/SecretBindingSpec
 | [allowedConnectorDefinitionRefs](allowedConnectorDefinitionRefs.md) | * <br/> [ContractReference](ContractReference.md) |  | direct |
 | [allowedOperationRefs](allowedOperationRefs.md) | * <br/> [Identifier](Identifier.md) |  | direct |
 | [allowedWorkerSubstrateRefs](allowedWorkerSubstrateRefs.md) | * <br/> [ContractReference](ContractReference.md) |  | direct |
+| [allowedWorkOrderRefs](allowedWorkOrderRefs.md) | * <br/> [ContractReference](ContractReference.md) | WorkOrders authorized to request a delegated lease grant of this binding | direct |
 | [injection](injection.md) | 1 <br/> [SecretInjection](SecretInjection.md) |  | direct |
 | [rotation](rotation.md) | 0..1 <br/> [SecretRotation](SecretRotation.md) |  | direct |
 
@@ -363,6 +375,20 @@ attributes:
     multivalued: true
     inlined: true
     inlined_as_list: true
+  allowedWorkOrderRefs:
+    name: allowedWorkOrderRefs
+    description: WorkOrders authorized to request a delegated lease grant of this
+      binding. Reciprocity with WorkOrderSpec.secretBindingRefs is required by policy
+      (openbao-delegated-lease AC2).
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: SecretBindingSpec
+    domain_of:
+    - SecretBindingSpec
+    range: ContractReference
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
   injection:
     name: injection
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -547,6 +573,20 @@ attributes:
     multivalued: true
   allowedWorkerSubstrateRefs:
     name: allowedWorkerSubstrateRefs
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: SecretBindingSpec
+    domain_of:
+    - SecretBindingSpec
+    range: ContractReference
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+  allowedWorkOrderRefs:
+    name: allowedWorkOrderRefs
+    description: WorkOrders authorized to request a delegated lease grant of this
+      binding. Reciprocity with WorkOrderSpec.secretBindingRefs is required by policy
+      (openbao-delegated-lease AC2).
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
     owner: SecretBindingSpec

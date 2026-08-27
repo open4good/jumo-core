@@ -3,10 +3,10 @@ search:
   boost: 10.0
 ---
 
-# Class: ExecutionCellLease
+# Class: DelegatedSecretGrant
 
 
-_Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and contract digest._
+_One response-wrapped OpenBao child token grant issued for a lease and SecretBinding pair (openbao-delegated-lease). Never carries the token or accessor value itself -- only an envelope-encrypted accessor ciphertext and its digest, for restart-safe revocation and audit._
 
 
 
@@ -14,7 +14,7 @@ _Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and contr
 
 
 
-URI: [jumo:ExecutionCellLease](https://jumo.dev/schemas/jumo-v1/ExecutionCellLease)
+URI: [jumo:DelegatedSecretGrant](https://jumo.dev/schemas/jumo-v1/DelegatedSecretGrant)
 
 
 
@@ -22,25 +22,33 @@ URI: [jumo:ExecutionCellLease](https://jumo.dev/schemas/jumo-v1/ExecutionCellLea
 
 ```mermaid
  classDiagram
-    class ExecutionCellLease
-    click ExecutionCellLease href "../ExecutionCellLease/"
-      ExecutionCellLease : contractDigest
+    class DelegatedSecretGrant
+    click DelegatedSecretGrant href "../DelegatedSecretGrant/"
+      DelegatedSecretGrant : accessorCiphertext
 
-      ExecutionCellLease : delegatedSecretBindings
+      DelegatedSecretGrant : consumedAt
 
-      ExecutionCellLease : expiresAt
+      DelegatedSecretGrant : expiresAt
 
-      ExecutionCellLease : gitCommitSha
+      DelegatedSecretGrant : grantId
 
-      ExecutionCellLease : grantedAt
+      DelegatedSecretGrant : issuedAt
 
-      ExecutionCellLease : leaseId
+      DelegatedSecretGrant : leaseId
 
-      ExecutionCellLease : machineId
+      DelegatedSecretGrant : machineId
 
-      ExecutionCellLease : status
+      DelegatedSecretGrant : openBaoAccessorDigest
 
-      ExecutionCellLease : workOrderId
+      DelegatedSecretGrant : realmId
+
+      DelegatedSecretGrant : revocationReason
+
+      DelegatedSecretGrant : revokedAt
+
+      DelegatedSecretGrant : secretBindingRef
+
+      DelegatedSecretGrant : workOrderId
 
 
 ```
@@ -54,15 +62,19 @@ URI: [jumo:ExecutionCellLease](https://jumo.dev/schemas/jumo-v1/ExecutionCellLea
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
+| [grantId](grantId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [leaseId](leaseId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
+| [realmId](realmId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [machineId](machineId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [workOrderId](workOrderId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [gitCommitSha](gitCommitSha.md) | 1 <br/> [String](String.md) |  | direct |
-| [contractDigest](contractDigest.md) | 1 <br/> [String](String.md) |  | direct |
-| [status](status.md) | 1 <br/> [String](String.md) |  | direct |
-| [grantedAt](grantedAt.md) | 1 <br/> [String](String.md) |  | direct |
+| [secretBindingRef](secretBindingRef.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
+| [openBaoAccessorDigest](openBaoAccessorDigest.md) | 1 <br/> [String](String.md) |  | direct |
+| [accessorCiphertext](accessorCiphertext.md) | 1 <br/> [String](String.md) |  | direct |
+| [issuedAt](issuedAt.md) | 1 <br/> [String](String.md) |  | direct |
 | [expiresAt](expiresAt.md) | 1 <br/> [String](String.md) |  | direct |
-| [delegatedSecretBindings](delegatedSecretBindings.md) | * <br/> [String](String.md) |  | direct |
+| [consumedAt](consumedAt.md) | 0..1 <br/> [String](String.md) |  | direct |
+| [revokedAt](revokedAt.md) | 0..1 <br/> [String](String.md) |  | direct |
+| [revocationReason](revocationReason.md) | 0..1 <br/> [String](String.md) |  | direct |
 
 
 
@@ -89,8 +101,8 @@ URI: [jumo:ExecutionCellLease](https://jumo.dev/schemas/jumo-v1/ExecutionCellLea
 | jumo.state_authority | POSTGRES |
 | jumo.model_role | EXECUTION_HISTORY |
 | jumo.audience | MACHINE_MTLS |
-| jumo.sensitivity | INTERNAL |
-| jumo.boundary_eligible | True |
+| jumo.sensitivity | SECRET |
+| jumo.boundary_eligible | False |
 | jumo.schema_profiles | draft-2020-12,native-json-schema,prompted-json-validated |
 
 
@@ -108,8 +120,8 @@ URI: [jumo:ExecutionCellLease](https://jumo.dev/schemas/jumo-v1/ExecutionCellLea
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:ExecutionCellLease |
-| native | jumo:ExecutionCellLease |
+| self | jumo:DelegatedSecretGrant |
+| native | jumo:DelegatedSecretGrant |
 
 
 
@@ -124,7 +136,7 @@ URI: [jumo:ExecutionCellLease](https://jumo.dev/schemas/jumo-v1/ExecutionCellLea
 
 <details>
 ```yaml
-name: ExecutionCellLease
+name: DelegatedSecretGrant
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -137,21 +149,35 @@ annotations:
     value: MACHINE_MTLS
   jumo.sensitivity:
     tag: jumo.sensitivity
-    value: INTERNAL
+    value: SECRET
   jumo.boundary_eligible:
     tag: jumo.boundary_eligible
-    value: true
+    value: false
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA,
-  and contract digest.
+description: One response-wrapped OpenBao child token grant issued for a lease and
+  SecretBinding pair (openbao-delegated-lease). Never carries the token or accessor
+  value itself -- only an envelope-encrypted accessor ciphertext and its digest, for
+  restart-safe revocation and audit.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
+  grantId:
+    name: grantId
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: DelegatedSecretGrant
+    domain_of:
+    - DelegatedSecretGrant
+    - PlannedOperation
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    range: Identifier
+    required: true
   leaseId:
     name: leaseId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
@@ -164,10 +190,25 @@ attributes:
     - McpInvocationOutcome
     range: Identifier
     required: true
+  realmId:
+    name: realmId
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: DelegatedSecretGrant
+    domain_of:
+    - AttentionSource
+    - MachineEnrollmentRequest
+    - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
+    - SessionPlan
+    - ApiProblem
+    - PolicyInput
+    - ChangeSetProjection
+    range: Identifier
+    required: true
   machineId:
     name: machineId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
     - MachineHealthObservation
     - MachineEnrollmentRequest
@@ -186,7 +227,7 @@ attributes:
   workOrderId:
     name: workOrderId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
     - MachineAdminRequest
     - MachineAdminCommand
@@ -198,62 +239,51 @@ attributes:
     - CliInvocationResult
     range: Identifier
     required: true
-  gitCommitSha:
-    name: gitCommitSha
+  secretBindingRef:
+    name: secretBindingRef
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
-    - ExecutionCellLease
-    - CliInvocationRequest
-    range: string
-    required: true
-  contractDigest:
-    name: contractDigest
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: ExecutionCellLease
-    domain_of:
-    - ExecutionCellLease
-    range: string
-    required: true
-  status:
-    name: status
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
-    domain_of:
-    - DocumentFrontMatter
-    - ComplianceProfileSpec
-    - ControlAssessment
-    - MachineHealthObservation
-    - MachineEnrollmentResult
-    - MachineAdminResult
-    - WorkloadCommandResult
-    - MachineRuntimeInstallation
-    - ExecutionCellLease
-    - CliInstallationObservation
-    - CliInvocationResult
-    - ProviderQuotaObservation
-    - ProviderSessionBinding
-    - WorkerInvocation
+    - DelegatedSecretGrant
+    - McpRegistrySourceSpec
+    - ProviderAccountSpec
+    - WorkerModelAccess
     - ConnectorSessionBinding
-    - ConnectorTestResult
-    - ApiProblem
-    range: string
+    range: Identifier
     required: true
-  grantedAt:
-    name: grantedAt
+  openBaoAccessorDigest:
+    name: openBaoAccessorDigest
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
-    - ExecutionCellLease
+    - DelegatedSecretGrant
+    range: string
+    required: true
+  accessorCiphertext:
+    name: accessorCiphertext
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: DelegatedSecretGrant
+    domain_of:
+    - DelegatedSecretGrant
+    range: string
+    required: true
+  issuedAt:
+    name: issuedAt
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: DelegatedSecretGrant
+    domain_of:
+    - MachineAdminCommand
+    - WorkloadCommand
+    - DelegatedSecretGrant
     range: string
     required: true
   expiresAt:
     name: expiresAt
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
     - OrganizationRetentionHoldSpec
     - MachineEnrollmentChallenge
@@ -268,15 +298,30 @@ attributes:
     - EffectTestAuthorization
     range: string
     required: true
-  delegatedSecretBindings:
-    name: delegatedSecretBindings
+  consumedAt:
+    name: consumedAt
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
-    - ExecutionCellLease
+    - DelegatedSecretGrant
     range: string
-    multivalued: true
+  revokedAt:
+    name: revokedAt
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: DelegatedSecretGrant
+    domain_of:
+    - DelegatedSecretGrant
+    range: string
+  revocationReason:
+    name: revocationReason
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: DelegatedSecretGrant
+    domain_of:
+    - DelegatedSecretGrant
+    range: string
 
 ```
 </details>
@@ -285,7 +330,7 @@ attributes:
 
 <details>
 ```yaml
-name: ExecutionCellLease
+name: DelegatedSecretGrant
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -298,21 +343,35 @@ annotations:
     value: MACHINE_MTLS
   jumo.sensitivity:
     tag: jumo.sensitivity
-    value: INTERNAL
+    value: SECRET
   jumo.boundary_eligible:
     tag: jumo.boundary_eligible
-    value: true
+    value: false
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA,
-  and contract digest.
+description: One response-wrapped OpenBao child token grant issued for a lease and
+  SecretBinding pair (openbao-delegated-lease). Never carries the token or accessor
+  value itself -- only an envelope-encrypted accessor ciphertext and its digest, for
+  restart-safe revocation and audit.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
+  grantId:
+    name: grantId
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: DelegatedSecretGrant
+    domain_of:
+    - DelegatedSecretGrant
+    - PlannedOperation
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    range: Identifier
+    required: true
   leaseId:
     name: leaseId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
@@ -325,10 +384,25 @@ attributes:
     - McpInvocationOutcome
     range: Identifier
     required: true
+  realmId:
+    name: realmId
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: DelegatedSecretGrant
+    domain_of:
+    - AttentionSource
+    - MachineEnrollmentRequest
+    - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
+    - SessionPlan
+    - ApiProblem
+    - PolicyInput
+    - ChangeSetProjection
+    range: Identifier
+    required: true
   machineId:
     name: machineId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
     - MachineHealthObservation
     - MachineEnrollmentRequest
@@ -347,7 +421,7 @@ attributes:
   workOrderId:
     name: workOrderId
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
     - MachineAdminRequest
     - MachineAdminCommand
@@ -359,62 +433,51 @@ attributes:
     - CliInvocationResult
     range: Identifier
     required: true
-  gitCommitSha:
-    name: gitCommitSha
+  secretBindingRef:
+    name: secretBindingRef
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
-    - ExecutionCellLease
-    - CliInvocationRequest
-    range: string
-    required: true
-  contractDigest:
-    name: contractDigest
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
-    owner: ExecutionCellLease
-    domain_of:
-    - ExecutionCellLease
-    range: string
-    required: true
-  status:
-    name: status
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
-    domain_of:
-    - DocumentFrontMatter
-    - ComplianceProfileSpec
-    - ControlAssessment
-    - MachineHealthObservation
-    - MachineEnrollmentResult
-    - MachineAdminResult
-    - WorkloadCommandResult
-    - MachineRuntimeInstallation
-    - ExecutionCellLease
-    - CliInstallationObservation
-    - CliInvocationResult
-    - ProviderQuotaObservation
-    - ProviderSessionBinding
-    - WorkerInvocation
+    - DelegatedSecretGrant
+    - McpRegistrySourceSpec
+    - ProviderAccountSpec
+    - WorkerModelAccess
     - ConnectorSessionBinding
-    - ConnectorTestResult
-    - ApiProblem
-    range: string
+    range: Identifier
     required: true
-  grantedAt:
-    name: grantedAt
+  openBaoAccessorDigest:
+    name: openBaoAccessorDigest
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
-    - ExecutionCellLease
+    - DelegatedSecretGrant
+    range: string
+    required: true
+  accessorCiphertext:
+    name: accessorCiphertext
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: DelegatedSecretGrant
+    domain_of:
+    - DelegatedSecretGrant
+    range: string
+    required: true
+  issuedAt:
+    name: issuedAt
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    owner: DelegatedSecretGrant
+    domain_of:
+    - MachineAdminCommand
+    - WorkloadCommand
+    - DelegatedSecretGrant
     range: string
     required: true
   expiresAt:
     name: expiresAt
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
     - OrganizationRetentionHoldSpec
     - MachineEnrollmentChallenge
@@ -429,15 +492,30 @@ attributes:
     - EffectTestAuthorization
     range: string
     required: true
-  delegatedSecretBindings:
-    name: delegatedSecretBindings
+  consumedAt:
+    name: consumedAt
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: ExecutionCellLease
+    owner: DelegatedSecretGrant
     domain_of:
-    - ExecutionCellLease
+    - DelegatedSecretGrant
     range: string
-    multivalued: true
+  revokedAt:
+    name: revokedAt
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: DelegatedSecretGrant
+    domain_of:
+    - DelegatedSecretGrant
+    range: string
+  revocationReason:
+    name: revocationReason
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: DelegatedSecretGrant
+    domain_of:
+    - DelegatedSecretGrant
+    range: string
 
 ```
 </details></div>

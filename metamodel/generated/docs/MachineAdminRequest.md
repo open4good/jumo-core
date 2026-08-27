@@ -170,6 +170,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   playbookRef:
@@ -203,6 +204,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - CliInvocationEvent
     - CliInvocationResult
@@ -263,6 +265,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   playbookRef:
@@ -296,6 +299,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - CliInvocationEvent
     - CliInvocationResult

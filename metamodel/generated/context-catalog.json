@@ -1917,6 +1917,13 @@
           "cardinality": "MANY",
           "required": false,
           "description": ""
+        },
+        {
+          "slotName": "allowedWorkOrderRefs",
+          "targetKind": "WorkOrder",
+          "cardinality": "MANY",
+          "required": false,
+          "description": "WorkOrders authorized to request a delegated lease grant of this binding. Reciprocity with WorkOrderSpec.secretBindingRefs is required by policy (openbao-delegated-lease AC2)."
         }
       ],
       "incoming": [
@@ -1949,6 +1956,12 @@
           "slotName": "oauthSecretBindingRef",
           "cardinality": "ONE",
           "description": ""
+        },
+        {
+          "fromKind": "WorkOrder",
+          "slotName": "secretBindingRefs",
+          "cardinality": "MANY",
+          "description": "SecretBindings this WorkOrder is authorized to request a delegated lease grant for. Empty by default. Reciprocity with SecretBindingSpec.allowedWorkOrderRefs is required by policy (openbao-delegated-lease AC2)."
         },
         {
           "fromKind": "WorkerSubstrate",
@@ -2082,6 +2095,13 @@
           "description": "The role that checks the result against the criteria below. May not be the producer; resolves through teamSpecRef to prove a different independence group (Rego)."
         },
         {
+          "slotName": "secretBindingRefs",
+          "targetKind": "SecretBinding",
+          "cardinality": "MANY",
+          "required": false,
+          "description": "SecretBindings this WorkOrder is authorized to request a delegated lease grant for. Empty by default. Reciprocity with SecretBindingSpec.allowedWorkOrderRefs is required by policy (openbao-delegated-lease AC2)."
+        },
+        {
           "slotName": "dependsOnWorkOrderRefs",
           "targetKind": "WorkOrder",
           "cardinality": "MANY",
@@ -2115,6 +2135,12 @@
           "slotName": "workOrderRef",
           "cardinality": "ONE",
           "description": ""
+        },
+        {
+          "fromKind": "SecretBinding",
+          "slotName": "allowedWorkOrderRefs",
+          "cardinality": "MANY",
+          "description": "WorkOrders authorized to request a delegated lease grant of this binding. Reciprocity with WorkOrderSpec.secretBindingRefs is required by policy (openbao-delegated-lease AC2)."
         },
         {
           "fromKind": "WorkOrder",

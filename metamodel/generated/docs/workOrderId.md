@@ -24,6 +24,7 @@ URI: [jumo:workOrderId](https://jumo.dev/schemas/jumo-v1/workOrderId)
 | [MachineAdminCommand](MachineAdminCommand.md) | Ansible playbook execution command sent to an enrolled machine |  no  |
 | [WorkloadCommand](WorkloadCommand.md) | Typed workload command claimed by pull from an ExecutionMachine, distinct fro... |  no  |
 | [ExecutionCellLease](ExecutionCellLease.md) | Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and con... |  no  |
+| [DelegatedSecretGrant](DelegatedSecretGrant.md) | One response-wrapped OpenBao child token grant issued for a lease and SecretB... |  no  |
 | [CliInvocationRequest](CliInvocationRequest.md) | Structured WorkOrder execution invocation dispatched to a CLI worker containe... |  no  |
 | [CliInvocationEvent](CliInvocationEvent.md) | Streaming event produced during an active CLI invocation |  no  |
 | [CliInvocationResult](CliInvocationResult.md) | Sanitized final output payload, exit code, and evidence digest from a CLI exe... |  no  |
@@ -40,7 +41,7 @@ URI: [jumo:workOrderId](https://jumo.dev/schemas/jumo-v1/workOrderId)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [MachineAdminRequest](MachineAdminRequest.md), [MachineAdminCommand](MachineAdminCommand.md), [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [CliInvocationRequest](CliInvocationRequest.md), [CliInvocationEvent](CliInvocationEvent.md), [CliInvocationResult](CliInvocationResult.md) |
+| Domain Of | [MachineAdminRequest](MachineAdminRequest.md), [MachineAdminCommand](MachineAdminCommand.md), [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [DelegatedSecretGrant](DelegatedSecretGrant.md), [CliInvocationRequest](CliInvocationRequest.md), [CliInvocationEvent](CliInvocationEvent.md), [CliInvocationResult](CliInvocationResult.md) |
 
 ### Cardinality and Requirements
 
@@ -83,6 +84,7 @@ domain_of:
 - MachineAdminCommand
 - WorkloadCommand
 - ExecutionCellLease
+- DelegatedSecretGrant
 - CliInvocationRequest
 - CliInvocationEvent
 - CliInvocationResult

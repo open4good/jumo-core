@@ -1637,6 +1637,13 @@ classes:
         range: ContractReference
         multivalued: true
         inlined_as_list: true
+      allowedWorkOrderRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+        description: WorkOrders authorized to request a delegated lease grant of this binding.
+          Reciprocity with WorkOrderSpec.secretBindingRefs is required by policy
+          (openbao-delegated-lease AC2).
       injection:
         range: SecretInjection
         required: true

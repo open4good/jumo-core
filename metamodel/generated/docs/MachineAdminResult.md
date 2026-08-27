@@ -168,6 +168,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   exitCode:
@@ -296,6 +297,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   exitCode:

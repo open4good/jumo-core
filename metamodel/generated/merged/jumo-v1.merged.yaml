@@ -20773,6 +20773,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -22386,6 +22387,21 @@ classes:
         range: string
         multivalued: true
         pattern: ^.{1,}$
+      secretBindingRefs:
+        name: secretBindingRefs
+        description: SecretBindings this WorkOrder is authorized to request a delegated
+          lease grant for. Empty by default. Reciprocity with SecretBindingSpec.allowedWorkOrderRefs
+          is required by policy (openbao-delegated-lease AC2).
+        from_schema: https://jumo.dev/schemas/work
+        owner: WorkOrderSpec
+        domain_of:
+        - WorkOrderSpec
+        - ConnectorOperation
+        - McpBundleOperation
+        range: ContractReference
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
       ring:
         name: ring
         description: 'The ring this work acts on. RING_0_ROOT_OF_TRUST exclusion (source
@@ -32922,6 +32938,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - DelegatedSecretGrant
         - SessionPlan
         - ApiProblem
         - PolicyInput
@@ -38254,6 +38271,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       status:
@@ -38357,6 +38375,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       realmId:
@@ -38367,6 +38386,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - DelegatedSecretGrant
         - SessionPlan
         - ApiProblem
         - PolicyInput
@@ -38437,6 +38457,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - DelegatedSecretGrant
         - SessionPlan
         - ApiProblem
         - PolicyInput
@@ -38459,6 +38480,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       bootstrapDigest:
@@ -38479,6 +38501,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -38526,6 +38549,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       certificatePem:
@@ -39099,6 +39123,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       playbookRef:
@@ -39130,6 +39155,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - CliInvocationEvent
         - CliInvocationResult
@@ -39192,6 +39218,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       workOrderId:
@@ -39203,6 +39230,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - CliInvocationEvent
         - CliInvocationResult
@@ -39265,6 +39293,7 @@ classes:
         domain_of:
         - MachineAdminCommand
         - WorkloadCommand
+        - DelegatedSecretGrant
         range: string
         required: true
       expiresAt:
@@ -39277,6 +39306,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -39343,6 +39373,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       exitCode:
@@ -39462,6 +39493,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       leaseId:
@@ -39471,6 +39503,7 @@ classes:
         domain_of:
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
@@ -39496,6 +39529,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - CliInvocationEvent
         - CliInvocationResult
@@ -39525,6 +39559,7 @@ classes:
         domain_of:
         - MachineAdminCommand
         - WorkloadCommand
+        - DelegatedSecretGrant
         range: string
         required: true
       expiresAt:
@@ -39537,6 +39572,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -39596,6 +39632,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       status:
@@ -39701,6 +39738,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       kind:
@@ -39882,6 +39920,7 @@ classes:
         domain_of:
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
@@ -39906,6 +39945,7 @@ classes:
         - WorkloadCommandResult
         - MachineRuntimeInstallation
         - ExecutionCellLease
+        - DelegatedSecretGrant
         range: Identifier
         required: true
       workOrderId:
@@ -39917,6 +39957,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - CliInvocationEvent
         - CliInvocationResult
@@ -39981,6 +40022,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -39996,6 +40038,186 @@ classes:
         - ExecutionCellLease
         range: string
         multivalued: true
+  DelegatedSecretGrant:
+    name: DelegatedSecretGrant
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: POSTGRES
+      jumo.model_role:
+        tag: jumo.model_role
+        value: EXECUTION_HISTORY
+      jumo.audience:
+        tag: jumo.audience
+        value: MACHINE_MTLS
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: SECRET
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: false
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: One response-wrapped OpenBao child token grant issued for a lease
+      and SecretBinding pair (openbao-delegated-lease). Never carries the token or
+      accessor value itself -- only an envelope-encrypted accessor ciphertext and
+      its digest, for restart-safe revocation and audit.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      grantId:
+        name: grantId
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - DelegatedSecretGrant
+        - PlannedOperation
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        range: Identifier
+        required: true
+      leaseId:
+        name: leaseId
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - WorkloadCommand
+        - ExecutionCellLease
+        - DelegatedSecretGrant
+        - CliInvocationRequest
+        - SessionPlanRequest
+        - SessionPlan
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
+        range: Identifier
+        required: true
+      realmId:
+        name: realmId
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - AttentionSource
+        - MachineEnrollmentRequest
+        - MachineEnrollmentChallenge
+        - DelegatedSecretGrant
+        - SessionPlan
+        - ApiProblem
+        - PolicyInput
+        - ChangeSetProjection
+        range: Identifier
+        required: true
+      machineId:
+        name: machineId
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - MachineHealthObservation
+        - MachineEnrollmentRequest
+        - MachineEnrollmentChallenge
+        - MachineEnrollmentResult
+        - MachineAdminRequest
+        - MachineAdminCommand
+        - MachineAdminResult
+        - WorkloadCommand
+        - WorkloadCommandResult
+        - MachineRuntimeInstallation
+        - ExecutionCellLease
+        - DelegatedSecretGrant
+        range: Identifier
+        required: true
+      workOrderId:
+        name: workOrderId
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - MachineAdminRequest
+        - MachineAdminCommand
+        - WorkloadCommand
+        - ExecutionCellLease
+        - DelegatedSecretGrant
+        - CliInvocationRequest
+        - CliInvocationEvent
+        - CliInvocationResult
+        range: Identifier
+        required: true
+      secretBindingRef:
+        name: secretBindingRef
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - DelegatedSecretGrant
+        - McpRegistrySourceSpec
+        - ProviderAccountSpec
+        - WorkerModelAccess
+        - ConnectorSessionBinding
+        range: Identifier
+        required: true
+      openBaoAccessorDigest:
+        name: openBaoAccessorDigest
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - DelegatedSecretGrant
+        range: string
+        required: true
+      accessorCiphertext:
+        name: accessorCiphertext
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - DelegatedSecretGrant
+        range: string
+        required: true
+      issuedAt:
+        name: issuedAt
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - MachineAdminCommand
+        - WorkloadCommand
+        - DelegatedSecretGrant
+        range: string
+        required: true
+      expiresAt:
+        name: expiresAt
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - OrganizationRetentionHoldSpec
+        - MachineEnrollmentChallenge
+        - MachineAdminCommand
+        - WorkloadCommand
+        - ExecutionCellLease
+        - DelegatedSecretGrant
+        - ProviderSessionBinding
+        - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
+        - ConnectorSessionBinding
+        - EffectTestAuthorization
+        range: string
+        required: true
+      consumedAt:
+        name: consumedAt
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - DelegatedSecretGrant
+        range: string
+      revokedAt:
+        name: revokedAt
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - DelegatedSecretGrant
+        range: string
+      revocationReason:
+        name: revocationReason
+        from_schema: https://jumo.dev/schemas/execution
+        owner: DelegatedSecretGrant
+        domain_of:
+        - DelegatedSecretGrant
+        range: string
   CliToolDefinition:
     name: CliToolDefinition
     annotations:
@@ -41239,6 +41461,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - CliInvocationEvent
         - CliInvocationResult
@@ -41251,6 +41474,7 @@ classes:
         domain_of:
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
@@ -41390,6 +41614,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - CliInvocationEvent
         - CliInvocationResult
@@ -41463,6 +41688,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - CliInvocationEvent
         - CliInvocationResult
@@ -42337,6 +42563,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: McpRegistrySourceSpec
         domain_of:
+        - DelegatedSecretGrant
         - McpRegistrySourceSpec
         - ProviderAccountSpec
         - WorkerModelAccess
@@ -44375,6 +44602,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: ConnectorOperation
         domain_of:
+        - WorkOrderSpec
         - ConnectorOperation
         - McpBundleOperation
         range: ContractReference
@@ -46195,6 +46423,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: McpBundleOperation
         domain_of:
+        - WorkOrderSpec
         - ConnectorOperation
         - McpBundleOperation
         range: ContractReference
@@ -48153,6 +48382,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -48853,6 +49083,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -49412,6 +49643,19 @@ classes:
         multivalued: true
       allowedWorkerSubstrateRefs:
         name: allowedWorkerSubstrateRefs
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SecretBindingSpec
+        domain_of:
+        - SecretBindingSpec
+        range: ContractReference
+        multivalued: true
+        inlined: true
+        inlined_as_list: true
+      allowedWorkOrderRefs:
+        name: allowedWorkOrderRefs
+        description: WorkOrders authorized to request a delegated lease grant of this
+          binding. Reciprocity with WorkOrderSpec.secretBindingRefs is required by
+          policy (openbao-delegated-lease AC2).
         from_schema: https://jumo.dev/schemas/integration
         owner: SecretBindingSpec
         domain_of:
@@ -51146,6 +51390,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: ProviderAccountSpec
         domain_of:
+        - DelegatedSecretGrant
         - McpRegistrySourceSpec
         - ProviderAccountSpec
         - WorkerModelAccess
@@ -53123,6 +53368,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: WorkerModelAccess
         domain_of:
+        - DelegatedSecretGrant
         - McpRegistrySourceSpec
         - ProviderAccountSpec
         - WorkerModelAccess
@@ -53610,6 +53856,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: PlannedOperation
         domain_of:
+        - DelegatedSecretGrant
         - PlannedOperation
         - McpInvocationAuthorizationRequest
         - McpInvocationAuthorizationReceipt
@@ -53709,6 +53956,7 @@ classes:
         domain_of:
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
@@ -53770,6 +54018,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - DelegatedSecretGrant
         - SessionPlan
         - ApiProblem
         - PolicyInput
@@ -53783,6 +54032,7 @@ classes:
         domain_of:
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
@@ -53881,6 +54131,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: McpInvocationAuthorizationRequest
         domain_of:
+        - DelegatedSecretGrant
         - PlannedOperation
         - McpInvocationAuthorizationRequest
         - McpInvocationAuthorizationReceipt
@@ -53893,6 +54144,7 @@ classes:
         domain_of:
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
@@ -53987,6 +54239,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: McpInvocationAuthorizationReceipt
         domain_of:
+        - DelegatedSecretGrant
         - PlannedOperation
         - McpInvocationAuthorizationRequest
         - McpInvocationAuthorizationReceipt
@@ -53999,6 +54252,7 @@ classes:
         domain_of:
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
@@ -54045,6 +54299,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -54147,6 +54402,7 @@ classes:
         domain_of:
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
@@ -56497,6 +56753,7 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: ConnectorSessionBinding
         domain_of:
+        - DelegatedSecretGrant
         - McpRegistrySourceSpec
         - ProviderAccountSpec
         - WorkerModelAccess
@@ -56545,6 +56802,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -56880,6 +57138,7 @@ classes:
         - MachineAdminCommand
         - WorkloadCommand
         - ExecutionCellLease
+        - DelegatedSecretGrant
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
         - McpInvocationAuthorizationReceipt
@@ -60005,6 +60264,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - DelegatedSecretGrant
         - SessionPlan
         - ApiProblem
         - PolicyInput
@@ -60066,6 +60326,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - DelegatedSecretGrant
         - SessionPlan
         - ApiProblem
         - PolicyInput
@@ -60278,6 +60539,7 @@ classes:
         - AttentionSource
         - MachineEnrollmentRequest
         - MachineEnrollmentChallenge
+        - DelegatedSecretGrant
         - SessionPlan
         - ApiProblem
         - PolicyInput

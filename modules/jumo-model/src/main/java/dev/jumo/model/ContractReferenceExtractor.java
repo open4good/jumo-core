@@ -1185,6 +1185,11 @@ public final class ContractReferenceExtractor {
                 if (r != null) refs.add(new OutgoingReference("allowedWorkerSubstrateRefs", r));
             }
         }
+        if (obj.allowedWorkOrderRefs() != null) {
+            for (ContractReference r : obj.allowedWorkOrderRefs()) {
+                if (r != null) refs.add(new OutgoingReference("allowedWorkOrderRefs", r));
+            }
+        }
     }
     public static void extractFromSelfDescription(SelfDescription obj, List<OutgoingReference> refs) {
         if (obj == null) return;
@@ -1249,6 +1254,11 @@ public final class ContractReferenceExtractor {
         }
         if (obj.verifierRoleDefinitionRef() != null) {
             refs.add(new OutgoingReference("verifierRoleDefinitionRef", obj.verifierRoleDefinitionRef()));
+        }
+        if (obj.secretBindingRefs() != null) {
+            for (ContractReference r : obj.secretBindingRefs()) {
+                if (r != null) refs.add(new OutgoingReference("secretBindingRefs", r));
+            }
         }
         if (obj.dependsOnWorkOrderRefs() != null) {
             for (ContractReference r : obj.dependsOnWorkOrderRefs()) {

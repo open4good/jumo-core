@@ -102,6 +102,7 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [WorkOrderSpec](WorkOrderSpec.md) | [teamSpecRef](teamSpecRef.md) | range | [ContractReference](ContractReference.md) |
 | [WorkOrderSpec](WorkOrderSpec.md) | [projectRef](projectRef.md) | range | [ContractReference](ContractReference.md) |
 | [WorkOrderSpec](WorkOrderSpec.md) | [verifierRoleDefinitionRef](verifierRoleDefinitionRef.md) | range | [ContractReference](ContractReference.md) |
+| [WorkOrderSpec](WorkOrderSpec.md) | [secretBindingRefs](secretBindingRefs.md) | range | [ContractReference](ContractReference.md) |
 | [WorkOrderSpec](WorkOrderSpec.md) | [dependsOnWorkOrderRefs](dependsOnWorkOrderRefs.md) | range | [ContractReference](ContractReference.md) |
 | [WorkOrderSpec](WorkOrderSpec.md) | [parentWorkOrderRef](parentWorkOrderRef.md) | range | [ContractReference](ContractReference.md) |
 | [WorkOrderSpec](WorkOrderSpec.md) | [resourceBudgetRef](resourceBudgetRef.md) | range | [ContractReference](ContractReference.md) |
@@ -191,6 +192,7 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [SecretBindingSpec](SecretBindingSpec.md) | [allowedRemoteMcpServiceRefs](allowedRemoteMcpServiceRefs.md) | range | [ContractReference](ContractReference.md) |
 | [SecretBindingSpec](SecretBindingSpec.md) | [allowedConnectorDefinitionRefs](allowedConnectorDefinitionRefs.md) | range | [ContractReference](ContractReference.md) |
 | [SecretBindingSpec](SecretBindingSpec.md) | [allowedWorkerSubstrateRefs](allowedWorkerSubstrateRefs.md) | range | [ContractReference](ContractReference.md) |
+| [SecretBindingSpec](SecretBindingSpec.md) | [allowedWorkOrderRefs](allowedWorkOrderRefs.md) | range | [ContractReference](ContractReference.md) |
 | [FederatedPeerSpec](FederatedPeerSpec.md) | [federationProfileRefs](federationProfileRefs.md) | range | [ContractReference](ContractReference.md) |
 | [ProviderAccountSpec](ProviderAccountSpec.md) | [secretBindingRef](secretBindingRef.md) | range | [ContractReference](ContractReference.md) |
 | [ProviderAccountSpec](ProviderAccountSpec.md) | [alternativeProviderAccountRefs](alternativeProviderAccountRefs.md) | range | [ContractReference](ContractReference.md) |

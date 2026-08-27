@@ -369,6 +369,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: McpBundleOperation
     domain_of:
+    - WorkOrderSpec
     - ConnectorOperation
     - McpBundleOperation
     range: ContractReference
@@ -594,6 +595,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: McpBundleOperation
     domain_of:
+    - WorkOrderSpec
     - ConnectorOperation
     - McpBundleOperation
     range: ContractReference

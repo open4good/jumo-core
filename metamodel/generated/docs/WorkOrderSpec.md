@@ -138,6 +138,17 @@ URI: [jumo:WorkOrderSpec](https://jumo.dev/schemas/jumo-v1/WorkOrderSpec)
 
       WorkOrderSpec : roadmapRef
 
+      WorkOrderSpec : secretBindingRefs
+
+
+
+
+
+        WorkOrderSpec --> "*" ContractReference : secretBindingRefs
+        click ContractReference href "../ContractReference/"
+
+
+
       WorkOrderSpec : sourceRefs
 
       WorkOrderSpec : specification
@@ -214,6 +225,7 @@ URI: [jumo:WorkOrderSpec](https://jumo.dev/schemas/jumo-v1/WorkOrderSpec)
 | [acceptanceCriteria](acceptanceCriteria.md) | * <br/> [AcceptanceCriterion](AcceptanceCriterion.md) | What the result is checked against | direct |
 | [specification](specification.md) | * <br/> [WorkOrderSpecification](WorkOrderSpecification.md) | Long-form design lots too large for purpose/condition/acceptanceCriteria -- M... | direct |
 | [pathScope](pathScope.md) | * <br/> [String](String.md) | Glob patterns the work may touch | direct |
+| [secretBindingRefs](secretBindingRefs.md) | * <br/> [ContractReference](ContractReference.md) | SecretBindings this WorkOrder is authorized to request a delegated lease gran... | direct |
 | [ring](ring.md) | 0..1 <br/> [Ring](Ring.md) | The ring this work acts on | direct |
 | [dependsOnWorkOrderRefs](dependsOnWorkOrderRefs.md) | * <br/> [ContractReference](ContractReference.md) | WorkOrders that must be COMPLETED before this one starts | direct |
 | [parentWorkOrderRef](parentWorkOrderRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) | The larger item this decomposes | direct |
@@ -502,6 +514,22 @@ attributes:
     range: string
     multivalued: true
     pattern: ^.{1,}$
+  secretBindingRefs:
+    name: secretBindingRefs
+    description: SecretBindings this WorkOrder is authorized to request a delegated
+      lease grant for. Empty by default. Reciprocity with SecretBindingSpec.allowedWorkOrderRefs
+      is required by policy (openbao-delegated-lease AC2).
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: WorkOrderSpec
+    domain_of:
+    - WorkOrderSpec
+    - ConnectorOperation
+    - McpBundleOperation
+    range: ContractReference
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
   ring:
     name: ring
     description: 'The ring this work acts on. RING_0_ROOT_OF_TRUST exclusion (source
@@ -830,6 +858,22 @@ attributes:
     range: string
     multivalued: true
     pattern: ^.{1,}$
+  secretBindingRefs:
+    name: secretBindingRefs
+    description: SecretBindings this WorkOrder is authorized to request a delegated
+      lease grant for. Empty by default. Reciprocity with SecretBindingSpec.allowedWorkOrderRefs
+      is required by policy (openbao-delegated-lease AC2).
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: WorkOrderSpec
+    domain_of:
+    - WorkOrderSpec
+    - ConnectorOperation
+    - McpBundleOperation
+    range: ContractReference
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
   ring:
     name: ring
     description: 'The ring this work acts on. RING_0_ROOT_OF_TRUST exclusion (source

@@ -349,6 +349,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt
@@ -565,6 +566,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt

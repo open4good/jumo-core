@@ -134,6 +134,7 @@ attributes:
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
@@ -190,6 +191,7 @@ attributes:
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan

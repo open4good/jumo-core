@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.List;
 import java.util.List;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * anyOf(allowedBundleRefs, allowedRemoteServiceRefs, allowedConnectorRefs, allowedWorkerSubstrateRefs) moves to Rego.
  */
-public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecycle, String runtimeRef, List<ContractReference> allowedMcpBundleRefs, List<ContractReference> allowedRemoteMcpServiceRefs, List<ContractReference> allowedConnectorDefinitionRefs, List<String> allowedOperationRefs, List<ContractReference> allowedWorkerSubstrateRefs, SecretInjection injection, SecretRotation rotation)  {
+public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecycle, String runtimeRef, List<ContractReference> allowedMcpBundleRefs, List<ContractReference> allowedRemoteMcpServiceRefs, List<ContractReference> allowedConnectorDefinitionRefs, List<String> allowedOperationRefs, List<ContractReference> allowedWorkerSubstrateRefs, List<ContractReference> allowedWorkOrderRefs, SecretInjection injection, SecretRotation rotation)  {
 
     public static Builder builder() {
         return new Builder();
@@ -28,6 +29,7 @@ public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecy
         private List<ContractReference> allowedConnectorDefinitionRefs = List.of();
         private List<String> allowedOperationRefs = List.of();
         private List<ContractReference> allowedWorkerSubstrateRefs = List.of();
+        private List<ContractReference> allowedWorkOrderRefs = List.of();
         private SecretInjection injection = null;
         private SecretRotation rotation = null;
 
@@ -72,6 +74,11 @@ public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecy
             return this;
         }
 
+        public Builder allowedWorkOrderRefs(List<ContractReference> allowedWorkOrderRefs) {
+            this.allowedWorkOrderRefs = Objects.requireNonNull(allowedWorkOrderRefs);
+            return this;
+        }
+
         public Builder injection(SecretInjection injection) {
             this.injection = Objects.requireNonNull(injection);
             return this;
@@ -83,7 +90,7 @@ public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecy
         }
 
     public SecretBindingSpec build() {
-            return new SecretBindingSpec(ownerRealm, lifecycle, runtimeRef, allowedMcpBundleRefs, allowedRemoteMcpServiceRefs, allowedConnectorDefinitionRefs, allowedOperationRefs, allowedWorkerSubstrateRefs, injection, rotation);
+            return new SecretBindingSpec(ownerRealm, lifecycle, runtimeRef, allowedMcpBundleRefs, allowedRemoteMcpServiceRefs, allowedConnectorDefinitionRefs, allowedOperationRefs, allowedWorkerSubstrateRefs, allowedWorkOrderRefs, injection, rotation);
         }
     }
 }

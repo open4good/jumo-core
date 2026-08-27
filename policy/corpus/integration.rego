@@ -582,6 +582,78 @@ deny contains corpus.violation("corpus.secret.operation", document, message) if 
 	message := sprintf("spec.allowedOperationRefs: no allowed endpoint declares operation %q", [operation_ref])
 }
 
+# openbao-delegated-lease AC2: WorkOrder.secretBindingRefs <-> SecretBinding.allowedWorkOrderRefs
+# reciprocity, same-Realm and lifecycle-enabled. WorkOrder carries no ownerRealm attribute (unlike
+# SecretBinding), so its Realm is the first label of its Realm-owned namespace (e.g.
+# "home.jumo.dev" -> "home"), the same convention jumo-gof's realm-templates/*.yml declares.
+work_order_realm(document) := split(corpus.namespace(document), ".")[0]
+
+work_order_secret_binding_refs contains {"document": document, "identifier": corpus.ref_id(ref)} if {
+	some document in corpus.documents
+	document.kind == "WorkOrder"
+	some ref in object.get(corpus.spec(document), "secretBindingRefs", [])
+}
+
+deny contains corpus.violation("corpus.secret.work-order-kind", document, message) if {
+	some entry in work_order_secret_binding_refs
+	document := entry.document
+	identifier := entry.identifier
+	not identifier in corpus.ids_of_kind("SecretBinding")
+	message := sprintf("spec.secretBindingRefs: no SecretBinding declares id %q", [identifier])
+}
+
+deny contains corpus.violation("corpus.secret.work-order-realm", document, message) if {
+	some entry in work_order_secret_binding_refs
+	document := entry.document
+	identifier := entry.identifier
+	identifier in corpus.ids_of_kind("SecretBinding")
+	binding := corpus.document_by_kind_id("SecretBinding", identifier)
+	work_order_realm(document) != corpus.owner_realm(binding)
+	message := sprintf("spec.secretBindingRefs: SecretBinding %q belongs to another Realm", [identifier])
+}
+
+deny contains corpus.violation("corpus.secret.work-order-lifecycle", document, message) if {
+	some entry in work_order_secret_binding_refs
+	document := entry.document
+	identifier := entry.identifier
+	identifier in corpus.ids_of_kind("SecretBinding")
+	binding := corpus.document_by_kind_id("SecretBinding", identifier)
+	object.get(corpus.spec(binding), "lifecycle", "") != "ENABLED"
+	message := sprintf("spec.secretBindingRefs: SecretBinding %q is not ENABLED", [identifier])
+}
+
+deny contains corpus.violation("corpus.secret.work-order-reciprocity", document, message) if {
+	some entry in work_order_secret_binding_refs
+	document := entry.document
+	identifier := entry.identifier
+	identifier in corpus.ids_of_kind("SecretBinding")
+	binding := corpus.document_by_kind_id("SecretBinding", identifier)
+	allowed := {corpus.ref_id(ref) | some ref in object.get(corpus.spec(binding), "allowedWorkOrderRefs", [])}
+	not corpus.id(document) in allowed
+	message := sprintf("spec.secretBindingRefs: SecretBinding %q does not reciprocate in allowedWorkOrderRefs", [identifier])
+}
+
+deny contains corpus.violation("corpus.secret.binding-work-order-kind", document, message) if {
+	some document in corpus.documents
+	document.kind == "SecretBinding"
+	some ref in object.get(corpus.spec(document), "allowedWorkOrderRefs", [])
+	wo_id := corpus.ref_id(ref)
+	not wo_id in corpus.ids_of_kind("WorkOrder")
+	message := sprintf("spec.allowedWorkOrderRefs: no WorkOrder declares id %q", [wo_id])
+}
+
+deny contains corpus.violation("corpus.secret.binding-work-order-reciprocity", document, message) if {
+	some document in corpus.documents
+	document.kind == "SecretBinding"
+	some ref in object.get(corpus.spec(document), "allowedWorkOrderRefs", [])
+	wo_id := corpus.ref_id(ref)
+	wo_id in corpus.ids_of_kind("WorkOrder")
+	wo := corpus.document_by_kind_id("WorkOrder", wo_id)
+	allowed := {corpus.ref_id(ref2) | some ref2 in object.get(corpus.spec(wo), "secretBindingRefs", [])}
+	not corpus.id(document) in allowed
+	message := sprintf("spec.allowedWorkOrderRefs: WorkOrder %q does not reciprocate in secretBindingRefs", [wo_id])
+}
+
 deny contains corpus.violation("corpus.execution-cell.connector", document, message) if {
 	some document in corpus.documents
 	document.kind == "ExecutionCell"

@@ -31,6 +31,7 @@ URI: [jumo:machineId](https://jumo.dev/schemas/jumo-v1/machineId)
 | [WorkloadCommandResult](WorkloadCommandResult.md) | Terminal outcome of a claimed WorkloadCommand, sanitized before it leaves the... |  no  |
 | [MachineRuntimeInstallation](MachineRuntimeInstallation.md) | Observed runtime installation (CLI or connector) on a target machine |  no  |
 | [ExecutionCellLease](ExecutionCellLease.md) | Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and con... |  no  |
+| [DelegatedSecretGrant](DelegatedSecretGrant.md) | One response-wrapped OpenBao child token grant issued for a lease and SecretB... |  no  |
 
 
 
@@ -44,7 +45,7 @@ URI: [jumo:machineId](https://jumo.dev/schemas/jumo-v1/machineId)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [MachineHealthObservation](MachineHealthObservation.md), [MachineEnrollmentRequest](MachineEnrollmentRequest.md), [MachineEnrollmentChallenge](MachineEnrollmentChallenge.md), [MachineEnrollmentResult](MachineEnrollmentResult.md), [MachineAdminRequest](MachineAdminRequest.md), [MachineAdminCommand](MachineAdminCommand.md), [MachineAdminResult](MachineAdminResult.md), [WorkloadCommand](WorkloadCommand.md), [WorkloadCommandResult](WorkloadCommandResult.md), [MachineRuntimeInstallation](MachineRuntimeInstallation.md), [ExecutionCellLease](ExecutionCellLease.md) |
+| Domain Of | [MachineHealthObservation](MachineHealthObservation.md), [MachineEnrollmentRequest](MachineEnrollmentRequest.md), [MachineEnrollmentChallenge](MachineEnrollmentChallenge.md), [MachineEnrollmentResult](MachineEnrollmentResult.md), [MachineAdminRequest](MachineAdminRequest.md), [MachineAdminCommand](MachineAdminCommand.md), [MachineAdminResult](MachineAdminResult.md), [WorkloadCommand](WorkloadCommand.md), [WorkloadCommandResult](WorkloadCommandResult.md), [MachineRuntimeInstallation](MachineRuntimeInstallation.md), [ExecutionCellLease](ExecutionCellLease.md), [DelegatedSecretGrant](DelegatedSecretGrant.md) |
 
 ### Cardinality and Requirements
 
@@ -94,6 +95,7 @@ domain_of:
 - WorkloadCommandResult
 - MachineRuntimeInstallation
 - ExecutionCellLease
+- DelegatedSecretGrant
 range: string
 
 ```

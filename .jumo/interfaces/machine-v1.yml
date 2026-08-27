@@ -226,12 +226,17 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: Submit executed connector test result.
-    - operationId: getDelegatedSecretToken
-      method: GET
-      path: /leases/{leaseId}/secret-token
+    - operationId: issueSecretGrant
+      method: POST
+      path: /leases/{leaseId}/secret-grants
       audience: MACHINE_MTLS
-      authAction: secret.delegated.read
-      requestBinding: null
+      authAction: secret.grant.issue
+      requestBinding:
+        modelClass: SchemaBoundPayload
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/SchemaBoundPayload
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
       responseBindings:
         - statusCode: 200
           mediaType: application/json
@@ -241,7 +246,7 @@ spec:
             schemaId: https://jumo.dev/schemas/jumo-v1/SchemaBoundPayload
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
-          description: Retrieve short-lived OpenBao token for WorkOrder secret bindings.
+          description: Issue a response-wrapped OpenBao child token for one WorkOrder-authorized SecretBinding.
     - operationId: issueMcpGatewaySessionPlan
       method: POST
       path: /mcp-gateway/session-plan

@@ -175,6 +175,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   kind:
@@ -383,6 +384,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   kind:

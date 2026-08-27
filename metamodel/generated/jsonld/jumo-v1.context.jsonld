@@ -1398,6 +1398,30 @@
     "risksToDataSubjects": {
       "@id": "risksToDataSubjects"
     },
+    "accessorCiphertext": {
+      "@id": "accessorCiphertext"
+    },
+    "consumedAt": {
+      "@id": "consumedAt"
+    },
+    "grantId": {
+      "@id": "grantId"
+    },
+    "issuedAt": {
+      "@id": "issuedAt"
+    },
+    "machineId": {
+      "@id": "machineId"
+    },
+    "openBaoAccessorDigest": {
+      "@id": "openBaoAccessorDigest"
+    },
+    "revocationReason": {
+      "@id": "revocationReason"
+    },
+    "revokedAt": {
+      "@id": "revokedAt"
+    },
     "addressedRoleRefs": {
       "@type": "@id",
       "@id": "addressedRoleRefs"
@@ -1651,9 +1675,6 @@
     },
     "grantedAt": {
       "@id": "grantedAt"
-    },
-    "machineId": {
-      "@id": "machineId"
     },
     "connectorDefinitionRefs": {
       "@type": "@id",
@@ -2067,9 +2088,6 @@
     "contractRevision": {
       "@id": "contractRevision"
     },
-    "issuedAt": {
-      "@id": "issuedAt"
-    },
     "playbookDigest": {
       "@id": "playbookDigest"
     },
@@ -2363,9 +2381,6 @@
     },
     "argumentsDigest": {
       "@id": "argumentsDigest"
-    },
-    "grantId": {
-      "@id": "grantId"
     },
     "operationName": {
       "@id": "operationName"
@@ -3743,6 +3758,10 @@
       "@type": "@id",
       "@id": "allowedWorkerSubstrateRefs"
     },
+    "allowedWorkOrderRefs": {
+      "@type": "@id",
+      "@id": "allowedWorkOrderRefs"
+    },
     "injection": {
       "@type": "@id",
       "@id": "injection"
@@ -4516,6 +4535,9 @@
     },
     "DataProtectionImpactAssessment": {
       "@id": "DataProtectionImpactAssessment"
+    },
+    "DelegatedSecretGrant": {
+      "@id": "DelegatedSecretGrant"
     },
     "DispositionMatch": {
       "@id": "DispositionMatch"

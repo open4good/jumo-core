@@ -326,9 +326,9 @@ attributes:
   secretBindingRef:
     name: secretBindingRef
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: McpRegistrySourceSpec
     domain_of:
+    - DelegatedSecretGrant
     - McpRegistrySourceSpec
     - ProviderAccountSpec
     - WorkerModelAccess
@@ -483,9 +483,9 @@ attributes:
   secretBindingRef:
     name: secretBindingRef
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: McpRegistrySourceSpec
     domain_of:
+    - DelegatedSecretGrant
     - McpRegistrySourceSpec
     - ProviderAccountSpec
     - WorkerModelAccess

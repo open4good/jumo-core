@@ -20,6 +20,7 @@ URI: [jumo:secretBindingRefs](https://jumo.dev/schemas/jumo-v1/secretBindingRefs
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
+| [WorkOrderSpec](WorkOrderSpec.md) |  |  no  |
 | [ConnectorOperation](ConnectorOperation.md) |  |  no  |
 | [McpBundleOperation](McpBundleOperation.md) |  |  no  |
 
@@ -35,7 +36,7 @@ URI: [jumo:secretBindingRefs](https://jumo.dev/schemas/jumo-v1/secretBindingRefs
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [ConnectorOperation](ConnectorOperation.md), [McpBundleOperation](McpBundleOperation.md) |
+| Domain Of | [WorkOrderSpec](WorkOrderSpec.md), [ConnectorOperation](ConnectorOperation.md), [McpBundleOperation](McpBundleOperation.md) |
 
 ### Cardinality and Requirements
 
@@ -74,6 +75,7 @@ URI: [jumo:secretBindingRefs](https://jumo.dev/schemas/jumo-v1/secretBindingRefs
 ```yaml
 name: secretBindingRefs
 domain_of:
+- WorkOrderSpec
 - ConnectorOperation
 - McpBundleOperation
 range: string

@@ -3,13 +3,13 @@ search:
   boost: 5.0
 ---
 
-# Slot: issuedAt
+# Slot: revocationReason
 
 <div data-search-exclude markdown="1">
 
 
 
-URI: [jumo:issuedAt](https://jumo.dev/schemas/jumo-v1/issuedAt)
+URI: [jumo:revocationReason](https://jumo.dev/schemas/jumo-v1/revocationReason)
 <!-- no inheritance hierarchy -->
 
 
@@ -20,8 +20,6 @@ URI: [jumo:issuedAt](https://jumo.dev/schemas/jumo-v1/issuedAt)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [MachineAdminCommand](MachineAdminCommand.md) | Ansible playbook execution command sent to an enrolled machine |  no  |
-| [WorkloadCommand](WorkloadCommand.md) | Typed workload command claimed by pull from an ExecutionMachine, distinct fro... |  no  |
 | [DelegatedSecretGrant](DelegatedSecretGrant.md) | One response-wrapped OpenBao child token grant issued for a lease and SecretB... |  no  |
 
 
@@ -36,12 +34,19 @@ URI: [jumo:issuedAt](https://jumo.dev/schemas/jumo-v1/issuedAt)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [MachineAdminCommand](MachineAdminCommand.md), [WorkloadCommand](WorkloadCommand.md), [DelegatedSecretGrant](DelegatedSecretGrant.md) |
+| Domain Of | [DelegatedSecretGrant](DelegatedSecretGrant.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
+### Slot Characteristics
+
+| Property | Value |
+| --- | --- |
+| Owner | [DelegatedSecretGrant](DelegatedSecretGrant.md) |
+
+
 
 
 
@@ -58,13 +63,20 @@ URI: [jumo:issuedAt](https://jumo.dev/schemas/jumo-v1/issuedAt)
 
 
 
+### Schema Source
+
+
+* from schema: https://jumo.dev/schemas/jumo-v1
+
+
+
 
 ## Mappings
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:issuedAt |
-| native | jumo:issuedAt |
+| self | jumo:revocationReason |
+| native | jumo:revocationReason |
 
 
 
@@ -73,10 +85,11 @@ URI: [jumo:issuedAt](https://jumo.dev/schemas/jumo-v1/issuedAt)
 
 <details>
 ```yaml
-name: issuedAt
+name: revocationReason
+from_schema: https://jumo.dev/schemas/jumo-v1
+rank: 1000
+owner: DelegatedSecretGrant
 domain_of:
-- MachineAdminCommand
-- WorkloadCommand
 - DelegatedSecretGrant
 range: string
 

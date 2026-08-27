@@ -3838,6 +3838,71 @@
       "title": "DataScope",
       "type": "string"
     },
+    "DelegatedSecretGrant": {
+      "additionalProperties": false,
+      "description": "One response-wrapped OpenBao child token grant issued for a lease and SecretBinding pair (openbao-delegated-lease). Never carries the token or accessor value itself -- only an envelope-encrypted accessor ciphertext and its digest, for restart-safe revocation and audit.",
+      "properties": {
+        "accessorCiphertext": {
+          "type": "string"
+        },
+        "consumedAt": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string"
+        },
+        "grantId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "issuedAt": {
+          "type": "string"
+        },
+        "leaseId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "machineId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "openBaoAccessorDigest": {
+          "type": "string"
+        },
+        "realmId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "revocationReason": {
+          "type": "string"
+        },
+        "revokedAt": {
+          "type": "string"
+        },
+        "secretBindingRef": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "workOrderId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "grantId",
+        "leaseId",
+        "realmId",
+        "machineId",
+        "workOrderId",
+        "secretBindingRef",
+        "openBaoAccessorDigest",
+        "accessorCiphertext",
+        "issuedAt",
+        "expiresAt"
+      ],
+      "title": "DelegatedSecretGrant",
+      "type": "object"
+    },
     "DeliveryMode": {
       "description": "How a result or an AttentionItem reaches the human. Shared by Practice and AttentionItem so a rhythm and the items it carries cannot describe delivery in two vocabularies. Pausing delivery never deletes the canonical event.",
       "enum": [
@@ -12869,6 +12934,13 @@
           },
           "type": "array"
         },
+        "allowedWorkOrderRefs": {
+          "description": "WorkOrders authorized to request a delegated lease grant of this binding. Reciprocity with WorkOrderSpec.secretBindingRefs is required by policy (openbao-delegated-lease AC2).",
+          "items": {
+            "$ref": "#/$defs/ContractReference"
+          },
+          "type": "array"
+        },
         "allowedWorkerSubstrateRefs": {
           "items": {
             "$ref": "#/$defs/ContractReference"
@@ -14179,6 +14251,13 @@
           "description": "Groups durable work contracts into a generated roadmap projection.",
           "pattern": "^[a-z][a-z0-9-]*$",
           "type": "string"
+        },
+        "secretBindingRefs": {
+          "description": "SecretBindings this WorkOrder is authorized to request a delegated lease grant for. Empty by default. Reciprocity with SecretBindingSpec.allowedWorkOrderRefs is required by policy (openbao-delegated-lease AC2).",
+          "items": {
+            "$ref": "#/$defs/ContractReference"
+          },
+          "type": "array"
         },
         "sourceRefs": {
           "items": {

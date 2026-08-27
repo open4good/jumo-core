@@ -170,6 +170,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: McpInvocationAuthorizationReceipt
     domain_of:
+    - DelegatedSecretGrant
     - PlannedOperation
     - McpInvocationAuthorizationRequest
     - McpInvocationAuthorizationReceipt
@@ -182,6 +183,7 @@ attributes:
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
@@ -228,6 +230,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt
@@ -301,6 +304,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: McpInvocationAuthorizationReceipt
     domain_of:
+    - DelegatedSecretGrant
     - PlannedOperation
     - McpInvocationAuthorizationRequest
     - McpInvocationAuthorizationReceipt
@@ -313,6 +317,7 @@ attributes:
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
@@ -359,6 +364,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt

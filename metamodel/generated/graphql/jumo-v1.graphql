@@ -2233,6 +2233,23 @@ type DataProtectionImpactAssessment
     reviewer: Identifier
   }
 
+type DelegatedSecretGrant
+  {
+    grantId: Identifier!
+    leaseId: Identifier!
+    realmId: Identifier!
+    machineId: Identifier!
+    workOrderId: Identifier!
+    secretBindingRef: Identifier!
+    openBaoAccessorDigest: String!
+    accessorCiphertext: String!
+    issuedAt: String!
+    expiresAt: String!
+    consumedAt: String
+    revokedAt: String
+    revocationReason: String
+  }
+
 type DispositionMatch
   {
     addressedRoleRefs: [ContractReference]
@@ -4318,6 +4335,7 @@ type SecretBindingSpec
     allowedConnectorDefinitionRefs: [ContractReference]
     allowedOperationRefs: [Identifier]
     allowedWorkerSubstrateRefs: [ContractReference]
+    allowedWorkOrderRefs: [ContractReference]
     injection: SecretInjection!
     rotation: SecretRotation
   }
@@ -4742,6 +4760,7 @@ type WorkOrderSpec
     acceptanceCriteria: [AcceptanceCriterion]
     specification: [WorkOrderSpecification]
     pathScope: [String]
+    secretBindingRefs: [ContractReference]
     ring: Ring
     dependsOnWorkOrderRefs: [ContractReference]
     parentWorkOrderRef: ContractReference

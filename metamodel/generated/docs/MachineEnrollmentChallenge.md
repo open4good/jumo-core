@@ -152,6 +152,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
     - SessionPlan
     - ApiProblem
     - PolicyInput
@@ -174,6 +175,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   bootstrapDigest:
@@ -195,6 +197,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt
@@ -250,6 +253,7 @@ attributes:
     - AttentionSource
     - MachineEnrollmentRequest
     - MachineEnrollmentChallenge
+    - DelegatedSecretGrant
     - SessionPlan
     - ApiProblem
     - PolicyInput
@@ -272,6 +276,7 @@ attributes:
     - WorkloadCommandResult
     - MachineRuntimeInstallation
     - ExecutionCellLease
+    - DelegatedSecretGrant
     range: Identifier
     required: true
   bootstrapDigest:
@@ -293,6 +298,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt

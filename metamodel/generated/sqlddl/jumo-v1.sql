@@ -1080,6 +1080,26 @@ CREATE TABLE "ExecutionCellLease" (
 CREATE INDEX "ix_ExecutionCellLease_id" ON "ExecutionCellLease" (id);
 COMMENT ON TABLE "ExecutionCellLease" IS 'Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and contract digest.';
 
+CREATE TABLE "DelegatedSecretGrant" (
+	id SERIAL NOT NULL,
+	"grantId" TEXT NOT NULL,
+	"leaseId" TEXT NOT NULL,
+	"realmId" TEXT NOT NULL,
+	"machineId" TEXT NOT NULL,
+	"workOrderId" TEXT NOT NULL,
+	"secretBindingRef" TEXT NOT NULL,
+	"openBaoAccessorDigest" TEXT NOT NULL,
+	"accessorCiphertext" TEXT NOT NULL,
+	"issuedAt" TEXT NOT NULL,
+	"expiresAt" TEXT NOT NULL,
+	"consumedAt" TEXT,
+	"revokedAt" TEXT,
+	"revocationReason" TEXT,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_DelegatedSecretGrant_id" ON "DelegatedSecretGrant" (id);
+COMMENT ON TABLE "DelegatedSecretGrant" IS 'One response-wrapped OpenBao child token grant issued for a lease and SecretBinding pair (openbao-delegated-lease). Never carries the token or accessor value itself -- only an envelope-encrypted accessor ciphertext and its digest, for restart-safe revocation and audit.';
+
 CREATE TABLE "CliToolDefinitionSpec" (
 	id SERIAL NOT NULL,
 	"toolName" TEXT NOT NULL,

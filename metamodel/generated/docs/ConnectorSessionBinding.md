@@ -240,6 +240,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ConnectorSessionBinding
     domain_of:
+    - DelegatedSecretGrant
     - McpRegistrySourceSpec
     - ProviderAccountSpec
     - WorkerModelAccess
@@ -289,6 +290,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt
@@ -383,6 +385,7 @@ attributes:
     from_schema: https://jumo.dev/schemas/jumo-v1
     owner: ConnectorSessionBinding
     domain_of:
+    - DelegatedSecretGrant
     - McpRegistrySourceSpec
     - ProviderAccountSpec
     - WorkerModelAccess
@@ -432,6 +435,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
     - McpInvocationAuthorizationReceipt

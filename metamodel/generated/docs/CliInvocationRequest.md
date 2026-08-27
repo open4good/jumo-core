@@ -214,6 +214,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - CliInvocationEvent
     - CliInvocationResult
@@ -226,6 +227,7 @@ attributes:
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
@@ -379,6 +381,7 @@ attributes:
     - MachineAdminCommand
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - CliInvocationEvent
     - CliInvocationResult
@@ -391,6 +394,7 @@ attributes:
     domain_of:
     - WorkloadCommand
     - ExecutionCellLease
+    - DelegatedSecretGrant
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan

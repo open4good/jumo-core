@@ -20,6 +20,7 @@ URI: [jumo:secretBindingRef](https://jumo.dev/schemas/jumo-v1/secretBindingRef)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
+| [DelegatedSecretGrant](DelegatedSecretGrant.md) | One response-wrapped OpenBao child token grant issued for a lease and SecretB... |  no  |
 | [McpRegistrySourceSpec](McpRegistrySourceSpec.md) |  |  no  |
 | [ProviderAccountSpec](ProviderAccountSpec.md) |  |  no  |
 | [WorkerModelAccess](WorkerModelAccess.md) |  |  no  |
@@ -37,7 +38,7 @@ URI: [jumo:secretBindingRef](https://jumo.dev/schemas/jumo-v1/secretBindingRef)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [McpRegistrySourceSpec](McpRegistrySourceSpec.md), [ProviderAccountSpec](ProviderAccountSpec.md), [WorkerModelAccess](WorkerModelAccess.md), [ConnectorSessionBinding](ConnectorSessionBinding.md) |
+| Domain Of | [DelegatedSecretGrant](DelegatedSecretGrant.md), [McpRegistrySourceSpec](McpRegistrySourceSpec.md), [ProviderAccountSpec](ProviderAccountSpec.md), [WorkerModelAccess](WorkerModelAccess.md), [ConnectorSessionBinding](ConnectorSessionBinding.md) |
 
 ### Cardinality and Requirements
 
@@ -76,6 +77,7 @@ URI: [jumo:secretBindingRef](https://jumo.dev/schemas/jumo-v1/secretBindingRef)
 ```yaml
 name: secretBindingRef
 domain_of:
+- DelegatedSecretGrant
 - McpRegistrySourceSpec
 - ProviderAccountSpec
 - WorkerModelAccess

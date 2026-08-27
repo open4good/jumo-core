@@ -1038,6 +1038,54 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  DelegatedSecretGrant:
+    description: One response-wrapped OpenBao child token grant issued for a lease and SecretBinding
+      pair (openbao-delegated-lease). Never carries the token or accessor value itself -- only an
+      envelope-encrypted accessor ciphertext and its digest, for restart-safe revocation and audit.
+    attributes:
+      grantId:
+        range: Identifier
+        required: true
+      leaseId:
+        range: Identifier
+        required: true
+      realmId:
+        range: Identifier
+        required: true
+      machineId:
+        range: Identifier
+        required: true
+      workOrderId:
+        range: Identifier
+        required: true
+      secretBindingRef:
+        range: Identifier
+        required: true
+      openBaoAccessorDigest:
+        range: string
+        required: true
+      accessorCiphertext:
+        range: string
+        required: true
+      issuedAt:
+        range: string
+        required: true
+      expiresAt:
+        range: string
+        required: true
+      consumedAt:
+        range: string
+      revokedAt:
+        range: string
+      revocationReason:
+        range: string
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EXECUTION_HISTORY
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: SECRET
+      jumo.boundary_eligible: false
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   CliToolDefinition:
     description: Durable Git contract declaring an AI CLI tool available for execution.
     attributes:

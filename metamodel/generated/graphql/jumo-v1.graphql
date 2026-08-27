@@ -573,6 +573,19 @@ enum InteroperabilityAdapter
     acs__HYPHEN_MINUS__jumo__HYPHEN_MINUS__opa__HYPHEN_MINUS__v1
   }
 
+enum JourneyStepperLayout
+  {
+    VERTICAL
+    HORIZONTAL
+  }
+
+enum JourneySurfaceMode
+  {
+    PAGE
+    MODAL
+    INLINE
+  }
+
 enum JourneyVerificationTarget
   {
     PROVIDER_ACCOUNT
@@ -1176,6 +1189,12 @@ enum StructuredOutputMode
     UNSUPPORTED
   }
 
+enum SubJourneyOpenMode
+  {
+    INLINE
+    MODAL
+  }
+
 enum TaskClass
   {
     CLASSIFICATION
@@ -1604,6 +1623,7 @@ type AssistedJourneySpec
     firstRunMandatory: Boolean
     lifetimeUnique: Boolean
     heroImage: String
+    presentation: JourneyPresentation
     resourceBudgetRef: ContractReference!
     requiredCapabilities: [CapabilityName]!
     policySetRefs: [ContractReference]!
@@ -1632,6 +1652,7 @@ type AssistedJourneyStep
     dependsOn: [String]
     parallelizable: Boolean
     image: String
+    presentationOverride: JourneyPresentation
     descriptionI18nKey: String
     narrationI18nKey: String
     requiredFields: [AssistedJourneyRequiredField]
@@ -2637,6 +2658,14 @@ type InvocationAuthorizationReceipt
     toolsDigest: String!
     expiresAt: Datetime!
     signature: String!
+  }
+
+type JourneyPresentation
+  {
+    surfaceMode: JourneySurfaceMode
+    stepperLayout: JourneyStepperLayout
+    subJourneyOpenMode: SubJourneyOpenMode
+    maxWidth: Integer
   }
 
 type JourneyVerificationSpec

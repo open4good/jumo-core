@@ -42,6 +42,17 @@ URI: [jumo:AssistedJourneyStep](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 
       AssistedJourneyStep : personaNarration
 
+      AssistedJourneyStep : presentationOverride
+
+
+
+
+
+        AssistedJourneyStep --> "0..1" JourneyPresentation : presentationOverride
+        click JourneyPresentation href "../JourneyPresentation/"
+
+
+
       AssistedJourneyStep : processSpecRef
 
 
@@ -156,6 +167,7 @@ URI: [jumo:AssistedJourneyStep](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 | [dependsOn](dependsOn.md) | * <br/> [String](String.md) | Step IDs that must be completed before this step becomes available | direct |
 | [parallelizable](parallelizable.md) | 0..1 <br/> [Boolean](Boolean.md) | Marks a dependency-ready step as part of a parallelizable work group in the r... | direct |
 | [image](image.md) | 0..1 <br/> [String](String.md) | Step-level hero image, overriding the journey's heroImage for this step only | direct |
+| [presentationOverride](presentationOverride.md) | 0..1 <br/> [JourneyPresentation](JourneyPresentation.md) | Per-field override of the journey's presentation for this step only | direct |
 | [descriptionI18nKey](descriptionI18nKey.md) | 0..1 <br/> [String](String.md) | i18n key resolving this step's user-facing description | direct |
 | [narrationI18nKey](narrationI18nKey.md) | 0..1 <br/> [String](String.md) | i18n key resolving this step's personaNarration ("Nestor's voice") | direct |
 | [requiredFields](requiredFields.md) | * <br/> [AssistedJourneyRequiredField](AssistedJourneyRequiredField.md) | One entry per field the step collects or confirms, each carrying the i18n key... | direct |
@@ -448,6 +460,17 @@ attributes:
     - AssistedJourneyStep
     - WorkerSubstrateSpec
     range: string
+  presentationOverride:
+    name: presentationOverride
+    description: Per-field override of the journey's presentation for this step only.
+      An absent field falls back to AssistedJourneySpec.presentation.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneyStep
+    domain_of:
+    - AssistedJourneyStep
+    range: JourneyPresentation
+    inlined: true
   descriptionI18nKey:
     name: descriptionI18nKey
     description: i18n key resolving this step's user-facing description. When present,
@@ -714,6 +737,17 @@ attributes:
     - AssistedJourneyStep
     - WorkerSubstrateSpec
     range: string
+  presentationOverride:
+    name: presentationOverride
+    description: Per-field override of the journey's presentation for this step only.
+      An absent field falls back to AssistedJourneySpec.presentation.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneyStep
+    domain_of:
+    - AssistedJourneyStep
+    range: JourneyPresentation
+    inlined: true
   descriptionI18nKey:
     name: descriptionI18nKey
     description: i18n key resolving this step's user-facing description. When present,

@@ -1189,6 +1189,17 @@
           "minItems": 1,
           "type": "array"
         },
+        "presentation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JourneyPresentation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Default presentation for this journey and every step, overridable per step by AssistedJourneyStep.presentationOverride."
+        },
         "requiredCapabilities": {
           "description": "Complete capability allowlist for this journey. The runtime journey authorization entrypoint checks every admitted action against it; ProjectionSpec.actions and emitsCapability must be subsets (Rego).",
           "items": {
@@ -1264,6 +1275,17 @@
         },
         "personaNarration": {
           "type": "string"
+        },
+        "presentationOverride": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JourneyPresentation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Per-field override of the journey's presentation for this step only. An absent field falls back to AssistedJourneySpec.presentation."
         },
         "processSpecRef": {
           "anyOf": [
@@ -5830,6 +5852,49 @@
       ],
       "title": "InvocationAuthorizationReceipt",
       "type": "object"
+    },
+    "JourneyPresentation": {
+      "additionalProperties": false,
+      "description": "Decorative and layout-only: how a journey or step is drawn, never what it may do. Carries no capability, no policy, no budget and no workflow field, on the same terms as ThemePack. Declared on the journey and overridable per step; an absent field at step level falls back to the journey's.",
+      "properties": {
+        "maxWidth": {
+          "description": "Maximum content width in pixels for the surface. Absent means no constraint.",
+          "type": "integer"
+        },
+        "stepperLayout": {
+          "$ref": "#/$defs/JourneyStepperLayout",
+          "description": "Whether the step list renders as a vertical rail or a horizontal slide group."
+        },
+        "subJourneyOpenMode": {
+          "$ref": "#/$defs/SubJourneyOpenMode",
+          "description": "How a SUB_JOURNEY step opens its child run; meaningless on any other stepKind."
+        },
+        "surfaceMode": {
+          "$ref": "#/$defs/JourneySurfaceMode",
+          "description": "Whether the journey or step mounts as a page, a modal dialog, or inline within its host container."
+        }
+      },
+      "title": "JourneyPresentation",
+      "type": "object"
+    },
+    "JourneyStepperLayout": {
+      "description": "How the step list renders.",
+      "enum": [
+        "VERTICAL",
+        "HORIZONTAL"
+      ],
+      "title": "JourneyStepperLayout",
+      "type": "string"
+    },
+    "JourneySurfaceMode": {
+      "description": "How a journey or step mounts in the cockpit shell.",
+      "enum": [
+        "PAGE",
+        "MODAL",
+        "INLINE"
+      ],
+      "title": "JourneySurfaceMode",
+      "type": "string"
     },
     "JourneyVerificationSpec": {
       "additionalProperties": false,
@@ -13105,6 +13170,15 @@
         "UNSUPPORTED"
       ],
       "title": "StructuredOutputMode",
+      "type": "string"
+    },
+    "SubJourneyOpenMode": {
+      "description": "How a SUB_JOURNEY step opens its child run. Meaningless on any other stepKind.",
+      "enum": [
+        "INLINE",
+        "MODAL"
+      ],
+      "title": "SubJourneyOpenMode",
       "type": "string"
     },
     "Surface": {

@@ -3551,6 +3551,34 @@ components:
       title: JourneyVerificationSpec
       description: Secret-free declaration of an explicit real observation a journey
         step may request.
+    JourneyPresentation:
+      properties:
+        surfaceMode:
+          allOf:
+          - $ref: '#/components/schemas/JourneySurfaceMode'
+          description: Whether the journey or step mounts as a page, a modal dialog,
+            or inline within its host container.
+        stepperLayout:
+          allOf:
+          - $ref: '#/components/schemas/JourneyStepperLayout'
+          description: Whether the step list renders as a vertical rail or a horizontal
+            slide group.
+        subJourneyOpenMode:
+          allOf:
+          - $ref: '#/components/schemas/SubJourneyOpenMode'
+          description: How a SUB_JOURNEY step opens its child run; meaningless on
+            any other stepKind.
+        maxWidth:
+          type: integer
+          description: Maximum content width in pixels for the surface. Absent means
+            no constraint.
+      additionalProperties: false
+      type: object
+      title: JourneyPresentation
+      description: 'Decorative and layout-only: how a journey or step is drawn, never
+        what it may do. Carries no capability, no policy, no budget and no workflow
+        field, on the same terms as ThemePack. Declared on the journey and overridable
+        per step; an absent field at step level falls back to the journey''s.'
     AssistedJourneySpec:
       properties:
         journeyId:
@@ -3576,6 +3604,11 @@ components:
           type: boolean
         heroImage:
           type: string
+        presentation:
+          allOf:
+          - $ref: '#/components/schemas/JourneyPresentation'
+          description: Default presentation for this journey and every step, overridable
+            per step by AssistedJourneyStep.presentationOverride.
         resourceBudgetRef:
           allOf:
           - $ref: '#/components/schemas/ContractReference'
@@ -4010,6 +4043,11 @@ components:
             this step only. Falls back to AssistedJourneySpec.heroImage when absent.
             Not validated by the schema (same convention as heroImage) -- a kit-distributed
             asset once JumoKit exports binary assets (portability.yaml).
+        presentationOverride:
+          allOf:
+          - $ref: '#/components/schemas/JourneyPresentation'
+          description: Per-field override of the journey's presentation for this step
+            only. An absent field falls back to AssistedJourneySpec.presentation.
         descriptionI18nKey:
           type: string
           description: i18n key resolving this step's user-facing description. When
@@ -9809,6 +9847,29 @@ components:
       title: AssistedJourneyCompletionMode
       description: Whether a journey emits a governed proposal or only records an
         observation.
+    JourneySurfaceMode:
+      type: string
+      enum:
+      - PAGE
+      - MODAL
+      - INLINE
+      title: JourneySurfaceMode
+      description: How a journey or step mounts in the cockpit shell.
+    JourneyStepperLayout:
+      type: string
+      enum:
+      - VERTICAL
+      - HORIZONTAL
+      title: JourneyStepperLayout
+      description: How the step list renders.
+    SubJourneyOpenMode:
+      type: string
+      enum:
+      - INLINE
+      - MODAL
+      title: SubJourneyOpenMode
+      description: How a SUB_JOURNEY step opens its child run. Meaningless on any
+        other stepKind.
     JourneyVerificationTarget:
       type: string
       enum:

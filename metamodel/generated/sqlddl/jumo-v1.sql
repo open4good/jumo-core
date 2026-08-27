@@ -56,6 +56,9 @@ CREATE TYPE "VariableTrust" AS ENUM ('TRUSTED', 'UNTRUSTED');
 CREATE TYPE "PromptOutputForm" AS ENUM ('STRUCTURED', 'TEXT');
 CREATE TYPE "BudgetOnExhaustion" AS ENUM ('WAIT_FOR_RECOVERY', 'USE_AUTHORIZED_ALTERNATIVE', 'REQUEST_HUMAN_DECISION', 'STOP_CLEANLY');
 CREATE TYPE "JourneyVerificationTarget" AS ENUM ('PROVIDER_ACCOUNT', 'CLI_SESSION', 'EXECUTION_CELL');
+CREATE TYPE "JourneySurfaceMode" AS ENUM ('PAGE', 'MODAL', 'INLINE');
+CREATE TYPE "JourneyStepperLayout" AS ENUM ('VERTICAL', 'HORIZONTAL');
+CREATE TYPE "SubJourneyOpenMode" AS ENUM ('INLINE', 'MODAL');
 CREATE TYPE "AssistedJourneyConcurrencyPolicy" AS ENUM ('SINGLE_ACTIVE_RUN', 'MULTIPLE_ACTIVE_RUNS');
 CREATE TYPE "AssistedJourneyCompletionMode" AS ENUM ('PROPOSAL', 'OBSERVATION');
 CREATE TYPE "AssistedJourneyNavigationMode" AS ENUM ('SEQUENTIAL', 'FREE');
@@ -735,6 +738,21 @@ CREATE TABLE "BudgetLimits" (
 CREATE INDEX "ix_BudgetLimits_id" ON "BudgetLimits" (id);
 COMMENT ON TABLE "BudgetLimits" IS 'None';
 
+CREATE TABLE "JourneyPresentation" (
+	id SERIAL NOT NULL,
+	"surfaceMode" "JourneySurfaceMode",
+	"stepperLayout" "JourneyStepperLayout",
+	"subJourneyOpenMode" "SubJourneyOpenMode",
+	"maxWidth" INTEGER,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_JourneyPresentation_id" ON "JourneyPresentation" (id);
+COMMENT ON TABLE "JourneyPresentation" IS 'Decorative and layout-only: how a journey or step is drawn, never what it may do. Carries no capability, no policy, no budget and no workflow field, on the same terms as ThemePack. Declared on the journey and overridable per step; an absent field at step level falls back to the journey''s.';
+COMMENT ON COLUMN "JourneyPresentation"."surfaceMode" IS 'Whether the journey or step mounts as a page, a modal dialog, or inline within its host container.';
+COMMENT ON COLUMN "JourneyPresentation"."stepperLayout" IS 'Whether the step list renders as a vertical rail or a horizontal slide group.';
+COMMENT ON COLUMN "JourneyPresentation"."subJourneyOpenMode" IS 'How a SUB_JOURNEY step opens its child run; meaningless on any other stepKind.';
+COMMENT ON COLUMN "JourneyPresentation"."maxWidth" IS 'Maximum content width in pixels for the surface. Absent means no constraint.';
+
 CREATE TABLE "AssistedJourneySpec" (
 	id SERIAL NOT NULL,
 	"journeyId" TEXT NOT NULL,
@@ -751,6 +769,7 @@ CREATE TABLE "AssistedJourneySpec" (
 	"completionMode" "AssistedJourneyCompletionMode",
 	"navigationMode" "AssistedJourneyNavigationMode",
 	"summaryI18nKey" TEXT NOT NULL,
+	presentation_id INTEGER,
 	"resourceBudgetRef_uid" INTEGER NOT NULL,
 	emission_id INTEGER,
 	PRIMARY KEY (id)
@@ -762,6 +781,7 @@ COMMENT ON COLUMN "AssistedJourneySpec".icon IS 'Display icon for this journey.'
 COMMENT ON COLUMN "AssistedJourneySpec"."emitsCapability" IS 'The single capability a proposal journey may invoke. Observation journeys leave this absent.';
 COMMENT ON COLUMN "AssistedJourneySpec"."navigationMode" IS 'FREE permits navigation among dependency-ready steps; dependencies remain mandatory server-side.';
 COMMENT ON COLUMN "AssistedJourneySpec"."summaryI18nKey" IS 'Prefix JourneySummaryStep.vue resolves three keys from at its completion step: `${summaryI18nKey}Title`, `${summaryI18nKey}ConfirmLabel` and `${summaryI18nKey}SuccessMessage`. Lets one generic completion component describe what this journey actually produced instead of fixed onboarding text.';
+COMMENT ON COLUMN "AssistedJourneySpec".presentation_id IS 'Default presentation for this journey and every step, overridable per step by AssistedJourneyStep.presentationOverride.';
 COMMENT ON COLUMN "AssistedJourneySpec"."resourceBudgetRef_uid" IS 'Names the ResourceBudget whose modelCalls limit bounds the clarification-turn ceiling (AC1). The journey does not declare its own ceiling.';
 COMMENT ON COLUMN "AssistedJourneySpec".emission_id IS 'What a PROPOSAL journey emits when its run completes: the contract kind, where it is written, the template that renders it, and the checks the collected fields must pass. Rego requires it of every PROPOSAL journey (canonical decision 15) -- without it the platform would have to recognise the journey by name to know what it produces, which is the dispatch this slot exists to remove. A journey declares emission or emissionBundle, never both (Rego).';
 
@@ -2454,13 +2474,15 @@ CREATE TABLE "AssistedJourneyStep" (
 	"promptTemplateRef_uid" INTEGER,
 	"subAssistedJourneyRef_uid" INTEGER,
 	"verificationSpecRef_uid" INTEGER,
+	"presentationOverride_id" INTEGER,
 	PRIMARY KEY (uid),
 	FOREIGN KEY("AssistedJourneySpec_id") REFERENCES "AssistedJourneySpec" (id),
 	FOREIGN KEY("projectionSpecRef_uid") REFERENCES "ContractReference" (uid),
 	FOREIGN KEY("processSpecRef_uid") REFERENCES "ContractReference" (uid),
 	FOREIGN KEY("promptTemplateRef_uid") REFERENCES "ContractReference" (uid),
 	FOREIGN KEY("subAssistedJourneyRef_uid") REFERENCES "ContractReference" (uid),
-	FOREIGN KEY("verificationSpecRef_uid") REFERENCES "ContractReference" (uid)
+	FOREIGN KEY("verificationSpecRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("presentationOverride_id") REFERENCES "JourneyPresentation" (id)
 );
 CREATE INDEX "ix_AssistedJourneyStep_uid" ON "AssistedJourneyStep" (uid);
 COMMENT ON TABLE "AssistedJourneyStep" IS 'stepKind/projectionRef/processRef are additive: the model-driven rendering engine that consumes them does not exist yet, so requiredFields stays required and load-bearing -- JourneyService (control-plane) reads it server-side and apps/web/components/journey/JourneyRunner.vue reads it client-side. requiredFields is retired once every AssistedJourney step declares projectionRef/processRef and the renderer that replaces JourneyRunner.vue exists; until then both describe the same steps.';
@@ -2475,6 +2497,7 @@ COMMENT ON COLUMN "AssistedJourneyStep"."processSpecRef_uid" IS 'The ProcessSpec
 COMMENT ON COLUMN "AssistedJourneyStep"."promptTemplateRef_uid" IS 'The PromptTemplate this step uses when stepKind is DIALOGUE_COLLECT.';
 COMMENT ON COLUMN "AssistedJourneyStep"."subAssistedJourneyRef_uid" IS 'The AssistedJourney this step delegates to when stepKind is SUB_JOURNEY.';
 COMMENT ON COLUMN "AssistedJourneyStep"."verificationSpecRef_uid" IS 'Generic real observation required before this step can advance.';
+COMMENT ON COLUMN "AssistedJourneyStep"."presentationOverride_id" IS 'Per-field override of the journey''s presentation for this step only. An absent field falls back to AssistedJourneySpec.presentation.';
 
 CREATE TABLE "ActionCapability" (
 	id SERIAL NOT NULL,
@@ -6347,6 +6370,7 @@ ALTER TABLE "AssistedJourneyEmission" ADD FOREIGN KEY("routingEligibilityCheck_i
 ALTER TABLE "AssistedJourneyEmission" ADD FOREIGN KEY(identifier_id) REFERENCES "AssistedJourneyEmittedIdentifier" (id);
 ALTER TABLE "AssistedJourneySpec" ADD FOREIGN KEY("resourceBudgetRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "AssistedJourneySpec" ADD FOREIGN KEY(emission_id) REFERENCES "AssistedJourneyEmission" (id);
+ALTER TABLE "AssistedJourneySpec" ADD FOREIGN KEY(presentation_id) REFERENCES "JourneyPresentation" (id);
 ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("connectorPackageRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("mcpBundleRef_uid") REFERENCES "ContractReference" (uid);
 ALTER TABLE "ConnectorDefinitionSpec" ADD FOREIGN KEY("remoteMcpServiceRef_uid") REFERENCES "ContractReference" (uid);

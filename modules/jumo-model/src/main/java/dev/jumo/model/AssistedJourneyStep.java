@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * stepKind/projectionRef/processRef are additive: the model-driven rendering engine that consumes them does not exist yet, so requiredFields stays required and load-bearing -- JourneyService (control-plane) reads it server-side and apps/web/components/journey/JourneyRunner.vue reads it client-side. requiredFields is retired once every AssistedJourney step declares projectionRef/processRef and the renderer that replaces JourneyRunner.vue exists; until then both describe the same steps.
  */
-public record AssistedJourneyStep(String id, String name, String description, String personaNarration, AssistedJourneyStepKind stepKind, ContractReference projectionSpecRef, ContractReference processSpecRef, ContractReference promptTemplateRef, ContractReference subAssistedJourneyRef, ContractReference verificationSpecRef, List<Obligation> requiredObligations, List<String> dependsOn, Boolean parallelizable, String image, String descriptionI18nKey, String narrationI18nKey, List<AssistedJourneyRequiredField> requiredFields)  {
+public record AssistedJourneyStep(String id, String name, String description, String personaNarration, AssistedJourneyStepKind stepKind, ContractReference projectionSpecRef, ContractReference processSpecRef, ContractReference promptTemplateRef, ContractReference subAssistedJourneyRef, ContractReference verificationSpecRef, List<Obligation> requiredObligations, List<String> dependsOn, Boolean parallelizable, String image, JourneyPresentation presentationOverride, String descriptionI18nKey, String narrationI18nKey, List<AssistedJourneyRequiredField> requiredFields)  {
 
     public static Builder builder() {
         return new Builder();
@@ -32,6 +32,7 @@ public record AssistedJourneyStep(String id, String name, String description, St
         private List<String> dependsOn = List.of();
         private Boolean parallelizable = null;
         private String image = "";
+        private JourneyPresentation presentationOverride = null;
         private String descriptionI18nKey = "";
         private String narrationI18nKey = "";
         private List<AssistedJourneyRequiredField> requiredFields = List.of();
@@ -107,6 +108,11 @@ public record AssistedJourneyStep(String id, String name, String description, St
             return this;
         }
 
+        public Builder presentationOverride(JourneyPresentation presentationOverride) {
+            this.presentationOverride = Objects.requireNonNull(presentationOverride);
+            return this;
+        }
+
         public Builder descriptionI18nKey(String descriptionI18nKey) {
             this.descriptionI18nKey = Objects.requireNonNull(descriptionI18nKey);
             return this;
@@ -123,7 +129,7 @@ public record AssistedJourneyStep(String id, String name, String description, St
         }
 
     public AssistedJourneyStep build() {
-            return new AssistedJourneyStep(id, name, description, personaNarration, stepKind, projectionSpecRef, processSpecRef, promptTemplateRef, subAssistedJourneyRef, verificationSpecRef, requiredObligations, dependsOn, parallelizable, image, descriptionI18nKey, narrationI18nKey, requiredFields);
+            return new AssistedJourneyStep(id, name, description, personaNarration, stepKind, projectionSpecRef, processSpecRef, promptTemplateRef, subAssistedJourneyRef, verificationSpecRef, requiredObligations, dependsOn, parallelizable, image, presentationOverride, descriptionI18nKey, narrationI18nKey, requiredFields);
         }
     }
 }

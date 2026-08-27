@@ -51,6 +51,22 @@ enums:
     permissible_values:
       PROPOSAL: {}
       OBSERVATION: {}
+  JourneySurfaceMode:
+    description: How a journey or step mounts in the cockpit shell.
+    permissible_values:
+      PAGE: {}
+      MODAL: {}
+      INLINE: {}
+  JourneyStepperLayout:
+    description: How the step list renders.
+    permissible_values:
+      VERTICAL: {}
+      HORIZONTAL: {}
+  SubJourneyOpenMode:
+    description: How a SUB_JOURNEY step opens its child run. Meaningless on any other stepKind.
+    permissible_values:
+      INLINE: {}
+      MODAL: {}
   JourneyVerificationTarget:
     permissible_values:
       PROVIDER_ACCOUNT: {}
@@ -1198,6 +1214,30 @@ classes:
         range: CapabilityName
         required: true
         description: Must resolve in an ActionCapabilitySet (Rego), the same way ProcessStep.capabilityRef is checked.
+  JourneyPresentation:
+    description: 'Decorative and layout-only: how a journey or step is drawn, never what it may do. Carries no
+      capability, no policy, no budget and no workflow field, on the same terms as ThemePack. Declared on the
+      journey and overridable per step; an absent field at step level falls back to the journey''s.'
+    attributes:
+      surfaceMode:
+        range: JourneySurfaceMode
+        description: Whether the journey or step mounts as a page, a modal dialog, or inline within its host container.
+      stepperLayout:
+        range: JourneyStepperLayout
+        description: Whether the step list renders as a vertical rail or a horizontal slide group.
+      subJourneyOpenMode:
+        range: SubJourneyOpenMode
+        description: How a SUB_JOURNEY step opens its child run; meaningless on any other stepKind.
+      maxWidth:
+        range: integer
+        description: Maximum content width in pixels for the surface. Absent means no constraint.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   AssistedJourneySpec:
     attributes:
       journeyId:
@@ -1228,6 +1268,11 @@ classes:
         ifabsent: 'false'
       heroImage:
         range: string
+      presentation:
+        range: JourneyPresentation
+        inlined: true
+        description: Default presentation for this journey and every step, overridable per step by
+          AssistedJourneyStep.presentationOverride.
       resourceBudgetRef:
         range: ContractReference
         required: true
@@ -1670,6 +1715,11 @@ classes:
         description: Step-level hero image, overriding the journey's heroImage for this step only. Falls back to AssistedJourneySpec.heroImage
           when absent. Not validated by the schema (same convention as heroImage) -- a kit-distributed asset once JumoKit
           exports binary assets (portability.yaml).
+      presentationOverride:
+        range: JourneyPresentation
+        inlined: true
+        description: Per-field override of the journey's presentation for this step only. An absent field falls
+          back to AssistedJourneySpec.presentation.
       descriptionI18nKey:
         range: string
         description: i18n key resolving this step's user-facing description. When present, takes precedence over the literal

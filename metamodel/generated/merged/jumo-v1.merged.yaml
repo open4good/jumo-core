@@ -1106,6 +1106,36 @@ enums:
         text: PROPOSAL
       OBSERVATION:
         text: OBSERVATION
+  JourneySurfaceMode:
+    name: JourneySurfaceMode
+    description: How a journey or step mounts in the cockpit shell.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    permissible_values:
+      PAGE:
+        text: PAGE
+      MODAL:
+        text: MODAL
+      INLINE:
+        text: INLINE
+  JourneyStepperLayout:
+    name: JourneyStepperLayout
+    description: How the step list renders.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    permissible_values:
+      VERTICAL:
+        text: VERTICAL
+      HORIZONTAL:
+        text: HORIZONTAL
+  SubJourneyOpenMode:
+    name: SubJourneyOpenMode
+    description: How a SUB_JOURNEY step opens its child run. Meaningless on any other
+      stepKind.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    permissible_values:
+      INLINE:
+        text: INLINE
+      MODAL:
+        text: MODAL
   JourneyVerificationTarget:
     name: JourneyVerificationTarget
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -28120,6 +28150,69 @@ classes:
         - JourneyVerificationSpec
         range: CapabilityName
         required: true
+  JourneyPresentation:
+    name: JourneyPresentation
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: GIT
+      jumo.model_role:
+        tag: jumo.model_role
+        value: VALUE_OBJECT
+      jumo.audience:
+        tag: jumo.audience
+        value: REALM_PRIVATE
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: PUBLIC
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: 'Decorative and layout-only: how a journey or step is drawn, never
+      what it may do. Carries no capability, no policy, no budget and no workflow
+      field, on the same terms as ThemePack. Declared on the journey and overridable
+      per step; an absent field at step level falls back to the journey''s.'
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      surfaceMode:
+        name: surfaceMode
+        description: Whether the journey or step mounts as a page, a modal dialog,
+          or inline within its host container.
+        from_schema: https://jumo.dev/schemas/work
+        owner: JourneyPresentation
+        domain_of:
+        - JourneyPresentation
+        range: JourneySurfaceMode
+      stepperLayout:
+        name: stepperLayout
+        description: Whether the step list renders as a vertical rail or a horizontal
+          slide group.
+        from_schema: https://jumo.dev/schemas/work
+        owner: JourneyPresentation
+        domain_of:
+        - JourneyPresentation
+        range: JourneyStepperLayout
+      subJourneyOpenMode:
+        name: subJourneyOpenMode
+        description: How a SUB_JOURNEY step opens its child run; meaningless on any
+          other stepKind.
+        from_schema: https://jumo.dev/schemas/work
+        owner: JourneyPresentation
+        domain_of:
+        - JourneyPresentation
+        range: SubJourneyOpenMode
+      maxWidth:
+        name: maxWidth
+        description: Maximum content width in pixels for the surface. Absent means
+          no constraint.
+        from_schema: https://jumo.dev/schemas/work
+        owner: JourneyPresentation
+        domain_of:
+        - JourneyPresentation
+        range: integer
   AssistedJourneySpec:
     name: AssistedJourneySpec
     annotations:
@@ -28241,6 +28334,16 @@ classes:
         domain_of:
         - AssistedJourneySpec
         range: string
+      presentation:
+        name: presentation
+        description: Default presentation for this journey and every step, overridable
+          per step by AssistedJourneyStep.presentationOverride.
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneySpec
+        domain_of:
+        - AssistedJourneySpec
+        range: JourneyPresentation
+        inlined: true
       resourceBudgetRef:
         name: resourceBudgetRef
         description: Names the ResourceBudget whose modelCalls limit bounds the clarification-turn
@@ -29778,6 +29881,16 @@ classes:
         - AssistedJourneyStep
         - WorkerSubstrateSpec
         range: string
+      presentationOverride:
+        name: presentationOverride
+        description: Per-field override of the journey's presentation for this step
+          only. An absent field falls back to AssistedJourneySpec.presentation.
+        from_schema: https://jumo.dev/schemas/work
+        owner: AssistedJourneyStep
+        domain_of:
+        - AssistedJourneyStep
+        range: JourneyPresentation
+        inlined: true
       descriptionI18nKey:
         name: descriptionI18nKey
         description: i18n key resolving this step's user-facing description. When

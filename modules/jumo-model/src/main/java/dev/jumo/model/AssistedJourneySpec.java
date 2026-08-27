@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record AssistedJourneySpec(String journeyId, String name, String description, String category, String icon, Boolean interruptible, AssistedJourneyConcurrencyPolicy concurrencyPolicy, Boolean firstRunMandatory, Boolean lifetimeUnique, String heroImage, ContractReference resourceBudgetRef, List<String> requiredCapabilities, List<ContractReference> policySetRefs, String emitsCapability, AssistedJourneyCompletionMode completionMode, AssistedJourneyNavigationMode navigationMode, AssistedJourneyEmission emission, List<AssistedJourneyEmissionBundleItem> emissionBundle, List<AssistedJourneyStep> steps, String summaryI18nKey)  {
+public record AssistedJourneySpec(String journeyId, String name, String description, String category, String icon, Boolean interruptible, AssistedJourneyConcurrencyPolicy concurrencyPolicy, Boolean firstRunMandatory, Boolean lifetimeUnique, String heroImage, JourneyPresentation presentation, ContractReference resourceBudgetRef, List<String> requiredCapabilities, List<ContractReference> policySetRefs, String emitsCapability, AssistedJourneyCompletionMode completionMode, AssistedJourneyNavigationMode navigationMode, AssistedJourneyEmission emission, List<AssistedJourneyEmissionBundleItem> emissionBundle, List<AssistedJourneyStep> steps, String summaryI18nKey)  {
 
     public static Builder builder() {
         return new Builder();
@@ -27,6 +27,7 @@ public record AssistedJourneySpec(String journeyId, String name, String descript
         private Boolean firstRunMandatory = null;
         private Boolean lifetimeUnique = null;
         private String heroImage = "";
+        private JourneyPresentation presentation = null;
         private ContractReference resourceBudgetRef = null;
         private List<String> requiredCapabilities = List.of();
         private List<ContractReference> policySetRefs = List.of();
@@ -89,6 +90,11 @@ public record AssistedJourneySpec(String journeyId, String name, String descript
             return this;
         }
 
+        public Builder presentation(JourneyPresentation presentation) {
+            this.presentation = Objects.requireNonNull(presentation);
+            return this;
+        }
+
         public Builder resourceBudgetRef(ContractReference resourceBudgetRef) {
             this.resourceBudgetRef = Objects.requireNonNull(resourceBudgetRef);
             return this;
@@ -140,7 +146,7 @@ public record AssistedJourneySpec(String journeyId, String name, String descript
         }
 
     public AssistedJourneySpec build() {
-            return new AssistedJourneySpec(journeyId, name, description, category, icon, interruptible, concurrencyPolicy, firstRunMandatory, lifetimeUnique, heroImage, resourceBudgetRef, requiredCapabilities, policySetRefs, emitsCapability, completionMode, navigationMode, emission, emissionBundle, steps, summaryI18nKey);
+            return new AssistedJourneySpec(journeyId, name, description, category, icon, interruptible, concurrencyPolicy, firstRunMandatory, lifetimeUnique, heroImage, presentation, resourceBudgetRef, requiredCapabilities, policySetRefs, emitsCapability, completionMode, navigationMode, emission, emissionBundle, steps, summaryI18nKey);
         }
     }
 }

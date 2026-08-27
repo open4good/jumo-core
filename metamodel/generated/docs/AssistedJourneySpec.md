@@ -105,6 +105,17 @@ URI: [jumo:AssistedJourneySpec](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 
 
 
+      AssistedJourneySpec : presentation
+
+
+
+
+
+        AssistedJourneySpec --> "0..1" JourneyPresentation : presentation
+        click JourneyPresentation href "../JourneyPresentation/"
+
+
+
       AssistedJourneySpec : requiredCapabilities
 
       AssistedJourneySpec : resourceBudgetRef
@@ -153,6 +164,7 @@ URI: [jumo:AssistedJourneySpec](https://jumo.dev/schemas/jumo-v1/AssistedJourney
 | [firstRunMandatory](firstRunMandatory.md) | 0..1 <br/> [Boolean](Boolean.md) |  | direct |
 | [lifetimeUnique](lifetimeUnique.md) | 0..1 <br/> [Boolean](Boolean.md) |  | direct |
 | [heroImage](heroImage.md) | 0..1 <br/> [String](String.md) |  | direct |
+| [presentation](presentation.md) | 0..1 <br/> [JourneyPresentation](JourneyPresentation.md) | Default presentation for this journey and every step, overridable per step by... | direct |
 | [resourceBudgetRef](resourceBudgetRef.md) | 1 <br/> [ContractReference](ContractReference.md) | Names the ResourceBudget whose modelCalls limit bounds the clarification-turn... | direct |
 | [requiredCapabilities](requiredCapabilities.md) | 1..* <br/> [CapabilityName](CapabilityName.md) | Complete capability allowlist for this journey | direct |
 | [policySetRefs](policySetRefs.md) | 1..* <br/> [ContractReference](ContractReference.md) | PolicySet contracts that govern every admission to this journey | direct |
@@ -359,6 +371,17 @@ attributes:
     domain_of:
     - AssistedJourneySpec
     range: string
+  presentation:
+    name: presentation
+    description: Default presentation for this journey and every step, overridable
+      per step by AssistedJourneyStep.presentationOverride.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneySpec
+    domain_of:
+    - AssistedJourneySpec
+    range: JourneyPresentation
+    inlined: true
   resourceBudgetRef:
     name: resourceBudgetRef
     description: Names the ResourceBudget whose modelCalls limit bounds the clarification-turn
@@ -630,6 +653,17 @@ attributes:
     domain_of:
     - AssistedJourneySpec
     range: string
+  presentation:
+    name: presentation
+    description: Default presentation for this journey and every step, overridable
+      per step by AssistedJourneyStep.presentationOverride.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: AssistedJourneySpec
+    domain_of:
+    - AssistedJourneySpec
+    range: JourneyPresentation
+    inlined: true
   resourceBudgetRef:
     name: resourceBudgetRef
     description: Names the ResourceBudget whose modelCalls limit bounds the clarification-turn

@@ -155,6 +155,7 @@ Name: jumo_v1
 | [InterfaceSurface](InterfaceSurface.md) |  |
 | [InterfaceSurfaceSpec](InterfaceSurfaceSpec.md) |  |
 | [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md) | Signed, single-use MCP invocation authorization (ADR-0055) |
+| [JourneyPresentation](JourneyPresentation.md) | Decorative and layout-only: how a journey or step is drawn, never what it may... |
 | [JourneyVerificationSpec](JourneyVerificationSpec.md) | Secret-free declaration of an explicit real observation a journey step may re... |
 | [JumoKit](JumoKit.md) | Root manifest for one portable Jumo Kit repository |
 | [JumoKitSpec](JumoKitSpec.md) |  |
@@ -892,6 +893,7 @@ Name: jumo_v1
 | [maxPublishedRealms](maxPublishedRealms.md) |  |
 | [maxRing](maxRing.md) |  |
 | [maxTrialDurationDays](maxTrialDurationDays.md) |  |
+| [maxWidth](maxWidth.md) | Maximum content width in pixels for the surface |
 | [mayProposeCapabilities](mayProposeCapabilities.md) | Enforced as a subset of the owning AgentDefinition's requestedCapabilities (R... |
 | [mayRaiseCorpusCeiling](mayRaiseCorpusCeiling.md) |  |
 | [mcpBundleRef](mcpBundleRef.md) |  |
@@ -1057,6 +1059,8 @@ Name: jumo_v1
 | [presence](presence.md) |  |
 | [presenceRef](presenceRef.md) | Optional ThemePack terminology key |
 | [present](present.md) | The value at `path` must be present and non-empty |
+| [presentation](presentation.md) | Default presentation for this journey and every step, overridable per step by... |
+| [presentationOverride](presentationOverride.md) | Per-field override of the journey's presentation for this step only |
 | [pricing](pricing.md) |  |
 | [primaryLanguage](primaryLanguage.md) |  |
 | [principal](principal.md) |  |
@@ -1273,6 +1277,7 @@ Name: jumo_v1
 | [statusPracticeRef](statusPracticeRef.md) |  |
 | [stepId](stepId.md) |  |
 | [stepKind](stepKind.md) | Required from the model-driven renderer onward (Rego) |
+| [stepperLayout](stepperLayout.md) | Whether the step list renders as a vertical rail or a horizontal slide group |
 | [steps](steps.md) |  |
 | [stepUpProof](stepUpProof.md) |  |
 | [storagePool](storagePool.md) |  |
@@ -1287,6 +1292,7 @@ Name: jumo_v1
 | [subject](subject.md) |  |
 | [subjectKind](subjectKind.md) |  |
 | [subjectRef](subjectRef.md) |  |
+| [subJourneyOpenMode](subJourneyOpenMode.md) | How a SUB_JOURNEY step opens its child run; meaningless on any other stepKind |
 | [subprocessReleaseRef](subprocessReleaseRef.md) | The exact ProcessSpec release this SUBPROCESS step invokes (Rego required-on-... |
 | [subscriptionAudience](subscriptionAudience.md) |  |
 | [substrate](substrate.md) |  |
@@ -1302,6 +1308,7 @@ Name: jumo_v1
 | [supportedTransports](supportedTransports.md) |  |
 | [supportRequireSubscription](supportRequireSubscription.md) |  |
 | [surfaceId](surfaceId.md) |  |
+| [surfaceMode](surfaceMode.md) | Whether the journey or step mounts as a page, a modal dialog, or inline withi... |
 | [surfaces](surfaces.md) |  |
 | [suspendedReason](suspendedReason.md) | Set when state is PROPOSED after having been ACCEPTED or IN_PROGRESS, to reco... |
 | [syncMode](syncMode.md) |  |
@@ -1490,6 +1497,8 @@ Name: jumo_v1
 | [IntentKind](IntentKind.md) |  |
 | [InterfaceEntity](InterfaceEntity.md) |  |
 | [InteroperabilityAdapter](InteroperabilityAdapter.md) | Sealed registry of authorized public interoperability adapters |
+| [JourneyStepperLayout](JourneyStepperLayout.md) | How the step list renders |
+| [JourneySurfaceMode](JourneySurfaceMode.md) | How a journey or step mounts in the cockpit shell |
 | [JourneyVerificationTarget](JourneyVerificationTarget.md) |  |
 | [KitBindingValueType](KitBindingValueType.md) |  |
 | [KitModuleType](KitModuleType.md) |  |
@@ -1562,6 +1571,7 @@ Name: jumo_v1
 | [SlaTier](SlaTier.md) |  |
 | [SourceVisibility](SourceVisibility.md) |  |
 | [StructuredOutputMode](StructuredOutputMode.md) |  |
+| [SubJourneyOpenMode](SubJourneyOpenMode.md) | How a SUB_JOURNEY step opens its child run |
 | [TaskClass](TaskClass.md) |  |
 | [ToolUseRequirement](ToolUseRequirement.md) |  |
 | [TopologyPlacement](TopologyPlacement.md) |  |

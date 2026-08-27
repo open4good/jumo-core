@@ -505,6 +505,10 @@
       "@type": "@id",
       "@id": "policySetRefs"
     },
+    "presentation": {
+      "@type": "@id",
+      "@id": "presentation"
+    },
     "requiredCapabilities": {
       "@id": "requiredCapabilities"
     },
@@ -538,6 +542,10 @@
     },
     "personaNarration": {
       "@id": "personaNarration"
+    },
+    "presentationOverride": {
+      "@type": "@id",
+      "@id": "presentationOverride"
     },
     "processSpecRef": {
       "@type": "@id",
@@ -1929,6 +1937,34 @@
     },
     "toolsDigest": {
       "@id": "toolsDigest"
+    },
+    "maxWidth": {
+      "@type": "xsd:integer",
+      "@id": "maxWidth"
+    },
+    "stepperLayout": {
+      "@context": {
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      },
+      "@id": "stepperLayout"
+    },
+    "subJourneyOpenMode": {
+      "@context": {
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      },
+      "@id": "subJourneyOpenMode"
+    },
+    "surfaceMode": {
+      "@context": {
+        "text": "skos:notation",
+        "description": "skos:prefLabel",
+        "meaning": "@id"
+      },
+      "@id": "surfaceMode"
     },
     "targetType": {
       "@context": {
@@ -4601,6 +4637,9 @@
     },
     "InvocationAuthorizationReceipt": {
       "@id": "InvocationAuthorizationReceipt"
+    },
+    "JourneyPresentation": {
+      "@id": "JourneyPresentation"
     },
     "JourneyVerificationSpec": {
       "@id": "JourneyVerificationSpec"

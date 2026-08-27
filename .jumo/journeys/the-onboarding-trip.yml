@@ -20,6 +20,7 @@ spec:
   firstRunMandatory: true
   lifetimeUnique: true
   heroImage: /images/nestor-avatar.svg
+  presentation: {surfaceMode: INLINE, stepperLayout: VERTICAL, maxWidth: 960}
   emitsCapability: contract.change.propose
   navigationMode: FREE
   emission:
@@ -79,6 +80,7 @@ spec:
       dependsOn: [setup-identity]
       parallelizable: true
       requiredFields: []
+      presentationOverride: {subJourneyOpenMode: MODAL}
       subAssistedJourneyRef: {kind: AssistedJourney, namespace: dev.jumo.core, id: configure-api-accounts}
     - id: capture-connector-intent
       requiredObligations: []

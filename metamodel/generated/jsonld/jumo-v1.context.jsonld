@@ -2361,6 +2361,42 @@
       "@type": "@id",
       "@id": "workOrderRef"
     },
+    "argumentsDigest": {
+      "@id": "argumentsDigest"
+    },
+    "grantId": {
+      "@id": "grantId"
+    },
+    "operationName": {
+      "@id": "operationName"
+    },
+    "schemaDigest": {
+      "@id": "schemaDigest"
+    },
+    "signingKeyName": {
+      "@id": "signingKeyName"
+    },
+    "argumentsSize": {
+      "@type": "xsd:integer",
+      "@id": "argumentsSize"
+    },
+    "policyRevision": {
+      "@id": "policyRevision"
+    },
+    "receipt": {
+      "@type": "@id",
+      "@id": "receipt"
+    },
+    "reasonCode": {
+      "@id": "reasonCode"
+    },
+    "resultDigest": {
+      "@id": "resultDigest"
+    },
+    "resultSize": {
+      "@type": "xsd:integer",
+      "@id": "resultSize"
+    },
     "algorithmVersion": {
       "@id": "algorithmVersion"
     },
@@ -2949,9 +2985,6 @@
     "workspacePath": {
       "@id": "workspacePath"
     },
-    "grantId": {
-      "@id": "grantId"
-    },
     "action": {
       "@id": "action"
     },
@@ -2967,9 +3000,6 @@
     },
     "actions": {
       "@id": "actions"
-    },
-    "reasonCode": {
-      "@id": "reasonCode"
     },
     "when": {
       "@id": "when"
@@ -3657,9 +3687,6 @@
     "inputSha256": {
       "@id": "inputSha256"
     },
-    "policyRevision": {
-      "@id": "policyRevision"
-    },
     "eligibleRoleDefinitionRefs": {
       "@type": "@id",
       "@id": "eligibleRoleDefinitionRefs"
@@ -3678,9 +3705,6 @@
         "meaning": "@id"
       },
       "@id": "profile"
-    },
-    "schemaDigest": {
-      "@id": "schemaDigest"
     },
     "schemaId": {
       "@id": "schemaId"
@@ -3763,9 +3787,6 @@
     },
     "planSignature": {
       "@id": "planSignature"
-    },
-    "signingKeyName": {
-      "@id": "signingKeyName"
     },
     "upstreamToolsDigest": {
       "@id": "upstreamToolsDigest"
@@ -4772,6 +4793,18 @@
     },
     "McpInventorySnapshot": {
       "@id": "McpInventorySnapshot"
+    },
+    "McpInvocationAuthorizationReceipt": {
+      "@id": "McpInvocationAuthorizationReceipt"
+    },
+    "McpInvocationAuthorizationRequest": {
+      "@id": "McpInvocationAuthorizationRequest"
+    },
+    "McpInvocationDispatchRequest": {
+      "@id": "McpInvocationDispatchRequest"
+    },
+    "McpInvocationOutcome": {
+      "@id": "McpInvocationOutcome"
     },
     "McpProtocolProfile": {
       "@id": "McpProtocolProfile"

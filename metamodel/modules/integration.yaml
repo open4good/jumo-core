@@ -258,6 +258,10 @@ enums:
       APPROVED_MERGE: {}
       APPROVED_SPLIT: {}
       REJECTED: {}
+  McpInvocationOutcomeType:
+    permissible_values:
+      SUCCEEDED: {}
+      FAILED: {}
 classes:
   McpRegistrySource:
     description: Platform-scoped configuration for a bounded registry adapter. It authorizes neither installation nor execution.
@@ -2593,6 +2597,116 @@ classes:
     annotations:
       jumo.state_authority: NONE
       jumo.model_role: COMMAND
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpInvocationAuthorizationRequest:
+    description: Machine-authenticated request to authorize one planned MCP operation without persisting arguments.
+    attributes:
+      invocationId:
+        range: Identifier
+        required: true
+      grantId:
+        range: Identifier
+        required: true
+      leaseId:
+        range: Identifier
+        required: true
+      operationName:
+        range: string
+        required: true
+      argumentsDigest:
+        range: string
+        required: true
+      argumentsSize:
+        range: integer
+        required: true
+      schemaDigest:
+        range: string
+        required: true
+      policyRevision:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: COMMAND
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpInvocationAuthorizationReceipt:
+    description: Signed, short-lived authorization receipt bound to exactly one MCP invocation.
+    attributes:
+      invocationId:
+        range: Identifier
+        required: true
+      grantId:
+        range: Identifier
+        required: true
+      leaseId:
+        range: Identifier
+        required: true
+      operationName:
+        range: string
+        required: true
+      argumentsDigest:
+        range: string
+        required: true
+      schemaDigest:
+        range: string
+        required: true
+      expiresAt:
+        range: string
+        required: true
+      signingKeyName:
+        range: string
+        required: true
+      signature:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpInvocationDispatchRequest:
+    description: Machine acknowledgement that a signed MCP invocation receipt is about to dispatch upstream.
+    attributes:
+      receipt:
+        range: McpInvocationAuthorizationReceipt
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: COMMAND
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpInvocationOutcome:
+    description: Sanitized terminal outcome for one dispatched MCP invocation.
+    attributes:
+      invocationId:
+        range: Identifier
+        required: true
+      leaseId:
+        range: Identifier
+        required: true
+      outcome:
+        range: McpInvocationOutcomeType
+        required: true
+      resultDigest:
+        range: string
+      resultSize:
+        range: integer
+      reasonCode:
+        range: string
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: EVENT
       jumo.audience: MACHINE_MTLS
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true

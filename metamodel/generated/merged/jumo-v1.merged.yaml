@@ -2260,6 +2260,14 @@ enums:
         text: APPROVED_SPLIT
       REJECTED:
         text: REJECTED
+  McpInvocationOutcomeType:
+    name: McpInvocationOutcomeType
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    permissible_values:
+      SUCCEEDED:
+        text: SUCCEEDED
+      FAILED:
+        text: FAILED
   InterfaceEntity:
     name: InterfaceEntity
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -15732,6 +15740,7 @@ classes:
         - DispositionRule
         - McpCatalogAssessment
         - AppraisalDimension
+        - McpInvocationOutcome
         range: DispositionOutcome
         required: true
   DispositionMatch:
@@ -20766,6 +20775,7 @@ classes:
         - ExecutionCellLease
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         - ConnectorSessionBinding
         - EffectTestAuthorization
         range: datetime
@@ -31079,6 +31089,7 @@ classes:
         domain_of:
         - PolicyRule
         - RoutingDecision
+        - McpInvocationOutcome
         range: string
   ImprovementLoop:
     name: ImprovementLoop
@@ -38470,6 +38481,7 @@ classes:
         - ExecutionCellLease
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         - ConnectorSessionBinding
         - EffectTestAuthorization
         range: string
@@ -38999,6 +39011,7 @@ classes:
         domain_of:
         - MachineAdminPlaybookSpec
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         range: string
       variablesSchemaId:
         name: variablesSchemaId
@@ -39266,6 +39279,7 @@ classes:
         - ExecutionCellLease
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         - ConnectorSessionBinding
         - EffectTestAuthorization
         range: string
@@ -39460,6 +39474,9 @@ classes:
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
         range: Identifier
         required: true
       driverKind:
@@ -39522,6 +39539,7 @@ classes:
         - ExecutionCellLease
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         - ConnectorSessionBinding
         - EffectTestAuthorization
         range: string
@@ -39867,6 +39885,9 @@ classes:
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
         range: Identifier
         required: true
       machineId:
@@ -39962,6 +39983,7 @@ classes:
         - ExecutionCellLease
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         - ConnectorSessionBinding
         - EffectTestAuthorization
         range: string
@@ -41232,6 +41254,9 @@ classes:
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
         range: Identifier
         required: true
       machineRef:
@@ -43203,6 +43228,7 @@ classes:
         - DispositionRule
         - McpCatalogAssessment
         - AppraisalDimension
+        - McpInvocationOutcome
         range: McpCatalogAssessmentOutcome
         required: true
       evidenceDigest:
@@ -45148,6 +45174,7 @@ classes:
         - DispositionRule
         - McpCatalogAssessment
         - AppraisalDimension
+        - McpInvocationOutcome
         range: AppraisalDimensionOutcome
         required: true
       finding:
@@ -48128,6 +48155,7 @@ classes:
         - ExecutionCellLease
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         - ConnectorSessionBinding
         - EffectTestAuthorization
         range: datetime
@@ -48291,6 +48319,7 @@ classes:
         owner: RoutingDecision
         domain_of:
         - RoutingDecision
+        - McpInvocationAuthorizationRequest
         range: string
         required: true
       reasonCode:
@@ -48300,6 +48329,7 @@ classes:
         domain_of:
         - PolicyRule
         - RoutingDecision
+        - McpInvocationOutcome
         range: string
         required: true
       inputSha256:
@@ -48711,6 +48741,9 @@ classes:
         owner: InvocationAuthorizationReceipt
         domain_of:
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
         range: Identifier
         required: true
       executionCellLeaseRef:
@@ -48822,6 +48855,7 @@ classes:
         - ExecutionCellLease
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         - ConnectorSessionBinding
         - EffectTestAuthorization
         range: datetime
@@ -48833,6 +48867,7 @@ classes:
         domain_of:
         - MachineAdminPlaybookSpec
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         range: string
         required: true
         pattern: ^.{16,}$
@@ -53576,6 +53611,8 @@ classes:
         owner: PlannedOperation
         domain_of:
         - PlannedOperation
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
         range: Identifier
         required: true
       exposedName:
@@ -53675,6 +53712,9 @@ classes:
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
         range: Identifier
         required: true
       grantIds:
@@ -53746,6 +53786,9 @@ classes:
         - CliInvocationRequest
         - SessionPlanRequest
         - SessionPlan
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
         range: Identifier
         required: true
       upstreamToolsDigest:
@@ -53786,6 +53829,7 @@ classes:
         owner: SessionPlan
         domain_of:
         - SessionPlan
+        - McpInvocationAuthorizationReceipt
         range: string
         required: true
       planSignature:
@@ -53796,6 +53840,355 @@ classes:
         - SessionPlan
         range: string
         required: true
+  McpInvocationAuthorizationRequest:
+    name: McpInvocationAuthorizationRequest
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: NONE
+      jumo.model_role:
+        tag: jumo.model_role
+        value: COMMAND
+      jumo.audience:
+        tag: jumo.audience
+        value: MACHINE_MTLS
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: Machine-authenticated request to authorize one planned MCP operation
+      without persisting arguments.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      invocationId:
+        name: invocationId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationRequest
+        domain_of:
+        - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
+        range: Identifier
+        required: true
+      grantId:
+        name: grantId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationRequest
+        domain_of:
+        - PlannedOperation
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        range: Identifier
+        required: true
+      leaseId:
+        name: leaseId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationRequest
+        domain_of:
+        - WorkloadCommand
+        - ExecutionCellLease
+        - CliInvocationRequest
+        - SessionPlanRequest
+        - SessionPlan
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
+        range: Identifier
+        required: true
+      operationName:
+        name: operationName
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationRequest
+        domain_of:
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        range: string
+        required: true
+      argumentsDigest:
+        name: argumentsDigest
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationRequest
+        domain_of:
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        range: string
+        required: true
+      argumentsSize:
+        name: argumentsSize
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationRequest
+        domain_of:
+        - McpInvocationAuthorizationRequest
+        range: integer
+        required: true
+      schemaDigest:
+        name: schemaDigest
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationRequest
+        domain_of:
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - SchemaBinding
+        range: string
+        required: true
+      policyRevision:
+        name: policyRevision
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationRequest
+        domain_of:
+        - RoutingDecision
+        - McpInvocationAuthorizationRequest
+        range: string
+        required: true
+  McpInvocationAuthorizationReceipt:
+    name: McpInvocationAuthorizationReceipt
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: NONE
+      jumo.model_role:
+        tag: jumo.model_role
+        value: VALUE_OBJECT
+      jumo.audience:
+        tag: jumo.audience
+        value: MACHINE_MTLS
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: Signed, short-lived authorization receipt bound to exactly one MCP
+      invocation.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      invocationId:
+        name: invocationId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationReceipt
+        domain_of:
+        - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
+        range: Identifier
+        required: true
+      grantId:
+        name: grantId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationReceipt
+        domain_of:
+        - PlannedOperation
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        range: Identifier
+        required: true
+      leaseId:
+        name: leaseId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationReceipt
+        domain_of:
+        - WorkloadCommand
+        - ExecutionCellLease
+        - CliInvocationRequest
+        - SessionPlanRequest
+        - SessionPlan
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
+        range: Identifier
+        required: true
+      operationName:
+        name: operationName
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationReceipt
+        domain_of:
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        range: string
+        required: true
+      argumentsDigest:
+        name: argumentsDigest
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationReceipt
+        domain_of:
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        range: string
+        required: true
+      schemaDigest:
+        name: schemaDigest
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationReceipt
+        domain_of:
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - SchemaBinding
+        range: string
+        required: true
+      expiresAt:
+        name: expiresAt
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationReceipt
+        domain_of:
+        - OrganizationRetentionHoldSpec
+        - MachineEnrollmentChallenge
+        - MachineAdminCommand
+        - WorkloadCommand
+        - ExecutionCellLease
+        - ProviderSessionBinding
+        - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
+        - ConnectorSessionBinding
+        - EffectTestAuthorization
+        range: string
+        required: true
+      signingKeyName:
+        name: signingKeyName
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationReceipt
+        domain_of:
+        - SessionPlan
+        - McpInvocationAuthorizationReceipt
+        range: string
+        required: true
+      signature:
+        name: signature
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationAuthorizationReceipt
+        domain_of:
+        - MachineAdminPlaybookSpec
+        - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
+        range: string
+        required: true
+  McpInvocationDispatchRequest:
+    name: McpInvocationDispatchRequest
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: NONE
+      jumo.model_role:
+        tag: jumo.model_role
+        value: COMMAND
+      jumo.audience:
+        tag: jumo.audience
+        value: MACHINE_MTLS
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: Machine acknowledgement that a signed MCP invocation receipt is about
+      to dispatch upstream.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      receipt:
+        name: receipt
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationDispatchRequest
+        domain_of:
+        - McpInvocationDispatchRequest
+        range: McpInvocationAuthorizationReceipt
+        required: true
+        inlined: true
+  McpInvocationOutcome:
+    name: McpInvocationOutcome
+    annotations:
+      jumo.state_authority:
+        tag: jumo.state_authority
+        value: NONE
+      jumo.model_role:
+        tag: jumo.model_role
+        value: EVENT
+      jumo.audience:
+        tag: jumo.audience
+        value: MACHINE_MTLS
+      jumo.sensitivity:
+        tag: jumo.sensitivity
+        value: INTERNAL
+      jumo.boundary_eligible:
+        tag: jumo.boundary_eligible
+        value: true
+      jumo.schema_profiles:
+        tag: jumo.schema_profiles
+        value: draft-2020-12,native-json-schema,prompted-json-validated
+    description: Sanitized terminal outcome for one dispatched MCP invocation.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    attributes:
+      invocationId:
+        name: invocationId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationOutcome
+        domain_of:
+        - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
+        range: Identifier
+        required: true
+      leaseId:
+        name: leaseId
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationOutcome
+        domain_of:
+        - WorkloadCommand
+        - ExecutionCellLease
+        - CliInvocationRequest
+        - SessionPlanRequest
+        - SessionPlan
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
+        - McpInvocationOutcome
+        range: Identifier
+        required: true
+      outcome:
+        name: outcome
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationOutcome
+        domain_of:
+        - DispositionRule
+        - McpCatalogAssessment
+        - AppraisalDimension
+        - McpInvocationOutcome
+        range: McpInvocationOutcomeType
+        required: true
+      resultDigest:
+        name: resultDigest
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationOutcome
+        domain_of:
+        - McpInvocationOutcome
+        range: string
+      resultSize:
+        name: resultSize
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationOutcome
+        domain_of:
+        - McpInvocationOutcome
+        range: integer
+      reasonCode:
+        name: reasonCode
+        from_schema: https://jumo.dev/schemas/integration
+        owner: McpInvocationOutcome
+        domain_of:
+        - PolicyRule
+        - RoutingDecision
+        - McpInvocationOutcome
+        range: string
   ImportedSchemaCandidate:
     name: ImportedSchemaCandidate
     annotations:
@@ -56154,6 +56547,7 @@ classes:
         - ExecutionCellLease
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         - ConnectorSessionBinding
         - EffectTestAuthorization
         range: string
@@ -56488,6 +56882,7 @@ classes:
         - ExecutionCellLease
         - ProviderSessionBinding
         - InvocationAuthorizationReceipt
+        - McpInvocationAuthorizationReceipt
         - ConnectorSessionBinding
         - EffectTestAuthorization
         range: string
@@ -58798,6 +59193,8 @@ classes:
         from_schema: https://jumo.dev/schemas/interface
         owner: SchemaBinding
         domain_of:
+        - McpInvocationAuthorizationRequest
+        - McpInvocationAuthorizationReceipt
         - SchemaBinding
         range: string
         required: true

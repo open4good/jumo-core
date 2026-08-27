@@ -3,13 +3,13 @@ search:
   boost: 5.0
 ---
 
-# Slot: grantId
+# Slot: argumentsDigest
 
 <div data-search-exclude markdown="1">
 
 
 
-URI: [jumo:grantId](https://jumo.dev/schemas/jumo-v1/grantId)
+URI: [jumo:argumentsDigest](https://jumo.dev/schemas/jumo-v1/argumentsDigest)
 <!-- no inheritance hierarchy -->
 
 
@@ -20,7 +20,6 @@ URI: [jumo:grantId](https://jumo.dev/schemas/jumo-v1/grantId)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [PlannedOperation](PlannedOperation.md) | One operation exposed by a signed MCP gateway session plan, resolved from a v... |  no  |
 | [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md) | Machine-authenticated request to authorize one planned MCP operation without ... |  no  |
 | [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) | Signed, short-lived authorization receipt bound to exactly one MCP invocation |  no  |
 
@@ -36,7 +35,7 @@ URI: [jumo:grantId](https://jumo.dev/schemas/jumo-v1/grantId)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [PlannedOperation](PlannedOperation.md), [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) |
+| Domain Of | [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) |
 
 ### Cardinality and Requirements
 
@@ -63,8 +62,8 @@ URI: [jumo:grantId](https://jumo.dev/schemas/jumo-v1/grantId)
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:grantId |
-| native | jumo:grantId |
+| self | jumo:argumentsDigest |
+| native | jumo:argumentsDigest |
 
 
 
@@ -73,9 +72,8 @@ URI: [jumo:grantId](https://jumo.dev/schemas/jumo-v1/grantId)
 
 <details>
 ```yaml
-name: grantId
+name: argumentsDigest
 domain_of:
-- PlannedOperation
 - McpInvocationAuthorizationRequest
 - McpInvocationAuthorizationReceipt
 range: string

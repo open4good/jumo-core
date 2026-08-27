@@ -168,6 +168,7 @@ attributes:
     - DispositionRule
     - McpCatalogAssessment
     - AppraisalDimension
+    - McpInvocationOutcome
     range: McpCatalogAssessmentOutcome
     required: true
   evidenceDigest:
@@ -252,6 +253,7 @@ attributes:
     - DispositionRule
     - McpCatalogAssessment
     - AppraisalDimension
+    - McpInvocationOutcome
     range: McpCatalogAssessmentOutcome
     required: true
   evidenceDigest:

@@ -303,6 +303,7 @@ attributes:
     owner: RoutingDecision
     domain_of:
     - RoutingDecision
+    - McpInvocationAuthorizationRequest
     range: string
     required: true
   reasonCode:
@@ -312,6 +313,7 @@ attributes:
     domain_of:
     - PolicyRule
     - RoutingDecision
+    - McpInvocationOutcome
     range: string
     required: true
   inputSha256:
@@ -502,6 +504,7 @@ attributes:
     owner: RoutingDecision
     domain_of:
     - RoutingDecision
+    - McpInvocationAuthorizationRequest
     range: string
     required: true
   reasonCode:
@@ -511,6 +514,7 @@ attributes:
     domain_of:
     - PolicyRule
     - RoutingDecision
+    - McpInvocationOutcome
     range: string
     required: true
   inputSha256:

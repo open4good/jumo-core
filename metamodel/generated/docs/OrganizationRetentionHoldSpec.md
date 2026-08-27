@@ -190,6 +190,7 @@ attributes:
     - ExecutionCellLease
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     - ConnectorSessionBinding
     - EffectTestAuthorization
     range: datetime
@@ -272,6 +273,7 @@ attributes:
     - ExecutionCellLease
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     - ConnectorSessionBinding
     - EffectTestAuthorization
     range: datetime

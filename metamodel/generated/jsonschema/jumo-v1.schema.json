@@ -7569,6 +7569,156 @@
       "title": "McpInventorySnapshot",
       "type": "object"
     },
+    "McpInvocationAuthorizationReceipt": {
+      "additionalProperties": false,
+      "description": "Signed, short-lived authorization receipt bound to exactly one MCP invocation.",
+      "properties": {
+        "argumentsDigest": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string"
+        },
+        "grantId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "invocationId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "leaseId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "operationName": {
+          "type": "string"
+        },
+        "schemaDigest": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "signingKeyName": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "invocationId",
+        "grantId",
+        "leaseId",
+        "operationName",
+        "argumentsDigest",
+        "schemaDigest",
+        "expiresAt",
+        "signingKeyName",
+        "signature"
+      ],
+      "title": "McpInvocationAuthorizationReceipt",
+      "type": "object"
+    },
+    "McpInvocationAuthorizationRequest": {
+      "additionalProperties": false,
+      "description": "Machine-authenticated request to authorize one planned MCP operation without persisting arguments.",
+      "properties": {
+        "argumentsDigest": {
+          "type": "string"
+        },
+        "argumentsSize": {
+          "type": "integer"
+        },
+        "grantId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "invocationId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "leaseId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "operationName": {
+          "type": "string"
+        },
+        "policyRevision": {
+          "type": "string"
+        },
+        "schemaDigest": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "invocationId",
+        "grantId",
+        "leaseId",
+        "operationName",
+        "argumentsDigest",
+        "argumentsSize",
+        "schemaDigest",
+        "policyRevision"
+      ],
+      "title": "McpInvocationAuthorizationRequest",
+      "type": "object"
+    },
+    "McpInvocationDispatchRequest": {
+      "additionalProperties": false,
+      "description": "Machine acknowledgement that a signed MCP invocation receipt is about to dispatch upstream.",
+      "properties": {
+        "receipt": {
+          "$ref": "#/$defs/McpInvocationAuthorizationReceipt"
+        }
+      },
+      "required": [
+        "receipt"
+      ],
+      "title": "McpInvocationDispatchRequest",
+      "type": "object"
+    },
+    "McpInvocationOutcome": {
+      "additionalProperties": false,
+      "description": "Sanitized terminal outcome for one dispatched MCP invocation.",
+      "properties": {
+        "invocationId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "leaseId": {
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "type": "string"
+        },
+        "outcome": {
+          "$ref": "#/$defs/McpInvocationOutcomeType"
+        },
+        "reasonCode": {
+          "type": "string"
+        },
+        "resultDigest": {
+          "type": "string"
+        },
+        "resultSize": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "invocationId",
+        "leaseId",
+        "outcome"
+      ],
+      "title": "McpInvocationOutcome",
+      "type": "object"
+    },
+    "McpInvocationOutcomeType": {
+      "description": "",
+      "enum": [
+        "SUCCEEDED",
+        "FAILED"
+      ],
+      "title": "McpInvocationOutcomeType",
+      "type": "string"
+    },
     "McpProtocolProfile": {
       "additionalProperties": false,
       "description": "Supported MCP protocol capabilities and versions.",

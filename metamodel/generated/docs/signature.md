@@ -22,6 +22,7 @@ URI: [jumo:signature](https://jumo.dev/schemas/jumo-v1/signature)
 | --- | --- | --- |
 | [MachineAdminPlaybookSpec](MachineAdminPlaybookSpec.md) | Specification of an allowlisted machine admin playbook |  no  |
 | [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md) | Signed, single-use MCP invocation authorization (ADR-0055) |  no  |
+| [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) | Signed, short-lived authorization receipt bound to exactly one MCP invocation |  no  |
 
 
 
@@ -35,7 +36,7 @@ URI: [jumo:signature](https://jumo.dev/schemas/jumo-v1/signature)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [MachineAdminPlaybookSpec](MachineAdminPlaybookSpec.md), [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md) |
+| Domain Of | [MachineAdminPlaybookSpec](MachineAdminPlaybookSpec.md), [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) |
 
 ### Cardinality and Requirements
 
@@ -76,6 +77,7 @@ name: signature
 domain_of:
 - MachineAdminPlaybookSpec
 - InvocationAuthorizationReceipt
+- McpInvocationAuthorizationReceipt
 range: string
 
 ```

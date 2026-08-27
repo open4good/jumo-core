@@ -199,6 +199,10 @@ Name: jumo_v1
 | [McpCatalogServer](McpCatalogServer.md) | Recognized PostgreSQL projection of sourced catalog observations |
 | [McpCatalogVersion](McpCatalogVersion.md) |  |
 | [McpInventorySnapshot](McpInventorySnapshot.md) | PostgreSQL event recording an MCP inventory discovered under an exact Realm l... |
+| [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) | Signed, short-lived authorization receipt bound to exactly one MCP invocation |
+| [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md) | Machine-authenticated request to authorize one planned MCP operation without ... |
+| [McpInvocationDispatchRequest](McpInvocationDispatchRequest.md) | Machine acknowledgement that a signed MCP invocation receipt is about to disp... |
+| [McpInvocationOutcome](McpInvocationOutcome.md) | Sanitized terminal outcome for one dispatched MCP invocation |
 | [McpProtocolProfile](McpProtocolProfile.md) | Supported MCP protocol capabilities and versions |
 | [McpReconciliationCandidate](McpReconciliationCandidate.md) |  |
 | [McpReconciliationDecision](McpReconciliationDecision.md) |  |
@@ -445,6 +449,8 @@ Name: jumo_v1
 | [approverRef](approverRef.md) |  |
 | [arch](arch.md) |  |
 | [argumentDigest](argumentDigest.md) |  |
+| [argumentsDigest](argumentsDigest.md) |  |
+| [argumentsSize](argumentsSize.md) |  |
 | [artifact](artifact.md) |  |
 | [artifactAllowlist](artifactAllowlist.md) |  |
 | [artifactOrEndpoint](artifactOrEndpoint.md) |  |
@@ -979,6 +985,7 @@ Name: jumo_v1
 | [openBao](openBao.md) |  |
 | [openQuestion](openQuestion.md) | A clarifying question to continue the dialogue when intent is still ambiguous |
 | [operationId](operationId.md) |  |
+| [operationName](operationName.md) |  |
 | [operationRef](operationRef.md) |  |
 | [operations](operations.md) |  |
 | [optInRequired](optInRequired.md) |  |
@@ -1122,6 +1129,7 @@ Name: jumo_v1
 | [reason](reason.md) |  |
 | [reasonCode](reasonCode.md) | Sanitized code safe to expose across a Realm boundary (canonical decision 66) |
 | [reasoningEffort](reasoningEffort.md) |  |
+| [receipt](receipt.md) |  |
 | [recommendationExpiry](recommendationExpiry.md) |  |
 | [reconciliation](reconciliation.md) |  |
 | [recoveryPlanDigest](recoveryPlanDigest.md) | Required in Rego when effect is SYSTEM_EFFECT and the bundle is ENABLED (ADR-... |
@@ -1168,6 +1176,8 @@ Name: jumo_v1
 | [resourceBudgetRef](resourceBudgetRef.md) |  |
 | [responseBindings](responseBindings.md) |  |
 | [responsibilities](responsibilities.md) |  |
+| [resultDigest](resultDigest.md) |  |
+| [resultSize](resultSize.md) |  |
 | [retention](retention.md) |  |
 | [retire](retire.md) |  |
 | [retrieval](retrieval.md) |  |
@@ -1511,6 +1521,7 @@ Name: jumo_v1
 | [McpBundleTrustClass](McpBundleTrustClass.md) |  |
 | [McpCatalogAssessmentOutcome](McpCatalogAssessmentOutcome.md) |  |
 | [McpCatalogInstallability](McpCatalogInstallability.md) |  |
+| [McpInvocationOutcomeType](McpInvocationOutcomeType.md) |  |
 | [McpReconciliationDecisionType](McpReconciliationDecisionType.md) |  |
 | [McpRegistrySourceLifecycle](McpRegistrySourceLifecycle.md) |  |
 | [McpRegistrySourceType](McpRegistrySourceType.md) |  |

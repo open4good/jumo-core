@@ -229,6 +229,9 @@ attributes:
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    - McpInvocationOutcome
     range: Identifier
     required: true
   machineRef:
@@ -391,6 +394,9 @@ attributes:
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    - McpInvocationOutcome
     range: Identifier
     required: true
   machineRef:

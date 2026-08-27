@@ -21,6 +21,7 @@ URI: [jumo:signingKeyName](https://jumo.dev/schemas/jumo-v1/signingKeyName)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [SessionPlan](SessionPlan.md) | Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway... |  no  |
+| [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) | Signed, short-lived authorization receipt bound to exactly one MCP invocation |  no  |
 
 
 
@@ -34,20 +35,12 @@ URI: [jumo:signingKeyName](https://jumo.dev/schemas/jumo-v1/signingKeyName)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [SessionPlan](SessionPlan.md) |
+| Domain Of | [SessionPlan](SessionPlan.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-| Required | Yes |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [SessionPlan](SessionPlan.md) |
-
-
 
 
 
@@ -61,13 +54,6 @@ URI: [jumo:signingKeyName](https://jumo.dev/schemas/jumo-v1/signingKeyName)
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -87,13 +73,10 @@ URI: [jumo:signingKeyName](https://jumo.dev/schemas/jumo-v1/signingKeyName)
 <details>
 ```yaml
 name: signingKeyName
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: SessionPlan
 domain_of:
 - SessionPlan
+- McpInvocationAuthorizationReceipt
 range: string
-required: true
 
 ```
 </details></div>

@@ -21,6 +21,9 @@ URI: [jumo:invocationId](https://jumo.dev/schemas/jumo-v1/invocationId)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md) | Signed, single-use MCP invocation authorization (ADR-0055) |  no  |
+| [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md) | Machine-authenticated request to authorize one planned MCP operation without ... |  no  |
+| [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) | Signed, short-lived authorization receipt bound to exactly one MCP invocation |  no  |
+| [McpInvocationOutcome](McpInvocationOutcome.md) | Sanitized terminal outcome for one dispatched MCP invocation |  no  |
 
 
 
@@ -33,21 +36,13 @@ URI: [jumo:invocationId](https://jumo.dev/schemas/jumo-v1/invocationId)
 
 | Property | Value |
 | --- | --- |
-| Range | [Identifier](Identifier.md) |
-| Domain Of | [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md) |
+| Range | [String](String.md) |
+| Domain Of | [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md), [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md), [McpInvocationOutcome](McpInvocationOutcome.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-| Required | Yes |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md) |
-
-
 
 
 
@@ -61,13 +56,6 @@ URI: [jumo:invocationId](https://jumo.dev/schemas/jumo-v1/invocationId)
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -87,13 +75,12 @@ URI: [jumo:invocationId](https://jumo.dev/schemas/jumo-v1/invocationId)
 <details>
 ```yaml
 name: invocationId
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: InvocationAuthorizationReceipt
 domain_of:
 - InvocationAuthorizationReceipt
-range: Identifier
-required: true
+- McpInvocationAuthorizationRequest
+- McpInvocationAuthorizationReceipt
+- McpInvocationOutcome
+range: string
 
 ```
 </details></div>

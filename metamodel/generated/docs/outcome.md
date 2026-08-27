@@ -23,6 +23,7 @@ URI: [jumo:outcome](https://jumo.dev/schemas/jumo-v1/outcome)
 | [DispositionRule](DispositionRule.md) |  |  no  |
 | [McpCatalogAssessment](McpCatalogAssessment.md) |  |  no  |
 | [AppraisalDimension](AppraisalDimension.md) |  |  no  |
+| [McpInvocationOutcome](McpInvocationOutcome.md) | Sanitized terminal outcome for one dispatched MCP invocation |  no  |
 
 
 
@@ -36,7 +37,7 @@ URI: [jumo:outcome](https://jumo.dev/schemas/jumo-v1/outcome)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [DispositionRule](DispositionRule.md), [McpCatalogAssessment](McpCatalogAssessment.md), [AppraisalDimension](AppraisalDimension.md) |
+| Domain Of | [DispositionRule](DispositionRule.md), [McpCatalogAssessment](McpCatalogAssessment.md), [AppraisalDimension](AppraisalDimension.md), [McpInvocationOutcome](McpInvocationOutcome.md) |
 
 ### Cardinality and Requirements
 
@@ -78,6 +79,7 @@ domain_of:
 - DispositionRule
 - McpCatalogAssessment
 - AppraisalDimension
+- McpInvocationOutcome
 range: string
 
 ```

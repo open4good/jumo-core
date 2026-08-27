@@ -8038,6 +8038,106 @@ components:
         (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope
         dev.jumo.mcpgateway.plan.SessionPlan's javadoc names but does not yet have
         a field for.
+    McpInvocationAuthorizationRequest:
+      properties:
+        invocationId:
+          type: string
+        grantId:
+          type: string
+        leaseId:
+          type: string
+        operationName:
+          type: string
+        argumentsDigest:
+          type: string
+        argumentsSize:
+          type: integer
+        schemaDigest:
+          type: string
+        policyRevision:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - invocationId
+      - grantId
+      - leaseId
+      - operationName
+      - argumentsDigest
+      - argumentsSize
+      - schemaDigest
+      - policyRevision
+      title: McpInvocationAuthorizationRequest
+      description: Machine-authenticated request to authorize one planned MCP operation
+        without persisting arguments.
+    McpInvocationAuthorizationReceipt:
+      properties:
+        invocationId:
+          type: string
+        grantId:
+          type: string
+        leaseId:
+          type: string
+        operationName:
+          type: string
+        argumentsDigest:
+          type: string
+        schemaDigest:
+          type: string
+        expiresAt:
+          type: string
+        signingKeyName:
+          type: string
+        signature:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - invocationId
+      - grantId
+      - leaseId
+      - operationName
+      - argumentsDigest
+      - schemaDigest
+      - expiresAt
+      - signingKeyName
+      - signature
+      title: McpInvocationAuthorizationReceipt
+      description: Signed, short-lived authorization receipt bound to exactly one
+        MCP invocation.
+    McpInvocationDispatchRequest:
+      properties:
+        receipt:
+          $ref: '#/components/schemas/McpInvocationAuthorizationReceipt'
+      additionalProperties: false
+      type: object
+      required:
+      - receipt
+      title: McpInvocationDispatchRequest
+      description: Machine acknowledgement that a signed MCP invocation receipt is
+        about to dispatch upstream.
+    McpInvocationOutcome:
+      properties:
+        invocationId:
+          type: string
+        leaseId:
+          type: string
+        outcome:
+          $ref: '#/components/schemas/McpInvocationOutcomeType'
+        resultDigest:
+          type: string
+        resultSize:
+          type: integer
+        reasonCode:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - invocationId
+      - leaseId
+      - outcome
+      title: McpInvocationOutcome
+      description: Sanitized terminal outcome for one dispatched MCP invocation.
     ImportedSchemaCandidate:
       properties:
         candidateId:
@@ -10652,6 +10752,12 @@ components:
       - APPROVED_SPLIT
       - REJECTED
       title: McpReconciliationDecisionType
+    McpInvocationOutcomeType:
+      type: string
+      enum:
+      - SUCCEEDED
+      - FAILED
+      title: McpInvocationOutcomeType
     InterfaceEntity:
       type: string
       enum:

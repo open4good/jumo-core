@@ -3,13 +3,13 @@ search:
   boost: 5.0
 ---
 
-# Slot: policyRevision
+# Slot: argumentsSize
 
 <div data-search-exclude markdown="1">
 
 
 
-URI: [jumo:policyRevision](https://jumo.dev/schemas/jumo-v1/policyRevision)
+URI: [jumo:argumentsSize](https://jumo.dev/schemas/jumo-v1/argumentsSize)
 <!-- no inheritance hierarchy -->
 
 
@@ -20,7 +20,6 @@ URI: [jumo:policyRevision](https://jumo.dev/schemas/jumo-v1/policyRevision)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [RoutingDecision](RoutingDecision.md) | Immutable policy-authorized adapter and cell selection for one recognized tur... |  no  |
 | [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md) | Machine-authenticated request to authorize one planned MCP operation without ... |  no  |
 
 
@@ -34,13 +33,21 @@ URI: [jumo:policyRevision](https://jumo.dev/schemas/jumo-v1/policyRevision)
 
 | Property | Value |
 | --- | --- |
-| Range | [String](String.md) |
-| Domain Of | [RoutingDecision](RoutingDecision.md), [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md) |
+| Range | [Integer](Integer.md) |
+| Domain Of | [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
+| Required | Yes |
+### Slot Characteristics
+
+| Property | Value |
+| --- | --- |
+| Owner | [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md) |
+
+
 
 
 
@@ -57,13 +64,20 @@ URI: [jumo:policyRevision](https://jumo.dev/schemas/jumo-v1/policyRevision)
 
 
 
+### Schema Source
+
+
+* from schema: https://jumo.dev/schemas/jumo-v1
+
+
+
 
 ## Mappings
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:policyRevision |
-| native | jumo:policyRevision |
+| self | jumo:argumentsSize |
+| native | jumo:argumentsSize |
 
 
 
@@ -72,11 +86,14 @@ URI: [jumo:policyRevision](https://jumo.dev/schemas/jumo-v1/policyRevision)
 
 <details>
 ```yaml
-name: policyRevision
+name: argumentsSize
+from_schema: https://jumo.dev/schemas/jumo-v1
+rank: 1000
+owner: McpInvocationAuthorizationRequest
 domain_of:
-- RoutingDecision
 - McpInvocationAuthorizationRequest
-range: string
+range: integer
+required: true
 
 ```
 </details></div>

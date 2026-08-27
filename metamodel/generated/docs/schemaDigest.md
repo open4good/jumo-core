@@ -20,6 +20,8 @@ URI: [jumo:schemaDigest](https://jumo.dev/schemas/jumo-v1/schemaDigest)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
+| [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md) | Machine-authenticated request to authorize one planned MCP operation without ... |  no  |
+| [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) | Signed, short-lived authorization receipt bound to exactly one MCP invocation |  no  |
 | [SchemaBinding](SchemaBinding.md) | Deterministic link between a payload, its LinkML class, and exact schema dige... |  no  |
 
 
@@ -34,20 +36,12 @@ URI: [jumo:schemaDigest](https://jumo.dev/schemas/jumo-v1/schemaDigest)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [SchemaBinding](SchemaBinding.md) |
+| Domain Of | [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md), [SchemaBinding](SchemaBinding.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-| Required | Yes |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [SchemaBinding](SchemaBinding.md) |
-
-
 
 
 
@@ -61,13 +55,6 @@ URI: [jumo:schemaDigest](https://jumo.dev/schemas/jumo-v1/schemaDigest)
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -87,13 +74,11 @@ URI: [jumo:schemaDigest](https://jumo.dev/schemas/jumo-v1/schemaDigest)
 <details>
 ```yaml
 name: schemaDigest
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: SchemaBinding
 domain_of:
+- McpInvocationAuthorizationRequest
+- McpInvocationAuthorizationReceipt
 - SchemaBinding
 range: string
-required: true
 
 ```
 </details></div>

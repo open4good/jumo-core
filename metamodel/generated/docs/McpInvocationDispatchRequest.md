@@ -3,10 +3,10 @@ search:
   boost: 10.0
 ---
 
-# Class: SessionPlanRequest
+# Class: McpInvocationDispatchRequest
 
 
-_Request to issue a signed MCP gateway session plan for one ExecutionCellLease (mcp-gateway-session-plan-signing AC2)._
+_Machine acknowledgement that a signed MCP invocation receipt is about to dispatch upstream._
 
 
 
@@ -14,7 +14,7 @@ _Request to issue a signed MCP gateway session plan for one ExecutionCellLease (
 
 
 
-URI: [jumo:SessionPlanRequest](https://jumo.dev/schemas/jumo-v1/SessionPlanRequest)
+URI: [jumo:McpInvocationDispatchRequest](https://jumo.dev/schemas/jumo-v1/McpInvocationDispatchRequest)
 
 
 
@@ -22,11 +22,18 @@ URI: [jumo:SessionPlanRequest](https://jumo.dev/schemas/jumo-v1/SessionPlanReque
 
 ```mermaid
  classDiagram
-    class SessionPlanRequest
-    click SessionPlanRequest href "../SessionPlanRequest/"
-      SessionPlanRequest : grantIds
+    class McpInvocationDispatchRequest
+    click McpInvocationDispatchRequest href "../McpInvocationDispatchRequest/"
+      McpInvocationDispatchRequest : receipt
 
-      SessionPlanRequest : leaseId
+
+
+
+
+        McpInvocationDispatchRequest --> "1" McpInvocationAuthorizationReceipt : receipt
+        click McpInvocationAuthorizationReceipt href "../McpInvocationAuthorizationReceipt/"
+
+
 
 
 ```
@@ -40,8 +47,7 @@ URI: [jumo:SessionPlanRequest](https://jumo.dev/schemas/jumo-v1/SessionPlanReque
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [leaseId](leaseId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [grantIds](grantIds.md) | * <br/> [Identifier](Identifier.md) |  | direct |
+| [receipt](receipt.md) | 1 <br/> [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) |  | direct |
 
 
 
@@ -87,8 +93,8 @@ URI: [jumo:SessionPlanRequest](https://jumo.dev/schemas/jumo-v1/SessionPlanReque
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:SessionPlanRequest |
-| native | jumo:SessionPlanRequest |
+| self | jumo:McpInvocationDispatchRequest |
+| native | jumo:McpInvocationDispatchRequest |
 
 
 
@@ -103,7 +109,7 @@ URI: [jumo:SessionPlanRequest](https://jumo.dev/schemas/jumo-v1/SessionPlanReque
 
 <details>
 ```yaml
-name: SessionPlanRequest
+name: McpInvocationDispatchRequest
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -123,34 +129,20 @@ annotations:
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: Request to issue a signed MCP gateway session plan for one ExecutionCellLease
-  (mcp-gateway-session-plan-signing AC2).
+description: Machine acknowledgement that a signed MCP invocation receipt is about
+  to dispatch upstream.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
-  leaseId:
-    name: leaseId
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: SessionPlanRequest
-    domain_of:
-    - WorkloadCommand
-    - ExecutionCellLease
-    - CliInvocationRequest
-    - SessionPlanRequest
-    - SessionPlan
-    - McpInvocationAuthorizationRequest
-    - McpInvocationAuthorizationReceipt
-    - McpInvocationOutcome
-    range: Identifier
-    required: true
-  grantIds:
-    name: grantIds
+  receipt:
+    name: receipt
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: SessionPlanRequest
+    owner: McpInvocationDispatchRequest
     domain_of:
-    - SessionPlanRequest
-    range: Identifier
-    multivalued: true
+    - McpInvocationDispatchRequest
+    range: McpInvocationAuthorizationReceipt
+    required: true
+    inlined: true
 
 ```
 </details>
@@ -159,7 +151,7 @@ attributes:
 
 <details>
 ```yaml
-name: SessionPlanRequest
+name: McpInvocationDispatchRequest
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -179,34 +171,20 @@ annotations:
   jumo.schema_profiles:
     tag: jumo.schema_profiles
     value: draft-2020-12,native-json-schema,prompted-json-validated
-description: Request to issue a signed MCP gateway session plan for one ExecutionCellLease
-  (mcp-gateway-session-plan-signing AC2).
+description: Machine acknowledgement that a signed MCP invocation receipt is about
+  to dispatch upstream.
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
-  leaseId:
-    name: leaseId
-    from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: SessionPlanRequest
-    domain_of:
-    - WorkloadCommand
-    - ExecutionCellLease
-    - CliInvocationRequest
-    - SessionPlanRequest
-    - SessionPlan
-    - McpInvocationAuthorizationRequest
-    - McpInvocationAuthorizationReceipt
-    - McpInvocationOutcome
-    range: Identifier
-    required: true
-  grantIds:
-    name: grantIds
+  receipt:
+    name: receipt
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: SessionPlanRequest
+    owner: McpInvocationDispatchRequest
     domain_of:
-    - SessionPlanRequest
-    range: Identifier
-    multivalued: true
+    - McpInvocationDispatchRequest
+    range: McpInvocationAuthorizationReceipt
+    required: true
+    inlined: true
 
 ```
 </details></div>

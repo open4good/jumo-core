@@ -157,6 +157,8 @@ attributes:
     owner: PlannedOperation
     domain_of:
     - PlannedOperation
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
     range: Identifier
     required: true
   exposedName:
@@ -261,6 +263,8 @@ attributes:
     owner: PlannedOperation
     domain_of:
     - PlannedOperation
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
     range: Identifier
     required: true
   exposedName:

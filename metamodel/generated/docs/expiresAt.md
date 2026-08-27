@@ -27,6 +27,7 @@ URI: [jumo:expiresAt](https://jumo.dev/schemas/jumo-v1/expiresAt)
 | [ExecutionCellLease](ExecutionCellLease.md) | Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and con... |  no  |
 | [ProviderSessionBinding](ProviderSessionBinding.md) | Recognized opaque binding between a holder provider session and one Execution... |  no  |
 | [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md) | Signed, single-use MCP invocation authorization (ADR-0055) |  no  |
+| [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) | Signed, short-lived authorization receipt bound to exactly one MCP invocation |  no  |
 | [ConnectorSessionBinding](ConnectorSessionBinding.md) | Active OAuth or API session binding for a Principal/Realm and target machine |  no  |
 | [EffectTestAuthorization](EffectTestAuthorization.md) | Dual-consent authorization record for executing irreversible effect tests |  no  |
 
@@ -42,7 +43,7 @@ URI: [jumo:expiresAt](https://jumo.dev/schemas/jumo-v1/expiresAt)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [OrganizationRetentionHoldSpec](OrganizationRetentionHoldSpec.md), [MachineEnrollmentChallenge](MachineEnrollmentChallenge.md), [MachineAdminCommand](MachineAdminCommand.md), [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [ProviderSessionBinding](ProviderSessionBinding.md), [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md), [ConnectorSessionBinding](ConnectorSessionBinding.md), [EffectTestAuthorization](EffectTestAuthorization.md) |
+| Domain Of | [OrganizationRetentionHoldSpec](OrganizationRetentionHoldSpec.md), [MachineEnrollmentChallenge](MachineEnrollmentChallenge.md), [MachineAdminCommand](MachineAdminCommand.md), [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [ProviderSessionBinding](ProviderSessionBinding.md), [InvocationAuthorizationReceipt](InvocationAuthorizationReceipt.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md), [ConnectorSessionBinding](ConnectorSessionBinding.md), [EffectTestAuthorization](EffectTestAuthorization.md) |
 
 ### Cardinality and Requirements
 
@@ -88,6 +89,7 @@ domain_of:
 - ExecutionCellLease
 - ProviderSessionBinding
 - InvocationAuthorizationReceipt
+- McpInvocationAuthorizationReceipt
 - ConnectorSessionBinding
 - EffectTestAuthorization
 range: string

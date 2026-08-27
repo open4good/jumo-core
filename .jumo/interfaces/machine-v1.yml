@@ -279,3 +279,66 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: Read the Realm public signing key a lease-local gateway verifies a session plan with.
+    - operationId: authorizeMcpInvocation
+      method: POST
+      path: /mcp-gateway/invocations/authorize
+      audience: MACHINE_MTLS
+      authAction: mcp-invocation.authorize
+      requestBinding:
+        modelClass: McpInvocationAuthorizationRequest
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/McpInvocationAuthorizationRequest
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: McpInvocationAuthorizationReceipt
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/McpInvocationAuthorizationReceipt
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Persist and sign authorization for one planned MCP invocation.
+    - operationId: dispatchMcpInvocation
+      method: POST
+      path: /mcp-gateway/invocations/dispatch
+      audience: MACHINE_MTLS
+      authAction: mcp-invocation.dispatch
+      requestBinding:
+        modelClass: McpInvocationDispatchRequest
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/McpInvocationDispatchRequest
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: McpInvocationDispatchRequest
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/McpInvocationDispatchRequest
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Consume a signed MCP invocation receipt before upstream dispatch.
+    - operationId: recordMcpInvocationOutcome
+      method: POST
+      path: /mcp-gateway/invocations/outcome
+      audience: MACHINE_MTLS
+      authAction: mcp-invocation.outcome
+      requestBinding:
+        modelClass: McpInvocationOutcome
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/McpInvocationOutcome
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: McpInvocationOutcome
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/McpInvocationOutcome
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Append a sanitized terminal outcome for a dispatched MCP invocation.

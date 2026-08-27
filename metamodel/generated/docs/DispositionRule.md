@@ -206,6 +206,7 @@ attributes:
     - DispositionRule
     - McpCatalogAssessment
     - AppraisalDimension
+    - McpInvocationOutcome
     range: DispositionOutcome
     required: true
 
@@ -296,6 +297,7 @@ attributes:
     - DispositionRule
     - McpCatalogAssessment
     - AppraisalDimension
+    - McpInvocationOutcome
     range: DispositionOutcome
     required: true
 

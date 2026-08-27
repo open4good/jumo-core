@@ -25,6 +25,9 @@ URI: [jumo:leaseId](https://jumo.dev/schemas/jumo-v1/leaseId)
 | [CliInvocationRequest](CliInvocationRequest.md) | Structured WorkOrder execution invocation dispatched to a CLI worker containe... |  no  |
 | [SessionPlanRequest](SessionPlanRequest.md) | Request to issue a signed MCP gateway session plan for one ExecutionCellLease... |  no  |
 | [SessionPlan](SessionPlan.md) | Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway... |  no  |
+| [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md) | Machine-authenticated request to authorize one planned MCP operation without ... |  no  |
+| [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md) | Signed, short-lived authorization receipt bound to exactly one MCP invocation |  no  |
+| [McpInvocationOutcome](McpInvocationOutcome.md) | Sanitized terminal outcome for one dispatched MCP invocation |  no  |
 
 
 
@@ -38,7 +41,7 @@ URI: [jumo:leaseId](https://jumo.dev/schemas/jumo-v1/leaseId)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [CliInvocationRequest](CliInvocationRequest.md), [SessionPlanRequest](SessionPlanRequest.md), [SessionPlan](SessionPlan.md) |
+| Domain Of | [WorkloadCommand](WorkloadCommand.md), [ExecutionCellLease](ExecutionCellLease.md), [CliInvocationRequest](CliInvocationRequest.md), [SessionPlanRequest](SessionPlanRequest.md), [SessionPlan](SessionPlan.md), [McpInvocationAuthorizationRequest](McpInvocationAuthorizationRequest.md), [McpInvocationAuthorizationReceipt](McpInvocationAuthorizationReceipt.md), [McpInvocationOutcome](McpInvocationOutcome.md) |
 
 ### Cardinality and Requirements
 
@@ -82,6 +85,9 @@ domain_of:
 - CliInvocationRequest
 - SessionPlanRequest
 - SessionPlan
+- McpInvocationAuthorizationRequest
+- McpInvocationAuthorizationReceipt
+- McpInvocationOutcome
 range: string
 
 ```

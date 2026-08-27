@@ -254,6 +254,7 @@ attributes:
     domain_of:
     - PolicyRule
     - RoutingDecision
+    - McpInvocationOutcome
     range: string
 
 ```
@@ -377,6 +378,7 @@ attributes:
     domain_of:
     - PolicyRule
     - RoutingDecision
+    - McpInvocationOutcome
     range: string
 
 ```

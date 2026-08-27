@@ -175,6 +175,7 @@ attributes:
     domain_of:
     - MachineAdminPlaybookSpec
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     range: string
   variablesSchemaId:
     name: variablesSchemaId
@@ -281,6 +282,7 @@ attributes:
     domain_of:
     - MachineAdminPlaybookSpec
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     range: string
   variablesSchemaId:
     name: variablesSchemaId

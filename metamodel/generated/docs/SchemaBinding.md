@@ -186,9 +186,10 @@ attributes:
   schemaDigest:
     name: schemaDigest
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: SchemaBinding
     domain_of:
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
     - SchemaBinding
     range: string
     required: true
@@ -263,9 +264,10 @@ attributes:
   schemaDigest:
     name: schemaDigest
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: SchemaBinding
     domain_of:
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
     - SchemaBinding
     range: string
     required: true

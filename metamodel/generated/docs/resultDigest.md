@@ -3,13 +3,13 @@ search:
   boost: 5.0
 ---
 
-# Slot: reasonCode
+# Slot: resultDigest
 
 <div data-search-exclude markdown="1">
 
 
 
-URI: [jumo:reasonCode](https://jumo.dev/schemas/jumo-v1/reasonCode)
+URI: [jumo:resultDigest](https://jumo.dev/schemas/jumo-v1/resultDigest)
 <!-- no inheritance hierarchy -->
 
 
@@ -20,8 +20,6 @@ URI: [jumo:reasonCode](https://jumo.dev/schemas/jumo-v1/reasonCode)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [PolicyRule](PolicyRule.md) | Conditional requiredness (ALLOW_WITH_OBLIGATIONS / REQUIRE_APPROVAL require o... |  no  |
-| [RoutingDecision](RoutingDecision.md) | Immutable policy-authorized adapter and cell selection for one recognized tur... |  no  |
 | [McpInvocationOutcome](McpInvocationOutcome.md) | Sanitized terminal outcome for one dispatched MCP invocation |  no  |
 
 
@@ -36,12 +34,19 @@ URI: [jumo:reasonCode](https://jumo.dev/schemas/jumo-v1/reasonCode)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [PolicyRule](PolicyRule.md), [RoutingDecision](RoutingDecision.md), [McpInvocationOutcome](McpInvocationOutcome.md) |
+| Domain Of | [McpInvocationOutcome](McpInvocationOutcome.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
+### Slot Characteristics
+
+| Property | Value |
+| --- | --- |
+| Owner | [McpInvocationOutcome](McpInvocationOutcome.md) |
+
+
 
 
 
@@ -58,13 +63,20 @@ URI: [jumo:reasonCode](https://jumo.dev/schemas/jumo-v1/reasonCode)
 
 
 
+### Schema Source
+
+
+* from schema: https://jumo.dev/schemas/jumo-v1
+
+
+
 
 ## Mappings
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:reasonCode |
-| native | jumo:reasonCode |
+| self | jumo:resultDigest |
+| native | jumo:resultDigest |
 
 
 
@@ -73,10 +85,11 @@ URI: [jumo:reasonCode](https://jumo.dev/schemas/jumo-v1/reasonCode)
 
 <details>
 ```yaml
-name: reasonCode
+name: resultDigest
+from_schema: https://jumo.dev/schemas/jumo-v1
+rank: 1000
+owner: McpInvocationOutcome
 domain_of:
-- PolicyRule
-- RoutingDecision
 - McpInvocationOutcome
 range: string
 

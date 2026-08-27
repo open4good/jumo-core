@@ -154,6 +154,9 @@ attributes:
     owner: InvocationAuthorizationReceipt
     domain_of:
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    - McpInvocationOutcome
     range: Identifier
     required: true
   executionCellLeaseRef:
@@ -269,6 +272,7 @@ attributes:
     - ExecutionCellLease
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     - ConnectorSessionBinding
     - EffectTestAuthorization
     range: datetime
@@ -280,6 +284,7 @@ attributes:
     domain_of:
     - MachineAdminPlaybookSpec
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     range: string
     required: true
     pattern: ^.{16,}$
@@ -324,6 +329,9 @@ attributes:
     owner: InvocationAuthorizationReceipt
     domain_of:
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    - McpInvocationOutcome
     range: Identifier
     required: true
   executionCellLeaseRef:
@@ -439,6 +447,7 @@ attributes:
     - ExecutionCellLease
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     - ConnectorSessionBinding
     - EffectTestAuthorization
     range: datetime
@@ -450,6 +459,7 @@ attributes:
     domain_of:
     - MachineAdminPlaybookSpec
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     range: string
     required: true
     pattern: ^.{16,}$

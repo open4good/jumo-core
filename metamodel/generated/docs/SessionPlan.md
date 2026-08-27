@@ -190,6 +190,9 @@ attributes:
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    - McpInvocationOutcome
     range: Identifier
     required: true
   upstreamToolsDigest:
@@ -233,6 +236,7 @@ attributes:
     owner: SessionPlan
     domain_of:
     - SessionPlan
+    - McpInvocationAuthorizationReceipt
     range: string
     required: true
   planSignature:
@@ -312,6 +316,9 @@ attributes:
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    - McpInvocationOutcome
     range: Identifier
     required: true
   upstreamToolsDigest:
@@ -355,6 +362,7 @@ attributes:
     owner: SessionPlan
     domain_of:
     - SessionPlan
+    - McpInvocationAuthorizationReceipt
     range: string
     required: true
   planSignature:

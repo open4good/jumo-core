@@ -158,6 +158,9 @@ attributes:
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    - McpInvocationOutcome
     range: Identifier
     required: true
   machineId:
@@ -256,6 +259,7 @@ attributes:
     - ExecutionCellLease
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     - ConnectorSessionBinding
     - EffectTestAuthorization
     range: string
@@ -311,6 +315,9 @@ attributes:
     - CliInvocationRequest
     - SessionPlanRequest
     - SessionPlan
+    - McpInvocationAuthorizationRequest
+    - McpInvocationAuthorizationReceipt
+    - McpInvocationOutcome
     range: Identifier
     required: true
   machineId:
@@ -409,6 +416,7 @@ attributes:
     - ExecutionCellLease
     - ProviderSessionBinding
     - InvocationAuthorizationReceipt
+    - McpInvocationAuthorizationReceipt
     - ConnectorSessionBinding
     - EffectTestAuthorization
     range: string

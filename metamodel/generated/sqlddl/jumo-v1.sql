@@ -136,6 +136,7 @@ CREATE TYPE "WorkerNetworkIsolation" AS ENUM ('NONE', 'MODEL_ENDPOINT_ONLY');
 CREATE TYPE "WorkerWorkspaceMode" AS ENUM ('ABSENT', 'READ_ONLY', 'WRITABLE');
 CREATE TYPE "CredentialSource" AS ENUM ('GATEWAY_TOKEN_ONLY', 'PLAN_SESSION_ONLY', 'OPENBAO_RENDERED_FILE');
 CREATE TYPE "McpTransportType" AS ENUM ('STREAMABLE_HTTP', 'STDIO_OCI', 'STDIO_SOURCE');
+CREATE TYPE "McpInvocationOutcomeType" AS ENUM ('SUCCEEDED', 'FAILED');
 CREATE TYPE "InterfaceEntity" AS ENUM ('Realm', 'Agent', 'ChangeProposal', 'ForgeProjection', 'Evidence', 'AttentionItem', 'Team', 'WorkOrder', 'ExecutionMachine', 'CliTool', 'ConnectorPackage');
 CREATE TYPE "FacetCreateMode" AS ENUM ('LIFECYCLE_COMMAND', 'NONE');
 CREATE TYPE "WritePathEditor" AS ENUM ('WYSIWYG_MARKDOWN', 'STRUCTURED_YAML');
@@ -1570,6 +1571,50 @@ CREATE TABLE "SessionPlan" (
 CREATE INDEX "ix_SessionPlan_id" ON "SessionPlan" (id);
 COMMENT ON TABLE "SessionPlan" IS 'Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope dev.jumo.mcpgateway.plan.SessionPlan''s javadoc names but does not yet have a field for.';
 COMMENT ON COLUMN "SessionPlan"."upstreamToolsDigest" IS 'Digest of the complete discovered tool inventory of the one upstream connector accepted for this plan, using mcp-tools-jcs-v1. Signed with the plan so a gateway can refuse a later upstream inventory change before dispatch.';
+
+CREATE TABLE "McpInvocationAuthorizationRequest" (
+	id SERIAL NOT NULL,
+	"invocationId" TEXT NOT NULL,
+	"grantId" TEXT NOT NULL,
+	"leaseId" TEXT NOT NULL,
+	"operationName" TEXT NOT NULL,
+	"argumentsDigest" TEXT NOT NULL,
+	"argumentsSize" INTEGER NOT NULL,
+	"schemaDigest" TEXT NOT NULL,
+	"policyRevision" TEXT NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_McpInvocationAuthorizationRequest_id" ON "McpInvocationAuthorizationRequest" (id);
+COMMENT ON TABLE "McpInvocationAuthorizationRequest" IS 'Machine-authenticated request to authorize one planned MCP operation without persisting arguments.';
+
+CREATE TABLE "McpInvocationAuthorizationReceipt" (
+	id SERIAL NOT NULL,
+	"invocationId" TEXT NOT NULL,
+	"grantId" TEXT NOT NULL,
+	"leaseId" TEXT NOT NULL,
+	"operationName" TEXT NOT NULL,
+	"argumentsDigest" TEXT NOT NULL,
+	"schemaDigest" TEXT NOT NULL,
+	"expiresAt" TEXT NOT NULL,
+	"signingKeyName" TEXT NOT NULL,
+	signature TEXT NOT NULL,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_McpInvocationAuthorizationReceipt_id" ON "McpInvocationAuthorizationReceipt" (id);
+COMMENT ON TABLE "McpInvocationAuthorizationReceipt" IS 'Signed, short-lived authorization receipt bound to exactly one MCP invocation.';
+
+CREATE TABLE "McpInvocationOutcome" (
+	id SERIAL NOT NULL,
+	"invocationId" TEXT NOT NULL,
+	"leaseId" TEXT NOT NULL,
+	outcome "McpInvocationOutcomeType" NOT NULL,
+	"resultDigest" TEXT,
+	"resultSize" INTEGER,
+	"reasonCode" TEXT,
+	PRIMARY KEY (id)
+);
+CREATE INDEX "ix_McpInvocationOutcome_id" ON "McpInvocationOutcome" (id);
+COMMENT ON TABLE "McpInvocationOutcome" IS 'Sanitized terminal outcome for one dispatched MCP invocation.';
 
 CREATE TABLE "ImportedSchemaCandidate" (
 	id SERIAL NOT NULL,
@@ -3251,6 +3296,15 @@ CREATE TABLE "PlannedOperation" (
 CREATE INDEX "ix_PlannedOperation_id" ON "PlannedOperation" (id);
 COMMENT ON TABLE "PlannedOperation" IS 'One operation exposed by a signed MCP gateway session plan, resolved from a validated InvocationCapabilityGrant (mcp-gateway-session-plan-signing AC2). Mirrors dev.jumo.mcpgateway.plan.PlannedOperation on the gateway side.';
 COMMENT ON COLUMN "PlannedOperation"."SessionPlan_id" IS 'Autocreated FK slot';
+
+CREATE TABLE "McpInvocationDispatchRequest" (
+	id SERIAL NOT NULL,
+	receipt_id INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(receipt_id) REFERENCES "McpInvocationAuthorizationReceipt" (id)
+);
+CREATE INDEX "ix_McpInvocationDispatchRequest_id" ON "McpInvocationDispatchRequest" (id);
+COMMENT ON TABLE "McpInvocationDispatchRequest" IS 'Machine acknowledgement that a signed MCP invocation receipt is about to dispatch upstream.';
 
 CREATE TABLE "ConnectorPackageCertificationSpec" (
 	id SERIAL NOT NULL,

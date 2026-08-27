@@ -674,6 +674,12 @@ enum McpCatalogInstallability
     WITHDRAWN
   }
 
+enum McpInvocationOutcomeType
+  {
+    SUCCEEDED
+    FAILED
+  }
+
 enum McpReconciliationDecisionType
   {
     AUTO_MERGE
@@ -3080,6 +3086,46 @@ type McpInventorySnapshot
     tools: [McpToolDescriptor]
     inventoryDigest: String!
     discoveredAt: String!
+  }
+
+type McpInvocationAuthorizationReceipt
+  {
+    invocationId: Identifier!
+    grantId: Identifier!
+    leaseId: Identifier!
+    operationName: String!
+    argumentsDigest: String!
+    schemaDigest: String!
+    expiresAt: String!
+    signingKeyName: String!
+    signature: String!
+  }
+
+type McpInvocationAuthorizationRequest
+  {
+    invocationId: Identifier!
+    grantId: Identifier!
+    leaseId: Identifier!
+    operationName: String!
+    argumentsDigest: String!
+    argumentsSize: Integer!
+    schemaDigest: String!
+    policyRevision: String!
+  }
+
+type McpInvocationDispatchRequest
+  {
+    receipt: McpInvocationAuthorizationReceipt!
+  }
+
+type McpInvocationOutcome
+  {
+    invocationId: Identifier!
+    leaseId: Identifier!
+    outcome: McpInvocationOutcomeType!
+    resultDigest: String
+    resultSize: Integer
+    reasonCode: String
   }
 
 type McpProtocolProfile

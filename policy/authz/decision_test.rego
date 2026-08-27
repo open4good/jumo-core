@@ -19,7 +19,7 @@ request := {
 	"obligations": {"required": ["RETAIN_PROVENANCE"], "satisfied": ["RETAIN_PROVENANCE"]},
 	"policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 	"independentReview": {"required": false, "present": false, "independent": false, "reviewerId": "", "reviewedAt": "1970-01-01T00:00:00Z"},
-	"ownerApproval": {"required": true, "present": true, "ownerId": "owner", "approverId": "owner", "approvedAt": "2026-08-12T10:00:00Z", "validUntil": "2026-08-12T10:05:00Z"},
+	"ownerApproval": {"required": false, "present": false, "ownerId": "", "approverId": "", "approvedAt": "1970-01-01T00:00:00Z", "validUntil": "1970-01-01T00:00:00Z"},
 	"assurance": {"minimum": "OBSERVED", "achieved": "OBSERVED"},
 	"time": "2026-08-12T10:00:01Z",
 }
@@ -43,8 +43,9 @@ test_missing_obligation_requires_approval if {
 }
 
 test_stale_owner_approval_requires_approval if {
-	stale := object.union(request.ownerApproval, {"validUntil": "2026-08-12T09:59:00Z"})
-	result := data.jumo.authz.decision with input as object.union(request, {"ownerApproval": stale})
+	capability := object.union(request.capability, {"name": "execution.cell.vm.provision"})
+	approval := {"required": true, "present": true, "ownerId": "owner", "approverId": "owner", "approvedAt": "2026-08-12T10:00:00Z", "validUntil": "2026-08-12T09:59:00Z"}
+	result := data.jumo.authz.decision with input as object.union(request, {"action": "execution.cell.vm.provision", "capability": capability, "ownerApproval": approval})
 	result.decision == "REQUIRE_APPROVAL"
 	result.obligations == ["HUMAN_OWNER_APPROVAL"]
 }
@@ -94,9 +95,15 @@ test_proposal_admission_does_not_require_effect_approval if {
 	changed.capability.producesExternalEffect == true
 }
 
-test_owner_approval_required_must_match_effect_capability if {
+test_forge_projection_does_not_require_owner_approval if {
+	result := data.jumo.authz.decision with input as request
+	result.decision == "ALLOW"
+}
+
+test_other_external_effect_requires_owner_approval if {
+	capability := object.union(request.capability, {"name": "execution.cell.vm.provision"})
 	approval := object.union(request.ownerApproval, {"required": false})
-	result := data.jumo.authz.decision with input as object.union(request, {"ownerApproval": approval})
+	result := data.jumo.authz.decision with input as object.union(request, {"action": "execution.cell.vm.provision", "capability": capability, "ownerApproval": approval})
 	result.decision == "DENY"
 }
 

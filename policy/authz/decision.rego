@@ -22,6 +22,7 @@ default effect_approval_required := false
 effect_approval_required if {
 	input.capability.producesExternalEffect
 	input.context.checkpoint != "PROPOSAL_ADMISSION"
+	input.action != "document.change.propose"
 }
 
 default independent_review_required := false

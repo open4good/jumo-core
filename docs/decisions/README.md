@@ -35,3 +35,4 @@ audience: PROJECT_SCOPED
 | [ADR-0054](ADR-0054-advisor-profiles-and-addressed-conversations.md) | Advisor profiles and addressed conversations | 13 | `AdvisorProfile`, `CapabilityProfile`, `EngagementMethod`, `Practice`, `PrincipalIdentityBinding`, `ProcessSpec`, `Project`, `SolicitationContract` |
 | [ADR-0055](ADR-0055-invocation-attribution-and-grant-ledger.md) | Invocation attribution and recognized grant ledger | 14 | `RoleDefinition` |
 | [ADR-0056](ADR-0056-recovery-gated-root-system-effects.md) | Recovery-gated root system effects on user-provided machines | — | — |
+| [ADR-0057](ADR-0057-automatic-forge-projection.md) | Automatic Forge projection after deterministic validation | — | — |

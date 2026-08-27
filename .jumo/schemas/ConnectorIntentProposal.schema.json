@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/prompt-output/connector-intent-proposal",
+  "title": "Connector intent proposal",
+  "type": "object",
+  "properties": {
+    "selectedConnectorDefinitionRefs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/contractReference" }
+    },
+    "rationale": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "connectorDefinitionRef": { "$ref": "#/$defs/contractReference" },
+          "reason": { "type": "string", "minLength": 1 }
+        },
+        "required": ["connectorDefinitionRef", "reason"]
+      }
+    },
+    "openQuestion": { "type": ["string", "null"] }
+  },
+  "required": ["selectedConnectorDefinitionRefs", "rationale"],
+  "$defs": {
+    "contractReference": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]+$" },
+        "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*){1,7}$" },
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+      },
+      "required": ["kind", "namespace", "id"]
+    }
+  }
+}

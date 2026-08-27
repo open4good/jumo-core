@@ -33,7 +33,7 @@ URI: [jumo:authorRef](https://jumo.dev/schemas/jumo-v1/authorRef)
 
 | Property | Value |
 | --- | --- |
-| Range | [Identifier](Identifier.md) |
+| Range | [ContractReference](ContractReference.md) |
 | Domain Of | [McpReconciliationDecision](McpReconciliationDecision.md) |
 
 ### Cardinality and Requirements
@@ -92,7 +92,7 @@ rank: 1000
 owner: McpReconciliationDecision
 domain_of:
 - McpReconciliationDecision
-range: Identifier
+range: ContractReference
 required: true
 
 ```

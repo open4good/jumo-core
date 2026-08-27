@@ -164,6 +164,8 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [McpRegistrySourceBindingSpec](McpRegistrySourceBindingSpec.md) | [executionMachineRef](executionMachineRef.md) | range | [ContractReference](ContractReference.md) |
 | [McpRegistrySourceBindingSpec](McpRegistrySourceBindingSpec.md) | [workOrderRef](workOrderRef.md) | range | [ContractReference](ContractReference.md) |
 | [McpRegistrySourceBindingSpec](McpRegistrySourceBindingSpec.md) | [roleDefinitionRef](roleDefinitionRef.md) | range | [ContractReference](ContractReference.md) |
+| [McpReconciliationDecision](McpReconciliationDecision.md) | [authorRef](authorRef.md) | range | [ContractReference](ContractReference.md) |
+| [McpReconciliationDecision](McpReconciliationDecision.md) | [approverRef](approverRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorDefinitionSpec](ConnectorDefinitionSpec.md) | [mcpBundleRef](mcpBundleRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorDefinitionSpec](ConnectorDefinitionSpec.md) | [remoteMcpServiceRef](remoteMcpServiceRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorDefinitionSpec](ConnectorDefinitionSpec.md) | [connectorPackageRef](connectorPackageRef.md) | range | [ContractReference](ContractReference.md) |

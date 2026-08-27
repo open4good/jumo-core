@@ -23,7 +23,25 @@ URI: [jumo:McpReconciliationDecision](https://jumo.dev/schemas/jumo-v1/McpReconc
 
       McpReconciliationDecision : approverRef
 
+
+
+
+
+        McpReconciliationDecision --> "0..1" ContractReference : approverRef
+        click ContractReference href "../ContractReference/"
+
+
+
       McpReconciliationDecision : authorRef
+
+
+
+
+
+        McpReconciliationDecision --> "1" ContractReference : authorRef
+        click ContractReference href "../ContractReference/"
+
+
 
       McpReconciliationDecision : candidateRef
 
@@ -63,8 +81,8 @@ URI: [jumo:McpReconciliationDecision](https://jumo.dev/schemas/jumo-v1/McpReconc
 | [decision](decision.md) | 1 <br/> [McpReconciliationDecisionType](McpReconciliationDecisionType.md) |  | direct |
 | [algorithmVersion](algorithmVersion.md) | 1 <br/> [String](String.md) |  | direct |
 | [evidenceDigest](evidenceDigest.md) | 1 <br/> [String](String.md) |  | direct |
-| [authorRef](authorRef.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
-| [approverRef](approverRef.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
+| [authorRef](authorRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [approverRef](approverRef.md) | 0..1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [supersedesDecisionRef](supersedesDecisionRef.md) | 0..1 <br/> [Identifier](Identifier.md) |  | direct |
 | [decidedAt](decidedAt.md) | 1 <br/> [Datetime](Datetime.md) |  | direct |
 
@@ -207,7 +225,7 @@ attributes:
     owner: McpReconciliationDecision
     domain_of:
     - McpReconciliationDecision
-    range: Identifier
+    range: ContractReference
     required: true
   approverRef:
     name: approverRef
@@ -216,7 +234,7 @@ attributes:
     owner: McpReconciliationDecision
     domain_of:
     - McpReconciliationDecision
-    range: Identifier
+    range: ContractReference
   supersedesDecisionRef:
     name: supersedesDecisionRef
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -322,7 +340,7 @@ attributes:
     owner: McpReconciliationDecision
     domain_of:
     - McpReconciliationDecision
-    range: Identifier
+    range: ContractReference
     required: true
   approverRef:
     name: approverRef
@@ -331,7 +349,7 @@ attributes:
     owner: McpReconciliationDecision
     domain_of:
     - McpReconciliationDecision
-    range: Identifier
+    range: ContractReference
   supersedesDecisionRef:
     name: supersedesDecisionRef
     from_schema: https://jumo.dev/schemas/jumo-v1

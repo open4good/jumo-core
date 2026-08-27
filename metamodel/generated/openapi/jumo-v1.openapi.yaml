@@ -6283,9 +6283,9 @@ components:
         evidenceDigest:
           type: string
         authorRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         approverRef:
-          type: string
+          $ref: '#/components/schemas/ContractReference'
         supersedesDecisionRef:
           type: string
         decidedAt:

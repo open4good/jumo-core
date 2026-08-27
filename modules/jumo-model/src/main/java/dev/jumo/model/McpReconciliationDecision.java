@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 
-public record McpReconciliationDecision(String decisionId, String candidateRef, McpReconciliationDecisionType decision, String algorithmVersion, String evidenceDigest, String authorRef, String approverRef, String supersedesDecisionRef, ZonedDateTime decidedAt)  {
+public record McpReconciliationDecision(String decisionId, String candidateRef, McpReconciliationDecisionType decision, String algorithmVersion, String evidenceDigest, ContractReference authorRef, ContractReference approverRef, String supersedesDecisionRef, ZonedDateTime decidedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,8 +19,8 @@ public record McpReconciliationDecision(String decisionId, String candidateRef, 
         private McpReconciliationDecisionType decision = null;
         private String algorithmVersion = "";
         private String evidenceDigest = "";
-        private String authorRef = "";
-        private String approverRef = "";
+        private ContractReference authorRef = null;
+        private ContractReference approverRef = null;
         private String supersedesDecisionRef = "";
         private ZonedDateTime decidedAt = null;
 
@@ -50,12 +50,12 @@ public record McpReconciliationDecision(String decisionId, String candidateRef, 
             return this;
         }
 
-        public Builder authorRef(String authorRef) {
+        public Builder authorRef(ContractReference authorRef) {
             this.authorRef = Objects.requireNonNull(authorRef);
             return this;
         }
 
-        public Builder approverRef(String approverRef) {
+        public Builder approverRef(ContractReference approverRef) {
             this.approverRef = Objects.requireNonNull(approverRef);
             return this;
         }

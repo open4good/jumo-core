@@ -614,10 +614,10 @@ classes:
         range: string
         required: true
       authorRef:
-        range: Identifier
+        range: ContractReference
         required: true
       approverRef:
-        range: Identifier
+        range: ContractReference
       supersedesDecisionRef:
         range: Identifier
       decidedAt:

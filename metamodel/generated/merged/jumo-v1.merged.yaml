@@ -43577,7 +43577,7 @@ classes:
         owner: McpReconciliationDecision
         domain_of:
         - McpReconciliationDecision
-        range: Identifier
+        range: ContractReference
         required: true
       approverRef:
         name: approverRef
@@ -43585,7 +43585,7 @@ classes:
         owner: McpReconciliationDecision
         domain_of:
         - McpReconciliationDecision
-        range: Identifier
+        range: ContractReference
       supersedesDecisionRef:
         name: supersedesDecisionRef
         from_schema: https://jumo.dev/schemas/integration

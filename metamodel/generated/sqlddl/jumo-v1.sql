@@ -1225,22 +1225,6 @@ CREATE TABLE "McpReconciliationCandidate" (
 CREATE INDEX "ix_McpReconciliationCandidate_id" ON "McpReconciliationCandidate" (id);
 COMMENT ON TABLE "McpReconciliationCandidate" IS 'None';
 
-CREATE TABLE "McpReconciliationDecision" (
-	id SERIAL NOT NULL,
-	"decisionId" TEXT NOT NULL,
-	"candidateRef" TEXT NOT NULL,
-	decision "McpReconciliationDecisionType" NOT NULL,
-	"algorithmVersion" TEXT NOT NULL,
-	"evidenceDigest" TEXT NOT NULL,
-	"authorRef" TEXT NOT NULL,
-	"approverRef" TEXT,
-	"supersedesDecisionRef" TEXT,
-	"decidedAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-	PRIMARY KEY (id)
-);
-CREATE INDEX "ix_McpReconciliationDecision_id" ON "McpReconciliationDecision" (id);
-COMMENT ON TABLE "McpReconciliationDecision" IS 'None';
-
 CREATE TABLE "McpRegistrySyncStatus" (
 	id SERIAL NOT NULL,
 	"sourceId" TEXT NOT NULL,
@@ -2962,6 +2946,24 @@ CREATE TABLE "McpCatalogProvenancePin" (
 CREATE INDEX "ix_McpCatalogProvenancePin_id" ON "McpCatalogProvenancePin" (id);
 COMMENT ON TABLE "McpCatalogProvenancePin" IS 'Immutable source observation pin carried into generated connector material; it is evidence, never authority.';
 COMMENT ON COLUMN "McpCatalogProvenancePin"."ConnectorPackageSpec_id" IS 'Autocreated FK slot';
+
+CREATE TABLE "McpReconciliationDecision" (
+	id SERIAL NOT NULL,
+	"decisionId" TEXT NOT NULL,
+	"candidateRef" TEXT NOT NULL,
+	decision "McpReconciliationDecisionType" NOT NULL,
+	"algorithmVersion" TEXT NOT NULL,
+	"evidenceDigest" TEXT NOT NULL,
+	"supersedesDecisionRef" TEXT,
+	"decidedAt" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	"authorRef_uid" INTEGER NOT NULL,
+	"approverRef_uid" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("authorRef_uid") REFERENCES "ContractReference" (uid),
+	FOREIGN KEY("approverRef_uid") REFERENCES "ContractReference" (uid)
+);
+CREATE INDEX "ix_McpReconciliationDecision_id" ON "McpReconciliationDecision" (id);
+COMMENT ON TABLE "McpReconciliationDecision" IS 'None';
 
 CREATE TABLE "ConnectorIntentRationale" (
 	id SERIAL NOT NULL,

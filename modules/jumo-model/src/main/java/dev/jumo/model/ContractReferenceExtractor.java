@@ -743,6 +743,15 @@ public final class ContractReferenceExtractor {
             refs.add(new OutgoingReference("executionMachineRef", obj.executionMachineRef()));
         }
     }
+    public static void extractFromMcpReconciliationDecision(McpReconciliationDecision obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.authorRef() != null) {
+            refs.add(new OutgoingReference("authorRef", obj.authorRef()));
+        }
+        if (obj.approverRef() != null) {
+            refs.add(new OutgoingReference("approverRef", obj.approverRef()));
+        }
+    }
     public static void extractFromMcpRegistrySource(McpRegistrySource obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         extractFromMcpRegistrySourceSpec(obj.spec(), refs);

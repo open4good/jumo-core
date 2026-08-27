@@ -3152,8 +3152,8 @@ type McpReconciliationDecision
     decision: McpReconciliationDecisionType!
     algorithmVersion: String!
     evidenceDigest: String!
-    authorRef: Identifier!
-    approverRef: Identifier
+    authorRef: ContractReference!
+    approverRef: ContractReference
     supersedesDecisionRef: Identifier
     decidedAt: Datetime!
   }

@@ -7790,12 +7790,17 @@
           "type": "string"
         },
         "approverRef": {
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "type": "string"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "authorRef": {
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "type": "string"
+          "$ref": "#/$defs/ContractReference"
         },
         "candidateRef": {
           "pattern": "^[a-z][a-z0-9-]*$",

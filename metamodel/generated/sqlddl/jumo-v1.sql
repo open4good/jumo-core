@@ -1561,6 +1561,7 @@ CREATE TABLE "SessionPlan" (
 	"planId" TEXT NOT NULL,
 	"realmId" TEXT NOT NULL,
 	"leaseId" TEXT NOT NULL,
+	"upstreamToolsDigest" TEXT NOT NULL,
 	"planExpiresAt" TEXT NOT NULL,
 	"signingKeyName" TEXT NOT NULL,
 	"planSignature" TEXT NOT NULL,
@@ -1568,6 +1569,7 @@ CREATE TABLE "SessionPlan" (
 );
 CREATE INDEX "ix_SessionPlan_id" ON "SessionPlan" (id);
 COMMENT ON TABLE "SessionPlan" IS 'Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope dev.jumo.mcpgateway.plan.SessionPlan''s javadoc names but does not yet have a field for.';
+COMMENT ON COLUMN "SessionPlan"."upstreamToolsDigest" IS 'Digest of the complete discovered tool inventory of the one upstream connector accepted for this plan, using mcp-tools-jcs-v1. Signed with the plan so a gateway can refuse a later upstream inventory change before dispatch.';
 
 CREATE TABLE "ImportedSchemaCandidate" (
 	id SERIAL NOT NULL,

@@ -4330,6 +4330,7 @@ type SessionPlan
     planId: Identifier!
     realmId: Identifier!
     leaseId: Identifier!
+    upstreamToolsDigest: String!
     operations: [PlannedOperation]
     planExpiresAt: String!
     signingKeyName: String!

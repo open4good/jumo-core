@@ -53748,6 +53748,17 @@ classes:
         - SessionPlan
         range: Identifier
         required: true
+      upstreamToolsDigest:
+        name: upstreamToolsDigest
+        description: Digest of the complete discovered tool inventory of the one upstream
+          connector accepted for this plan, using mcp-tools-jcs-v1. Signed with the
+          plan so a gateway can refuse a later upstream inventory change before dispatch.
+        from_schema: https://jumo.dev/schemas/integration
+        owner: SessionPlan
+        domain_of:
+        - SessionPlan
+        range: string
+        required: true
       operations:
         name: operations
         from_schema: https://jumo.dev/schemas/integration

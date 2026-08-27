@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope dev.jumo.mcpgateway.plan.SessionPlan's javadoc names but does not yet have a field for.
  */
-public record SessionPlan(String planId, String realmId, String leaseId, List<PlannedOperation> operations, String planExpiresAt, String signingKeyName, String planSignature)  {
+public record SessionPlan(String planId, String realmId, String leaseId, String upstreamToolsDigest, List<PlannedOperation> operations, String planExpiresAt, String signingKeyName, String planSignature)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,6 +19,7 @@ public record SessionPlan(String planId, String realmId, String leaseId, List<Pl
         private String planId = "";
         private String realmId = "";
         private String leaseId = "";
+        private String upstreamToolsDigest = "";
         private List<PlannedOperation> operations = List.of();
         private String planExpiresAt = "";
         private String signingKeyName = "";
@@ -37,6 +38,11 @@ public record SessionPlan(String planId, String realmId, String leaseId, List<Pl
 
         public Builder leaseId(String leaseId) {
             this.leaseId = Objects.requireNonNull(leaseId);
+            return this;
+        }
+
+        public Builder upstreamToolsDigest(String upstreamToolsDigest) {
+            this.upstreamToolsDigest = Objects.requireNonNull(upstreamToolsDigest);
             return this;
         }
 
@@ -61,7 +67,7 @@ public record SessionPlan(String planId, String realmId, String leaseId, List<Pl
         }
 
     public SessionPlan build() {
-            return new SessionPlan(planId, realmId, leaseId, operations, planExpiresAt, signingKeyName, planSignature);
+            return new SessionPlan(planId, realmId, leaseId, upstreamToolsDigest, operations, planExpiresAt, signingKeyName, planSignature);
         }
     }
 }

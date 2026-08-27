@@ -2571,6 +2571,12 @@ classes:
       leaseId:
         range: Identifier
         required: true
+      upstreamToolsDigest:
+        description: Digest of the complete discovered tool inventory of the one upstream connector
+          accepted for this plan, using mcp-tools-jcs-v1. Signed with the plan so a gateway can
+          refuse a later upstream inventory change before dispatch.
+        range: string
+        required: true
       operations:
         range: PlannedOperation
         multivalued: true

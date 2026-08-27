@@ -1378,6 +1378,7 @@ Name: jumo_v1
 | [upstreamInventory](upstreamInventory.md) | Every tool the upstream server offered when it was looked at, exposed or not ... |
 | [upstreamKind](upstreamKind.md) | Not schema-required -- the pinned jumo-core sibling source only gains this fi... |
 | [upstreamToolName](upstreamToolName.md) |  |
+| [upstreamToolsDigest](upstreamToolsDigest.md) | Digest of the complete discovered tool inventory of the one upstream connecto... |
 | [urgency](urgency.md) |  |
 | [url](url.md) |  |
 | [usageContext](usageContext.md) | Licensing and entitlement fact only |

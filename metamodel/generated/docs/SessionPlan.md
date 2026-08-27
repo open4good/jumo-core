@@ -47,6 +47,8 @@ URI: [jumo:SessionPlan](https://jumo.dev/schemas/jumo-v1/SessionPlan)
 
       SessionPlan : signingKeyName
 
+      SessionPlan : upstreamToolsDigest
+
 
 ```
 
@@ -62,6 +64,7 @@ URI: [jumo:SessionPlan](https://jumo.dev/schemas/jumo-v1/SessionPlan)
 | [planId](planId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [realmId](realmId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
 | [leaseId](leaseId.md) | 1 <br/> [Identifier](Identifier.md) |  | direct |
+| [upstreamToolsDigest](upstreamToolsDigest.md) | 1 <br/> [String](String.md) | Digest of the complete discovered tool inventory of the one upstream connecto... | direct |
 | [operations](operations.md) | * <br/> [PlannedOperation](PlannedOperation.md) |  | direct |
 | [planExpiresAt](planExpiresAt.md) | 1 <br/> [String](String.md) |  | direct |
 | [signingKeyName](signingKeyName.md) | 1 <br/> [String](String.md) |  | direct |
@@ -189,6 +192,18 @@ attributes:
     - SessionPlan
     range: Identifier
     required: true
+  upstreamToolsDigest:
+    name: upstreamToolsDigest
+    description: Digest of the complete discovered tool inventory of the one upstream
+      connector accepted for this plan, using mcp-tools-jcs-v1. Signed with the plan
+      so a gateway can refuse a later upstream inventory change before dispatch.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: SessionPlan
+    domain_of:
+    - SessionPlan
+    range: string
+    required: true
   operations:
     name: operations
     from_schema: https://jumo.dev/schemas/jumo-v1
@@ -298,6 +313,18 @@ attributes:
     - SessionPlanRequest
     - SessionPlan
     range: Identifier
+    required: true
+  upstreamToolsDigest:
+    name: upstreamToolsDigest
+    description: Digest of the complete discovered tool inventory of the one upstream
+      connector accepted for this plan, using mcp-tools-jcs-v1. Signed with the plan
+      so a gateway can refuse a later upstream inventory change before dispatch.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: SessionPlan
+    domain_of:
+    - SessionPlan
+    range: string
     required: true
   operations:
     name: operations

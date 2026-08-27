@@ -3767,6 +3767,9 @@
     "signingKeyName": {
       "@id": "signingKeyName"
     },
+    "upstreamToolsDigest": {
+      "@id": "upstreamToolsDigest"
+    },
     "grantIds": {
       "@id": "grantIds"
     },

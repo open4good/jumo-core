@@ -8007,6 +8007,12 @@ components:
           type: string
         leaseId:
           type: string
+        upstreamToolsDigest:
+          type: string
+          description: Digest of the complete discovered tool inventory of the one
+            upstream connector accepted for this plan, using mcp-tools-jcs-v1. Signed
+            with the plan so a gateway can refuse a later upstream inventory change
+            before dispatch.
         operations:
           items:
             $ref: '#/components/schemas/PlannedOperation'
@@ -8023,6 +8029,7 @@ components:
       - planId
       - realmId
       - leaseId
+      - upstreamToolsDigest
       - planExpiresAt
       - signingKeyName
       - planSignature

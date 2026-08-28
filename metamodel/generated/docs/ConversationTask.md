@@ -24,6 +24,7 @@ URI: [jumo:ConversationTask](https://jumo.dev/schemas/jumo-v1/ConversationTask)
 | DELIBERATE | None |  |
 | COMPACT | None |  |
 | STRUCTURED_INTENT | None |  |
+| INTAKE | None |  |
 
 
 
@@ -78,6 +79,8 @@ permissible_values:
     text: COMPACT
   STRUCTURED_INTENT:
     text: STRUCTURED_INTENT
+  INTAKE:
+    text: INTAKE
 
 ```
 </details>

@@ -1358,6 +1358,8 @@ enums:
         text: COMPACT
       STRUCTURED_INTENT:
         text: STRUCTURED_INTENT
+      INTAKE:
+        text: INTAKE
   VariableTrust:
     name: VariableTrust
     description: 'UNTRUSTED carries content originating outside the trust boundary

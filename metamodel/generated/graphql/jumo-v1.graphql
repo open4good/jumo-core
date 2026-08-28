@@ -250,6 +250,7 @@ enum ConversationTask
     DELIBERATE
     COMPACT
     STRUCTURED_INTENT
+    INTAKE
   }
 
 enum CoordinationMechanism

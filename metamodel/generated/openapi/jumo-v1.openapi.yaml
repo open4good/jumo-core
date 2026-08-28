@@ -10207,6 +10207,7 @@ components:
       - DELIBERATE
       - COMPACT
       - STRUCTURED_INTENT
+      - INTAKE
       title: ConversationTask
       description: The closed set of ConversationService turn kinds. Declared on the
         PromptTemplate that serves it, so the platform resolves task -> prompt from

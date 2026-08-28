@@ -19,7 +19,9 @@ public enum ConversationTask {
 
   COMPACT("COMPACT"),
 
-  STRUCTURED_INTENT("STRUCTURED_INTENT");
+  STRUCTURED_INTENT("STRUCTURED_INTENT"),
+
+  INTAKE("INTAKE");
 
   private final static Map<String, ConversationTask> MAP;
 

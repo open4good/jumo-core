@@ -21,6 +21,7 @@ spec:
       trust: UNTRUSTED
   output:
     form: TEXT
+  conversationTask: INTAKE
   minimumAssurance: OBSERVED
   ring: RING_2_AGENT_BEHAVIOR
   agentDefinitionRef:

@@ -3586,7 +3586,8 @@
         "COORDINATE",
         "DELIBERATE",
         "COMPACT",
-        "STRUCTURED_INTENT"
+        "STRUCTURED_INTENT",
+        "INTAKE"
       ],
       "title": "ConversationTask",
       "type": "string"

@@ -6,7 +6,7 @@ search:
 # Slot: rationale
 
 
-_One entry per selectedConnectorRefs, explaining the match to the stated intent._
+_One entry per selectedRefs, explaining the match to the stated intent._
 
 
 
@@ -25,7 +25,7 @@ URI: [jumo:rationale](https://jumo.dev/schemas/jumo-v1/rationale)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [ConnectorIntentProposal](ConnectorIntentProposal.md) | Structured output of a DIALOGUE_COLLECT step capturing what connectors the as... |  no  |
+| [SelectionIntentProposal](SelectionIntentProposal.md) | Structured output of a DIALOGUE_COLLECT step capturing what the assistant pro... |  no  |
 
 
 
@@ -38,8 +38,8 @@ URI: [jumo:rationale](https://jumo.dev/schemas/jumo-v1/rationale)
 
 | Property | Value |
 | --- | --- |
-| Range | [ConnectorIntentRationale](ConnectorIntentRationale.md) |
-| Domain Of | [ConnectorIntentProposal](ConnectorIntentProposal.md) |
+| Range | [SelectionIntentRationale](SelectionIntentRationale.md) |
+| Domain Of | [SelectionIntentProposal](SelectionIntentProposal.md) |
 
 ### Cardinality and Requirements
 
@@ -50,7 +50,7 @@ URI: [jumo:rationale](https://jumo.dev/schemas/jumo-v1/rationale)
 
 | Property | Value |
 | --- | --- |
-| Owner | [ConnectorIntentProposal](ConnectorIntentProposal.md) |
+| Owner | [SelectionIntentProposal](SelectionIntentProposal.md) |
 
 
 
@@ -92,14 +92,13 @@ URI: [jumo:rationale](https://jumo.dev/schemas/jumo-v1/rationale)
 <details>
 ```yaml
 name: rationale
-description: One entry per selectedConnectorRefs, explaining the match to the stated
-  intent.
+description: One entry per selectedRefs, explaining the match to the stated intent.
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
-owner: ConnectorIntentProposal
+owner: SelectionIntentProposal
 domain_of:
-- ConnectorIntentProposal
-range: ConnectorIntentRationale
+- SelectionIntentProposal
+range: SelectionIntentRationale
 multivalued: true
 inlined: true
 inlined_as_list: true

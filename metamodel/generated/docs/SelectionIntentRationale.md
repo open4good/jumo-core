@@ -3,13 +3,13 @@ search:
   boost: 10.0
 ---
 
-# Class: ConnectorIntentRationale
+# Class: SelectionIntentRationale
 
 <div data-search-exclude markdown="1">
 
 
 
-URI: [jumo:ConnectorIntentRationale](https://jumo.dev/schemas/jumo-v1/ConnectorIntentRationale)
+URI: [jumo:SelectionIntentRationale](https://jumo.dev/schemas/jumo-v1/SelectionIntentRationale)
 
 
 
@@ -17,20 +17,20 @@ URI: [jumo:ConnectorIntentRationale](https://jumo.dev/schemas/jumo-v1/ConnectorI
 
 ```mermaid
  classDiagram
-    class ConnectorIntentRationale
-    click ConnectorIntentRationale href "../ConnectorIntentRationale/"
-      ConnectorIntentRationale : connectorDefinitionRef
+    class SelectionIntentRationale
+    click SelectionIntentRationale href "../SelectionIntentRationale/"
+      SelectionIntentRationale : reason
+
+      SelectionIntentRationale : ref
 
 
 
 
 
-        ConnectorIntentRationale --> "1" ContractReference : connectorDefinitionRef
+        SelectionIntentRationale --> "1" ContractReference : ref
         click ContractReference href "../ContractReference/"
 
 
-
-      ConnectorIntentRationale : reason
 
 
 ```
@@ -44,7 +44,7 @@ URI: [jumo:ConnectorIntentRationale](https://jumo.dev/schemas/jumo-v1/ConnectorI
 
 | Name | Cardinality and Range | Description | Inheritance |
 | ---  | --- | --- | --- |
-| [connectorDefinitionRef](connectorDefinitionRef.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
+| [ref](ref.md) | 1 <br/> [ContractReference](ContractReference.md) |  | direct |
 | [reason](reason.md) | 1 <br/> [String](String.md) |  | direct |
 
 
@@ -55,7 +55,7 @@ URI: [jumo:ConnectorIntentRationale](https://jumo.dev/schemas/jumo-v1/ConnectorI
 
 | used by | used in | type | used |
 | ---  | --- | --- | --- |
-| [ConnectorIntentProposal](ConnectorIntentProposal.md) | [rationale](rationale.md) | range | [ConnectorIntentRationale](ConnectorIntentRationale.md) |
+| [SelectionIntentProposal](SelectionIntentProposal.md) | [rationale](rationale.md) | range | [SelectionIntentRationale](SelectionIntentRationale.md) |
 
 
 
@@ -98,8 +98,8 @@ URI: [jumo:ConnectorIntentRationale](https://jumo.dev/schemas/jumo-v1/ConnectorI
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:ConnectorIntentRationale |
-| native | jumo:ConnectorIntentRationale |
+| self | jumo:SelectionIntentRationale |
+| native | jumo:SelectionIntentRationale |
 
 
 
@@ -114,7 +114,7 @@ URI: [jumo:ConnectorIntentRationale](https://jumo.dev/schemas/jumo-v1/ConnectorI
 
 <details>
 ```yaml
-name: ConnectorIntentRationale
+name: SelectionIntentRationale
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -136,24 +136,23 @@ annotations:
     value: draft-2020-12,native-json-schema,prompted-json-validated
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
-  connectorDefinitionRef:
-    name: connectorDefinitionRef
+  ref:
+    name: ref
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: ConnectorIntentRationale
+    owner: SelectionIntentRationale
     domain_of:
-    - ConnectorIntentRationale
-    - WorkerGrantedOperation
+    - SelectionIntentRationale
     range: ContractReference
     required: true
     inlined: true
   reason:
     name: reason
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ConnectorIntentRationale
+    owner: SelectionIntentRationale
     domain_of:
     - OrganizationRetentionHoldSpec
-    - ConnectorIntentRationale
+    - SelectionIntentRationale
     - UpstreamToolEntry
     range: string
     required: true
@@ -166,7 +165,7 @@ attributes:
 
 <details>
 ```yaml
-name: ConnectorIntentRationale
+name: SelectionIntentRationale
 annotations:
   jumo.state_authority:
     tag: jumo.state_authority
@@ -188,24 +187,23 @@ annotations:
     value: draft-2020-12,native-json-schema,prompted-json-validated
 from_schema: https://jumo.dev/schemas/jumo-v1
 attributes:
-  connectorDefinitionRef:
-    name: connectorDefinitionRef
+  ref:
+    name: ref
     from_schema: https://jumo.dev/schemas/jumo-v1
     rank: 1000
-    owner: ConnectorIntentRationale
+    owner: SelectionIntentRationale
     domain_of:
-    - ConnectorIntentRationale
-    - WorkerGrantedOperation
+    - SelectionIntentRationale
     range: ContractReference
     required: true
     inlined: true
   reason:
     name: reason
     from_schema: https://jumo.dev/schemas/jumo-v1
-    owner: ConnectorIntentRationale
+    owner: SelectionIntentRationale
     domain_of:
     - OrganizationRetentionHoldSpec
-    - ConnectorIntentRationale
+    - SelectionIntentRationale
     - UpstreamToolEntry
     range: string
     required: true

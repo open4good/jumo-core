@@ -34,6 +34,8 @@ URI: [jumo:PromptOutput](https://jumo.dev/schemas/jumo-v1/PromptOutput)
 
       PromptOutput : schemaRef
 
+      PromptOutput : targetKind
+
 
 ```
 
@@ -49,6 +51,7 @@ URI: [jumo:PromptOutput](https://jumo.dev/schemas/jumo-v1/PromptOutput)
 | [form](form.md) | 1 <br/> [PromptOutputForm](PromptOutputForm.md) |  | direct |
 | [javaType](javaType.md) | 0..1 <br/> [String](String.md) | Fully qualified target type for STRUCTURED output | direct |
 | [schemaRef](schemaRef.md) | 0..1 <br/> [String](String.md) |  | direct |
+| [targetKind](targetKind.md) | 0..1 <br/> [String](String.md) | For a STRUCTURED output whose javaType is a reusable generic proposal shape (... | direct |
 
 
 
@@ -167,6 +170,21 @@ attributes:
     - PromptOutput
     - FederationMessage
     range: string
+  targetKind:
+    name: targetKind
+    description: For a STRUCTURED output whose javaType is a reusable generic proposal
+      shape (for example SelectionIntentProposal), the contract kind every proposed
+      ref must name -- e.g. ConnectorDefinition. The same role AssistedJourneyEmission.targetKind
+      already plays -- one class serving every domain that needs the shape instead
+      of one class per target kind (canonical decision 15); absent when javaType is
+      not generic over a target kind.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: PromptOutput
+    domain_of:
+    - PromptOutput
+    - AssistedJourneyEmission
+    range: string
 
 ```
 </details>
@@ -224,6 +242,21 @@ attributes:
     domain_of:
     - PromptOutput
     - FederationMessage
+    range: string
+  targetKind:
+    name: targetKind
+    description: For a STRUCTURED output whose javaType is a reusable generic proposal
+      shape (for example SelectionIntentProposal), the contract kind every proposed
+      ref must name -- e.g. ConnectorDefinition. The same role AssistedJourneyEmission.targetKind
+      already plays -- one class serving every domain that needs the shape instead
+      of one class per target kind (canonical decision 15); absent when javaType is
+      not generic over a target kind.
+    from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
+    owner: PromptOutput
+    domain_of:
+    - PromptOutput
+    - AssistedJourneyEmission
     range: string
 
 ```

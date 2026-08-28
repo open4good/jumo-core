@@ -174,7 +174,7 @@ attributes:
     owner: UpstreamToolEntry
     domain_of:
     - OrganizationRetentionHoldSpec
-    - ConnectorIntentRationale
+    - SelectionIntentRationale
     - UpstreamToolEntry
     range: string
     pattern: ^.{10,}$
@@ -238,7 +238,7 @@ attributes:
     owner: UpstreamToolEntry
     domain_of:
     - OrganizationRetentionHoldSpec
-    - ConnectorIntentRationale
+    - SelectionIntentRationale
     - UpstreamToolEntry
     range: string
     pattern: ^.{10,}$

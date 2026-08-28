@@ -240,9 +240,9 @@ attributes:
     description: The contract kind the emitted document declares. Must name a declared
       kind (Rego).
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: AssistedJourneyEmission
     domain_of:
+    - PromptOutput
     - AssistedJourneyEmission
     range: string
     required: true
@@ -414,9 +414,9 @@ attributes:
     description: The contract kind the emitted document declares. Must name a declared
       kind (Rego).
     from_schema: https://jumo.dev/schemas/jumo-v1
-    rank: 1000
     owner: AssistedJourneyEmission
     domain_of:
+    - PromptOutput
     - AssistedJourneyEmission
     range: string
     required: true

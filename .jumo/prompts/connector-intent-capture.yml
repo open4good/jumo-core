@@ -19,8 +19,9 @@ spec:
       trust: UNTRUSTED
   output:
     form: STRUCTURED
-    schemaRef: ConnectorIntentProposal
-    javaType: dev.jumo.model.ConnectorIntentProposal
+    schemaRef: SelectionIntentProposal
+    javaType: dev.jumo.model.SelectionIntentProposal
+    targetKind: ConnectorDefinition
   minimumAssurance: OBSERVED
   ring: RING_2_AGENT_BEHAVIOR
   conversationTask: STRUCTURED_INTENT

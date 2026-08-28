@@ -179,7 +179,7 @@ CREATE TABLE "ContractReference" (
 	"AssistedJourneySpec_id" INTEGER,
 	"ExecutionMachineSpec_id" INTEGER,
 	"ConnectorOperation_uid" INTEGER,
-	"ConnectorIntentProposal_id" INTEGER,
+	"SelectionIntentProposal_id" INTEGER,
 	"McpBundleOperation_uid" INTEGER,
 	"ExecutionCellSpec_id" INTEGER,
 	"SecretBindingSpec_id" INTEGER,
@@ -203,7 +203,7 @@ COMMENT ON COLUMN "ContractReference"."WorkerQualityRequirement_id" IS 'Autocrea
 COMMENT ON COLUMN "ContractReference"."AssistedJourneySpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ExecutionMachineSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ConnectorOperation_uid" IS 'Autocreated FK slot';
-COMMENT ON COLUMN "ContractReference"."ConnectorIntentProposal_id" IS 'Autocreated FK slot';
+COMMENT ON COLUMN "ContractReference"."SelectionIntentProposal_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."McpBundleOperation_uid" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."ExecutionCellSpec_id" IS 'Autocreated FK slot';
 COMMENT ON COLUMN "ContractReference"."SecretBindingSpec_id" IS 'Autocreated FK slot';
@@ -722,11 +722,13 @@ CREATE TABLE "PromptOutput" (
 	form "PromptOutputForm" NOT NULL,
 	"javaType" TEXT,
 	"schemaRef" TEXT,
+	"targetKind" TEXT,
 	PRIMARY KEY (id)
 );
 CREATE INDEX "ix_PromptOutput_id" ON "PromptOutput" (id);
 COMMENT ON TABLE "PromptOutput" IS 'None';
 COMMENT ON COLUMN "PromptOutput"."javaType" IS 'Fully qualified target type for STRUCTURED output.';
+COMMENT ON COLUMN "PromptOutput"."targetKind" IS 'For a STRUCTURED output whose javaType is a reusable generic proposal shape (for example SelectionIntentProposal), the contract kind every proposed ref must name -- e.g. ConnectorDefinition. The same role AssistedJourneyEmission.targetKind already plays -- one class serving every domain that needs the shape instead of one class per target kind (canonical decision 15); absent when javaType is not generic over a target kind.';
 
 CREATE TABLE "BudgetLimits" (
 	id SERIAL NOT NULL,
@@ -1290,14 +1292,14 @@ CREATE INDEX "ix_ConnectorOperation_uid" ON "ConnectorOperation" (uid);
 COMMENT ON TABLE "ConnectorOperation" IS 'None';
 COMMENT ON COLUMN "ConnectorOperation"."ConnectorDefinitionSpec_id" IS 'Autocreated FK slot';
 
-CREATE TABLE "ConnectorIntentProposal" (
+CREATE TABLE "SelectionIntentProposal" (
 	id SERIAL NOT NULL,
 	"openQuestion" TEXT,
 	PRIMARY KEY (id)
 );
-CREATE INDEX "ix_ConnectorIntentProposal_id" ON "ConnectorIntentProposal" (id);
-COMMENT ON TABLE "ConnectorIntentProposal" IS 'Structured output of a DIALOGUE_COLLECT step capturing what connectors the assistant proposes in response to the user''s stated intent (AssistedJourneyStep.promptRef, PromptOutput form: STRUCTURED). A proposal, never a grant or a configuration: selectedConnectorRefs must be drawn only from the realm''s declared ConnectorDefinition catalog supplied as the prompt''s RAG context (the same corpus ContractLoader loads for CapabilityGatewayService), never invented by the model. The user still confirms selection explicitly; this class only bounds what the model may say back.';
-COMMENT ON COLUMN "ConnectorIntentProposal"."openQuestion" IS 'A clarifying question to continue the dialogue when intent is still ambiguous. Absent once the proposal is considered final for this turn.';
+CREATE INDEX "ix_SelectionIntentProposal_id" ON "SelectionIntentProposal" (id);
+COMMENT ON TABLE "SelectionIntentProposal" IS 'Structured output of a DIALOGUE_COLLECT step capturing what the assistant proposes selecting, from a declared catalog, in response to the user''s stated intent (AssistedJourneyStep.promptRef, PromptOutput form: STRUCTURED; PromptOutput.targetKind names the ContractReference kind every selectedRefs entry must be, e.g. ConnectorDefinition). A proposal, never a grant or a configuration: selectedRefs must be drawn only from the realm''s declared catalog of that kind, supplied as the prompt''s RAG context (the same corpus ContractLoader loads for CapabilityGatewayService), never invented by the model. The user still confirms selection explicitly; this class only bounds what the model may say back. One declaration reused across every domain that needs this shape, instead of one class per target kind (canonical decision 15).';
+COMMENT ON COLUMN "SelectionIntentProposal"."openQuestion" IS 'A clarifying question to continue the dialogue when intent is still ambiguous. Absent once the proposal is considered final for this turn.';
 
 CREATE TABLE "AppraisalDimension" (
 	id SERIAL NOT NULL,
@@ -2988,18 +2990,18 @@ CREATE TABLE "McpReconciliationDecision" (
 CREATE INDEX "ix_McpReconciliationDecision_id" ON "McpReconciliationDecision" (id);
 COMMENT ON TABLE "McpReconciliationDecision" IS 'None';
 
-CREATE TABLE "ConnectorIntentRationale" (
+CREATE TABLE "SelectionIntentRationale" (
 	id SERIAL NOT NULL,
 	reason TEXT NOT NULL,
-	"ConnectorIntentProposal_id" INTEGER,
-	"connectorDefinitionRef_uid" INTEGER NOT NULL,
+	"SelectionIntentProposal_id" INTEGER,
+	ref_uid INTEGER NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY("ConnectorIntentProposal_id") REFERENCES "ConnectorIntentProposal" (id),
-	FOREIGN KEY("connectorDefinitionRef_uid") REFERENCES "ContractReference" (uid)
+	FOREIGN KEY("SelectionIntentProposal_id") REFERENCES "SelectionIntentProposal" (id),
+	FOREIGN KEY(ref_uid) REFERENCES "ContractReference" (uid)
 );
-CREATE INDEX "ix_ConnectorIntentRationale_id" ON "ConnectorIntentRationale" (id);
-COMMENT ON TABLE "ConnectorIntentRationale" IS 'None';
-COMMENT ON COLUMN "ConnectorIntentRationale"."ConnectorIntentProposal_id" IS 'Autocreated FK slot';
+CREATE INDEX "ix_SelectionIntentRationale_id" ON "SelectionIntentRationale" (id);
+COMMENT ON TABLE "SelectionIntentRationale" IS 'None';
+COMMENT ON COLUMN "SelectionIntentRationale"."SelectionIntentProposal_id" IS 'Autocreated FK slot';
 
 CREATE TABLE "AppraisalDimensions" (
 	id SERIAL NOT NULL,
@@ -6459,7 +6461,6 @@ ALTER TABLE "ConnectorOperation" ADD FOREIGN KEY("ConnectorDefinitionSpec_id") R
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("AdvisorProfileSpec_id") REFERENCES "AdvisorProfileSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("AssistedJourneySpec_id") REFERENCES "AssistedJourneySpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorIntegrationSpec_id") REFERENCES "ConnectorIntegrationSpec" (id);
-ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorIntentProposal_id") REFERENCES "ConnectorIntentProposal" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("ConnectorOperation_uid") REFERENCES "ConnectorOperation" (uid);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("DispositionMatch_id") REFERENCES "DispositionMatch" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("EffectTestAuthorization_id") REFERENCES "EffectTestAuthorization" (id);
@@ -6471,6 +6472,7 @@ ALTER TABLE "ContractReference" ADD FOREIGN KEY("ProviderAccountSpec_id") REFERE
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("RealmTemplateSpec_id") REFERENCES "RealmTemplateSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("RoutingEligibilitySpec_id") REFERENCES "RoutingEligibilitySpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("SecretBindingSpec_id") REFERENCES "SecretBindingSpec" (id);
+ALTER TABLE "ContractReference" ADD FOREIGN KEY("SelectionIntentProposal_id") REFERENCES "SelectionIntentProposal" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("WorkOrderSpec_id") REFERENCES "WorkOrderSpec" (id);
 ALTER TABLE "ContractReference" ADD FOREIGN KEY("WorkerQualityRequirement_id") REFERENCES "WorkerQualityRequirement" (id);
 ALTER TABLE "ExecutionMachineSpec" ADD FOREIGN KEY("hostDefinitionRef_uid") REFERENCES "ContractReference" (uid);

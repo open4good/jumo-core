@@ -20783,7 +20783,7 @@ classes:
         owner: OrganizationRetentionHoldSpec
         domain_of:
         - OrganizationRetentionHoldSpec
-        - ConnectorIntentRationale
+        - SelectionIntentRationale
         - UpstreamToolEntry
         range: string
         required: true
@@ -26988,6 +26988,20 @@ classes:
         - PromptOutput
         - FederationMessage
         range: string
+      targetKind:
+        name: targetKind
+        description: For a STRUCTURED output whose javaType is a reusable generic
+          proposal shape (for example SelectionIntentProposal), the contract kind
+          every proposed ref must name -- e.g. ConnectorDefinition. The same role
+          AssistedJourneyEmission.targetKind already plays -- one class serving every
+          domain that needs the shape instead of one class per target kind (canonical
+          decision 15); absent when javaType is not generic over a target kind.
+        from_schema: https://jumo.dev/schemas/work
+        owner: PromptOutput
+        domain_of:
+        - PromptOutput
+        - AssistedJourneyEmission
+        range: string
   ResourceBudget:
     name: ResourceBudget
     annotations:
@@ -28568,6 +28582,7 @@ classes:
         from_schema: https://jumo.dev/schemas/work
         owner: AssistedJourneyEmission
         domain_of:
+        - PromptOutput
         - AssistedJourneyEmission
         range: string
         required: true
@@ -44645,8 +44660,8 @@ classes:
         multivalued: true
         inlined: true
         inlined_as_list: true
-  ConnectorIntentProposal:
-    name: ConnectorIntentProposal
+  SelectionIntentProposal:
+    name: SelectionIntentProposal
     annotations:
       jumo.state_authority:
         tag: jumo.state_authority
@@ -44666,37 +44681,40 @@ classes:
       jumo.schema_profiles:
         tag: jumo.schema_profiles
         value: draft-2020-12,native-json-schema,prompted-json-validated
-    description: 'Structured output of a DIALOGUE_COLLECT step capturing what connectors
-      the assistant proposes in response to the user''s stated intent (AssistedJourneyStep.promptRef,
-      PromptOutput form: STRUCTURED). A proposal, never a grant or a configuration:
-      selectedConnectorRefs must be drawn only from the realm''s declared ConnectorDefinition
-      catalog supplied as the prompt''s RAG context (the same corpus ContractLoader
-      loads for CapabilityGatewayService), never invented by the model. The user still
-      confirms selection explicitly; this class only bounds what the model may say
-      back.'
+    description: 'Structured output of a DIALOGUE_COLLECT step capturing what the
+      assistant proposes selecting, from a declared catalog, in response to the user''s
+      stated intent (AssistedJourneyStep.promptRef, PromptOutput form: STRUCTURED;
+      PromptOutput.targetKind names the ContractReference kind every selectedRefs
+      entry must be, e.g. ConnectorDefinition). A proposal, never a grant or a configuration:
+      selectedRefs must be drawn only from the realm''s declared catalog of that kind,
+      supplied as the prompt''s RAG context (the same corpus ContractLoader loads
+      for CapabilityGatewayService), never invented by the model. The user still confirms
+      selection explicitly; this class only bounds what the model may say back. One
+      declaration reused across every domain that needs this shape, instead of one
+      class per target kind (canonical decision 15).'
     from_schema: https://jumo.dev/schemas/jumo-v1
     attributes:
-      selectedConnectorDefinitionRefs:
-        name: selectedConnectorDefinitionRefs
-        description: ConnectorDefinition ids proposed, referencing the supplied catalog
-          only.
+      selectedRefs:
+        name: selectedRefs
+        description: Ids proposed, of the kind PromptOutput.targetKind names, referencing
+          the supplied catalog only.
         from_schema: https://jumo.dev/schemas/integration
-        owner: ConnectorIntentProposal
+        owner: SelectionIntentProposal
         domain_of:
-        - ConnectorIntentProposal
+        - SelectionIntentProposal
         range: ContractReference
         multivalued: true
         inlined: true
         inlined_as_list: true
       rationale:
         name: rationale
-        description: One entry per selectedConnectorRefs, explaining the match to
-          the stated intent.
+        description: One entry per selectedRefs, explaining the match to the stated
+          intent.
         from_schema: https://jumo.dev/schemas/integration
-        owner: ConnectorIntentProposal
+        owner: SelectionIntentProposal
         domain_of:
-        - ConnectorIntentProposal
-        range: ConnectorIntentRationale
+        - SelectionIntentProposal
+        range: SelectionIntentRationale
         multivalued: true
         inlined: true
         inlined_as_list: true
@@ -44705,12 +44723,12 @@ classes:
         description: A clarifying question to continue the dialogue when intent is
           still ambiguous. Absent once the proposal is considered final for this turn.
         from_schema: https://jumo.dev/schemas/integration
-        owner: ConnectorIntentProposal
+        owner: SelectionIntentProposal
         domain_of:
-        - ConnectorIntentProposal
+        - SelectionIntentProposal
         range: string
-  ConnectorIntentRationale:
-    name: ConnectorIntentRationale
+  SelectionIntentRationale:
+    name: SelectionIntentRationale
     annotations:
       jumo.state_authority:
         tag: jumo.state_authority
@@ -44732,23 +44750,22 @@ classes:
         value: draft-2020-12,native-json-schema,prompted-json-validated
     from_schema: https://jumo.dev/schemas/jumo-v1
     attributes:
-      connectorDefinitionRef:
-        name: connectorDefinitionRef
+      ref:
+        name: ref
         from_schema: https://jumo.dev/schemas/integration
-        owner: ConnectorIntentRationale
+        owner: SelectionIntentRationale
         domain_of:
-        - ConnectorIntentRationale
-        - WorkerGrantedOperation
+        - SelectionIntentRationale
         range: ContractReference
         required: true
         inlined: true
       reason:
         name: reason
         from_schema: https://jumo.dev/schemas/integration
-        owner: ConnectorIntentRationale
+        owner: SelectionIntentRationale
         domain_of:
         - OrganizationRetentionHoldSpec
-        - ConnectorIntentRationale
+        - SelectionIntentRationale
         - UpstreamToolEntry
         range: string
         required: true
@@ -45502,7 +45519,7 @@ classes:
         owner: UpstreamToolEntry
         domain_of:
         - OrganizationRetentionHoldSpec
-        - ConnectorIntentRationale
+        - SelectionIntentRationale
         - UpstreamToolEntry
         range: string
         pattern: ^.{10,}$
@@ -53439,7 +53456,6 @@ classes:
         from_schema: https://jumo.dev/schemas/integration
         owner: WorkerGrantedOperation
         domain_of:
-        - ConnectorIntentRationale
         - WorkerGrantedOperation
         range: ContractReference
         required: true

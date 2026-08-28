@@ -2911,51 +2911,6 @@
       "title": "ConnectorIntegrationSpec",
       "type": "object"
     },
-    "ConnectorIntentProposal": {
-      "additionalProperties": false,
-      "description": "Structured output of a DIALOGUE_COLLECT step capturing what connectors the assistant proposes in response to the user's stated intent (AssistedJourneyStep.promptRef, PromptOutput form: STRUCTURED). A proposal, never a grant or a configuration: selectedConnectorRefs must be drawn only from the realm's declared ConnectorDefinition catalog supplied as the prompt's RAG context (the same corpus ContractLoader loads for CapabilityGatewayService), never invented by the model. The user still confirms selection explicitly; this class only bounds what the model may say back.",
-      "properties": {
-        "openQuestion": {
-          "description": "A clarifying question to continue the dialogue when intent is still ambiguous. Absent once the proposal is considered final for this turn.",
-          "type": "string"
-        },
-        "rationale": {
-          "description": "One entry per selectedConnectorRefs, explaining the match to the stated intent.",
-          "items": {
-            "$ref": "#/$defs/ConnectorIntentRationale"
-          },
-          "type": "array"
-        },
-        "selectedConnectorDefinitionRefs": {
-          "description": "ConnectorDefinition ids proposed, referencing the supplied catalog only.",
-          "items": {
-            "$ref": "#/$defs/ContractReference"
-          },
-          "type": "array"
-        }
-      },
-      "title": "ConnectorIntentProposal",
-      "type": "object"
-    },
-    "ConnectorIntentRationale": {
-      "additionalProperties": false,
-      "description": "",
-      "properties": {
-        "connectorDefinitionRef": {
-          "$ref": "#/$defs/ContractReference"
-        },
-        "reason": {
-          "pattern": "^.{1,}$",
-          "type": "string"
-        }
-      },
-      "required": [
-        "connectorDefinitionRef",
-        "reason"
-      ],
-      "title": "ConnectorIntentRationale",
-      "type": "object"
-    },
     "ConnectorLifecycle": {
       "description": "",
       "enum": [
@@ -11134,6 +11089,10 @@
         },
         "schemaRef": {
           "type": "string"
+        },
+        "targetKind": {
+          "description": "For a STRUCTURED output whose javaType is a reusable generic proposal shape (for example SelectionIntentProposal), the contract kind every proposed ref must name -- e.g. ConnectorDefinition. The same role AssistedJourneyEmission.targetKind already plays -- one class serving every domain that needs the shape instead of one class per target kind (canonical decision 15); absent when javaType is not generic over a target kind.",
+          "type": "string"
         }
       },
       "required": [
@@ -13037,6 +12996,51 @@
         }
       },
       "title": "SecretRotation",
+      "type": "object"
+    },
+    "SelectionIntentProposal": {
+      "additionalProperties": false,
+      "description": "Structured output of a DIALOGUE_COLLECT step capturing what the assistant proposes selecting, from a declared catalog, in response to the user's stated intent (AssistedJourneyStep.promptRef, PromptOutput form: STRUCTURED; PromptOutput.targetKind names the ContractReference kind every selectedRefs entry must be, e.g. ConnectorDefinition). A proposal, never a grant or a configuration: selectedRefs must be drawn only from the realm's declared catalog of that kind, supplied as the prompt's RAG context (the same corpus ContractLoader loads for CapabilityGatewayService), never invented by the model. The user still confirms selection explicitly; this class only bounds what the model may say back. One declaration reused across every domain that needs this shape, instead of one class per target kind (canonical decision 15).",
+      "properties": {
+        "openQuestion": {
+          "description": "A clarifying question to continue the dialogue when intent is still ambiguous. Absent once the proposal is considered final for this turn.",
+          "type": "string"
+        },
+        "rationale": {
+          "description": "One entry per selectedRefs, explaining the match to the stated intent.",
+          "items": {
+            "$ref": "#/$defs/SelectionIntentRationale"
+          },
+          "type": "array"
+        },
+        "selectedRefs": {
+          "description": "Ids proposed, of the kind PromptOutput.targetKind names, referencing the supplied catalog only.",
+          "items": {
+            "$ref": "#/$defs/ContractReference"
+          },
+          "type": "array"
+        }
+      },
+      "title": "SelectionIntentProposal",
+      "type": "object"
+    },
+    "SelectionIntentRationale": {
+      "additionalProperties": false,
+      "description": "",
+      "properties": {
+        "reason": {
+          "pattern": "^.{1,}$",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractReference"
+        }
+      },
+      "required": [
+        "ref",
+        "reason"
+      ],
+      "title": "SelectionIntentRationale",
       "type": "object"
     },
     "SelfDescription": {

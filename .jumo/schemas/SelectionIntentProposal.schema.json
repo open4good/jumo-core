@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://jumo.dev/schemas/prompt-output/connector-intent-proposal",
-  "title": "Connector intent proposal",
+  "$id": "https://jumo.dev/schemas/prompt-output/selection-intent-proposal",
+  "title": "Selection intent proposal",
   "type": "object",
   "properties": {
-    "selectedConnectorDefinitionRefs": {
+    "selectedRefs": {
       "type": "array",
       "items": { "$ref": "#/$defs/contractReference" }
     },
@@ -13,15 +13,15 @@
       "items": {
         "type": "object",
         "properties": {
-          "connectorDefinitionRef": { "$ref": "#/$defs/contractReference" },
+          "ref": { "$ref": "#/$defs/contractReference" },
           "reason": { "type": "string", "minLength": 1 }
         },
-        "required": ["connectorDefinitionRef", "reason"]
+        "required": ["ref", "reason"]
       }
     },
     "openQuestion": { "type": ["string", "null"] }
   },
-  "required": ["selectedConnectorDefinitionRefs", "rationale"],
+  "required": ["selectedRefs", "rationale"],
   "$defs": {
     "contractReference": {
       "type": "object",

@@ -1146,24 +1146,6 @@
       "@type": "@id",
       "@id": "memberConnectorRefs"
     },
-    "openQuestion": {
-      "@id": "openQuestion"
-    },
-    "rationale": {
-      "@type": "@id",
-      "@id": "rationale"
-    },
-    "selectedConnectorDefinitionRefs": {
-      "@type": "@id",
-      "@id": "selectedConnectorDefinitionRefs"
-    },
-    "connectorDefinitionRef": {
-      "@type": "@id",
-      "@id": "connectorDefinitionRef"
-    },
-    "reason": {
-      "@id": "reason"
-    },
     "bundleOperationRef": {
       "@id": "bundleOperationRef"
     },
@@ -2942,6 +2924,9 @@
       "@type": "xsd:boolean",
       "@id": "active"
     },
+    "reason": {
+      "@id": "reason"
+    },
     "humanSeat": {
       "@type": "xsd:boolean",
       "@id": "humanSeat"
@@ -3779,6 +3764,21 @@
     "maximumAge": {
       "@id": "maximumAge"
     },
+    "openQuestion": {
+      "@id": "openQuestion"
+    },
+    "rationale": {
+      "@type": "@id",
+      "@id": "rationale"
+    },
+    "selectedRefs": {
+      "@type": "@id",
+      "@id": "selectedRefs"
+    },
+    "ref": {
+      "@type": "@id",
+      "@id": "ref"
+    },
     "facts": {
       "@type": "@id",
       "@id": "facts"
@@ -4008,6 +4008,10 @@
     "minimumTokens": {
       "@type": "xsd:integer",
       "@id": "minimumTokens"
+    },
+    "connectorDefinitionRef": {
+      "@type": "@id",
+      "@id": "connectorDefinitionRef"
     },
     "structuredOutput": {
       "@context": {
@@ -4480,12 +4484,6 @@
     },
     "ConnectorIntegrationSpec": {
       "@id": "ConnectorIntegrationSpec"
-    },
-    "ConnectorIntentProposal": {
-      "@id": "ConnectorIntentProposal"
-    },
-    "ConnectorIntentRationale": {
-      "@id": "ConnectorIntentRationale"
     },
     "ConnectorOperation": {
       "@id": "ConnectorOperation"
@@ -5248,6 +5246,12 @@
     },
     "SecretRotation": {
       "@id": "SecretRotation"
+    },
+    "SelectionIntentProposal": {
+      "@id": "SelectionIntentProposal"
+    },
+    "SelectionIntentRationale": {
+      "@id": "SelectionIntentRationale"
     },
     "SelfDescription": {
       "@id": "SelfDescription"

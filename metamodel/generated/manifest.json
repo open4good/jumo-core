@@ -581,22 +581,6 @@
       "composition": "N/A"
     },
     {
-      "linkmlClass": "ConnectorIntentProposal",
-      "jsonSchemaPointer": "#/$defs/ConnectorIntentProposal",
-      "javaClass": "dev.jumo.model.ConnectorIntentProposal",
-      "gitContract": false,
-      "stateAuthority": "N/A",
-      "composition": "N/A"
-    },
-    {
-      "linkmlClass": "ConnectorIntentRationale",
-      "jsonSchemaPointer": "#/$defs/ConnectorIntentRationale",
-      "javaClass": "dev.jumo.model.ConnectorIntentRationale",
-      "gitContract": false,
-      "stateAuthority": "N/A",
-      "composition": "N/A"
-    },
-    {
       "linkmlClass": "ConnectorOperation",
       "jsonSchemaPointer": "#/$defs/ConnectorOperation",
       "javaClass": "dev.jumo.model.ConnectorOperation",
@@ -2624,6 +2608,22 @@
       "linkmlClass": "SecretRotation",
       "jsonSchemaPointer": "#/$defs/SecretRotation",
       "javaClass": "dev.jumo.model.SecretRotation",
+      "gitContract": false,
+      "stateAuthority": "N/A",
+      "composition": "N/A"
+    },
+    {
+      "linkmlClass": "SelectionIntentProposal",
+      "jsonSchemaPointer": "#/$defs/SelectionIntentProposal",
+      "javaClass": "dev.jumo.model.SelectionIntentProposal",
+      "gitContract": false,
+      "stateAuthority": "N/A",
+      "composition": "N/A"
+    },
+    {
+      "linkmlClass": "SelectionIntentRationale",
+      "jsonSchemaPointer": "#/$defs/SelectionIntentRationale",
+      "javaClass": "dev.jumo.model.SelectionIntentRationale",
       "gitContract": false,
       "stateAuthority": "N/A",
       "composition": "N/A"

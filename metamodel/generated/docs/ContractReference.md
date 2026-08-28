@@ -171,8 +171,8 @@ URI: [jumo:ContractReference](https://jumo.dev/schemas/jumo-v1/ContractReference
 | [ConnectorDefinitionSpec](ConnectorDefinitionSpec.md) | [remoteMcpServiceRef](remoteMcpServiceRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorDefinitionSpec](ConnectorDefinitionSpec.md) | [connectorPackageRef](connectorPackageRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorOperation](ConnectorOperation.md) | [secretBindingRefs](secretBindingRefs.md) | range | [ContractReference](ContractReference.md) |
-| [ConnectorIntentProposal](ConnectorIntentProposal.md) | [selectedConnectorDefinitionRefs](selectedConnectorDefinitionRefs.md) | range | [ContractReference](ContractReference.md) |
-| [ConnectorIntentRationale](ConnectorIntentRationale.md) | [connectorDefinitionRef](connectorDefinitionRef.md) | range | [ContractReference](ContractReference.md) |
+| [SelectionIntentProposal](SelectionIntentProposal.md) | [selectedRefs](selectedRefs.md) | range | [ContractReference](ContractReference.md) |
+| [SelectionIntentRationale](SelectionIntentRationale.md) | [ref](ref.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorAppraisalSpec](ConnectorAppraisalSpec.md) | [mcpBundleRef](mcpBundleRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorAppraisalSpec](ConnectorAppraisalSpec.md) | [appraisedByRoleDefinitionRef](appraisedByRoleDefinitionRef.md) | range | [ContractReference](ContractReference.md) |
 | [ConnectorAppraisalSpec](ConnectorAppraisalSpec.md) | [verifiedByRoleDefinitionRef](verifiedByRoleDefinitionRef.md) | range | [ContractReference](ContractReference.md) |

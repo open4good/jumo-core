@@ -139,9 +139,9 @@ attributes:
   connectorDefinitionRef:
     name: connectorDefinitionRef
     from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
     owner: WorkerGrantedOperation
     domain_of:
-    - ConnectorIntentRationale
     - WorkerGrantedOperation
     range: ContractReference
     required: true
@@ -188,9 +188,9 @@ attributes:
   connectorDefinitionRef:
     name: connectorDefinitionRef
     from_schema: https://jumo.dev/schemas/jumo-v1
+    rank: 1000
     owner: WorkerGrantedOperation
     domain_of:
-    - ConnectorIntentRationale
     - WorkerGrantedOperation
     range: ContractReference
     required: true

@@ -1106,6 +1106,13 @@ classes:
         description: Fully qualified target type for STRUCTURED output.
       schemaRef:
         range: string
+      targetKind:
+        range: string
+        description: For a STRUCTURED output whose javaType is a reusable generic proposal shape (for example
+          SelectionIntentProposal), the contract kind every proposed ref must name -- e.g. ConnectorDefinition. The
+          same role AssistedJourneyEmission.targetKind already plays -- one class serving every domain that needs the
+          shape instead of one class per target kind (canonical decision 15); absent when javaType is not generic over
+          a target kind.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

@@ -5,7 +5,7 @@ package dev.jumo.model;
 import java.util.Objects;
 
 
-public record ConnectorIntentRationale(ContractReference connectorDefinitionRef, String reason)  {
+public record SelectionIntentRationale(ContractReference ref, String reason)  {
 
     public static Builder builder() {
         return new Builder();
@@ -13,12 +13,12 @@ public record ConnectorIntentRationale(ContractReference connectorDefinitionRef,
 
     public static class Builder {
 
-        private ContractReference connectorDefinitionRef = null;
+        private ContractReference ref = null;
         private String reason = "";
 
 
-        public Builder connectorDefinitionRef(ContractReference connectorDefinitionRef) {
-            this.connectorDefinitionRef = Objects.requireNonNull(connectorDefinitionRef);
+        public Builder ref(ContractReference ref) {
+            this.ref = Objects.requireNonNull(ref);
             return this;
         }
 
@@ -27,8 +27,8 @@ public record ConnectorIntentRationale(ContractReference connectorDefinitionRef,
             return this;
         }
 
-    public ConnectorIntentRationale build() {
-            return new ConnectorIntentRationale(connectorDefinitionRef, reason);
+    public SelectionIntentRationale build() {
+            return new SelectionIntentRationale(ref, reason);
         }
     }
 }

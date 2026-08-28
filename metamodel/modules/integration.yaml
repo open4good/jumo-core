@@ -749,23 +749,26 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  ConnectorIntentProposal:
-    description: 'Structured output of a DIALOGUE_COLLECT step capturing what connectors the assistant proposes in response
-      to the user''s stated intent (AssistedJourneyStep.promptRef, PromptOutput form: STRUCTURED). A proposal, never a grant
-      or a configuration: selectedConnectorRefs must be drawn only from the realm''s declared ConnectorDefinition catalog
-      supplied as the prompt''s RAG context (the same corpus ContractLoader loads for CapabilityGatewayService), never invented
-      by the model. The user still confirms selection explicitly; this class only bounds what the model may say back.'
+  SelectionIntentProposal:
+    description: 'Structured output of a DIALOGUE_COLLECT step capturing what the assistant proposes selecting, from a
+      declared catalog, in response to the user''s stated intent (AssistedJourneyStep.promptRef, PromptOutput form:
+      STRUCTURED; PromptOutput.targetKind names the ContractReference kind every selectedRefs entry must be, e.g.
+      ConnectorDefinition). A proposal, never a grant or a configuration: selectedRefs must be drawn only from the realm''s
+      declared catalog of that kind, supplied as the prompt''s RAG context (the same corpus ContractLoader loads for
+      CapabilityGatewayService), never invented by the model. The user still confirms selection explicitly; this class
+      only bounds what the model may say back. One declaration reused across every domain that needs this shape, instead
+      of one class per target kind (canonical decision 15).'
     attributes:
-      selectedConnectorDefinitionRefs:
+      selectedRefs:
         range: ContractReference
         multivalued: true
         inlined_as_list: true
-        description: ConnectorDefinition ids proposed, referencing the supplied catalog only.
+        description: Ids proposed, of the kind PromptOutput.targetKind names, referencing the supplied catalog only.
       rationale:
-        range: ConnectorIntentRationale
+        range: SelectionIntentRationale
         multivalued: true
         inlined_as_list: true
-        description: One entry per selectedConnectorRefs, explaining the match to the stated intent.
+        description: One entry per selectedRefs, explaining the match to the stated intent.
       openQuestion:
         range: string
         description: A clarifying question to continue the dialogue when intent is still ambiguous. Absent once the proposal
@@ -777,9 +780,9 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  ConnectorIntentRationale:
+  SelectionIntentRationale:
     attributes:
-      connectorDefinitionRef:
+      ref:
         range: ContractReference
         required: true
         inlined: true

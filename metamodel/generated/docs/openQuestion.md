@@ -25,7 +25,7 @@ URI: [jumo:openQuestion](https://jumo.dev/schemas/jumo-v1/openQuestion)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [ConnectorIntentProposal](ConnectorIntentProposal.md) | Structured output of a DIALOGUE_COLLECT step capturing what connectors the as... |  no  |
+| [SelectionIntentProposal](SelectionIntentProposal.md) | Structured output of a DIALOGUE_COLLECT step capturing what the assistant pro... |  no  |
 
 
 
@@ -39,7 +39,7 @@ URI: [jumo:openQuestion](https://jumo.dev/schemas/jumo-v1/openQuestion)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [ConnectorIntentProposal](ConnectorIntentProposal.md) |
+| Domain Of | [SelectionIntentProposal](SelectionIntentProposal.md) |
 
 ### Cardinality and Requirements
 
@@ -49,7 +49,7 @@ URI: [jumo:openQuestion](https://jumo.dev/schemas/jumo-v1/openQuestion)
 
 | Property | Value |
 | --- | --- |
-| Owner | [ConnectorIntentProposal](ConnectorIntentProposal.md) |
+| Owner | [SelectionIntentProposal](SelectionIntentProposal.md) |
 
 
 
@@ -95,9 +95,9 @@ description: A clarifying question to continue the dialogue when intent is still
   Absent once the proposal is considered final for this turn.
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
-owner: ConnectorIntentProposal
+owner: SelectionIntentProposal
 domain_of:
-- ConnectorIntentProposal
+- SelectionIntentProposal
 range: string
 
 ```

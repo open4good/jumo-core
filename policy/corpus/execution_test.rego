@@ -289,11 +289,11 @@ test_worker_and_prompt_references_fail_closed if {
 	}
 }
 
-facts_with_connector_intent_proposal := {
+facts_with_selection_intent_proposal := {
 	"path": "repository-facts.json",
 	"contents": {"jumoRepositoryFacts": {
-		"classSlots": {"ConnectorIntentProposal": []},
-		"javaSources": [{"path": "modules/jumo-model/src/main/java/dev/jumo/model/ConnectorIntentProposal.java", "text": ""}],
+		"classSlots": {"SelectionIntentProposal": []},
+		"javaSources": [{"path": "modules/jumo-model/src/main/java/dev/jumo/model/SelectionIntentProposal.java", "text": ""}],
 	}},
 }
 
@@ -301,9 +301,9 @@ test_accepts_structured_prompt_with_resolvable_schema_and_java_type if {
 	agent := document(".jumo/agents/agent.yml", "AgentDefinition", "agent", {})
 	ok := document(".jumo/prompts/ok.yml", "PromptTemplate", "ok", {
 		"archetype": "agent",
-		"output": {"form": "STRUCTURED", "schemaRef": "ConnectorIntentProposal", "javaType": "dev.jumo.model.ConnectorIntentProposal"},
+		"output": {"form": "STRUCTURED", "schemaRef": "SelectionIntentProposal", "javaType": "dev.jumo.model.SelectionIntentProposal"},
 	})
-	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [facts_with_connector_intent_proposal, agent, ok])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [facts_with_selection_intent_proposal, agent, ok])
 	not has_rule(violations, "corpus.prompt.structured-schema")
 	not has_rule(violations, "corpus.prompt.structured-java-type")
 }
@@ -313,7 +313,7 @@ test_rejects_structured_prompt_with_unresolvable_schema_ref if {
 	bad := document(".jumo/prompts/bad.yml", "PromptTemplate", "bad", {
 		"archetype": "agent", "output": {"form": "STRUCTURED", "schemaRef": "NoSuchClass"},
 	})
-	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [facts_with_connector_intent_proposal, agent, bad])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [facts_with_selection_intent_proposal, agent, bad])
 	has_rule(violations, "corpus.prompt.structured-schema")
 }
 
@@ -322,7 +322,7 @@ test_rejects_structured_prompt_with_unresolvable_java_type if {
 	bad := document(".jumo/prompts/bad.yml", "PromptTemplate", "bad", {
 		"archetype": "agent", "output": {"form": "STRUCTURED", "javaType": "dev.jumo.model.NoSuchRecord"},
 	})
-	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [facts_with_connector_intent_proposal, agent, bad])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [facts_with_selection_intent_proposal, agent, bad])
 	has_rule(violations, "corpus.prompt.structured-java-type")
 }
 

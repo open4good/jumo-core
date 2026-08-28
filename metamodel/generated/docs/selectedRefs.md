@@ -3,10 +3,10 @@ search:
   boost: 5.0
 ---
 
-# Slot: selectedConnectorDefinitionRefs
+# Slot: selectedRefs
 
 
-_ConnectorDefinition ids proposed, referencing the supplied catalog only._
+_Ids proposed, of the kind PromptOutput.targetKind names, referencing the supplied catalog only._
 
 
 
@@ -14,7 +14,7 @@ _ConnectorDefinition ids proposed, referencing the supplied catalog only._
 
 
 
-URI: [jumo:selectedConnectorDefinitionRefs](https://jumo.dev/schemas/jumo-v1/selectedConnectorDefinitionRefs)
+URI: [jumo:selectedRefs](https://jumo.dev/schemas/jumo-v1/selectedRefs)
 <!-- no inheritance hierarchy -->
 
 
@@ -25,7 +25,7 @@ URI: [jumo:selectedConnectorDefinitionRefs](https://jumo.dev/schemas/jumo-v1/sel
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
-| [ConnectorIntentProposal](ConnectorIntentProposal.md) | Structured output of a DIALOGUE_COLLECT step capturing what connectors the as... |  no  |
+| [SelectionIntentProposal](SelectionIntentProposal.md) | Structured output of a DIALOGUE_COLLECT step capturing what the assistant pro... |  no  |
 
 
 
@@ -39,7 +39,7 @@ URI: [jumo:selectedConnectorDefinitionRefs](https://jumo.dev/schemas/jumo-v1/sel
 | Property | Value |
 | --- | --- |
 | Range | [ContractReference](ContractReference.md) |
-| Domain Of | [ConnectorIntentProposal](ConnectorIntentProposal.md) |
+| Domain Of | [SelectionIntentProposal](SelectionIntentProposal.md) |
 
 ### Cardinality and Requirements
 
@@ -50,7 +50,7 @@ URI: [jumo:selectedConnectorDefinitionRefs](https://jumo.dev/schemas/jumo-v1/sel
 
 | Property | Value |
 | --- | --- |
-| Owner | [ConnectorIntentProposal](ConnectorIntentProposal.md) |
+| Owner | [SelectionIntentProposal](SelectionIntentProposal.md) |
 
 
 
@@ -81,8 +81,8 @@ URI: [jumo:selectedConnectorDefinitionRefs](https://jumo.dev/schemas/jumo-v1/sel
 
 | Mapping Type | Mapped Value |
 | ---  | ---  |
-| self | jumo:selectedConnectorDefinitionRefs |
-| native | jumo:selectedConnectorDefinitionRefs |
+| self | jumo:selectedRefs |
+| native | jumo:selectedRefs |
 
 
 
@@ -91,13 +91,14 @@ URI: [jumo:selectedConnectorDefinitionRefs](https://jumo.dev/schemas/jumo-v1/sel
 
 <details>
 ```yaml
-name: selectedConnectorDefinitionRefs
-description: ConnectorDefinition ids proposed, referencing the supplied catalog only.
+name: selectedRefs
+description: Ids proposed, of the kind PromptOutput.targetKind names, referencing
+  the supplied catalog only.
 from_schema: https://jumo.dev/schemas/jumo-v1
 rank: 1000
-owner: ConnectorIntentProposal
+owner: SelectionIntentProposal
 domain_of:
-- ConnectorIntentProposal
+- SelectionIntentProposal
 range: ContractReference
 multivalued: true
 inlined: true

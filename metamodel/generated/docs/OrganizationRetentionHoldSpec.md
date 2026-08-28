@@ -172,7 +172,7 @@ attributes:
     owner: OrganizationRetentionHoldSpec
     domain_of:
     - OrganizationRetentionHoldSpec
-    - ConnectorIntentRationale
+    - SelectionIntentRationale
     - UpstreamToolEntry
     range: string
     required: true
@@ -256,7 +256,7 @@ attributes:
     owner: OrganizationRetentionHoldSpec
     domain_of:
     - OrganizationRetentionHoldSpec
-    - ConnectorIntentRationale
+    - SelectionIntentRationale
     - UpstreamToolEntry
     range: string
     required: true

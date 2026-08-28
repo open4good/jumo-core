@@ -85,8 +85,6 @@ Name: jumo_v1
 | [ConnectorDefinitionSpec](ConnectorDefinitionSpec.md) |  |
 | [ConnectorIntegration](ConnectorIntegration.md) | Durable Git contract grouping related connectors (e |
 | [ConnectorIntegrationSpec](ConnectorIntegrationSpec.md) | Specification for a ConnectorIntegration contract |
-| [ConnectorIntentProposal](ConnectorIntentProposal.md) | Structured output of a DIALOGUE_COLLECT step capturing what connectors the as... |
-| [ConnectorIntentRationale](ConnectorIntentRationale.md) |  |
 | [ConnectorOperation](ConnectorOperation.md) |  |
 | [ConnectorPackage](ConnectorPackage.md) | Platform-only Git contract manifest defining a complete connector package und... |
 | [ConnectorPackageCertification](ConnectorPackageCertification.md) | Platform-only technical certification of an exact ConnectorPackage build |
@@ -341,6 +339,8 @@ Name: jumo_v1
 | [SecretBindingSpec](SecretBindingSpec.md) | anyOf(allowedBundleRefs, allowedRemoteServiceRefs, allowedConnectorRefs, allo... |
 | [SecretInjection](SecretInjection.md) |  |
 | [SecretRotation](SecretRotation.md) |  |
+| [SelectionIntentProposal](SelectionIntentProposal.md) | Structured output of a DIALOGUE_COLLECT step capturing what the assistant pro... |
+| [SelectionIntentRationale](SelectionIntentRationale.md) |  |
 | [SelfDescription](SelfDescription.md) | How a Project or agent explains itself |
 | [SelfDescriptionAnswer](SelfDescriptionAnswer.md) |  |
 | [SelfDescriptionFact](SelfDescriptionFact.md) |  |
@@ -1125,7 +1125,7 @@ Name: jumo_v1
 | [quotaSupport](quotaSupport.md) |  |
 | [quotaWindow](quotaWindow.md) |  |
 | [raisedAt](raisedAt.md) |  |
-| [rationale](rationale.md) | One entry per selectedConnectorRefs, explaining the match to the stated inten... |
+| [rationale](rationale.md) | One entry per selectedRefs, explaining the match to the stated intent |
 | [reads](reads.md) |  |
 | [realmCell](realmCell.md) |  |
 | [realmId](realmId.md) |  |
@@ -1142,6 +1142,7 @@ Name: jumo_v1
 | [recurringAdvice](recurringAdvice.md) |  |
 | [redactBeyondBoundary](redactBeyondBoundary.md) |  |
 | [redistribution](redistribution.md) |  |
+| [ref](ref.md) |  |
 | [reference](reference.md) |  |
 | [referenceChecks](referenceChecks.md) | Checks that a collected value names a contract that exists, so a journey neve... |
 | [referentialArticle](referentialArticle.md) | e |
@@ -1241,8 +1242,8 @@ Name: jumo_v1
 | [sections](sections.md) | Rendered fields grouped into sections |
 | [security](security.md) | Blast radius per operation, network egress, secret material held, and untrust... |
 | [selectedAt](selectedAt.md) |  |
-| [selectedConnectorDefinitionRefs](selectedConnectorDefinitionRefs.md) | ConnectorDefinition ids proposed, referencing the supplied catalog only |
 | [selectedName](selectedName.md) |  |
+| [selectedRefs](selectedRefs.md) | Ids proposed, of the kind PromptOutput |
 | [selectionRuleVersion](selectionRuleVersion.md) |  |
 | [selfEnrollmentEnabled](selfEnrollmentEnabled.md) |  |
 | [semanticProfile](semanticProfile.md) |  |
@@ -1336,7 +1337,7 @@ Name: jumo_v1
 | [systemLoad](systemLoad.md) |  |
 | [target](target.md) |  |
 | [targetDigest](targetDigest.md) |  |
-| [targetKind](targetKind.md) | The contract kind the emitted document declares |
+| [targetKind](targetKind.md) | For a STRUCTURED output whose javaType is a reusable generic proposal shape (... |
 | [targetMachineRef](targetMachineRef.md) |  |
 | [targetPath](targetPath.md) |  |
 | [targetProject](targetProject.md) |  |

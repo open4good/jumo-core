@@ -5,7 +5,7 @@ package dev.jumo.model;
 import java.util.Objects;
 
 
-public record PromptOutput(PromptOutputForm form, String javaType, String schemaRef)  {
+public record PromptOutput(PromptOutputForm form, String javaType, String schemaRef, String targetKind)  {
 
     public static Builder builder() {
         return new Builder();
@@ -16,6 +16,7 @@ public record PromptOutput(PromptOutputForm form, String javaType, String schema
         private PromptOutputForm form = null;
         private String javaType = "";
         private String schemaRef = "";
+        private String targetKind = "";
 
 
         public Builder form(PromptOutputForm form) {
@@ -33,8 +34,13 @@ public record PromptOutput(PromptOutputForm form, String javaType, String schema
             return this;
         }
 
+        public Builder targetKind(String targetKind) {
+            this.targetKind = Objects.requireNonNull(targetKind);
+            return this;
+        }
+
     public PromptOutput build() {
-            return new PromptOutput(form, javaType, schemaRef);
+            return new PromptOutput(form, javaType, schemaRef, targetKind);
         }
     }
 }

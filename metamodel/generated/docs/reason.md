@@ -21,7 +21,7 @@ URI: [jumo:reason](https://jumo.dev/schemas/jumo-v1/reason)
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
 | [OrganizationRetentionHoldSpec](OrganizationRetentionHoldSpec.md) |  |  no  |
-| [ConnectorIntentRationale](ConnectorIntentRationale.md) |  |  no  |
+| [SelectionIntentRationale](SelectionIntentRationale.md) |  |  no  |
 | [UpstreamToolEntry](UpstreamToolEntry.md) | Reason required when disposition is WITHHELD or QUARANTINED (Rego): exposing ... |  no  |
 
 
@@ -36,7 +36,7 @@ URI: [jumo:reason](https://jumo.dev/schemas/jumo-v1/reason)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [OrganizationRetentionHoldSpec](OrganizationRetentionHoldSpec.md), [ConnectorIntentRationale](ConnectorIntentRationale.md), [UpstreamToolEntry](UpstreamToolEntry.md) |
+| Domain Of | [OrganizationRetentionHoldSpec](OrganizationRetentionHoldSpec.md), [SelectionIntentRationale](SelectionIntentRationale.md), [UpstreamToolEntry](UpstreamToolEntry.md) |
 
 ### Cardinality and Requirements
 
@@ -76,7 +76,7 @@ URI: [jumo:reason](https://jumo.dev/schemas/jumo-v1/reason)
 name: reason
 domain_of:
 - OrganizationRetentionHoldSpec
-- ConnectorIntentRationale
+- SelectionIntentRationale
 - UpstreamToolEntry
 range: string
 

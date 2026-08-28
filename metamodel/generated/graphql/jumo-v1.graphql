@@ -2040,19 +2040,6 @@ type ConnectorIntegrationSpec
     description: String
   }
 
-type ConnectorIntentProposal
-  {
-    selectedConnectorDefinitionRefs: [ContractReference]
-    rationale: [ConnectorIntentRationale]
-    openQuestion: String
-  }
-
-type ConnectorIntentRationale
-  {
-    connectorDefinitionRef: ContractReference!
-    reason: String!
-  }
-
 type ConnectorOperation
   {
     id: Identifier!
@@ -3932,6 +3919,7 @@ type PromptOutput
     form: PromptOutputForm!
     javaType: String
     schemaRef: String
+    targetKind: String
   }
 
 type PromptTemplate
@@ -4363,6 +4351,19 @@ type SecretRotation
   {
     required: Boolean
     maximumAge: Duration
+  }
+
+type SelectionIntentProposal
+  {
+    selectedRefs: [ContractReference]
+    rationale: [SelectionIntentRationale]
+    openQuestion: String
+  }
+
+type SelectionIntentRationale
+  {
+    ref: ContractReference!
+    reason: String!
   }
 
 type SelfDescription

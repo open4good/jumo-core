@@ -5,11 +5,6 @@ search:
 
 # Slot: targetKind
 
-
-_The contract kind the emitted document declares. Must name a declared kind (Rego)._
-
-
-
 <div data-search-exclude markdown="1">
 
 
@@ -25,6 +20,7 @@ URI: [jumo:targetKind](https://jumo.dev/schemas/jumo-v1/targetKind)
 
 | Name | Description | Modifies Slot |
 | --- | --- | --- |
+| [PromptOutput](PromptOutput.md) |  |  no  |
 | [AssistedJourneyEmission](AssistedJourneyEmission.md) | The declarative replacement for a per-journey emission branch |  no  |
 
 
@@ -39,20 +35,12 @@ URI: [jumo:targetKind](https://jumo.dev/schemas/jumo-v1/targetKind)
 | Property | Value |
 | --- | --- |
 | Range | [String](String.md) |
-| Domain Of | [AssistedJourneyEmission](AssistedJourneyEmission.md) |
+| Domain Of | [PromptOutput](PromptOutput.md), [AssistedJourneyEmission](AssistedJourneyEmission.md) |
 
 ### Cardinality and Requirements
 
 | Property | Value |
 | --- | --- |
-| Required | Yes |
-### Slot Characteristics
-
-| Property | Value |
-| --- | --- |
-| Owner | [AssistedJourneyEmission](AssistedJourneyEmission.md) |
-
-
 
 
 
@@ -66,13 +54,6 @@ URI: [jumo:targetKind](https://jumo.dev/schemas/jumo-v1/targetKind)
 ## Identifier and Mapping Information
 
 
-
-
-
-### Schema Source
-
-
-* from schema: https://jumo.dev/schemas/jumo-v1
 
 
 
@@ -92,15 +73,10 @@ URI: [jumo:targetKind](https://jumo.dev/schemas/jumo-v1/targetKind)
 <details>
 ```yaml
 name: targetKind
-description: The contract kind the emitted document declares. Must name a declared
-  kind (Rego).
-from_schema: https://jumo.dev/schemas/jumo-v1
-rank: 1000
-owner: AssistedJourneyEmission
 domain_of:
+- PromptOutput
 - AssistedJourneyEmission
 range: string
-required: true
 
 ```
 </details></div>

@@ -3457,6 +3457,15 @@ components:
           description: Fully qualified target type for STRUCTURED output.
         schemaRef:
           type: string
+        targetKind:
+          type: string
+          description: For a STRUCTURED output whose javaType is a reusable generic
+            proposal shape (for example SelectionIntentProposal), the contract kind
+            every proposed ref must name -- e.g. ConnectorDefinition. The same role
+            AssistedJourneyEmission.targetKind already plays -- one class serving
+            every domain that needs the shape instead of one class per target kind
+            (canonical decision 15); absent when javaType is not generic over a target
+            kind.
       additionalProperties: false
       type: object
       required:
@@ -6463,20 +6472,20 @@ components:
       - id
       - capabilityRef
       title: ConnectorOperation
-    ConnectorIntentProposal:
+    SelectionIntentProposal:
       properties:
-        selectedConnectorDefinitionRefs:
+        selectedRefs:
           items:
             $ref: '#/components/schemas/ContractReference'
           type: array
-          description: ConnectorDefinition ids proposed, referencing the supplied
-            catalog only.
+          description: Ids proposed, of the kind PromptOutput.targetKind names, referencing
+            the supplied catalog only.
         rationale:
           items:
-            $ref: '#/components/schemas/ConnectorIntentRationale'
+            $ref: '#/components/schemas/SelectionIntentRationale'
           type: array
-          description: One entry per selectedConnectorRefs, explaining the match to
-            the stated intent.
+          description: One entry per selectedRefs, explaining the match to the stated
+            intent.
         openQuestion:
           type: string
           description: A clarifying question to continue the dialogue when intent
@@ -6484,18 +6493,21 @@ components:
             turn.
       additionalProperties: false
       type: object
-      title: ConnectorIntentProposal
-      description: 'Structured output of a DIALOGUE_COLLECT step capturing what connectors
-        the assistant proposes in response to the user''s stated intent (AssistedJourneyStep.promptRef,
-        PromptOutput form: STRUCTURED). A proposal, never a grant or a configuration:
-        selectedConnectorRefs must be drawn only from the realm''s declared ConnectorDefinition
-        catalog supplied as the prompt''s RAG context (the same corpus ContractLoader
+      title: SelectionIntentProposal
+      description: 'Structured output of a DIALOGUE_COLLECT step capturing what the
+        assistant proposes selecting, from a declared catalog, in response to the
+        user''s stated intent (AssistedJourneyStep.promptRef, PromptOutput form: STRUCTURED;
+        PromptOutput.targetKind names the ContractReference kind every selectedRefs
+        entry must be, e.g. ConnectorDefinition). A proposal, never a grant or a configuration:
+        selectedRefs must be drawn only from the realm''s declared catalog of that
+        kind, supplied as the prompt''s RAG context (the same corpus ContractLoader
         loads for CapabilityGatewayService), never invented by the model. The user
         still confirms selection explicitly; this class only bounds what the model
-        may say back.'
-    ConnectorIntentRationale:
+        may say back. One declaration reused across every domain that needs this shape,
+        instead of one class per target kind (canonical decision 15).'
+    SelectionIntentRationale:
       properties:
-        connectorDefinitionRef:
+        ref:
           $ref: '#/components/schemas/ContractReference'
         reason:
           type: string
@@ -6503,9 +6515,9 @@ components:
       additionalProperties: false
       type: object
       required:
-      - connectorDefinitionRef
+      - ref
       - reason
-      title: ConnectorIntentRationale
+      title: SelectionIntentRationale
     ConnectorAppraisal:
       properties:
         apiVersion:

@@ -472,25 +472,6 @@ public final class ContractReferenceExtractor {
             }
         }
     }
-    public static void extractFromConnectorIntentProposal(ConnectorIntentProposal obj, List<OutgoingReference> refs) {
-        if (obj == null) return;
-        if (obj.selectedConnectorDefinitionRefs() != null) {
-            for (ContractReference r : obj.selectedConnectorDefinitionRefs()) {
-                if (r != null) refs.add(new OutgoingReference("selectedConnectorDefinitionRefs", r));
-            }
-        }
-        if (obj.rationale() != null) {
-            for (ConnectorIntentRationale item : obj.rationale()) {
-                extractFromConnectorIntentRationale(item, refs);
-            }
-        }
-    }
-    public static void extractFromConnectorIntentRationale(ConnectorIntentRationale obj, List<OutgoingReference> refs) {
-        if (obj == null) return;
-        if (obj.connectorDefinitionRef() != null) {
-            refs.add(new OutgoingReference("connectorDefinitionRef", obj.connectorDefinitionRef()));
-        }
-    }
     public static void extractFromConnectorOperation(ConnectorOperation obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.secretBindingRefs() != null) {
@@ -1189,6 +1170,25 @@ public final class ContractReferenceExtractor {
             for (ContractReference r : obj.allowedWorkOrderRefs()) {
                 if (r != null) refs.add(new OutgoingReference("allowedWorkOrderRefs", r));
             }
+        }
+    }
+    public static void extractFromSelectionIntentProposal(SelectionIntentProposal obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.selectedRefs() != null) {
+            for (ContractReference r : obj.selectedRefs()) {
+                if (r != null) refs.add(new OutgoingReference("selectedRefs", r));
+            }
+        }
+        if (obj.rationale() != null) {
+            for (SelectionIntentRationale item : obj.rationale()) {
+                extractFromSelectionIntentRationale(item, refs);
+            }
+        }
+    }
+    public static void extractFromSelectionIntentRationale(SelectionIntentRationale obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.ref() != null) {
+            refs.add(new OutgoingReference("ref", obj.ref()));
         }
     }
     public static void extractFromSelfDescription(SelfDescription obj, List<OutgoingReference> refs) {

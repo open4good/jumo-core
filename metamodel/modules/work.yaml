@@ -827,6 +827,13 @@ classes:
         description: How this profile responds to its own worker's INSUFFICIENT_NEEDS_DEPTH signal
           (ADR-0019, worker-sufficiency-bounded-escalation). Absent defaults to NONE -- most profiles
           take the existing human-decision path rather than an automatic bounded retry.
+      requiredExecutionToolchainRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+        description: Non-AI build or language-tool environments this task requires
+          (execution-toolchain-contract-foundations). Absent by default -- an AI-only task requires
+          none. Each must resolve to a same-Realm ExecutionToolchain a WorkerSubstrate provides.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

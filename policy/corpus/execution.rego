@@ -1024,3 +1024,39 @@ deny contains corpus.violation("corpus.registry-source.base-url-allowlisted", do
 	not egress_origin(entry) in covered
 	message := sprintf("spec.baseUrlAllowlist: %q is not covered by ExecutionMachine %q's egressAllowlist", [entry, machine_id])
 }
+
+# ExecutionToolchain (execution-toolchain-contract-foundations). references.rego's generic
+# kind-match/kind-id/same-realm rules already refuse a malformed, unresolved or cross-Realm typed
+# reference; the rules below cover what only this kind's own shape and cross-document supply/demand
+# can say.
+
+deny contains corpus.violation("corpus.toolchain.artifact-pin", document, "spec.artifact.digest must be sha256-pinned -- a tag or floating build is not evidence of what ran") if {
+	some document in corpus.documents
+	document.kind == "ExecutionToolchain"
+	digest := object.get(object.get(corpus.spec(document), "artifact", {}), "digest", "")
+	not regex.match(`^sha256:[a-f0-9]{64}$`, digest)
+}
+
+deny contains corpus.violation("corpus.toolchain.tools-nonempty", document, "spec.tools must declare at least one tool") if {
+	some document in corpus.documents
+	document.kind == "ExecutionToolchain"
+	count(object.get(corpus.spec(document), "tools", [])) == 0
+}
+
+# Every ExecutionToolchain id a same-Realm WorkerSubstrate declares it provides.
+provided_toolchain_ids(realm) := {corpus.ref_id(ref) |
+	some document in corpus.documents
+	document.kind == "WorkerSubstrate"
+	corpus.owner_realm(document) == realm
+	some ref in object.get(corpus.spec(document), "providedExecutionToolchainRefs", [])
+}
+
+deny contains corpus.violation("corpus.toolchain.requirement-unmet", document, message) if {
+	some document in corpus.documents
+	document.kind == "WorkerRequirementProfile"
+	realm := corpus.owner_realm(document)
+	some ref in object.get(corpus.spec(document), "requiredExecutionToolchainRefs", [])
+	toolchain_id := corpus.ref_id(ref)
+	not toolchain_id in provided_toolchain_ids(realm)
+	message := sprintf("spec.requiredExecutionToolchainRefs: no same-Realm WorkerSubstrate provides ExecutionToolchain %q", [toolchain_id])
+}

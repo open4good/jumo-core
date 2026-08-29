@@ -1449,3 +1449,100 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ExecutionToolchain:
+    description: Portable declaration of a pinned, verifiable non-AI execution environment and its
+      finite tool inventory (execution-toolchain-contract-foundations). Describes environment
+      sufficiency only -- never connector authority, provider selection, credential custody, or
+      arbitrary host-shell execution; distinct from WorkerCli, which qualifies an AI CLI.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: ExecutionToolchain
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: ExecutionToolchainSpec
+        required: true
+        inlined: true
+  ExecutionToolchainSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      artifact:
+        range: ExecutionToolchainArtifact
+        required: true
+        inlined: true
+        description: The exact, immutable environment this toolchain resolves to -- a tag or a
+          floating build is not evidence of what actually ran.
+      tools:
+        range: ExecutionToolchainTool
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+        description: The finite, observable set of tools the artifact provides. No entry names a
+          product-specific toolchain in the schema itself -- values are declared by an instance.
+      lifecycle:
+        range: ConnectorLifecycle
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ExecutionToolchainArtifact:
+    description: An immutable artifact identity -- a tag or version string alone is a moving target;
+      evidence names the bytes that ran (mirrors WorkerImage's own reasoning for a worker image).
+    attributes:
+      reference:
+        range: string
+        required: true
+        pattern: ^.{3,}$
+      digest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ExecutionToolchainTool:
+    description: One observable tool the artifact provides, named and versioned generically -- the
+      schema itself never names Java, Maven, an LSP or any other specific tool.
+    attributes:
+      name:
+        range: string
+        required: true
+        pattern: ^.{1,64}$
+      version:
+        range: string
+        required: true
+        pattern: ^.{1,64}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

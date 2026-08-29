@@ -102,6 +102,7 @@ owner_realm_kind(kind) if {
 		"ConnectorAppraisal",
 		"ConnectorDefinition",
 		"ExecutionCell",
+		"ExecutionToolchain",
 		"FederatedPeer",
 		"FederationProfile",
 		"GoldenTaskSet",
@@ -424,6 +425,19 @@ references contains {"document": document, "location": sprintf("spec.quality.gol
 	document.kind == "WorkerRequirementProfile"
 	q := object.get(corpus.spec(document), "quality", {})
 	some index, ref in object.get(q, "goldenTaskSetRefs", object.get(q, "benchmarkRefs", []))
+}
+
+# WorkerRequirementProfile / WorkerSubstrate (execution-toolchain-contract-foundations)
+references contains {"document": document, "location": sprintf("spec.requiredExecutionToolchainRefs[%d]", [index]), "expected_kind": "ExecutionToolchain", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "WorkerRequirementProfile"
+	some index, ref in object.get(corpus.spec(document), "requiredExecutionToolchainRefs", [])
+}
+
+references contains {"document": document, "location": sprintf("spec.providedExecutionToolchainRefs[%d]", [index]), "expected_kind": "ExecutionToolchain", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "WorkerSubstrate"
+	some index, ref in object.get(corpus.spec(document), "providedExecutionToolchainRefs", [])
 }
 
 # PromptTemplate

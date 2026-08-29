@@ -575,3 +575,98 @@ test_registry_source_uncovered_by_machine_allowlist_rejected if {
 	violations := data.jumo.corpus.deny with input as array.concat([source, narrow_machine], [binding])
 	has_rule(violations, "corpus.registry-source.base-url-allowlisted")
 }
+
+# ExecutionToolchain (execution-toolchain-contract-foundations)
+
+toolchain_ref(id) := {"kind": "ExecutionToolchain", "namespace": "dev.jumo.test", "id": id}
+
+execution_toolchain(id, realm, digest, tools) := document(
+	sprintf(".jumo/execution-toolchains/%s.yml", [id]),
+	"ExecutionToolchain",
+	id,
+	{
+		"ownerRealm": realm,
+		"artifact": {"reference": "oci://example.test/toolchain", "digest": digest},
+		"tools": tools,
+		"lifecycle": "ENABLED",
+	},
+)
+
+valid_toolchain_digest := "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+test_toolchain_with_pinned_digest_and_tools_accepted if {
+	toolchain := execution_toolchain("toolchain-a", "home", valid_toolchain_digest, [{"name": "runtime", "version": "1.0"}])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [toolchain])
+	not has_rule(violations, "corpus.toolchain.artifact-pin")
+	not has_rule(violations, "corpus.toolchain.tools-nonempty")
+}
+
+test_toolchain_with_unpinned_artifact_rejected if {
+	toolchain := execution_toolchain("toolchain-a", "home", "latest", [{"name": "runtime", "version": "1.0"}])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [toolchain])
+	has_rule(violations, "corpus.toolchain.artifact-pin")
+}
+
+test_toolchain_with_empty_tool_inventory_rejected if {
+	toolchain := execution_toolchain("toolchain-a", "home", valid_toolchain_digest, [])
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [toolchain])
+	has_rule(violations, "corpus.toolchain.tools-nonempty")
+}
+
+test_worker_requirement_profile_requiring_a_malformed_typed_reference_rejected if {
+	toolchain := execution_toolchain("toolchain-a", "home", valid_toolchain_digest, [{"name": "runtime", "version": "1.0"}])
+	profile := document(".jumo/worker-requirement-profiles/bad-ref.yml", "WorkerRequirementProfile", "bad-ref", {
+		"ownerRealm": "home",
+		"requiredExecutionToolchainRefs": [{"kind": "RoleDefinition", "namespace": "dev.jumo.test", "id": "toolchain-a"}],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [toolchain, profile])
+	has_rule(violations, "corpus.reference.kind-match")
+}
+
+test_worker_substrate_claiming_an_undeclared_toolchain_rejected if {
+	substrate := document(".jumo/worker-substrates/undeclared.yml", "WorkerSubstrate", "undeclared", {
+		"ownerRealm": "home",
+		"providedExecutionToolchainRefs": [toolchain_ref("missing-toolchain")],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [substrate])
+	has_rule(violations, "corpus.reference.kind-id")
+}
+
+test_worker_substrate_providing_a_toolchain_in_another_realm_rejected if {
+	toolchain := execution_toolchain("toolchain-a", "other", valid_toolchain_digest, [{"name": "runtime", "version": "1.0"}])
+	substrate := document(".jumo/worker-substrates/cross-realm.yml", "WorkerSubstrate", "cross-realm", {
+		"ownerRealm": "home",
+		"providedExecutionToolchainRefs": [toolchain_ref("toolchain-a")],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [toolchain, substrate])
+	has_rule(violations, "corpus.reference.same-realm")
+}
+
+test_worker_requirement_profile_requiring_a_toolchain_with_no_same_realm_provider_rejected if {
+	toolchain := execution_toolchain("toolchain-a", "home", valid_toolchain_digest, [{"name": "runtime", "version": "1.0"}])
+	profile := document(".jumo/worker-requirement-profiles/unmet.yml", "WorkerRequirementProfile", "unmet", {
+		"ownerRealm": "home",
+		"requiredExecutionToolchainRefs": [toolchain_ref("toolchain-a")],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [toolchain, profile])
+	has_rule(violations, "corpus.toolchain.requirement-unmet")
+}
+
+test_worker_requirement_profile_resolves_a_portable_toolchain_solely_through_typed_declarations if {
+	toolchain := execution_toolchain("toolchain-a", "home", valid_toolchain_digest, [{"name": "runtime", "version": "1.0"}])
+	profile := document(".jumo/worker-requirement-profiles/met.yml", "WorkerRequirementProfile", "met", {
+		"ownerRealm": "home",
+		"requiredExecutionToolchainRefs": [toolchain_ref("toolchain-a")],
+	})
+	substrate := document(".jumo/worker-substrates/provider.yml", "WorkerSubstrate", "provider", {
+		"ownerRealm": "home",
+		"providedExecutionToolchainRefs": [toolchain_ref("toolchain-a")],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [toolchain, profile, substrate])
+	not has_rule(violations, "corpus.toolchain.requirement-unmet")
+	not has_rule(violations, "corpus.reference.kind-match")
+	not has_rule(violations, "corpus.reference.kind-id")
+	not has_rule(violations, "corpus.reference.same-realm")
+	not has_rule(violations, "corpus.toolchain.artifact-pin")
+	not has_rule(violations, "corpus.toolchain.tools-nonempty")
+}

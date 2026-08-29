@@ -1350,6 +1350,11 @@ public final class ContractReferenceExtractor {
     public static void extractFromWorkerRequirementProfileSpec(WorkerRequirementProfileSpec obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         extractFromWorkerQualityRequirement(obj.quality(), refs);
+        if (obj.requiredExecutionToolchainRefs() != null) {
+            for (ContractReference r : obj.requiredExecutionToolchainRefs()) {
+                if (r != null) refs.add(new OutgoingReference("requiredExecutionToolchainRefs", r));
+            }
+        }
     }
     public static void extractFromWorkerSubstrate(WorkerSubstrate obj, List<OutgoingReference> refs) {
         if (obj == null) return;
@@ -1364,6 +1369,11 @@ public final class ContractReferenceExtractor {
         if (obj.grantedOperationRefs() != null) {
             for (WorkerGrantedOperation item : obj.grantedOperationRefs()) {
                 extractFromWorkerGrantedOperation(item, refs);
+            }
+        }
+        if (obj.providedExecutionToolchainRefs() != null) {
+            for (ContractReference r : obj.providedExecutionToolchainRefs()) {
+                if (r != null) refs.add(new OutgoingReference("providedExecutionToolchainRefs", r));
             }
         }
     }

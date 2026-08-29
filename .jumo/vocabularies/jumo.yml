@@ -131,6 +131,12 @@ spec:
     pluralEn: 'Execution Machines'
     pluralFr: 'Machines d''exécution'
     directory: execution-machines
+  - canonical: ExecutionToolchain
+    displayEn: 'Execution Toolchain'
+    displayFr: 'Chaîne d''outils d''exécution'
+    pluralEn: 'Execution Toolchains'
+    pluralFr: 'Chaînes d''outils d''exécution'
+    directory: execution-toolchains
   - canonical: FederatedPeer
     displayEn: 'Federated Peer'
     displayFr: 'Pair fédéré'

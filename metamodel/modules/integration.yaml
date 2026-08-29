@@ -2302,6 +2302,13 @@ classes:
         required: true
         description: Which ProviderAccount use context this substrate is authorized to consume, explicit so a declared substrate
           never silently upgrades from holder-operated to Jumo-managed use.
+      providedExecutionToolchainRefs:
+        range: ContractReference
+        multivalued: true
+        inlined_as_list: true
+        description: Non-AI build or language-tool environments this substrate's image provides
+          (execution-toolchain-contract-foundations). Absent by default -- a CLI-only substrate
+          provides none. Each must resolve to a same-Realm ExecutionToolchain.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

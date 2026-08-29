@@ -4,10 +4,11 @@ package dev.jumo.model;
 
 import java.util.List;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record WorkerRequirementProfileSpec(String ownerRealm, List<TaskClass> taskClasses, List<Modality> modalities, DataScope dataScopeCeiling, WorkerContextRequirement context, WorkerInteractionRequirement interaction, WorkerQualityRequirement quality, WorkerLimits limits, String requiredIndependenceGroup, SufficiencyEscalationPolicy onInsufficiency)  {
+public record WorkerRequirementProfileSpec(String ownerRealm, List<TaskClass> taskClasses, List<Modality> modalities, DataScope dataScopeCeiling, WorkerContextRequirement context, WorkerInteractionRequirement interaction, WorkerQualityRequirement quality, WorkerLimits limits, String requiredIndependenceGroup, SufficiencyEscalationPolicy onInsufficiency, List<ContractReference> requiredExecutionToolchainRefs)  {
 
     public static Builder builder() {
         return new Builder();
@@ -25,6 +26,7 @@ public record WorkerRequirementProfileSpec(String ownerRealm, List<TaskClass> ta
         private WorkerLimits limits = null;
         private String requiredIndependenceGroup = "";
         private SufficiencyEscalationPolicy onInsufficiency = null;
+        private List<ContractReference> requiredExecutionToolchainRefs = List.of();
 
 
         public Builder ownerRealm(String ownerRealm) {
@@ -77,8 +79,13 @@ public record WorkerRequirementProfileSpec(String ownerRealm, List<TaskClass> ta
             return this;
         }
 
+        public Builder requiredExecutionToolchainRefs(List<ContractReference> requiredExecutionToolchainRefs) {
+            this.requiredExecutionToolchainRefs = Objects.requireNonNull(requiredExecutionToolchainRefs);
+            return this;
+        }
+
     public WorkerRequirementProfileSpec build() {
-            return new WorkerRequirementProfileSpec(ownerRealm, taskClasses, modalities, dataScopeCeiling, context, interaction, quality, limits, requiredIndependenceGroup, onInsufficiency);
+            return new WorkerRequirementProfileSpec(ownerRealm, taskClasses, modalities, dataScopeCeiling, context, interaction, quality, limits, requiredIndependenceGroup, onInsufficiency, requiredExecutionToolchainRefs);
         }
     }
 }

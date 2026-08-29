@@ -3,10 +3,11 @@ package dev.jumo.model;
 
 
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record WorkerSubstrateSpec(String ownerRealm, ContractReference executionMachineRef, ConnectorLifecycle lifecycle, WorkerSubstrateKind substrate, WorkerCli cli, WorkerImage image, WorkerIsolation isolation, String homeState, WorkerModelAccess modelAccess, List<WorkerGrantedOperation> grantedOperationRefs, String nativeToolAuthority, String ambientToolAuthority, String projectedToolAuthority, WorkerUsageContext usageContext, WorkerAccountUse accountUse)  {
+public record WorkerSubstrateSpec(String ownerRealm, ContractReference executionMachineRef, ConnectorLifecycle lifecycle, WorkerSubstrateKind substrate, WorkerCli cli, WorkerImage image, WorkerIsolation isolation, String homeState, WorkerModelAccess modelAccess, List<WorkerGrantedOperation> grantedOperationRefs, String nativeToolAuthority, String ambientToolAuthority, String projectedToolAuthority, WorkerUsageContext usageContext, WorkerAccountUse accountUse, List<ContractReference> providedExecutionToolchainRefs)  {
 
     public static Builder builder() {
         return new Builder();
@@ -29,6 +30,7 @@ public record WorkerSubstrateSpec(String ownerRealm, ContractReference execution
         private String projectedToolAuthority = "";
         private WorkerUsageContext usageContext = null;
         private WorkerAccountUse accountUse = null;
+        private List<ContractReference> providedExecutionToolchainRefs = List.of();
 
 
         public Builder ownerRealm(String ownerRealm) {
@@ -106,8 +108,13 @@ public record WorkerSubstrateSpec(String ownerRealm, ContractReference execution
             return this;
         }
 
+        public Builder providedExecutionToolchainRefs(List<ContractReference> providedExecutionToolchainRefs) {
+            this.providedExecutionToolchainRefs = Objects.requireNonNull(providedExecutionToolchainRefs);
+            return this;
+        }
+
     public WorkerSubstrateSpec build() {
-            return new WorkerSubstrateSpec(ownerRealm, executionMachineRef, lifecycle, substrate, cli, image, isolation, homeState, modelAccess, grantedOperationRefs, nativeToolAuthority, ambientToolAuthority, projectedToolAuthority, usageContext, accountUse);
+            return new WorkerSubstrateSpec(ownerRealm, executionMachineRef, lifecycle, substrate, cli, image, isolation, homeState, modelAccess, grantedOperationRefs, nativeToolAuthority, ambientToolAuthority, projectedToolAuthority, usageContext, accountUse, providedExecutionToolchainRefs);
         }
     }
 }

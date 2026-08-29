@@ -846,6 +846,80 @@ deny contains corpus.violation("corpus.interface.presence", document, message) i
 	message := sprintf("presenceRef %q is absent from ThemePack keys", [presence])
 }
 
+# ThemePack asset extensions (portable-theme-contract-foundations). Every occurrence of a
+# VersionedJsonAsset across the four sites it can appear, flattened once so the two checks below
+# (bounded path, pinned schema major) cover all of them without repeating themselves per site.
+theme_asset_refs contains {"document": document, "location": sprintf("spec.designTokens.%s", [field]), "asset": asset} if {
+	some document in corpus.documents
+	document.kind == "ThemePack"
+	tokens := object.get(corpus.spec(document), "designTokens", {})
+	some field in {"light", "dark", "fontManifest"}
+	asset := object.get(tokens, field, null)
+	asset != null
+}
+
+theme_asset_refs contains {"document": document, "location": sprintf("spec.localizations[%d].messages", [index]), "asset": entry.messages} if {
+	some document in corpus.documents
+	document.kind == "ThemePack"
+	some index, entry in object.get(corpus.spec(document), "localizations", [])
+}
+
+theme_asset_refs contains {"document": document, "location": "spec.visualization.presence.livingBitmapManifest", "asset": asset} if {
+	some document in corpus.documents
+	document.kind == "ThemePack"
+	presence := object.get(object.get(corpus.spec(document), "visualization", {}), "presence", {})
+	asset := object.get(presence, "livingBitmapManifest", null)
+	asset != null
+}
+
+theme_asset_refs contains {"document": document, "location": sprintf("spec.visualization.rooms[%d].sceneManifest", [index]), "asset": asset} if {
+	some document in corpus.documents
+	document.kind == "ThemePack"
+	rooms := object.get(object.get(corpus.spec(document), "visualization", {}), "rooms", [])
+	some index, room in rooms
+	asset := object.get(room, "sceneManifest", null)
+	asset != null
+}
+
+deny contains corpus.violation("corpus.theme.asset-path", ref.document, message) if {
+	some ref in theme_asset_refs
+	path := object.get(ref.asset, "asset", "")
+	not regex.match(`^\.jumo/assets/([A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.json$`, path)
+	message := sprintf("%s.asset: %q is not a bounded .jumo/assets/**.json path", [ref.location, path])
+}
+
+deny contains corpus.violation("corpus.theme.schema-version", ref.document, message) if {
+	some ref in theme_asset_refs
+	version := object.get(ref.asset, "schemaVersion", "")
+	not regex.match(`^1\.[0-9]+$`, version)
+	message := sprintf("%s.schemaVersion: %q is not a supported schema major", [ref.location, version])
+}
+
+deny contains corpus.violation("corpus.theme.default-room", document, message) if {
+	some document in corpus.documents
+	document.kind == "ThemePack"
+	visualization := object.get(corpus.spec(document), "visualization", {})
+	default_room := object.get(visualization, "defaultRoomId", null)
+	default_room != null
+	room_ids := {room.roomId | some room in object.get(visualization, "rooms", [])}
+	not default_room in room_ids
+	message := sprintf("spec.visualization.defaultRoomId %q does not name a declared room", [default_room])
+}
+
+deny contains corpus.violation("corpus.interface.default-theme-pack-required", document, "spec.defaultThemePackRef is required -- platform code must not hard-code a fallback theme id") if {
+	some document in corpus.documents
+	document.kind == "InterfaceSurface"
+	object.get(corpus.spec(document), "defaultThemePackRef", null) == null
+}
+
+deny contains corpus.violation("corpus.theme.localization-locale-unique", document, message) if {
+	some document in corpus.documents
+	document.kind == "ThemePack"
+	locales := [entry.locale | some entry in object.get(corpus.spec(document), "localizations", [])]
+	count(locales) != count({locale | some locale in locales})
+	message := "spec.localizations: locale values must be unique"
+}
+
 deny contains corpus.violation("corpus.self-description.narration", document, message) if {
 	some document in corpus.documents
 	document.kind == "SelfDescription"

@@ -3,10 +3,11 @@ package dev.jumo.model;
 
 
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record ThemePackSpec(List<TerminologyEntry> terminology, ThemeVoice voice, ThemeVisualization visualization)  {
+public record ThemePackSpec(List<TerminologyEntry> terminology, ThemeVoice voice, ThemeVisualization visualization, List<ThemeLocalization> localizations, ThemeDesignTokens designTokens, ThemeCreativeRights creativeRights)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,6 +18,9 @@ public record ThemePackSpec(List<TerminologyEntry> terminology, ThemeVoice voice
         private List<TerminologyEntry> terminology = List.of();
         private ThemeVoice voice = null;
         private ThemeVisualization visualization = null;
+        private List<ThemeLocalization> localizations = List.of();
+        private ThemeDesignTokens designTokens = null;
+        private ThemeCreativeRights creativeRights = null;
 
 
         public Builder terminology(List<TerminologyEntry> terminology) {
@@ -34,8 +38,23 @@ public record ThemePackSpec(List<TerminologyEntry> terminology, ThemeVoice voice
             return this;
         }
 
+        public Builder localizations(List<ThemeLocalization> localizations) {
+            this.localizations = Objects.requireNonNull(localizations);
+            return this;
+        }
+
+        public Builder designTokens(ThemeDesignTokens designTokens) {
+            this.designTokens = Objects.requireNonNull(designTokens);
+            return this;
+        }
+
+        public Builder creativeRights(ThemeCreativeRights creativeRights) {
+            this.creativeRights = Objects.requireNonNull(creativeRights);
+            return this;
+        }
+
     public ThemePackSpec build() {
-            return new ThemePackSpec(terminology, voice, visualization);
+            return new ThemePackSpec(terminology, voice, visualization, localizations, designTokens, creativeRights);
         }
     }
 }

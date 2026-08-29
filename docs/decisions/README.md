@@ -40,3 +40,4 @@ audience: PROJECT_SCOPED
 | [ADR-0059](ADR-0059-monetary-risk-policy.md) | Generic monetary risk policy for external effects | 1, 2, 8, 14, 15 | `MonetaryRiskPolicy` |
 | [ADR-0060](ADR-0060-execution-toolchain-contract.md) | Execution toolchain contract | 1, 5, 7, 14, 15 | `ExecutionToolchain`, `SecretBinding`, `WorkerRequirementProfile`, `WorkerSubstrate` |
 | [ADR-0061](ADR-0061-event-ingress-contract.md) | Event ingress contract | 1, 2, 14, 15 | `EventIngress`, `ProcessSpec`, `SecretBinding`, `WorkOrder` |
+| [ADR-0062](ADR-0062-portable-theme-contract.md) | Portable theme contract | 1, 2, 14, 15 | `InterfaceSurface`, `Preferences`, `ThemePack`, `VocabularySet` |

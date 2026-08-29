@@ -153,6 +153,14 @@ classes:
         inlined_as_list: true
         required: true
         minimum_cardinality: 1
+      defaultThemePackRef:
+        range: ContractReference
+        inlined: true
+        description: Fallback ThemePack when a Preferences.themePackRef is absent or unresolvable
+          (portable-theme-contract-foundations). Rego (corpus.interface.default-theme-pack-required)
+          requires every InterfaceSurface to declare it, so platform code never hard-codes a theme id;
+          modeled optional in LinkML rather than required so a historical revision an old schema still
+          loads under a pinned jumo-model does not hard-fail deserialization.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -307,6 +315,22 @@ classes:
       visualization:
         range: ThemeVisualization
         inlined: true
+      localizations:
+        range: ThemeLocalization
+        multivalued: true
+        inlined_as_list: true
+        description: Complete Vue I18n message overlays by locale (portable-theme-contract-foundations).
+          A theme may override any visible interface label; routes, capability identifiers and effect
+          semantics remain invariant and are outside this vocabulary.
+      designTokens:
+        range: ThemeDesignTokens
+        inlined: true
+        description: Light and dark Vuetify token assets, and an optional WOFF2 font manifest.
+      creativeRights:
+        range: ThemeCreativeRights
+        inlined: true
+        description: Informative origin, authorship, source and license notes. Presentation-only --
+          carries no capability, policy or authority and blocks nothing when absent or incomplete.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -381,6 +405,11 @@ classes:
         inlined_as_list: true
         description: Illustrated room decor keyed by surface id (ADR-0087). A missing entry renders the classic view rather
           than failing.
+      defaultRoomId:
+        range: string
+        pattern: ^[a-z][a-z0-9-]*$
+        description: Room selected absent a per-surface choice (portable-theme-contract-foundations). Must name a
+          declared rooms[].roomId when set (Rego).
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -400,6 +429,11 @@ classes:
         range: PresenceDensity
       motion:
         range: PresenceMotion
+      livingBitmapManifest:
+        range: VersionedJsonAsset
+        inlined: true
+        description: Optional Living Bitmap portrait manifest (portable-theme-contract-foundations). Absent means the
+          classic sigil presentation.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -424,6 +458,11 @@ classes:
         inlined_as_list: true
         description: Themed representation by business entity key -- the business term stays visible next to the metaphor
           (decision 216).
+      sceneManifest:
+        range: VersionedJsonAsset
+        inlined: true
+        description: Optional static scene-decor manifest (portable-theme-contract-foundations). Absent renders only
+          the room background.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -440,6 +479,88 @@ classes:
         range: string
         required: true
         pattern: ^.{1,}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  VersionedJsonAsset:
+    description: A schema-versioned JSON theme asset (portable-theme-contract-foundations). The referenced bytes are
+      opaque content validated only by provenance once kit-rendered (JumoKit/KitLock), never by a LinkML class; the
+      bounded path and pinned major here are what a theme declaration itself can prove ahead of any runtime consumer.
+    attributes:
+      schemaVersion:
+        range: string
+        required: true
+        pattern: ^[0-9]+\.[0-9]+$
+        description: Major.minor of the referenced asset's own JSON format. Rego refuses an unknown major.
+      asset:
+        range: string
+        required: true
+        pattern: ^\.jumo/assets/([A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.json$
+        description: Normalized, repository-relative path. The extension bounds content to JSON -- never raw CSS,
+          JavaScript or HTML -- and the prefix matches JumoKitSpec.assetExports so a theme's assets are exportable
+          through the same kit mechanism unchanged.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeLocalization:
+    attributes:
+      locale:
+        range: string
+        required: true
+        pattern: ^[a-z]{2}(-[A-Z]{2})?$
+      messages:
+        range: VersionedJsonAsset
+        required: true
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeDesignTokens:
+    attributes:
+      light:
+        range: VersionedJsonAsset
+        required: true
+        inlined: true
+      dark:
+        range: VersionedJsonAsset
+        required: true
+        inlined: true
+      fontManifest:
+        range: VersionedJsonAsset
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeCreativeRights:
+    description: Informative only -- origin, authorship, source and license notes carry no capability, policy or
+      assurance and are never validated for completeness (AC4).
+    attributes:
+      origin:
+        range: string
+      author:
+        range: string
+      source:
+        range: string
+      license:
+        range: string
+      notes:
+        range: string
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

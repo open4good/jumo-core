@@ -1056,9 +1056,12 @@ classes:
       ownerPrincipal:
         range: Identifier
         required: true
-      theme:
-        range: string
-        ifabsent: default
+      themePackRef:
+        range: ContractReference
+        inlined: true
+        description: Explicit theme choice (portable-theme-contract-foundations). Absent means the
+          owning InterfaceSurface.defaultThemePackRef applies; an unresolvable reference falls back
+          to that same default with a warning rather than failing (runtime, out of this lot's scope).
       language:
         range: string
         ifabsent: en

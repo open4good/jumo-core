@@ -552,7 +552,7 @@ classes:
       assetExports:
         range: string
         multivalued: true
-        pattern: ^\.jumo/assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp|json)$
+        pattern: ^\.jumo/assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp|json|woff2)$
         description: 'Optional binary assets (images) and i18n bundles (json) the kit distributes, distinct from `exports`
           because these are opaque content, not corpus-governed YAML documents -- no LinkML class validates their bytes, only
           their provenance (KitLockSpec.renderedAssets digest). Images and i18n bundles share this one tree rather than splitting
@@ -829,11 +829,11 @@ classes:
       sourcePath:
         range: string
         required: true
-        pattern: ^\.jumo/assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp|json)$
+        pattern: ^\.jumo/assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp|json|woff2)$
       targetPath:
         range: string
         required: true
-        pattern: ^\.jumo/kits/[a-z][a-z0-9-]*/assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp|json)$
+        pattern: ^\.jumo/kits/[a-z][a-z0-9-]*/assets/[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp|json|woff2)$
       digest:
         range: string
         required: true

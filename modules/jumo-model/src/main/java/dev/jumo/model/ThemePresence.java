@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * How the Chief of Staff is drawn on a surface. Every field here is presentation: there is no data source, no scope and no threshold, so the representation cannot become the thing represented.
  */
-public record ThemePresence(String chiefOfStaffForm, PresenceDensity density, PresenceMotion motion)  {
+public record ThemePresence(String chiefOfStaffForm, PresenceDensity density, PresenceMotion motion, VersionedJsonAsset livingBitmapManifest)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,6 +18,7 @@ public record ThemePresence(String chiefOfStaffForm, PresenceDensity density, Pr
         private String chiefOfStaffForm = "";
         private PresenceDensity density = null;
         private PresenceMotion motion = null;
+        private VersionedJsonAsset livingBitmapManifest = null;
 
 
         public Builder chiefOfStaffForm(String chiefOfStaffForm) {
@@ -35,8 +36,13 @@ public record ThemePresence(String chiefOfStaffForm, PresenceDensity density, Pr
             return this;
         }
 
+        public Builder livingBitmapManifest(VersionedJsonAsset livingBitmapManifest) {
+            this.livingBitmapManifest = Objects.requireNonNull(livingBitmapManifest);
+            return this;
+        }
+
     public ThemePresence build() {
-            return new ThemePresence(chiefOfStaffForm, density, motion);
+            return new ThemePresence(chiefOfStaffForm, density, motion, livingBitmapManifest);
         }
     }
 }

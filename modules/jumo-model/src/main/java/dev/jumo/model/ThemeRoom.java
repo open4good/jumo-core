@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record ThemeRoom(String roomId, String background, List<ThemeObjectForm> objectForms)  {
+public record ThemeRoom(String roomId, String background, List<ThemeObjectForm> objectForms, VersionedJsonAsset sceneManifest)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,6 +17,7 @@ public record ThemeRoom(String roomId, String background, List<ThemeObjectForm> 
         private String roomId = "";
         private String background = "";
         private List<ThemeObjectForm> objectForms = List.of();
+        private VersionedJsonAsset sceneManifest = null;
 
 
         public Builder roomId(String roomId) {
@@ -34,8 +35,13 @@ public record ThemeRoom(String roomId, String background, List<ThemeObjectForm> 
             return this;
         }
 
+        public Builder sceneManifest(VersionedJsonAsset sceneManifest) {
+            this.sceneManifest = Objects.requireNonNull(sceneManifest);
+            return this;
+        }
+
     public ThemeRoom build() {
-            return new ThemeRoom(roomId, background, objectForms);
+            return new ThemeRoom(roomId, background, objectForms, sceneManifest);
         }
     }
 }

@@ -655,6 +655,23 @@ references contains {"document": document, "location": "spec.preferencesRef", "e
 	ref != null
 }
 
+# ThemePack (portable-theme-contract-foundations). ThemePack itself declares no ownerRealm --
+# OVERRIDABLE composition, shared like VocabularySet -- so corpus.reference.same-realm is a no-op
+# for both of these; kind-match/kind-id still refuse an unresolved or wrongly-kinded reference.
+references contains {"document": document, "location": "spec.themePackRef", "expected_kind": "ThemePack", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "Preferences"
+	ref := object.get(corpus.spec(document), "themePackRef", null)
+	ref != null
+}
+
+references contains {"document": document, "location": "spec.defaultThemePackRef", "expected_kind": "ThemePack", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "InterfaceSurface"
+	ref := object.get(corpus.spec(document), "defaultThemePackRef", null)
+	ref != null
+}
+
 # KitLock
 references contains {"document": document, "location": "spec.kitBindingRef", "expected_kind": "KitBinding", "ref": ref} if {
 	some document in corpus.documents

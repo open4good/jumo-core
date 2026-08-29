@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record ThemeVisualization(String ecosystem, String palette, ThemePresence presence, List<ThemeRoom> rooms)  {
+public record ThemeVisualization(String ecosystem, String palette, ThemePresence presence, List<ThemeRoom> rooms, String defaultRoomId)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,6 +18,7 @@ public record ThemeVisualization(String ecosystem, String palette, ThemePresence
         private String palette = "";
         private ThemePresence presence = null;
         private List<ThemeRoom> rooms = List.of();
+        private String defaultRoomId = "";
 
 
         public Builder ecosystem(String ecosystem) {
@@ -40,8 +41,13 @@ public record ThemeVisualization(String ecosystem, String palette, ThemePresence
             return this;
         }
 
+        public Builder defaultRoomId(String defaultRoomId) {
+            this.defaultRoomId = Objects.requireNonNull(defaultRoomId);
+            return this;
+        }
+
     public ThemeVisualization build() {
-            return new ThemeVisualization(ecosystem, palette, presence, rooms);
+            return new ThemeVisualization(ecosystem, palette, presence, rooms, defaultRoomId);
         }
     }
 }

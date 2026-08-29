@@ -72,8 +72,10 @@ valid_corpus := [
 			"ownerRealm": "home",
 			"facets": [{"entity": "Document", "create": "NONE", "modify": "NONE", "retire": "NONE", "commands": []}],
 			"surfaces": [{"id": "documents", "proposes": ["document.read"], "writePaths": []}],
+			"defaultThemePackRef": {"kind": "ThemePack", "namespace": "dev.jumo.test", "id": "default"},
 		},
 	),
+	document(".jumo/themes/default.yml", "ThemePack", "default", {"terminology": [{"roleKey": "chiefOfStaff", "displayName": "Nestor"}]}),
 ]
 
 has_rule(violations, rule) if {
@@ -943,6 +945,125 @@ test_rejects_interface_theme_narration_and_document_root_reference_loss if {
 	has_rule(violations, "corpus.interface.presence")
 	has_rule(violations, "corpus.self-description.narration")
 	has_rule(violations, "corpus.documentation-root.monotonic")
+}
+
+# ThemePack asset extensions (portable-theme-contract-foundations)
+
+valid_asset := {"schemaVersion": "1.0", "asset": ".jumo/assets/themes/nestor-atelier/tokens/light.json"}
+
+full_theme_pack := document(".jumo/themes/nestor-atelier.yml", "ThemePack", "nestor-atelier", {
+	"terminology": [{"roleKey": "chiefOfStaff", "displayName": "Nestor"}],
+	"designTokens": {"light": valid_asset, "dark": valid_asset, "fontManifest": valid_asset},
+	"localizations": [
+		{"locale": "en", "messages": valid_asset},
+		{"locale": "fr", "messages": valid_asset},
+	],
+	"creativeRights": {"origin": "original", "author": "test", "license": "CC0"},
+	"visualization": {
+		"ecosystem": "atelier",
+		"palette": "warm",
+		"defaultRoomId": "study",
+		"presence": {"chiefOfStaffForm": "portrait", "livingBitmapManifest": valid_asset},
+		"rooms": [{"roomId": "study", "background": "study-bg", "sceneManifest": valid_asset}],
+	},
+})
+
+test_theme_pack_fully_declared_accepted if {
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [full_theme_pack])
+	not has_rule(violations, "corpus.theme.asset-path")
+	not has_rule(violations, "corpus.theme.schema-version")
+	not has_rule(violations, "corpus.theme.default-room")
+	not has_rule(violations, "corpus.theme.localization-locale-unique")
+}
+
+test_theme_pack_escaped_asset_path_rejected if {
+	bad_asset := {"schemaVersion": "1.0", "asset": ".jumo/assets/../../etc/passwd.json"}
+	theme := document(".jumo/themes/bad.yml", "ThemePack", "bad", {
+		"terminology": [{"roleKey": "chiefOfStaff", "displayName": "Nestor"}],
+		"designTokens": {"light": bad_asset, "dark": valid_asset},
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
+	has_rule(violations, "corpus.theme.asset-path")
+}
+
+test_theme_pack_unsupported_media_rejected if {
+	bad_asset := {"schemaVersion": "1.0", "asset": ".jumo/assets/themes/nestor-atelier/style.css"}
+	theme := document(".jumo/themes/bad.yml", "ThemePack", "bad", {
+		"terminology": [{"roleKey": "chiefOfStaff", "displayName": "Nestor"}],
+		"designTokens": {"light": bad_asset, "dark": valid_asset},
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
+	has_rule(violations, "corpus.theme.asset-path")
+}
+
+test_theme_pack_unknown_schema_major_rejected if {
+	bad_asset := {"schemaVersion": "2.0", "asset": ".jumo/assets/themes/nestor-atelier/tokens/light.json"}
+	theme := document(".jumo/themes/bad.yml", "ThemePack", "bad", {
+		"terminology": [{"roleKey": "chiefOfStaff", "displayName": "Nestor"}],
+		"designTokens": {"light": bad_asset, "dark": valid_asset},
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
+	has_rule(violations, "corpus.theme.schema-version")
+}
+
+test_theme_pack_default_room_not_declared_rejected if {
+	theme := document(".jumo/themes/bad.yml", "ThemePack", "bad", {
+		"terminology": [{"roleKey": "chiefOfStaff", "displayName": "Nestor"}],
+		"visualization": {"ecosystem": "atelier", "palette": "warm", "defaultRoomId": "missing", "rooms": [
+			{"roomId": "study", "background": "study-bg"},
+		]},
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
+	has_rule(violations, "corpus.theme.default-room")
+}
+
+test_theme_pack_duplicate_locale_rejected if {
+	theme := document(".jumo/themes/bad.yml", "ThemePack", "bad", {
+		"terminology": [{"roleKey": "chiefOfStaff", "displayName": "Nestor"}],
+		"localizations": [
+			{"locale": "en", "messages": valid_asset},
+			{"locale": "en", "messages": valid_asset},
+		],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
+	has_rule(violations, "corpus.theme.localization-locale-unique")
+}
+
+test_preferences_theme_pack_ref_resolves if {
+	preferences := document(".jumo/preferences/user.yml", "Preferences", "user", {
+		"ownerPrincipal": "user",
+		"themePackRef": {"kind": "ThemePack", "namespace": "dev.jumo.test", "id": "nestor-atelier"},
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [full_theme_pack, preferences])
+	not has_rule(violations, "corpus.reference.kind-id")
+}
+
+test_preferences_theme_pack_ref_unresolved_rejected if {
+	preferences := document(".jumo/preferences/user.yml", "Preferences", "user", {
+		"ownerPrincipal": "user",
+		"themePackRef": {"kind": "ThemePack", "namespace": "dev.jumo.test", "id": "missing"},
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [preferences])
+	has_rule(violations, "corpus.reference.kind-id")
+}
+
+test_interface_surface_missing_default_theme_pack_ref_rejected if {
+	surface := document(".jumo/interfaces/untitled.yml", "InterfaceSurface", "untitled", {
+		"ownerRealm": "home",
+		"surfaces": [{"id": "documents", "proposes": ["document.read"], "writePaths": []}],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [surface])
+	has_rule(violations, "corpus.interface.default-theme-pack-required")
+}
+
+test_interface_surface_default_theme_pack_ref_resolves if {
+	surface := document(".jumo/interfaces/themed.yml", "InterfaceSurface", "themed", {
+		"ownerRealm": "home",
+		"surfaces": [{"id": "documents", "proposes": ["document.read"], "writePaths": []}],
+		"defaultThemePackRef": {"kind": "ThemePack", "namespace": "dev.jumo.test", "id": "nestor-atelier"},
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [full_theme_pack, surface])
+	not has_rule(violations, "corpus.reference.kind-id")
 }
 
 # LOT 4 tests — Shared repository co-governance

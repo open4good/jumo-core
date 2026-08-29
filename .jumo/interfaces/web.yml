@@ -317,3 +317,4 @@ spec:
         - audit.history.read
         - organization.governance.propose
         - organization.realm.provision.request
+  defaultThemePackRef: {kind: ThemePack, namespace: dev.jumo.core, id: default}

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record InterfaceSurfaceSpec(String ownerRealm, List<EntityFacet> facets, List<Surface> surfaces)  {
+public record InterfaceSurfaceSpec(String ownerRealm, List<EntityFacet> facets, List<Surface> surfaces, ContractReference defaultThemePackRef)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,6 +18,7 @@ public record InterfaceSurfaceSpec(String ownerRealm, List<EntityFacet> facets, 
         private String ownerRealm = "";
         private List<EntityFacet> facets = List.of();
         private List<Surface> surfaces = List.of();
+        private ContractReference defaultThemePackRef = null;
 
 
         public Builder ownerRealm(String ownerRealm) {
@@ -35,8 +36,13 @@ public record InterfaceSurfaceSpec(String ownerRealm, List<EntityFacet> facets, 
             return this;
         }
 
+        public Builder defaultThemePackRef(ContractReference defaultThemePackRef) {
+            this.defaultThemePackRef = Objects.requireNonNull(defaultThemePackRef);
+            return this;
+        }
+
     public InterfaceSurfaceSpec build() {
-            return new InterfaceSurfaceSpec(ownerRealm, facets, surfaces);
+            return new InterfaceSurfaceSpec(ownerRealm, facets, surfaces, defaultThemePackRef);
         }
     }
 }

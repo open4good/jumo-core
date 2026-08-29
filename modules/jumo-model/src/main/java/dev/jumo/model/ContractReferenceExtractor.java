@@ -88,6 +88,10 @@ public final class ContractReferenceExtractor {
             extractFromImprovementRecommendation(m, refs);
             return refs;
         }
+        if (model instanceof InterfaceSurface m) {
+            extractFromInterfaceSurface(m, refs);
+            return refs;
+        }
         if (model instanceof KitLock m) {
             extractFromKitLock(m, refs);
             return refs;
@@ -150,6 +154,10 @@ public final class ContractReferenceExtractor {
         }
         if (model instanceof Practice m) {
             extractFromPractice(m, refs);
+            return refs;
+        }
+        if (model instanceof Preferences m) {
+            extractFromPreferences(m, refs);
             return refs;
         }
         if (model instanceof Principal m) {
@@ -688,6 +696,16 @@ public final class ContractReferenceExtractor {
             refs.add(new OutgoingReference("improvementLoopRef", obj.improvementLoopRef()));
         }
     }
+    public static void extractFromInterfaceSurface(InterfaceSurface obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromInterfaceSurfaceSpec(obj.spec(), refs);
+    }
+    public static void extractFromInterfaceSurfaceSpec(InterfaceSurfaceSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.defaultThemePackRef() != null) {
+            refs.add(new OutgoingReference("defaultThemePackRef", obj.defaultThemePackRef()));
+        }
+    }
     public static void extractFromKitLock(KitLock obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         extractFromKitLockSpec(obj.spec(), refs);
@@ -945,6 +963,16 @@ public final class ContractReferenceExtractor {
         }
         if (obj.resourceBudgetRef() != null) {
             refs.add(new OutgoingReference("resourceBudgetRef", obj.resourceBudgetRef()));
+        }
+    }
+    public static void extractFromPreferences(Preferences obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromPreferencesSpec(obj.spec(), refs);
+    }
+    public static void extractFromPreferencesSpec(PreferencesSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.themePackRef() != null) {
+            refs.add(new OutgoingReference("themePackRef", obj.themePackRef()));
         }
     }
     public static void extractFromPrincipal(Principal obj, List<OutgoingReference> refs) {

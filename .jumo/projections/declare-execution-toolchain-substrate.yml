@@ -1,0 +1,42 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: declare-execution-toolchain-substrate
+  namespace: dev.jumo.core
+  name: Execution toolchain providing substrate step form
+spec:
+  ownerRealm: home
+  payloadSchemaRef: declare-execution-toolchain-substrate
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: substrate
+      i18nKey: journeyToolchainSubstrateSection
+      columns: 1
+      fields:
+        - path: substrateName
+          representation: IDENTIFIER
+          i18nKey: journeyToolchainSubstrateNameField
+          helpI18nKey: journeyToolchainSubstrateNameHelp
+          order: 1
+          required: true
+        - path: executionMachineRef
+          representation: ENTITY_REFERENCE
+          optionsFrom: ExecutionMachine
+          optionsEligibility:
+            - path: spec.desiredState
+              equalsValue: ACTIVE
+          i18nKey: journeyToolchainExecutionMachineField
+          helpI18nKey: journeyToolchainExecutionMachineHelp
+          order: 2
+          required: true
+        - path: providerAccountRef
+          representation: ENTITY_REFERENCE
+          optionsFrom: ProviderAccount
+          optionsEligibility:
+            - path: spec.routing.mode
+              equalsValue: PLAN_DIRECT
+          i18nKey: journeyToolchainProviderAccountField
+          helpI18nKey: journeyToolchainProviderAccountHelp
+          order: 3
+          required: true

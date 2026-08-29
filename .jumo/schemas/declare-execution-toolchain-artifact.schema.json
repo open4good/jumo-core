@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/declare-execution-toolchain-artifact",
+  "title": "Declare execution toolchain artifact step payload",
+  "type": "object",
+  "properties": {
+    "toolchainName": { "type": "string", "minLength": 1, "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+    "artifactReference": { "type": "string", "minLength": 3 },
+    "artifactDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  },
+  "required": ["toolchainName", "artifactReference", "artifactDigest"]
+}

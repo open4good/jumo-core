@@ -1,0 +1,21 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: declare-execution-toolchain-tools
+  namespace: dev.jumo.core
+  name: Execution toolchain tool inventory step form
+spec:
+  ownerRealm: home
+  payloadSchemaRef: declare-execution-toolchain-tools
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: inventory
+      i18nKey: journeyToolchainToolsSection
+      columns: 1
+      fields:
+        - path: tools
+          representation: STRUCTURED_YAML
+          i18nKey: journeyToolchainToolsField
+          helpI18nKey: journeyToolchainToolsHelp
+          required: true

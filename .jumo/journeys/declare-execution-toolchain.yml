@@ -1,0 +1,86 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: declare-execution-toolchain
+  namespace: dev.jumo.core
+  name: Déclaration d'une chaîne d'outils d'exécution
+spec:
+  journeyId: declare-execution-toolchain
+  name: Déclaration d'une chaîne d'outils d'exécution
+  summaryI18nKey: declareExecutionToolchainSummary
+  description: Déclarez un environnement d'exécution non-IA (build, langage) pinné par artefact
+    immuable, et rattachez-le à un worker substrate qui le fournit. Ce parcours ne construit aucune
+    image et ne crée aucune machine.
+  category: integrations
+  icon: mdi-toolbox-outline
+  interruptible: true
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
+  emitsCapability: contract.change.propose
+  emissionBundle:
+    - emission:
+        targetKind: ExecutionToolchain
+        identifier: {fromField: toolchainName}
+        pathTemplate: .jumo/execution-toolchains/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: execution-toolchain}
+        validations:
+          - {field: toolchainName, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: artifactReference, required: true, minimumLength: 3}
+          - {field: artifactDigest, required: true, pattern: '^sha256:[0-9a-f]{64}$'}
+          - {field: tools, minimumItems: 1}
+    - emission:
+        targetKind: WorkerSubstrate
+        identifier: {fromField: substrateName}
+        pathTemplate: .jumo/worker-substrates/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: execution-toolchain-worker-substrate}
+        validations:
+          - {field: substrateName, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: executionMachineRef, required: true}
+          - {field: providerAccountRef, required: true}
+  steps:
+    - id: declare-artifact
+      requiredObligations: []
+      name: Artefact immuable
+      description: Nommez la chaîne d'outils et référencez son image OCI immuable par digest sha256.
+      personaNarration: Commençons par identifier précisément l'artefact qui portera cet environnement d'exécution.
+      stepKind: COLLECT
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: declare-execution-toolchain-artifact}
+      requiredFields:
+        - {field: toolchainName, i18nKey: journeyToolchainNameField}
+        - {field: artifactReference, i18nKey: journeyToolchainArtifactReferenceField}
+        - {field: artifactDigest, i18nKey: journeyToolchainArtifactDigestField}
+    - id: declare-tools
+      requiredObligations: []
+      name: Inventaire des outils
+      description: Déclarez au moins un outil observable fourni par l'artefact (nom et version).
+      personaNarration: Listons maintenant les outils que cet artefact fournit, avec leur version exacte.
+      stepKind: COLLECT
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: declare-execution-toolchain-tools}
+      requiredFields:
+        - {field: tools, i18nKey: journeyToolchainToolsField}
+    - id: declare-substrate
+      requiredObligations: []
+      name: Worker substrate fournisseur
+      description: Choisissez la machine d'exécution et le compte fournisseur du worker substrate qui fournira cette
+        chaîne d'outils.
+      personaNarration: Rattachons cette chaîne d'outils à un worker substrate de ce Realm.
+      stepKind: COLLECT
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: declare-execution-toolchain-substrate}
+      requiredFields:
+        - {field: substrateName, i18nKey: journeyToolchainSubstrateNameField}
+        - {field: executionMachineRef, i18nKey: journeyToolchainExecutionMachineField}
+        - {field: providerAccountRef, i18nKey: journeyToolchainProviderAccountField}
+    - id: confirm-toolchain
+      requiredObligations: []
+      name: Bilan et proposition
+      description: Vérifiez la déclaration avant l'émission de la proposition contractuelle.
+      personaNarration: Récapitulons avant d'enregistrer cette proposition.
+      stepKind: COLLECT
+      projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: summary-and-activate}
+      requiredFields:
+        - {field: confirmed, i18nKey: journeyConfirmField}
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

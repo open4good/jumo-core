@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/declare-execution-toolchain-substrate",
+  "title": "Declare execution toolchain providing substrate step payload",
+  "type": "object",
+  "properties": {
+    "substrateName": { "type": "string", "minLength": 1, "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+    "executionMachineRef": { "type": "string", "minLength": 1 },
+    "providerAccountRef": { "type": "string", "minLength": 1 }
+  },
+  "required": ["substrateName", "executionMachineRef", "providerAccountRef"]
+}

@@ -1,0 +1,22 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: execution-toolchain
+  namespace: dev.jumo.core
+  name: Execution toolchain declaration
+spec:
+  renders: ExecutionToolchain
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: ExecutionToolchain
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${toolchainName}
+    spec:
+      ownerRealm: ${realmId}
+      artifact:
+        reference: ${artifactReference}
+        digest: ${artifactDigest}
+      tools: ${tools}
+      lifecycle: DECLARED

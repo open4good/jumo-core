@@ -1,0 +1,56 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: execution-toolchain-worker-substrate
+  namespace: dev.jumo.core
+  name: Toolchain-providing worker substrate declaration
+spec:
+  renders: WorkerSubstrate
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: WorkerSubstrate
+    metadata:
+      id: ${substrateName}
+      namespace: ${realmNamespace}
+      name: ${substrateName}
+    spec:
+      ownerRealm: ${realmId}
+      executionMachineRef:
+        kind: ExecutionMachine
+        namespace: ${realmNamespace}
+        id: ${executionMachineRef}
+      lifecycle: DECLARED
+      substrate: LOCAL_CLI_CONTAINER
+      image:
+        reference: ${artifactReference}
+        digest: ${artifactDigest}
+      isolation:
+        network: MODEL_ENDPOINT_ONLY
+        rootFilesystem: READ_ONLY
+        linuxCapabilities: DROP_ALL
+        privilegeEscalation: DENIED
+        containerRuntimeSocket: ABSENT
+        workspace: WRITABLE
+        limits:
+          memory: 4Gi
+          cpus: 2.0
+          pids: 512
+          wallClock: PT30M
+      homeState: ISOLATED_PER_INVOCATION
+      modelAccess:
+        mode: PLAN_DIRECT
+        providerAccountRef:
+          kind: ProviderAccount
+          namespace: ${realmNamespace}
+          id: ${providerAccountRef}
+        credentialSource: PLAN_SESSION_ONLY
+      grantedOperationRefs: []
+      nativeToolAuthority: DISABLED
+      ambientToolAuthority: DISABLED
+      projectedToolAuthority: GRANT_ONLY
+      usageContext: PERSONAL
+      accountUse: HOLDER_OPERATED
+      providedExecutionToolchainRefs:
+        - kind: ExecutionToolchain
+          namespace: ${realmNamespace}
+          id: ${toolchainName}

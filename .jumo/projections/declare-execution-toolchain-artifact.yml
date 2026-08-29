@@ -1,0 +1,34 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: declare-execution-toolchain-artifact
+  namespace: dev.jumo.core
+  name: Execution toolchain artifact step form
+spec:
+  ownerRealm: home
+  payloadSchemaRef: declare-execution-toolchain-artifact
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: artifact
+      i18nKey: journeyToolchainArtifactSection
+      columns: 1
+      fields:
+        - path: toolchainName
+          representation: IDENTIFIER
+          i18nKey: journeyToolchainNameField
+          helpI18nKey: journeyToolchainNameHelp
+          order: 1
+          required: true
+        - path: artifactReference
+          representation: SHORT_TEXT
+          i18nKey: journeyToolchainArtifactReferenceField
+          helpI18nKey: journeyToolchainArtifactReferenceHelp
+          order: 2
+          required: true
+        - path: artifactDigest
+          representation: SHORT_TEXT
+          i18nKey: journeyToolchainArtifactDigestField
+          helpI18nKey: journeyToolchainArtifactDigestHelp
+          order: 3
+          required: true

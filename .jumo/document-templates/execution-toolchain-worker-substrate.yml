@@ -10,7 +10,7 @@ spec:
     apiVersion: jumo.dev/v1
     kind: WorkerSubstrate
     metadata:
-      id: ${substrateName}
+      id: ${id}
       namespace: ${realmNamespace}
       name: ${substrateName}
     spec:

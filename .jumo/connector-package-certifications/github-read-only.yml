@@ -9,7 +9,7 @@ spec:
     kind: ConnectorPackage
     namespace: dev.jumo.connectors
     id: github-read-only
-  packageDigest: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  packageDigest: sha256:ba2c41506568f57df49c76b6b137f60b24146b217afe6f59aca84df867dce64e
   imageDigest: sha256:0080906ff8a9f0ae85cc9d71d848428ec4a20ac76a2bab13928dd90ee3d9b0b7
   sbomDigest: sha256:616a133ba7b2f444fcb6cb408d774a4f1641b2038e2b84b321121603eb2a7668
   provenanceDigest: sha256:148fdfe15aa98daa69d2c2143ab01e48a8a220c38f1b5e23fba9264ca7fd2d83

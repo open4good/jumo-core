@@ -5,6 +5,9 @@
 target/
 *.jar
 
+# Published derived projection; CI regenerates it only when releasing its versioned artifact.
+metamodel/generated/
+
 # --- Tooling -----------------------------------------------------------------
 .venv/
 __pycache__/

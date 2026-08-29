@@ -88,7 +88,7 @@ UNRATCHETED = {
 
 # Machine-generated artifacts carry no hand-written rule-shaped prose to budget; counting them
 # would make regeneration itself look like corpus growth. Prefixes are relative to ROOT.
-GENERATED_EXEMPT_PATHS = ("docs/reference/", "metamodel/generated/", "docs/decisions/README.md")
+GENERATED_EXEMPT_PATHS = ("docs/reference/", "docs/decisions/README.md")
 
 # Language that asserts a rule. Counted only in non-normative documents, where
 # it signals a rule that belongs in a schema or an ADR instead.

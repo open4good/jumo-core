@@ -9,9 +9,9 @@
 # Usage:
 #   scripts/generate/generate-metamodel.sh            writes into metamodel/generated/ and
 #                                             modules/jumo-model/src/main/java/
-#   scripts/generate/generate-metamodel.sh --check    regenerates into a temp directory and fails on any
-#                                             diff against the committed output (the CI
-#                                             reproducibility gate)
+#   scripts/generate/generate-metamodel.sh --check-java
+#                                             regenerates into a temp directory and fails when the
+#                                             committed jumo-model Java records differ
 #
 # Requires the pinned toolchain in metamodel/requirements.txt active on PATH:
 #   python3 -m venv .venv && source .venv/bin/activate
@@ -44,8 +44,8 @@ fi
 POSTPROCESS="$ROOT_DIR/scripts/generate/metamodel_postprocess.py"
 
 MODE="write"
-if [[ "${1:-}" == "--check" ]]; then
-  MODE="check"
+if [[ "${1:-}" == "--check-java" ]]; then
+  MODE="check-java"
 fi
 
 for tool in gen-linkml gen-json-schema gen-java gen-openapi gen-graphql gen-owl gen-shacl \
@@ -57,7 +57,7 @@ for tool in gen-linkml gen-json-schema gen-java gen-openapi gen-graphql gen-owl 
   fi
 done
 
-if [[ "$MODE" == "check" ]]; then
+if [[ "$MODE" == "check-java" ]]; then
   OUT_DIR="$(mktemp -d)"
   STAGE_DIR="$(mktemp -d)"
   trap 'rm -rf "$OUT_DIR" "$STAGE_DIR"' EXIT
@@ -173,32 +173,21 @@ own generated artifact, not jumo-core's -- it is control-plane-specific code, ge
 from the pinned metamodel (metamodel-and-policy-to-core AC2).
 EOF
 
-if [[ "$MODE" == "check" ]]; then
+if [[ "$MODE" == "check-java" ]]; then
   # OWL and SHACL are not byte-reproducible (blank-node serialization order, not content --
-  # see metamodel_postprocess.py's module docstring). Checked structurally instead; excluded from
-  # the byte-diff below so a passing structural check isn't also flagged as a diff.
+  # see metamodel_postprocess.py's module docstring). They are a versioned published projection,
+  # not a committed reproducibility target; only the tracked Java records are compared here.
   DIFF_STATUS=0
-  "$PYTHON" "$POSTPROCESS" rdf-structural-check \
-    "$COMMITTED_OUT/owl/jumo-v1.owl.ttl" "$OUT_DIR/owl/jumo-v1.owl.ttl" || DIFF_STATUS=1
-  "$PYTHON" "$POSTPROCESS" rdf-structural-check \
-    "$COMMITTED_OUT/shacl/jumo-v1.shacl.ttl" "$OUT_DIR/shacl/jumo-v1.shacl.ttl" || DIFF_STATUS=1
-
-  if ! diff -rq -x jumo-v1.owl.ttl -x jumo-v1.shacl.ttl "$COMMITTED_OUT" "$OUT_DIR" \
-      > /tmp/generate-metamodel-diff.txt 2>&1; then
-    DIFF_STATUS=1
-  fi
   if ! diff -rq "$COMMITTED_JAVA_MODEL_DIR" "$JAVA_MODEL_DIR" \
       >> /tmp/generate-metamodel-diff.txt 2>&1; then
     DIFF_STATUS=1
   fi
 
   if [[ "$DIFF_STATUS" -eq 0 ]]; then
-    echo "OK: the generated metamodel tree (metamodel/generated/, modules/jumo-model's Java" \
-         "records) is reproducible from metamodel/jumo-v1.yaml (byte-for-byte except OWL/SHACL," \
-         "checked structurally)"
+    echo "OK: modules/jumo-model's generated Java records are reproducible from metamodel/jumo-v1.yaml"
   else
-    echo "FAIL: regenerating metamodel/jumo-v1.yaml produces a different tree than what is" \
-         "committed -- run scripts/generate/generate-metamodel.sh and commit the diff" >&2
+    echo "FAIL: regenerating metamodel/jumo-v1.yaml produces Java records different from the" \
+         "committed jumo-model source -- run scripts/generate/generate-metamodel.sh and commit the diff" >&2
     cat /tmp/generate-metamodel-diff.txt >&2
     exit 1
   fi

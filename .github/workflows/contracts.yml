@@ -10,9 +10,8 @@ name: contracts
 # depends on it instead of generating it in-tree. `publish-metamodel-generated`
 # (metamodel-generated-publish-boundary AC1a) mirrors that same registry and auth for
 # metamodel/generated/** itself -- not a Java artifact, so it ships as a tar.gz under
-# dev.jumo:metamodel-generated:<VERSION> via mvn deploy:deploy-file rather than a real Maven
-# build; purely additive alongside the still-committed directory until a later AC switches
-# consumption to the published artifact and only then untracks it. Corpus-instance validation
+# dev.jumo:metamodel-generated:<VERSION> via mvn deploy:deploy-file. It is a derived, ignored
+# projection regenerated only when publishing a new version. Corpus-instance validation
 # (WorkOrders, journeys, the composed negative fixtures) stays jumo's job in corpus-validate.yml,
 # against its own tree.
 #
@@ -86,8 +85,8 @@ jobs:
       - name: Install the pinned LinkML toolchain
         run: pip install --disable-pip-version-check -r metamodel/requirements.txt
 
-      - name: Regenerate and diff against the committed tree
-        run: bash scripts/generate/generate-metamodel.sh --check
+      - name: Regenerate and diff the committed Java records
+        run: bash scripts/generate/generate-metamodel.sh --check-java
 
       # O-A: packageDigest stands for the package's content, so it has to be recomputed from that
       # content rather than trusted. Before this had a recipe, the one declared value matched
@@ -229,14 +228,24 @@ jobs:
           echo "needed=true" >> "$GITHUB_OUTPUT"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
-      # metamodel/generated/** is already the committed, reproducibility-checked output the
-      # metamodel job above just verified -- this job archives and ships it, it does not
-      # regenerate it. Not a Java artifact, so no real mvn build: GitHub Packages has no
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        if: steps.decide.outputs.needed == 'true'
+        with:
+          python-version: '3.14'
+
+      - name: Install the pinned LinkML toolchain
+        if: steps.decide.outputs.needed == 'true'
+        run: pip install --disable-pip-version-check -r metamodel/requirements.txt
+
+      # The projection is derived from the metamodel in this fresh checkout, then archived once
+      # for its immutable version. Not a Java artifact, so no real mvn build: GitHub Packages has no
       # dedicated generic-file type, so the tar.gz rides the same Maven-hosted registry and auth
       # dev.jumo:jumo-model already publishes to, via deploy:deploy-file instead of deploy.
-      - name: Archive metamodel/generated
+      - name: Generate and archive metamodel/generated
         if: steps.decide.outputs.needed == 'true'
-        run: tar -czf metamodel-generated.tar.gz -C metamodel generated
+        run: |
+          bash scripts/generate/generate-metamodel.sh
+          tar -czf metamodel-generated.tar.gz -C metamodel generated
 
       - name: Publish metamodel-generated
         if: steps.decide.outputs.needed == 'true'

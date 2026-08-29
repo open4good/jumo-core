@@ -29,3 +29,4 @@ The Jumo control plane and contract engine treat `.jumo` as a virtual composed e
 - `CompositeContractLoader` and `KitResolver` provide deterministic, multi-layer contract loading and validation.
 - Rego policies enforce composition rules in CI and runtime checks.
 - The `import-skill` journey enables declarative importation of external skills directly into user realms.
+- `metamodel/generated/**` is a derived projection, not desired or contractual Git state: CI regenerates and publishes it as a versioned `dev.jumo:metamodel-generated` artifact keyed to `metamodel/VERSION`.

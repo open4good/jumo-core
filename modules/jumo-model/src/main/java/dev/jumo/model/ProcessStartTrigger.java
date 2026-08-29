@@ -12,7 +12,9 @@ public enum ProcessStartTrigger {
 
   MANUAL("MANUAL"),
 
-  TIMER("TIMER");
+  TIMER("TIMER"),
+
+  EVENT("EVENT");
 
   private final static Map<String, ProcessStartTrigger> MAP;
 

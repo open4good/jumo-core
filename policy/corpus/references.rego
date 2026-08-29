@@ -103,12 +103,18 @@ owner_realm_kind(kind) if {
 		"ConnectorDefinition",
 		"ExecutionCell",
 		"ExecutionToolchain",
+		"EventIngress",
 		"FederatedPeer",
 		"FederationProfile",
 		"GoldenTaskSet",
 		"InterfaceSurface",
 		"ImprovementLoop",
 		"KitBinding",
+	}
+}
+
+owner_realm_kind(kind) if {
+	kind in {
 		"McpBundle",
 		"MonetaryRiskPolicy",
 		"PersonalSpace",
@@ -438,6 +444,21 @@ references contains {"document": document, "location": sprintf("spec.providedExe
 	some document in corpus.documents
 	document.kind == "WorkerSubstrate"
 	some index, ref in object.get(corpus.spec(document), "providedExecutionToolchainRefs", [])
+}
+
+# EventIngress (event-ingress-contract-foundations)
+references contains {"document": document, "location": "spec.verificationSecretBindingRef", "expected_kind": "SecretBinding", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "EventIngress"
+	ref := object.get(corpus.spec(document), "verificationSecretBindingRef", null)
+	ref != null
+}
+
+references contains {"document": document, "location": "spec.processSpecRef", "expected_kind": "ProcessSpec", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "EventIngress"
+	ref := object.get(corpus.spec(document), "processSpecRef", null)
+	ref != null
 }
 
 # PromptTemplate

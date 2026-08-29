@@ -1060,3 +1060,70 @@ deny contains corpus.violation("corpus.toolchain.requirement-unmet", document, m
 	not toolchain_id in provided_toolchain_ids(realm)
 	message := sprintf("spec.requiredExecutionToolchainRefs: no same-Realm WorkerSubstrate provides ExecutionToolchain %q", [toolchain_id])
 }
+
+# EventIngress / EVENT ProcessStartTrigger (event-ingress-contract-foundations). references.rego's
+# generic kind-match/kind-id/same-realm rules already refuse a malformed, unresolved or cross-Realm
+# verificationSecretBindingRef/processSpecRef; the rules below cover what only this kind's own shape,
+# its ProcessSpec pairing, and the process graph itself can say.
+
+deny contains corpus.violation("corpus.event-ingress.schema-required", document, "spec.schemaBinding.schemaDigest must be set -- an event ingress with no pinned schema cannot bound untrusted content") if {
+	some document in corpus.documents
+	document.kind == "EventIngress"
+	object.get(object.get(corpus.spec(document), "schemaBinding", {}), "schemaDigest", "") == ""
+}
+
+deny contains corpus.violation("corpus.event-ingress.target-must-be-event", document, message) if {
+	some document in corpus.documents
+	document.kind == "EventIngress"
+	target_id := corpus.ref_id(object.get(corpus.spec(document), "processSpecRef", null))
+	target := corpus.document_by_kind_id("ProcessSpec", target_id)
+	object.get(corpus.spec(target), "startTrigger", "") != "EVENT"
+	message := sprintf("spec.processSpecRef: ProcessSpec %q does not declare startTrigger EVENT", [target_id])
+}
+
+# Every ProcessSpec id an active, same-Realm EventIngress declares as its target.
+event_started_ids(realm) := {corpus.ref_id(object.get(corpus.spec(document), "processSpecRef", null)) |
+	some document in corpus.documents
+	document.kind == "EventIngress"
+	corpus.spec(document).active == true
+	corpus.owner_realm(document) == realm
+}
+
+deny contains corpus.violation("corpus.event-ingress.inactive-target", document, "spec.startTrigger EVENT requires at least one active, same-Realm EventIngress naming this ProcessSpec as its target") if {
+	some document in processes
+	corpus.spec(document).startTrigger == "EVENT"
+	realm := corpus.owner_realm(document)
+	not corpus.id(document) in event_started_ids(realm)
+}
+
+# The first SERVICE step reachable from START in an EVENT-started ProcessSpec must be an observation
+# (semanticStage OBSERVATION) or an attention publication (capability attention.item.publish) before
+# any other effect -- untrusted event content earns no more trust than that on its own.
+event_first_effect_observed(step) if step.semanticStage == "OBSERVATION"
+
+event_first_effect_observed(step) if step.capabilityRef == "attention.item.publish"
+
+event_advance(step, _) := 1 if event_first_effect_observed(step)
+
+event_advance(step, state) := state if not event_first_effect_observed(step)
+
+event_secured_edges(document) := {state_node(source.id, state): {state_node(flow.to, event_advance(step_by_id(document, flow.to), state)) |
+	some flow in flows(document)
+	flow.from == source.id
+} |
+	some source in steps(document)
+	some state in {0, 1}
+}
+
+event_secured_reachable(document) := graph.reachable(event_secured_edges(document), {state_node(start_id(document), 0)})
+
+deny contains corpus.violation("corpus.process.event-first-effect", document, message) if {
+	some document in processes
+	corpus.spec(document).startTrigger == "EVENT"
+	some step in steps(document)
+	step.kind == "SERVICE"
+	capability := corpus.capability_by_name(step.capabilityRef)
+	capability.producesExternalEffect == true
+	state_node(step.id, 0) in event_secured_reachable(document)
+	message := sprintf("event-triggered process reaches effect %q before an observation or attention publication", [step.id])
+}

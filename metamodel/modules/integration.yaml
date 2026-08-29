@@ -3503,3 +3503,81 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  EventIngress:
+    description: Generic, Realm-owned Git contract declaring that an untrusted external event may
+      start an exact ProcessSpec (event-ingress-contract-foundations). Carries a schema reference,
+      a verification binding, a bounded replay window and a retention boundary. Names no provider,
+      channel, Realm instance or use case -- the concrete transport (a webhook, an email inbox, a
+      device signal) is declared only by an instance; this schema stays generic. Grants no
+      connector authority, custodies no credential, and creates no grant, approval or connector
+      activation by itself -- Rego (execution.rego) additionally requires the target ProcessSpec's
+      own startTrigger to be EVENT and its first effect to be an observation or an attention
+      publication.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: EventIngress
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: EventIngressSpec
+        required: true
+        inlined: true
+  EventIngressSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      active:
+        range: boolean
+        required: true
+      schemaBinding:
+        range: SchemaBinding
+        required: true
+        inlined: true
+        description: Identifies the exact LinkML class and pinned schema digest the admitted event
+          payload must validate against.
+      verificationSecretBindingRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: Same-Realm SecretBinding custodying the key material used to verify the
+          event's authenticity; this contract names no verification method or transport.
+      replayWindow:
+        range: Duration
+        required: true
+        description: Bound on how long a deduplicated event ID must be recognized and a repeat
+          refused as a replay.
+      retentionBoundary:
+        range: Duration
+        required: true
+        description: Bound on how long the admitted event's signed receipt is retained before
+          purge.
+      processSpecRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: The exact ProcessSpec this ingress starts; must resolve to a same-Realm
+          ProcessSpec whose own startTrigger is EVENT (Rego).
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

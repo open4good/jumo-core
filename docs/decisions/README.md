@@ -39,3 +39,4 @@ audience: PROJECT_SCOPED
 | [ADR-0058](ADR-0058-governed-knowledge-retrieval.md) | Governed knowledge retrieval contracts | — | `KnowledgeCorpus`, `KnowledgeIndexProfile`, `KnowledgeSource`, `Project` |
 | [ADR-0059](ADR-0059-monetary-risk-policy.md) | Generic monetary risk policy for external effects | 1, 2, 8, 14, 15 | `MonetaryRiskPolicy` |
 | [ADR-0060](ADR-0060-execution-toolchain-contract.md) | Execution toolchain contract | 1, 5, 7, 14, 15 | `ExecutionToolchain`, `SecretBinding`, `WorkerRequirementProfile`, `WorkerSubstrate` |
+| [ADR-0061](ADR-0061-event-ingress-contract.md) | Event ingress contract | 1, 2, 14, 15 | `EventIngress`, `ProcessSpec`, `SecretBinding`, `WorkOrder` |

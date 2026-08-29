@@ -115,6 +115,12 @@ spec:
     pluralEn: 'Engagement Methods'
     pluralFr: 'Méthodes d''engagement'
     directory: engagement-methods
+  - canonical: EventIngress
+    displayEn: 'Event Ingress'
+    displayFr: 'Entrée d''événement'
+    pluralEn: 'Event Ingresses'
+    pluralFr: 'Entrées d''événement'
+    directory: event-ingresses
   - canonical: EvidenceProfile
     displayEn: 'Evidence Profile'
     displayFr: 'Profil de preuve'

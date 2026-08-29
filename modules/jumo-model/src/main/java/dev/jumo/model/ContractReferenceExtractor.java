@@ -60,6 +60,10 @@ public final class ContractReferenceExtractor {
             extractFromEngagementMethod(m, refs);
             return refs;
         }
+        if (model instanceof EventIngress m) {
+            extractFromEventIngress(m, refs);
+            return refs;
+        }
         if (model instanceof ExecutionCell m) {
             extractFromExecutionCell(m, refs);
             return refs;
@@ -572,6 +576,19 @@ public final class ContractReferenceExtractor {
         if (obj == null) return;
         if (obj.promptTemplateRef() != null) {
             refs.add(new OutgoingReference("promptTemplateRef", obj.promptTemplateRef()));
+        }
+    }
+    public static void extractFromEventIngress(EventIngress obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromEventIngressSpec(obj.spec(), refs);
+    }
+    public static void extractFromEventIngressSpec(EventIngressSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.verificationSecretBindingRef() != null) {
+            refs.add(new OutgoingReference("verificationSecretBindingRef", obj.verificationSecretBindingRef()));
+        }
+        if (obj.processSpecRef() != null) {
+            refs.add(new OutgoingReference("processSpecRef", obj.processSpecRef()));
         }
     }
     public static void extractFromExecutionCell(ExecutionCell obj, List<OutgoingReference> refs) {

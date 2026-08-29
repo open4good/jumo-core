@@ -670,3 +670,209 @@ test_worker_requirement_profile_resolves_a_portable_toolchain_solely_through_typ
 	not has_rule(violations, "corpus.toolchain.artifact-pin")
 	not has_rule(violations, "corpus.toolchain.tools-nonempty")
 }
+
+# EventIngress / EVENT ProcessStartTrigger (event-ingress-contract-foundations)
+
+secret_binding_ref(id) := {"kind": "SecretBinding", "namespace": "dev.jumo.test", "id": id}
+
+process_spec_ref(id) := {"kind": "ProcessSpec", "namespace": "dev.jumo.test", "id": id}
+
+valid_schema_digest := "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+
+event_ingress(id, realm, target_id, active, digest) := document(
+	sprintf(".jumo/event-ingresses/%s.yml", [id]),
+	"EventIngress",
+	id,
+	{
+		"ownerRealm": realm,
+		"active": active,
+		"schemaBinding": {
+			"modelClass": "AttentionItem",
+			"schemaVersion": "1.0.0",
+			"schemaId": "AttentionItem",
+			"schemaDigest": digest,
+			"profile": "DRAFT_2020_12",
+		},
+		"verificationSecretBindingRef": secret_binding_ref("verify-key"),
+		"replayWindow": "PT1H",
+		"retentionBoundary": "P30D",
+		"processSpecRef": process_spec_ref(target_id),
+	},
+)
+
+event_capabilities := document(
+	".jumo/capabilities/event.yml",
+	"ActionCapabilitySet",
+	"event",
+	{"capabilities": [
+		{"name": "event.capture.normalize", "riskTier": "LOW"},
+		{"name": "event.test.effect", "producesExternalEffect": true},
+		{"name": "attention.item.publish", "riskTier": "LOW"},
+	]},
+)
+
+secret_binding := document(".jumo/secrets/verify-key.yml", "SecretBinding", "verify-key", {"ownerRealm": "home"})
+
+# start -> observe (semanticStage OBSERVATION) -> effect (producesExternalEffect) -> end
+event_process_observed_first := document(
+	".jumo/processes/observed-first.yml",
+	"ProcessSpec",
+	"observed-first",
+	{
+		"ownerRealm": "home",
+		"startTrigger": "EVENT",
+		"inputType": "AttentionItem",
+		"outputType": "AttentionItem",
+		"steps": [
+			{"id": "start", "kind": "START"},
+			{"id": "observe", "kind": "SERVICE", "capabilityRef": "event.capture.normalize", "semanticStage": "OBSERVATION"},
+			{"id": "effect", "kind": "SERVICE", "capabilityRef": "event.test.effect"},
+			{"id": "end", "kind": "END", "terminalState": "COMPLETED"},
+		],
+		"flows": [
+			{"id": "a", "from": "start", "to": "observe", "payloadType": "AttentionItem"},
+			{"id": "b", "from": "observe", "to": "effect", "payloadType": "AttentionItem"},
+			{"id": "c", "from": "effect", "to": "end", "payloadType": "AttentionItem"},
+		],
+	},
+)
+
+# start -> effect (producesExternalEffect, no prior observation) -> end
+event_process_unobserved_effect := document(
+	".jumo/processes/unobserved-effect.yml",
+	"ProcessSpec",
+	"unobserved-effect",
+	{
+		"ownerRealm": "home",
+		"startTrigger": "EVENT",
+		"inputType": "AttentionItem",
+		"outputType": "AttentionItem",
+		"steps": [
+			{"id": "start", "kind": "START"},
+			{"id": "effect", "kind": "SERVICE", "capabilityRef": "event.test.effect"},
+			{"id": "end", "kind": "END", "terminalState": "COMPLETED"},
+		],
+		"flows": [
+			{"id": "a", "from": "start", "to": "effect", "payloadType": "AttentionItem"},
+			{"id": "b", "from": "effect", "to": "end", "payloadType": "AttentionItem"},
+		],
+	},
+)
+
+# start -> publish (attention.item.publish, no semanticStage) -> effect (producesExternalEffect) -> end --
+# attention publication alone, without an OBSERVATION semanticStage, still gates the later effect.
+event_process_attention_first := document(
+	".jumo/processes/attention-first.yml",
+	"ProcessSpec",
+	"attention-first",
+	{
+		"ownerRealm": "home",
+		"startTrigger": "EVENT",
+		"inputType": "AttentionItem",
+		"outputType": "AttentionItem",
+		"steps": [
+			{"id": "start", "kind": "START"},
+			{"id": "publish", "kind": "SERVICE", "capabilityRef": "attention.item.publish"},
+			{"id": "effect", "kind": "SERVICE", "capabilityRef": "event.test.effect"},
+			{"id": "end", "kind": "END", "terminalState": "COMPLETED"},
+		],
+		"flows": [
+			{"id": "a", "from": "start", "to": "publish", "payloadType": "AttentionItem"},
+			{"id": "b", "from": "publish", "to": "effect", "payloadType": "AttentionItem"},
+			{"id": "c", "from": "effect", "to": "end", "payloadType": "AttentionItem"},
+		],
+	},
+)
+
+manual_process := document(
+	".jumo/processes/manual.yml",
+	"ProcessSpec",
+	"manual",
+	{
+		"startTrigger": "MANUAL",
+		"inputType": "AttentionItem",
+		"outputType": "AttentionItem",
+		"steps": [
+			{"id": "start", "kind": "START"},
+			{"id": "end", "kind": "END", "terminalState": "COMPLETED"},
+		],
+		"flows": [{"id": "a", "from": "start", "to": "end", "payloadType": "AttentionItem"}],
+	},
+)
+
+test_event_ingress_with_missing_schema_digest_rejected if {
+	ingress := event_ingress("ingress-a", "home", "observed-first", true, "")
+	violations := data.jumo.corpus.deny with input as array.flatten([
+		execution_base,
+		[event_capabilities, secret_binding, event_process_observed_first],
+		[ingress],
+	])
+	has_rule(violations, "corpus.event-ingress.schema-required")
+}
+
+test_event_ingress_targeting_a_manual_process_rejected if {
+	ingress := event_ingress("ingress-a", "home", "manual", true, valid_schema_digest)
+	violations := data.jumo.corpus.deny with input as array.flatten([
+		execution_base,
+		[event_capabilities, secret_binding, manual_process],
+		[ingress],
+	])
+	has_rule(violations, "corpus.event-ingress.target-must-be-event")
+}
+
+test_event_started_process_with_no_active_ingress_rejected if {
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [event_capabilities, event_process_observed_first])
+	has_rule(violations, "corpus.event-ingress.inactive-target")
+}
+
+test_event_started_process_with_only_an_inactive_ingress_rejected if {
+	ingress := event_ingress("ingress-a", "home", "observed-first", false, valid_schema_digest)
+	violations := data.jumo.corpus.deny with input as array.flatten([
+		execution_base,
+		[event_capabilities, secret_binding, event_process_observed_first],
+		[ingress],
+	])
+	has_rule(violations, "corpus.event-ingress.inactive-target")
+}
+
+test_event_ingress_verification_secret_binding_in_another_realm_rejected if {
+	other_realm_secret := document(".jumo/secrets/verify-key.yml", "SecretBinding", "verify-key", {"ownerRealm": "other"})
+	ingress := event_ingress("ingress-a", "home", "observed-first", true, valid_schema_digest)
+	violations := data.jumo.corpus.deny with input as array.flatten([
+		execution_base,
+		[event_capabilities, other_realm_secret, event_process_observed_first],
+		[ingress],
+	])
+	has_rule(violations, "corpus.reference.same-realm")
+}
+
+test_event_triggered_process_reaching_an_effect_before_observation_rejected if {
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [event_capabilities, event_process_unobserved_effect])
+	has_rule(violations, "corpus.process.event-first-effect")
+}
+
+test_event_triggered_process_observing_before_effect_accepted if {
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [event_capabilities, event_process_observed_first])
+	not has_rule(violations, "corpus.process.event-first-effect")
+}
+
+test_event_triggered_process_publishing_attention_first_accepted if {
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [event_capabilities, event_process_attention_first])
+	not has_rule(violations, "corpus.process.event-first-effect")
+}
+
+test_event_ingress_fully_declared_and_bound_accepted if {
+	ingress := event_ingress("ingress-a", "home", "observed-first", true, valid_schema_digest)
+	violations := data.jumo.corpus.deny with input as array.flatten([
+		execution_base,
+		[event_capabilities, secret_binding, event_process_observed_first],
+		[ingress],
+	])
+	not has_rule(violations, "corpus.event-ingress.schema-required")
+	not has_rule(violations, "corpus.event-ingress.target-must-be-event")
+	not has_rule(violations, "corpus.event-ingress.inactive-target")
+	not has_rule(violations, "corpus.reference.kind-match")
+	not has_rule(violations, "corpus.reference.kind-id")
+	not has_rule(violations, "corpus.reference.same-realm")
+	not has_rule(violations, "corpus.process.event-first-effect")
+}

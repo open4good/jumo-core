@@ -37,3 +37,4 @@ audience: PROJECT_SCOPED
 | [ADR-0056](ADR-0056-recovery-gated-root-system-effects.md) | Recovery-gated root system effects on user-provided machines | — | — |
 | [ADR-0057](ADR-0057-automatic-forge-projection.md) | Automatic Forge projection after deterministic validation | — | — |
 | [ADR-0058](ADR-0058-governed-knowledge-retrieval.md) | Governed knowledge retrieval contracts | — | `KnowledgeCorpus`, `KnowledgeIndexProfile`, `KnowledgeSource`, `Project` |
+| [ADR-0059](ADR-0059-monetary-risk-policy.md) | Generic monetary risk policy for external effects | 1, 2, 8, 14, 15 | `MonetaryRiskPolicy` |

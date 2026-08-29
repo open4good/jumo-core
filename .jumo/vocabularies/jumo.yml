@@ -396,6 +396,12 @@ spec:
     pluralEn: 'Resource Budgets'
     pluralFr: 'Budgets de ressources'
     directory: budgets
+  - canonical: MonetaryRiskPolicy
+    displayEn: 'Monetary Risk Policy'
+    displayFr: 'Politique de risque monétaire'
+    pluralEn: 'Monetary Risk Policies'
+    pluralFr: 'Politiques de risque monétaire'
+    directory: monetary-risk-policies
   - canonical: RoleAssignment
     displayEn: 'Role Assignment'
     displayFr: 'Attribution de rôle'

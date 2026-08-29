@@ -88,6 +88,16 @@ enums:
       READ_ONLY: {}
       EXTERNAL_EFFECT: {}
       SYSTEM_EFFECT: {}
+  MonetaryRiskPolicyLifecycle:
+    permissible_values:
+      DECLARED: {}
+      ENABLED: {}
+      SUSPENDED: {}
+      RETIRED: {}
+  MonetaryRiskPolicyScope:
+    description: Monetary limits are scoped to their declaring Realm only; no broader scope is available in v1.
+    permissible_values:
+      REALM_ONLY: {}
   RemoteMcpAppraisalVerdict:
     permissible_values:
       ACCEPTED: {}
@@ -1144,6 +1154,13 @@ classes:
       reconciliation:
         range: OperationReconciliation
         required: true
+      monetaryAmountInput:
+        range: Identifier
+        description: Typed input field carrying the monetary amount. Its presence declares this as a monetary external operation.
+      monetaryCurrency:
+        range: string
+        pattern: '^[A-Z]{3}$'
+        description: ISO 4217 currency of monetaryAmountInput. Required by Rego whenever monetaryAmountInput is declared.
       inputSchemaRef:
         range: string
         pattern: ^.{3,}$
@@ -3229,6 +3246,37 @@ classes:
         required: true
     annotations:
       jumo.state_authority: POSTGRES
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MonetaryRiskPolicy:
+    description: Realm-scoped monetary limits for declared external operations. The contract declares limits only; recognized reservations and reconciled consumption remain outside Git.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion: {range: string, equals_string: jumo.dev/v1, required: true}
+      kind: {range: string, equals_string: MonetaryRiskPolicy, required: true}
+      metadata: {range: Metadata, required: true, inlined: true}
+      spec: {range: MonetaryRiskPolicySpec, required: true, inlined: true}
+  MonetaryRiskPolicySpec:
+    attributes:
+      ownerRealm: {range: Identifier, required: true}
+      scope: {range: MonetaryRiskPolicyScope, required: true}
+      currency: {range: string, required: true, pattern: '^[A-Z]{3}$'}
+      window: {range: Duration, required: true}
+      perEffectLimit: {range: float, required: true, minimum_value: 0}
+      cumulativeLimit: {range: float, required: true, minimum_value: 0}
+      lifecycle: {range: MonetaryRiskPolicyLifecycle, required: true}
+    annotations:
+      jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
       jumo.audience: REALM_PRIVATE
       jumo.sensitivity: INTERNAL

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record McpBundleOperation(String id, String exposedName, String upstreamToolName, boolean untrustedOutput, String agentGuidance, String capabilityRef, String description, OperationEffect effect, OperationIdempotency idempotency, OperationReconciliation reconciliation, String inputSchemaRef, String outputSchemaRef, List<ContractReference> secretBindingRefs, String recoveryPlanDigest, String killSwitchRef)  {
+public record McpBundleOperation(String id, String exposedName, String upstreamToolName, boolean untrustedOutput, String agentGuidance, String capabilityRef, String description, OperationEffect effect, OperationIdempotency idempotency, OperationReconciliation reconciliation, String monetaryAmountInput, String monetaryCurrency, String inputSchemaRef, String outputSchemaRef, List<ContractReference> secretBindingRefs, String recoveryPlanDigest, String killSwitchRef)  {
 
     public static Builder builder() {
         return new Builder();
@@ -24,6 +24,8 @@ public record McpBundleOperation(String id, String exposedName, String upstreamT
         private OperationEffect effect = null;
         private OperationIdempotency idempotency = null;
         private OperationReconciliation reconciliation = null;
+        private String monetaryAmountInput = "";
+        private String monetaryCurrency = "";
         private String inputSchemaRef = "";
         private String outputSchemaRef = "";
         private List<ContractReference> secretBindingRefs = List.of();
@@ -81,6 +83,16 @@ public record McpBundleOperation(String id, String exposedName, String upstreamT
             return this;
         }
 
+        public Builder monetaryAmountInput(String monetaryAmountInput) {
+            this.monetaryAmountInput = Objects.requireNonNull(monetaryAmountInput);
+            return this;
+        }
+
+        public Builder monetaryCurrency(String monetaryCurrency) {
+            this.monetaryCurrency = Objects.requireNonNull(monetaryCurrency);
+            return this;
+        }
+
         public Builder inputSchemaRef(String inputSchemaRef) {
             this.inputSchemaRef = Objects.requireNonNull(inputSchemaRef);
             return this;
@@ -107,7 +119,7 @@ public record McpBundleOperation(String id, String exposedName, String upstreamT
         }
 
     public McpBundleOperation build() {
-            return new McpBundleOperation(id, exposedName, upstreamToolName, untrustedOutput, agentGuidance, capabilityRef, description, effect, idempotency, reconciliation, inputSchemaRef, outputSchemaRef, secretBindingRefs, recoveryPlanDigest, killSwitchRef);
+            return new McpBundleOperation(id, exposedName, upstreamToolName, untrustedOutput, agentGuidance, capabilityRef, description, effect, idempotency, reconciliation, monetaryAmountInput, monetaryCurrency, inputSchemaRef, outputSchemaRef, secretBindingRefs, recoveryPlanDigest, killSwitchRef);
         }
     }
 }

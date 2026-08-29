@@ -30,6 +30,7 @@ realm_only_kinds := {
 	"KitReleaseCertification",
 	"KnowledgeCorpus",
 	"KnowledgeSource",
+	"MonetaryRiskPolicy",
 	"McpRegistrySourceBinding",
 	"PersonalSpace",
 	"Principal",

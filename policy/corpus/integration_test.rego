@@ -61,6 +61,51 @@ test_bundle_external_effect_requires_idempotency_and_reconciliation if {
 	has_rule(violations, "corpus.bundle.external-reconciliation")
 }
 
+test_monetary_operations_require_a_same_realm_active_policy_and_consistent_limits if {
+	other_realm := document(".jumo/realms/other.yml", "RealmTemplate", "other", {})
+	wrong_scope := document(".jumo/monetary-risk-policies/scope.yml", "MonetaryRiskPolicy", "scope", {
+		"ownerRealm": "home", "scope": "PROJECT", "currency": "EUR", "window": "P1D",
+		"perEffectLimit": 0, "cumulativeLimit": -1, "lifecycle": "ENABLED",
+	})
+	inconsistent := document(".jumo/monetary-risk-policies/inconsistent.yml", "MonetaryRiskPolicy", "inconsistent", {
+		"ownerRealm": "home", "scope": "REALM_ONLY", "currency": "EUR", "window": "P1D",
+		"perEffectLimit": 20, "cumulativeLimit": 10, "lifecycle": "ENABLED",
+	})
+	other_policy := document(".jumo/monetary-risk-policies/other.yml", "MonetaryRiskPolicy", "other", {
+		"ownerRealm": "other", "scope": "REALM_ONLY", "currency": "USD", "window": "P1D",
+		"perEffectLimit": 10, "cumulativeLimit": 100, "lifecycle": "ENABLED",
+	})
+	bundle := document(".jumo/bundles/money.yml", "McpBundle", "money", {
+		"ownerRealm": "home", "semanticProfile": {"operations": [
+			{"id": "currency-missing", "effect": "EXTERNAL_EFFECT", "monetaryAmountInput": "amount"},
+			{"id": "wrong-effect", "effect": "READ_ONLY", "monetaryAmountInput": "amount", "monetaryCurrency": "EUR"},
+			{"id": "no-policy", "effect": "EXTERNAL_EFFECT", "monetaryAmountInput": "amount", "monetaryCurrency": "USD"},
+		]},
+	})
+	violations := data.jumo.corpus.deny with input as [integration_base[0], other_realm, wrong_scope, inconsistent, other_policy, bundle]
+	every rule in {
+		"corpus.monetary-risk.scope", "corpus.monetary-risk.limits",
+		"corpus.monetary-risk.operation-declaration", "corpus.monetary-risk.active-policy",
+	} {
+		has_rule(violations, rule)
+	}
+}
+
+test_monetary_operation_accepts_matching_enabled_realm_policy if {
+	policy := document(".jumo/monetary-risk-policies/eur.yml", "MonetaryRiskPolicy", "eur", {
+		"ownerRealm": "home", "scope": "REALM_ONLY", "currency": "EUR", "window": "P1D",
+		"perEffectLimit": 10, "cumulativeLimit": 100, "lifecycle": "ENABLED",
+	})
+	bundle := document(".jumo/bundles/money.yml", "McpBundle", "money", {
+		"ownerRealm": "home", "semanticProfile": {"operations": [{
+			"id": "pay", "effect": "EXTERNAL_EFFECT", "monetaryAmountInput": "amount", "monetaryCurrency": "EUR",
+		}]},
+	})
+	violations := data.jumo.corpus.deny with input as [integration_base[0], policy, bundle]
+	not has_rule(violations, "corpus.monetary-risk.active-policy")
+	not has_rule(violations, "corpus.monetary-risk.operation-declaration")
+}
+
 test_connector_appraisal_requires_independent_verification if {
 	appraisal := document(
 		".jumo/appraisals/bad.yml",

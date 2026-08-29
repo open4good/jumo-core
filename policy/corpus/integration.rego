@@ -13,6 +13,16 @@ external_effect_capability(name) if {
 	capability.producesExternalEffect == true
 }
 
+active_monetary_risk_policy(realm, currency) if {
+	some policy in corpus.documents
+	policy.kind == "MonetaryRiskPolicy"
+	spec := corpus.spec(policy)
+	spec.ownerRealm == realm
+	spec.scope == "REALM_ONLY"
+	spec.currency == currency
+	spec.lifecycle == "ENABLED"
+}
+
 connector_appraisal(bundle_id) := document if {
 	some document in corpus.documents
 	document.kind == "ConnectorAppraisal"
@@ -337,6 +347,70 @@ deny contains corpus.violation("corpus.bundle.external-reconciliation", document
 	operation.effect == "EXTERNAL_EFFECT"
 	object.get(operation, "reconciliation", "") != "REQUIRED"
 	message := sprintf("spec.semanticProfile.operations[%d]: external effects require reconciliation", [index])
+}
+
+deny contains corpus.violation("corpus.monetary-risk.scope", document, message) if {
+	some document in corpus.documents
+	document.kind == "MonetaryRiskPolicy"
+	corpus.spec(document).scope != "REALM_ONLY"
+	message := "spec.scope: MonetaryRiskPolicy may govern its declaring Realm only"
+}
+
+deny contains corpus.violation("corpus.monetary-risk.limits", document, message) if {
+	some document in corpus.documents
+	document.kind == "MonetaryRiskPolicy"
+	spec := corpus.spec(document)
+	per_effect := object.get(spec, "perEffectLimit", 0)
+	per_effect <= 0
+	message := "spec.perEffectLimit: monetary limits must be positive"
+}
+
+deny contains corpus.violation("corpus.monetary-risk.limits", document, message) if {
+	some document in corpus.documents
+	document.kind == "MonetaryRiskPolicy"
+	spec := corpus.spec(document)
+	cumulative := object.get(spec, "cumulativeLimit", 0)
+	cumulative <= 0
+	message := "spec.cumulativeLimit: monetary limits must be positive"
+}
+
+deny contains corpus.violation("corpus.monetary-risk.limits", document, message) if {
+	some document in corpus.documents
+	document.kind == "MonetaryRiskPolicy"
+	spec := corpus.spec(document)
+	spec.perEffectLimit > spec.cumulativeLimit
+	message := "spec.perEffectLimit: may not exceed cumulativeLimit"
+}
+
+deny contains corpus.violation("corpus.monetary-risk.operation-declaration", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpBundle"
+	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
+	amount_input := object.get(operation, "monetaryAmountInput", "")
+	amount_input != ""
+	operation.effect != "EXTERNAL_EFFECT"
+	message := sprintf("spec.semanticProfile.operations[%d].monetaryAmountInput: monetary operations must be EXTERNAL_EFFECT", [index])
+}
+
+deny contains corpus.violation("corpus.monetary-risk.operation-declaration", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpBundle"
+	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
+	amount_input := object.get(operation, "monetaryAmountInput", "")
+	amount_input != ""
+	object.get(operation, "monetaryCurrency", "") == ""
+	message := sprintf("spec.semanticProfile.operations[%d].monetaryCurrency: a monetary amount requires a currency", [index])
+}
+
+deny contains corpus.violation("corpus.monetary-risk.active-policy", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpBundle"
+	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
+	object.get(operation, "monetaryAmountInput", "") != ""
+	currency := object.get(operation, "monetaryCurrency", "")
+	currency != ""
+	not active_monetary_risk_policy(corpus.owner_realm(document), currency)
+	message := sprintf("spec.semanticProfile.operations[%d]: declared monetary operation has no compatible active MonetaryRiskPolicy", [index])
 }
 
 deny contains corpus.violation("corpus.bundle.system-effect-recovery", document, message) if {

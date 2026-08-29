@@ -109,6 +109,7 @@ owner_realm_kind(kind) if {
 		"ImprovementLoop",
 		"KitBinding",
 		"McpBundle",
+		"MonetaryRiskPolicy",
 		"PersonalSpace",
 		"PrincipalIdentityBinding",
 		"Project",

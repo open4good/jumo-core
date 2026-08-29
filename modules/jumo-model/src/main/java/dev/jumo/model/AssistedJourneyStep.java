@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * stepKind/projectionRef/processRef are additive: the model-driven rendering engine that consumes them does not exist yet, so requiredFields stays required and load-bearing -- JourneyService (control-plane) reads it server-side and apps/web/components/journey/JourneyRunner.vue reads it client-side. requiredFields is retired once every AssistedJourney step declares projectionRef/processRef and the renderer that replaces JourneyRunner.vue exists; until then both describe the same steps.
  */
-public record AssistedJourneyStep(String id, String name, String description, String personaNarration, AssistedJourneyStepKind stepKind, ContractReference projectionSpecRef, ContractReference processSpecRef, ContractReference promptTemplateRef, ContractReference subAssistedJourneyRef, ContractReference verificationSpecRef, List<Obligation> requiredObligations, List<String> dependsOn, Boolean parallelizable, String image, JourneyPresentation presentationOverride, String descriptionI18nKey, String narrationI18nKey, List<AssistedJourneyRequiredField> requiredFields)  {
+public record AssistedJourneyStep(String id, String name, String description, String personaNarration, AssistedJourneyStepKind stepKind, ContractReference projectionSpecRef, ContractReference processSpecRef, ContractReference promptTemplateRef, AssistedJourneyDialogueBinding dialogueBinding, ContractReference subAssistedJourneyRef, ContractReference verificationSpecRef, List<Obligation> requiredObligations, List<String> dependsOn, Boolean parallelizable, String image, JourneyPresentation presentationOverride, String descriptionI18nKey, String narrationI18nKey, List<AssistedJourneyRequiredField> requiredFields)  {
 
     public static Builder builder() {
         return new Builder();
@@ -26,6 +26,7 @@ public record AssistedJourneyStep(String id, String name, String description, St
         private ContractReference projectionSpecRef = null;
         private ContractReference processSpecRef = null;
         private ContractReference promptTemplateRef = null;
+        private AssistedJourneyDialogueBinding dialogueBinding = null;
         private ContractReference subAssistedJourneyRef = null;
         private ContractReference verificationSpecRef = null;
         private List<Obligation> requiredObligations = List.of();
@@ -75,6 +76,11 @@ public record AssistedJourneyStep(String id, String name, String description, St
 
         public Builder promptTemplateRef(ContractReference promptTemplateRef) {
             this.promptTemplateRef = Objects.requireNonNull(promptTemplateRef);
+            return this;
+        }
+
+        public Builder dialogueBinding(AssistedJourneyDialogueBinding dialogueBinding) {
+            this.dialogueBinding = Objects.requireNonNull(dialogueBinding);
             return this;
         }
 
@@ -129,7 +135,7 @@ public record AssistedJourneyStep(String id, String name, String description, St
         }
 
     public AssistedJourneyStep build() {
-            return new AssistedJourneyStep(id, name, description, personaNarration, stepKind, projectionSpecRef, processSpecRef, promptTemplateRef, subAssistedJourneyRef, verificationSpecRef, requiredObligations, dependsOn, parallelizable, image, presentationOverride, descriptionI18nKey, narrationI18nKey, requiredFields);
+            return new AssistedJourneyStep(id, name, description, personaNarration, stepKind, projectionSpecRef, processSpecRef, promptTemplateRef, dialogueBinding, subAssistedJourneyRef, verificationSpecRef, requiredObligations, dependsOn, parallelizable, image, presentationOverride, descriptionI18nKey, narrationI18nKey, requiredFields);
         }
     }
 }

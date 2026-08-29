@@ -1736,6 +1736,13 @@ classes:
         range: ContractReference
         inlined: true
         description: The PromptTemplate this step uses when stepKind is DIALOGUE_COLLECT.
+      dialogueBinding:
+        range: AssistedJourneyDialogueBinding
+        inlined: true
+        description: Present only when stepKind is DIALOGUE_COLLECT (Rego). Declares, by JSON Pointer
+          into the structured reply promptTemplateRef's own PromptOutput.schemaRef already validates,
+          which collected fields and fan-out collections that reply populates -- the runtime reads
+          only this declaration, never a journey id, contract instance id, or target-kind switch.
       subAssistedJourneyRef:
         range: ContractReference
         inlined: true
@@ -1802,6 +1809,66 @@ classes:
         pattern: ^[a-z][a-zA-Z0-9]*$
         description: Resolved the same way a ProjectionField's own i18nKey is, so a step rendered by
           ProjectionRenderer and the same step recapped after completion show the identical label.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyDialogueBinding:
+    description: The declared, and only, path from a DIALOGUE_COLLECT step's schema-validated
+      structured reply into journey_run.collected_fields. Absent means the reply narrates but
+      collects nothing, exactly like a DIALOGUE_COLLECT step declared without one today.
+    attributes:
+      fieldBindings:
+        range: AssistedJourneyDialogueFieldBinding
+        multivalued: true
+        inlined_as_list: true
+        description: One scalar collected field per declared JSON Pointer into the reply.
+      fanOutBindings:
+        range: AssistedJourneyDialogueFanOutBinding
+        multivalued: true
+        inlined_as_list: true
+        description: One fan-out collected field per declared JSON Pointer to an array in the
+          reply, feeding an emissionBundle item's own fanOutCollection unchanged.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyDialogueFieldBinding:
+    attributes:
+      sourcePath:
+        range: string
+        required: true
+        description: RFC 6901 JSON Pointer into the structured reply, resolved against the reply's
+          own PromptOutput.schemaRef-validated shape, never a journey- or instance-specific path.
+      collectedField:
+        range: string
+        required: true
+        description: The journey_run.collected_fields key this pointer's value is written under.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AssistedJourneyDialogueFanOutBinding:
+    attributes:
+      sourcePath:
+        range: string
+        required: true
+        description: RFC 6901 JSON Pointer to a JSON array in the structured reply; each element
+          becomes one entry of the fan-out collected field, unchanged and unrenamed.
+      collectedField:
+        range: string
+        required: true
+        description: The journey_run.collected_fields key, matching some emissionBundle item's own
+          fanOutCollection, this array is written under.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

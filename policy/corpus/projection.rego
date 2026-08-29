@@ -350,6 +350,31 @@ deny contains corpus.violation("corpus.journey.projection-ref", document, messag
 	message := sprintf("spec.steps[%d]: stepKind DIALOGUE_COLLECT requires promptTemplateRef", [step_index])
 }
 
+# The runtime (JourneyService.applyDialogueCollectBinding) reads dialogueBinding only for a
+# DIALOGUE_COLLECT step; a declaration on any other stepKind would be dead, unreviewed vocabulary.
+deny contains corpus.violation("corpus.journey.dialogue-binding-step", document, message) if {
+	some document in corpus.documents
+	document.kind == "AssistedJourney"
+	some step_index, step in object.get(corpus.spec(document), "steps", [])
+	object.get(step, "dialogueBinding", null) != null
+	step.stepKind != "DIALOGUE_COLLECT"
+	message := sprintf("spec.steps[%d]: dialogueBinding requires stepKind DIALOGUE_COLLECT", [step_index])
+}
+
+deny contains corpus.violation("corpus.journey.dialogue-binding-empty", document, message) if {
+	some document in corpus.documents
+	document.kind == "AssistedJourney"
+	some step_index, step in object.get(corpus.spec(document), "steps", [])
+	binding := object.get(step, "dialogueBinding", null)
+	binding != null
+	count(object.get(binding, "fieldBindings", [])) == 0
+	count(object.get(binding, "fanOutBindings", [])) == 0
+	message := sprintf(
+		"spec.steps[%d].dialogueBinding: declared with no fieldBindings or fanOutBindings; omit it or bind at least one",
+		[step_index],
+	)
+}
+
 # subAssistedJourneyRef resolving to a real AssistedJourney (corpus.reference.kind-id, references.rego)
 # bounds the shape of the delegation graph but not its shape over time -- a step could still
 # delegate back to an ancestor. Rego forbids recursive rules (termination guarantee), so

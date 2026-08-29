@@ -541,6 +541,49 @@ test_accepts_dialogue_collect_step_with_prompt_ref if {
 	not has_rule(violations, "corpus.journey.projection-ref")
 }
 
+test_rejects_dialogue_binding_on_a_non_dialogue_collect_step if {
+	bad := document(".jumo/journeys/bad.yml", "AssistedJourney", "bad", {
+		"journeyId": "bad", "name": "Bad", "budgetRef": "interactive",
+		"emitsCapability": "contract.change.propose",
+		"steps": [{
+			"id": "s", "name": "S", "stepKind": "COLLECT", "projectionRef": "team-form", "requiredFields": [],
+			"dialogueBinding": {"fieldBindings": [{"sourcePath": "/openQuestion", "collectedField": "note"}]},
+		}],
+	})
+	violations := data.jumo.corpus.deny with input as [bad]
+	has_rule(violations, "corpus.journey.dialogue-binding-step")
+}
+
+test_rejects_an_empty_dialogue_binding if {
+	bad := document(".jumo/journeys/bad.yml", "AssistedJourney", "bad", {
+		"journeyId": "bad", "name": "Bad", "budgetRef": "interactive",
+		"emitsCapability": "contract.change.propose",
+		"steps": [{
+			"id": "s", "name": "S", "stepKind": "DIALOGUE_COLLECT", "promptRef": "some-prompt", "requiredFields": [],
+			"dialogueBinding": {"fieldBindings": [], "fanOutBindings": []},
+		}],
+	})
+	violations := data.jumo.corpus.deny with input as [bad]
+	has_rule(violations, "corpus.journey.dialogue-binding-empty")
+}
+
+test_accepts_a_dialogue_collect_step_with_a_populated_binding if {
+	ok := document(".jumo/journeys/ok.yml", "AssistedJourney", "ok", {
+		"journeyId": "ok", "name": "OK", "budgetRef": "interactive",
+		"emitsCapability": "contract.change.propose",
+		"steps": [{
+			"id": "s", "name": "S", "stepKind": "DIALOGUE_COLLECT", "promptRef": "some-prompt", "requiredFields": [],
+			"dialogueBinding": {
+				"fieldBindings": [{"sourcePath": "/openQuestion", "collectedField": "note"}],
+				"fanOutBindings": [{"sourcePath": "/selectedRefs", "collectedField": "selectedConnectors"}],
+			},
+		}],
+	})
+	violations := data.jumo.corpus.deny with input as [ok]
+	not has_rule(violations, "corpus.journey.dialogue-binding-step")
+	not has_rule(violations, "corpus.journey.dialogue-binding-empty")
+}
+
 test_rejects_sub_journey_step_missing_ref if {
 	bad := document(".jumo/journeys/bad.yml", "AssistedJourney", "bad", {
 		"journeyId": "bad", "name": "Bad", "budgetRef": "interactive",

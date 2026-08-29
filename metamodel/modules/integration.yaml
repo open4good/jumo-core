@@ -3398,3 +3398,98 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KnowledgeDocument:
+    description: Reconstructible recognized-state projection of one source document admitted into a
+      KnowledgeCorpus (knowledge-retrieval-git-vertical AC1). Content is replaced atomically by the
+      sync run that observes a new sourceRevision; a purge clears content and chunks in the same
+      transaction and leaves this row as a content-free tombstone.
+    attributes:
+      realmId: {range: Identifier, required: true}
+      projectId: {range: Identifier}
+      corpusId: {range: Identifier, required: true}
+      sourceId: {range: Identifier, required: true}
+      sourceKind: {range: KnowledgeSourceKind, required: true}
+      sourceDocumentId: {range: string, required: true}
+      locator: {range: string, required: true}
+      title: {range: string}
+      mimeType: {range: string, required: true}
+      language: {range: string}
+      sourceOwners: {range: string, multivalued: true}
+      sourceRevision: {range: string, required: true}
+      contentHash: {range: string, required: true, pattern: '^sha256:[a-f0-9]{64}$'}
+      sourceUpdatedAt: {range: string}
+      observedAt: {range: string, required: true}
+      indexedAt: {range: string}
+      audience: {range: DataScope, required: true}
+      classification: {range: InformationClassification, required: true}
+      normative: {range: boolean, required: true}
+      lifecycle: {range: string, required: true}
+      exclusionReason: {range: string}
+      content: {range: string}
+      lastSyncRunId: {range: Identifier}
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: PROJECTION
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KnowledgeChunk:
+    description: One retrievable fragment of a KnowledgeDocument's normalized content, carrying the
+      lexical and vector index terms scored by knowledge.search. Purged and replaced wholesale with
+      its owning document; never partially updated.
+    attributes:
+      documentId: {range: Identifier, required: true}
+      fragmentId: {range: string, required: true}
+      chunkIndex: {range: integer, required: true, minimum_value: 0}
+      fragmentText: {range: string, required: true}
+      tokenCount: {range: integer, required: true, minimum_value: 0}
+      contentHash: {range: string, required: true, pattern: '^sha256:[a-f0-9]{64}$'}
+      normative: {range: boolean, required: true}
+      embeddingModelDigest: {range: string, pattern: '^sha256:[a-f0-9]{64}$'}
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: PROJECTION
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KnowledgeSyncCursor:
+    description: Restart-safe watermark for one KnowledgeSource's incremental refresh -- the last Git
+      revision or connector change token observed, without any credential.
+    attributes:
+      corpusId: {range: Identifier, required: true}
+      sourceId: {range: Identifier, required: true}
+      cursorKind: {range: string, required: true}
+      cursorValue: {range: string, required: true}
+      updatedAt: {range: string, required: true}
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: PROJECTION
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KnowledgeSyncRun:
+    description: Sanitized evidence of one incremental refresh or reconciliation pass over a
+      KnowledgeSource -- counters, status and reason codes, never source text.
+    attributes:
+      corpusId: {range: Identifier, required: true}
+      sourceId: {range: Identifier, required: true}
+      trigger: {range: string, required: true}
+      status: {range: string, required: true}
+      startedAt: {range: string, required: true}
+      completedAt: {range: string}
+      documentsScanned: {range: integer, minimum_value: 0}
+      documentsUpdated: {range: integer, minimum_value: 0}
+      documentsDeleted: {range: integer, minimum_value: 0}
+      documentsExcluded: {range: integer, minimum_value: 0}
+      reasonCode: {range: string}
+      errorSummary: {range: string}
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

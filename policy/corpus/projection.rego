@@ -375,6 +375,31 @@ deny contains corpus.violation("corpus.journey.dialogue-binding-empty", document
 	)
 }
 
+# The other half of "binds ... to its own emissionBundle fields and fan-out collections"
+# (dialogue-contract-bundle-proposal-binding AC1): a fanOutBinding's collectedField is meant to
+# feed one emissionBundle item's own fanOutCollection (JourneyService.emitBundle already fans out
+# over exactly that field). A fanOutBinding naming a collection no bundle item declares would
+# populate collected_fields with a list nothing ever emits from.
+declared_fan_out_collections(document) := {collection |
+	some item in object.get(corpus.spec(document), "emissionBundle", [])
+	collection := object.get(item, "fanOutCollection", "")
+	collection != ""
+}
+
+deny contains corpus.violation("corpus.journey.dialogue-fanout-unbound", document, message) if {
+	some document in corpus.documents
+	document.kind == "AssistedJourney"
+	some step_index, step in object.get(corpus.spec(document), "steps", [])
+	binding := object.get(step, "dialogueBinding", null)
+	binding != null
+	some fanout_index, fanout in object.get(binding, "fanOutBindings", [])
+	not fanout.collectedField in declared_fan_out_collections(document)
+	message := sprintf(
+		"spec.steps[%d].dialogueBinding.fanOutBindings[%d].collectedField %q matches no emissionBundle item's fanOutCollection",
+		[step_index, fanout_index, fanout.collectedField],
+	)
+}
+
 # subAssistedJourneyRef resolving to a real AssistedJourney (corpus.reference.kind-id, references.rego)
 # bounds the shape of the delegation graph but not its shape over time -- a step could still
 # delegate back to an ancestor. Rego forbids recursive rules (termination guarantee), so

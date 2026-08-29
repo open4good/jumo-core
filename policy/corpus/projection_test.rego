@@ -578,10 +578,48 @@ test_accepts_a_dialogue_collect_step_with_a_populated_binding if {
 				"fanOutBindings": [{"sourcePath": "/selectedRefs", "collectedField": "selectedConnectors"}],
 			},
 		}],
+		"emissionBundle": [{
+			"emission": bundle_emission(".jumo/x/${id}.yml"),
+			"fanOutCollection": "selectedConnectors",
+		}],
 	})
 	violations := data.jumo.corpus.deny with input as [ok]
 	not has_rule(violations, "corpus.journey.dialogue-binding-step")
 	not has_rule(violations, "corpus.journey.dialogue-binding-empty")
+	not has_rule(violations, "corpus.journey.dialogue-fanout-unbound")
+}
+
+test_rejects_a_fanout_binding_matching_no_emission_bundle_item if {
+	bad := document(".jumo/journeys/bad.yml", "AssistedJourney", "bad", {
+		"journeyId": "bad", "name": "Bad", "budgetRef": "interactive",
+		"emitsCapability": "contract.change.propose",
+		"steps": [{
+			"id": "s", "name": "S", "stepKind": "DIALOGUE_COLLECT", "promptRef": "some-prompt", "requiredFields": [],
+			"dialogueBinding": {
+				"fieldBindings": [],
+				"fanOutBindings": [{"sourcePath": "/selectedRefs", "collectedField": "selectedConnectors"}],
+			},
+		}],
+		"emissionBundle": [{"emission": bundle_emission(".jumo/x/${id}.yml"), "fanOutCollection": "otherCollection"}],
+	})
+	violations := data.jumo.corpus.deny with input as [bad]
+	has_rule(violations, "corpus.journey.dialogue-fanout-unbound")
+}
+
+test_rejects_a_fanout_binding_with_no_emission_bundle_at_all if {
+	bad := document(".jumo/journeys/bad.yml", "AssistedJourney", "bad", {
+		"journeyId": "bad", "name": "Bad", "budgetRef": "interactive",
+		"emitsCapability": "contract.change.propose",
+		"steps": [{
+			"id": "s", "name": "S", "stepKind": "DIALOGUE_COLLECT", "promptRef": "some-prompt", "requiredFields": [],
+			"dialogueBinding": {
+				"fieldBindings": [{"sourcePath": "/openQuestion", "collectedField": "note"}],
+				"fanOutBindings": [{"sourcePath": "/selectedRefs", "collectedField": "selectedConnectors"}],
+			},
+		}],
+	})
+	violations := data.jumo.corpus.deny with input as [bad]
+	has_rule(violations, "corpus.journey.dialogue-fanout-unbound")
 }
 
 test_rejects_sub_journey_step_missing_ref if {

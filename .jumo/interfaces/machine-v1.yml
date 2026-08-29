@@ -284,6 +284,23 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: Read the Realm public signing key a lease-local gateway verifies a session plan with.
+    - operationId: getCurrentMcpGatewayLease
+      method: GET
+      path: /mcp-gateway/current-lease
+      audience: MACHINE_MTLS
+      authAction: mcp-gateway.current-lease.read
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: SchemaBoundPayload
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/SchemaBoundPayload
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Read the caller machine's current GRANTED ExecutionCellLease, if any -- lets a poller discover it holds
+            a lease without a control-plane push.
     - operationId: authorizeMcpInvocation
       method: POST
       path: /mcp-gateway/invocations/authorize

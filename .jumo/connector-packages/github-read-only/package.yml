@@ -7,7 +7,7 @@ metadata:
 spec:
   connectorId: github-read-only
   version: 1.0.0
-  packageDigest: sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  packageDigest: sha256:ba2c41506568f57df49c76b6b137f60b24146b217afe6f59aca84df867dce64e
   supportedTransports:
   - transport: STDIO_OCI
     ociImage: ghcr.io/open4good/jumo/jumo-github-readonly-connector-v1@sha256:0080906ff8a9f0ae85cc9d71d848428ec4a20ac76a2bab13928dd90ee3d9b0b7

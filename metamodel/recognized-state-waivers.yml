@@ -3,4 +3,7 @@
 # (a join table, a denormalized projection, migration tooling). Empty for now: canonical decision 15
 # ratchets recognized_state_uncovered_tables downward one class at a time; a table only belongs here
 # once someone has actually looked at it, not as a shortcut to lower the count.
-waivers: []
+waivers:
+  - table: lease_invocation_grant_binding
+    reason: join table binding an ExecutionCellLease to a capability grant the trusted control
+      plane already issued; it carries no independent recognized business state of its own.

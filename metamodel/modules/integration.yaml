@@ -2580,9 +2580,6 @@ classes:
       leaseId:
         range: Identifier
         required: true
-      grantIds:
-        range: Identifier
-        multivalued: true
     annotations:
       jumo.state_authority: NONE
       jumo.model_role: COMMAND

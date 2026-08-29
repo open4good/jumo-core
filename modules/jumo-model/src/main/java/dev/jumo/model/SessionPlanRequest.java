@@ -2,13 +2,12 @@
 package dev.jumo.model;
 
 
-import java.util.List;
 import java.util.Objects;
 
 /**
  * Request to issue a signed MCP gateway session plan for one ExecutionCellLease (mcp-gateway-session-plan-signing AC2).
  */
-public record SessionPlanRequest(String leaseId, List<String> grantIds)  {
+public record SessionPlanRequest(String leaseId)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,7 +16,6 @@ public record SessionPlanRequest(String leaseId, List<String> grantIds)  {
     public static class Builder {
 
         private String leaseId = "";
-        private List<String> grantIds = List.of();
 
 
         public Builder leaseId(String leaseId) {
@@ -25,13 +23,8 @@ public record SessionPlanRequest(String leaseId, List<String> grantIds)  {
             return this;
         }
 
-        public Builder grantIds(List<String> grantIds) {
-            this.grantIds = Objects.requireNonNull(grantIds);
-            return this;
-        }
-
     public SessionPlanRequest build() {
-            return new SessionPlanRequest(leaseId, grantIds);
+            return new SessionPlanRequest(leaseId);
         }
     }
 }

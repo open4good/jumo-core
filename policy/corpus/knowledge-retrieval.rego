@@ -83,6 +83,14 @@ scope_rank("PROJECT_SCOPED") := 2
 scope_rank("REALM_PRIVATE") := 3
 scope_rank("ORGANIZATION_ONLY") := 4
 
+deny contains corpus.violation("corpus.knowledge.index-embedding-required", document, "HYBRID mode requires spec.embedding") if {
+	some document in corpus.documents
+	document.kind == "KnowledgeIndexProfile"
+	spec := corpus.spec(document)
+	spec.mode == "HYBRID"
+	object.get(spec, "embedding", null) == null
+}
+
 deny contains corpus.violation("corpus.knowledge.index-local-only", document, "embedding must be LOCAL_ONLY with pinned model and tokenizer digests") if {
 	some document in corpus.documents
 	document.kind == "KnowledgeIndexProfile"

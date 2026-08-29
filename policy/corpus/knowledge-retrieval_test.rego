@@ -38,6 +38,29 @@ test_valid_local_project_retrieval_contract_has_no_knowledge_denial if {
 	not has_rule(violations, "corpus.knowledge.index-local-only")
 }
 
+# object.union merges nested objects recursively rather than replacing them wholesale, so a
+# {"spec": {...}} override through it would silently keep profile's original embedding -- these
+# two build the whole document fresh instead, to actually exercise embedding's absence.
+test_lexical_profile_with_no_embedding_has_no_denial if {
+	lexical_profile := document(".jumo/knowledge-index-profiles/local.yml", "KnowledgeIndexProfile", "local", {
+		"mode": "LEXICAL", "chunkMaximumTokens": 400, "chunkOverlapTokens": 40, "maximumResults": 8,
+		"lexicalWeight": 1, "vectorWeight": 0,
+	})
+	violations := data.jumo.corpus.deny with input as [project, lexical_profile, corpus, source]
+	not has_rule(violations, "corpus.knowledge.index-embedding-required")
+	not has_rule(violations, "corpus.knowledge.index-local-only")
+	not has_rule(violations, "corpus.knowledge.index-pins")
+}
+
+test_hybrid_profile_with_no_embedding_is_refused if {
+	unpinned_profile := document(".jumo/knowledge-index-profiles/local.yml", "KnowledgeIndexProfile", "local", {
+		"mode": "HYBRID", "chunkMaximumTokens": 400, "chunkOverlapTokens": 40, "maximumResults": 8,
+		"lexicalWeight": 0.5, "vectorWeight": 0.5,
+	})
+	violations := data.jumo.corpus.deny with input as [project, unpinned_profile, corpus, source]
+	has_rule(violations, "corpus.knowledge.index-embedding-required")
+}
+
 test_refuses_scope_cross_realm_binding_wide_audience_and_remote_embedding if {
 	bad_corpus := object.union(corpus, {"contents": object.union(corpus.contents, {"spec": object.union(corpus.contents.spec, {"projectRef": null})})})
 	bad_source := object.union(source, {"contents": object.union(source.contents, {"spec": object.union(source.contents.spec, {"ownerRealm": "other", "sourceKind": "COMPOSED_REALM", "composedRealm": "home", "audience": "PUBLISHED_SUMMARY"})})})

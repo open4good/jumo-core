@@ -3374,7 +3374,10 @@ classes:
       maximumResults: {range: integer, required: true, minimum_value: 1}
       lexicalWeight: {range: float, required: true, minimum_value: 0}
       vectorWeight: {range: float, required: true, minimum_value: 0}
-      embedding: {range: LocalEmbeddingArtifact, required: true, inlined: true}
+      # Not metamodel-required: a LEXICAL-mode profile has no embedding to pin, and inventing one
+      # would fabricate a digest for a model the profile never loads. HYBRID requires it -- Rego
+      # rule corpus.knowledge.index-embedding-required in knowledge-retrieval.rego, not this schema.
+      embedding: {range: LocalEmbeddingArtifact, inlined: true}
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

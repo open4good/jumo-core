@@ -1,0 +1,20 @@
+apiVersion: jumo.dev/v1
+kind: KnowledgeIndexProfile
+metadata:
+  id: local-lexical-v1
+  namespace: dev.jumo.core
+  name: Local lexical-only retrieval profile v1
+spec:
+  # LEXICAL, not HYBRID: knowledge-retrieval-git-vertical AC2 (the pinned ONNX embedding model,
+  # verified by digest and bundled in the release image) is not built yet. Declaring HYBRID here
+  # would require an embedding.modelDigest/tokenizerDigest this profile cannot honestly supply --
+  # inventing one would fabricate a digest for a model nothing loads. corpus.knowledge.index-
+  # embedding-required (policy/corpus/knowledge-retrieval.rego) enforces that HYBRID needs one;
+  # LEXICAL correctly needs none. Once AC2 lands, a HYBRID profile is additive, not a rewrite of
+  # this one -- KnowledgeCorpus references it by id, so switching corpora over is a pointer change.
+  mode: LEXICAL
+  chunkMaximumTokens: 400
+  chunkOverlapTokens: 40
+  maximumResults: 10
+  lexicalWeight: 1.0
+  vectorWeight: 0.0

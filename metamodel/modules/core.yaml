@@ -176,6 +176,40 @@ enums:
       SEMANTIC_SECTIONS: {}
       WHOLE_DOCUMENT: {}
       EXCLUDED: {}
+  KnowledgeCorpusScope:
+    permissible_values:
+      REALM: {}
+      PROJECT: {}
+  KnowledgeCorpusLifecycle:
+    permissible_values:
+      ACTIVE: {}
+      SUSPENDED: {}
+      RETIRED: {}
+  KnowledgeSourceKind:
+    permissible_values:
+      COMPOSED_REALM: {}
+      PROJECT_GIT: {}
+      CONNECTOR_SNAPSHOT: {}
+  KnowledgeSyncMode:
+    permissible_values:
+      MANUAL: {}
+      EVENT_DRIVEN: {}
+      SCHEDULED: {}
+  KnowledgeWithdrawalPolicy:
+    permissible_values:
+      PURGE_ON_SOURCE_REMOVAL: {}
+      PURGE_ON_DISCONNECT: {}
+      RETAIN_UNTIL_OWNER_REMOVAL: {}
+  ContextRetrievalMode:
+    permissible_values:
+      CURRENT_CONTEXT: {}
+  KnowledgeIndexMode:
+    permissible_values:
+      HYBRID: {}
+      LEXICAL: {}
+  EmbeddingExecutionMode:
+    permissible_values:
+      LOCAL_ONLY: {}
   PrincipalKind:
     permissible_values:
       OWNER: {}

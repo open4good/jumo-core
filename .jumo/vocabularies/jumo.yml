@@ -328,6 +328,24 @@ spec:
     pluralEn: 'Prompt Templates'
     pluralFr: 'Modèles de prompt'
     directory: prompts
+  - canonical: KnowledgeCorpus
+    displayEn: 'Knowledge Corpus'
+    displayFr: 'Corpus de connaissances'
+    pluralEn: 'Knowledge Corpora'
+    pluralFr: 'Corpus de connaissances'
+    directory: knowledge-corpora
+  - canonical: KnowledgeIndexProfile
+    displayEn: 'Knowledge Index Profile'
+    displayFr: 'Profil d’index de connaissances'
+    pluralEn: 'Knowledge Index Profiles'
+    pluralFr: 'Profils d’index de connaissances'
+    directory: knowledge-index-profiles
+  - canonical: KnowledgeSource
+    displayEn: 'Knowledge Source'
+    displayFr: 'Source de connaissances'
+    pluralEn: 'Knowledge Sources'
+    pluralFr: 'Sources de connaissances'
+    directory: knowledge-sources
   - canonical: ProviderAccount
     displayEn: 'Provider Account'
     displayFr: 'Compte fournisseur'

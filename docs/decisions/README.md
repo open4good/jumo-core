@@ -36,3 +36,4 @@ audience: PROJECT_SCOPED
 | [ADR-0055](ADR-0055-invocation-attribution-and-grant-ledger.md) | Invocation attribution and recognized grant ledger | 14 | `RoleDefinition` |
 | [ADR-0056](ADR-0056-recovery-gated-root-system-effects.md) | Recovery-gated root system effects on user-provided machines | — | — |
 | [ADR-0057](ADR-0057-automatic-forge-projection.md) | Automatic Forge projection after deterministic validation | — | — |
+| [ADR-0058](ADR-0058-governed-knowledge-retrieval.md) | Governed knowledge retrieval contracts | — | `KnowledgeCorpus`, `KnowledgeIndexProfile`, `KnowledgeSource`, `Project` |

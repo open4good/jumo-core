@@ -5,7 +5,7 @@ package dev.jumo.model;
 import java.util.Objects;
 
 
-public record WorkerContextRequirement(int minimumTokens)  {
+public record WorkerContextRequirement(int minimumTokens, ContextRetrievalMode retrievalMode)  {
 
     public static Builder builder() {
         return new Builder();
@@ -14,6 +14,7 @@ public record WorkerContextRequirement(int minimumTokens)  {
     public static class Builder {
 
         private int minimumTokens = 0;
+        private ContextRetrievalMode retrievalMode = null;
 
 
         public Builder minimumTokens(int minimumTokens) {
@@ -21,8 +22,13 @@ public record WorkerContextRequirement(int minimumTokens)  {
             return this;
         }
 
+        public Builder retrievalMode(ContextRetrievalMode retrievalMode) {
+            this.retrievalMode = Objects.requireNonNull(retrievalMode);
+            return this;
+        }
+
     public WorkerContextRequirement build() {
-            return new WorkerContextRequirement(minimumTokens);
+            return new WorkerContextRequirement(minimumTokens, retrievalMode);
         }
     }
 }

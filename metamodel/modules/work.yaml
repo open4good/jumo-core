@@ -840,6 +840,9 @@ classes:
         range: integer
         required: true
         minimum_value: 1024
+      retrievalMode:
+        range: ContextRetrievalMode
+        description: A declarative request for context resolved from the addressed Realm and Project. It never names a Realm corpus instance or widens a grant.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -1048,6 +1051,9 @@ classes:
         range: ConversationTask
         description: The ConversationService task this prompt serves. Optional -- most PromptTemplate documents are
           referenced by a journey step, not by a conversation task, and leave this unset.
+      retrievalMode:
+        range: ContextRetrievalMode
+        description: Requests only CURRENT_CONTEXT retrieval. The runtime derives admissible corpora from the addressed context; a prompt cannot name a Realm corpus instance.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

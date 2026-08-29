@@ -433,6 +433,48 @@ references contains {"document": document, "location": "spec.agentDefinitionRef"
 	ref != null
 }
 
+# Knowledge retrieval contracts
+references contains {"document": document, "location": "spec.projectRef", "expected_kind": "Project", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "KnowledgeCorpus"
+	ref := object.get(corpus.spec(document), "projectRef", null)
+	ref != null
+}
+
+references contains {"document": document, "location": sprintf("spec.knowledgeSourceRefs[%d]", [index]), "expected_kind": "KnowledgeSource", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "KnowledgeCorpus"
+	some index, ref in object.get(corpus.spec(document), "knowledgeSourceRefs", [])
+}
+
+references contains {"document": document, "location": "spec.knowledgeIndexProfileRef", "expected_kind": "KnowledgeIndexProfile", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "KnowledgeCorpus"
+	ref := object.get(corpus.spec(document), "knowledgeIndexProfileRef", null)
+	ref != null
+}
+
+references contains {"document": document, "location": "spec.knowledgeCorpusRef", "expected_kind": "KnowledgeCorpus", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "KnowledgeSource"
+	ref := object.get(corpus.spec(document), "knowledgeCorpusRef", null)
+	ref != null
+}
+
+references contains {"document": document, "location": "spec.projectRef", "expected_kind": "Project", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "KnowledgeSource"
+	ref := object.get(corpus.spec(document), "projectRef", null)
+	ref != null
+}
+
+references contains {"document": document, "location": "spec.connectorDefinitionRef", "expected_kind": "ConnectorDefinition", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "KnowledgeSource"
+	ref := object.get(corpus.spec(document), "connectorDefinitionRef", null)
+	ref != null
+}
+
 # AssistedJourney
 references contains {"document": document, "location": sprintf("spec.policySetRefs[%d]", [index]), "expected_kind": "PolicySet", "ref": ref} if {
 	some document in corpus.documents

@@ -88,6 +88,14 @@ public final class ContractReferenceExtractor {
             extractFromKitLock(m, refs);
             return refs;
         }
+        if (model instanceof KnowledgeCorpus m) {
+            extractFromKnowledgeCorpus(m, refs);
+            return refs;
+        }
+        if (model instanceof KnowledgeSource m) {
+            extractFromKnowledgeSource(m, refs);
+            return refs;
+        }
         if (model instanceof McpBundle m) {
             extractFromMcpBundle(m, refs);
             return refs;
@@ -674,6 +682,40 @@ public final class ContractReferenceExtractor {
         }
         if (obj.kitReleaseCertificationRef() != null) {
             refs.add(new OutgoingReference("kitReleaseCertificationRef", obj.kitReleaseCertificationRef()));
+        }
+    }
+    public static void extractFromKnowledgeCorpus(KnowledgeCorpus obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromKnowledgeCorpusSpec(obj.spec(), refs);
+    }
+    public static void extractFromKnowledgeCorpusSpec(KnowledgeCorpusSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.projectRef() != null) {
+            refs.add(new OutgoingReference("projectRef", obj.projectRef()));
+        }
+        if (obj.knowledgeSourceRefs() != null) {
+            for (ContractReference r : obj.knowledgeSourceRefs()) {
+                if (r != null) refs.add(new OutgoingReference("knowledgeSourceRefs", r));
+            }
+        }
+        if (obj.knowledgeIndexProfileRef() != null) {
+            refs.add(new OutgoingReference("knowledgeIndexProfileRef", obj.knowledgeIndexProfileRef()));
+        }
+    }
+    public static void extractFromKnowledgeSource(KnowledgeSource obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromKnowledgeSourceSpec(obj.spec(), refs);
+    }
+    public static void extractFromKnowledgeSourceSpec(KnowledgeSourceSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.knowledgeCorpusRef() != null) {
+            refs.add(new OutgoingReference("knowledgeCorpusRef", obj.knowledgeCorpusRef()));
+        }
+        if (obj.projectRef() != null) {
+            refs.add(new OutgoingReference("projectRef", obj.projectRef()));
+        }
+        if (obj.connectorDefinitionRef() != null) {
+            refs.add(new OutgoingReference("connectorDefinitionRef", obj.connectorDefinitionRef()));
         }
     }
     public static void extractFromMachineAdminRequest(MachineAdminRequest obj, List<OutgoingReference> refs) {

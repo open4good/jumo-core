@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record PromptTemplateSpec(ContractReference agentDefinitionRef, String purpose, PromptBody template, List<PromptVariable> variables, PromptOutput output, List<String> mayProposeCapabilities, ContractReference workerRequirementProfileRef, ContractReference resourceBudgetRef, AssuranceLevel minimumAssurance, Ring ring, ConversationTask conversationTask)  {
+public record PromptTemplateSpec(ContractReference agentDefinitionRef, String purpose, PromptBody template, List<PromptVariable> variables, PromptOutput output, List<String> mayProposeCapabilities, ContractReference workerRequirementProfileRef, ContractReference resourceBudgetRef, AssuranceLevel minimumAssurance, Ring ring, ConversationTask conversationTask, ContextRetrievalMode retrievalMode)  {
 
     public static Builder builder() {
         return new Builder();
@@ -26,6 +26,7 @@ public record PromptTemplateSpec(ContractReference agentDefinitionRef, String pu
         private AssuranceLevel minimumAssurance = null;
         private Ring ring = null;
         private ConversationTask conversationTask = null;
+        private ContextRetrievalMode retrievalMode = null;
 
 
         public Builder agentDefinitionRef(ContractReference agentDefinitionRef) {
@@ -83,8 +84,13 @@ public record PromptTemplateSpec(ContractReference agentDefinitionRef, String pu
             return this;
         }
 
+        public Builder retrievalMode(ContextRetrievalMode retrievalMode) {
+            this.retrievalMode = Objects.requireNonNull(retrievalMode);
+            return this;
+        }
+
     public PromptTemplateSpec build() {
-            return new PromptTemplateSpec(agentDefinitionRef, purpose, template, variables, output, mayProposeCapabilities, workerRequirementProfileRef, resourceBudgetRef, minimumAssurance, ring, conversationTask);
+            return new PromptTemplateSpec(agentDefinitionRef, purpose, template, variables, output, mayProposeCapabilities, workerRequirementProfileRef, resourceBudgetRef, minimumAssurance, ring, conversationTask, retrievalMode);
         }
     }
 }

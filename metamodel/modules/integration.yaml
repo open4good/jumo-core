@@ -13,6 +13,8 @@ imports:
   - core
   - work
 enums:
+  # Knowledge retrieval is contract-only at this boundary. The index is a derived local projection;
+  # neither these contracts nor their profile name a Realm instance in PLATFORM code.
   ConnectorLifecycle:
     permissible_values:
       DECLARED: {}
@@ -3227,6 +3229,125 @@ classes:
         required: true
     annotations:
       jumo.state_authority: POSTGRES
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KnowledgeCorpus:
+    description: Realm-owned, grant-governed set of retrievable sources. Its index is derived recognized state and grants no authority.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion: {range: string, equals_string: jumo.dev/v1, required: true}
+      kind: {range: string, equals_string: KnowledgeCorpus, required: true}
+      metadata: {range: Metadata, required: true, inlined: true}
+      spec: {range: KnowledgeCorpusSpec, required: true, inlined: true}
+  KnowledgeCorpusSpec:
+    attributes:
+      ownerRealm: {range: Identifier, required: true}
+      scope: {range: KnowledgeCorpusScope, required: true}
+      projectRef: {range: ContractReference, inlined: true}
+      dataScopeCeiling: {range: DataScope, required: true}
+      knowledgeSourceRefs: {range: ContractReference, multivalued: true, inlined_as_list: true, required: true, minimum_cardinality: 1}
+      knowledgeIndexProfileRef: {range: ContractReference, required: true, inlined: true}
+      maximumStaleness: {range: Duration, required: true}
+      lifecycle: {range: KnowledgeCorpusLifecycle, required: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KnowledgeSource:
+    description: Realm-owned source binding. A connector transports a snapshot only; it never becomes retrieval authority.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion: {range: string, equals_string: jumo.dev/v1, required: true}
+      kind: {range: string, equals_string: KnowledgeSource, required: true}
+      metadata: {range: Metadata, required: true, inlined: true}
+      spec: {range: KnowledgeSourceSpec, required: true, inlined: true}
+  KnowledgeSourceSpec:
+    attributes:
+      ownerRealm: {range: Identifier, required: true}
+      knowledgeCorpusRef: {range: ContractReference, required: true, inlined: true}
+      sourceKind: {range: KnowledgeSourceKind, required: true}
+      projectRef: {range: ContractReference, inlined: true}
+      composedRealm: {range: Identifier}
+      connectorDefinitionRef: {range: ContractReference, inlined: true}
+      readOperationRefs: {range: Identifier, multivalued: true}
+      roots: {range: string, multivalued: true, required: true, minimum_cardinality: 1}
+      includePatterns: {range: string, multivalued: true}
+      excludePatterns: {range: string, multivalued: true}
+      allowedMimeTypes: {range: string, multivalued: true, required: true, minimum_cardinality: 1}
+      maximumDocumentBytes: {range: integer, required: true, minimum_value: 1}
+      syncMode: {range: KnowledgeSyncMode, required: true}
+      reconciliationCadence: {range: Duration, required: true}
+      withdrawalPolicy: {range: KnowledgeWithdrawalPolicy, required: true}
+      audience: {range: DataScope, required: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  KnowledgeIndexProfile:
+    description: Additive, non-authoritative local retrieval profile. It pins a model artifact and never permits runtime download or a remote embedding endpoint.
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion: {range: string, equals_string: jumo.dev/v1, required: true}
+      kind: {range: string, equals_string: KnowledgeIndexProfile, required: true}
+      metadata: {range: Metadata, required: true, inlined: true}
+      spec: {range: KnowledgeIndexProfileSpec, required: true, inlined: true}
+  KnowledgeIndexProfileSpec:
+    attributes:
+      mode: {range: KnowledgeIndexMode, required: true}
+      chunkMaximumTokens: {range: integer, required: true, minimum_value: 1}
+      chunkOverlapTokens: {range: integer, required: true, minimum_value: 0}
+      maximumResults: {range: integer, required: true, minimum_value: 1}
+      lexicalWeight: {range: float, required: true, minimum_value: 0}
+      vectorWeight: {range: float, required: true, minimum_value: 0}
+      embedding: {range: LocalEmbeddingArtifact, required: true, inlined: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  LocalEmbeddingArtifact:
+    attributes:
+      executionMode: {range: EmbeddingExecutionMode, required: true}
+      modelName: {range: string, required: true}
+      dimensions: {range: integer, required: true, minimum_value: 1}
+      license: {range: string, required: true}
+      buildUri: {range: string, required: true}
+      modelDigest: {range: string, required: true, pattern: '^sha256:[a-f0-9]{64}$'}
+      tokenizerDigest: {range: string, required: true, pattern: '^sha256:[a-f0-9]{64}$'}
+    annotations:
+      jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
       jumo.audience: REALM_PRIVATE
       jumo.sensitivity: INTERNAL

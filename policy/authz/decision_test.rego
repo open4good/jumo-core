@@ -5,7 +5,7 @@ import rego.v1
 request := {
 	"subject": {"principalId": "owner", "realmId": "home"},
 	"action": "document.change.propose",
-	"resource": {"type": "ChangeProposal", "id": "proposal-1", "realmId": "home", "attributes": {"producerId": "implementer"}},
+	"resource": {"type": "ChangeProposal", "id": "proposal-1", "realmId": "home", "attributes": {"producerId": "implementer", "canonicalPayloadDigest": "sha256:payload"}},
 	"context": {"realmId": "home", "checkpoint": "IMMEDIATE_BEFORE_EFFECT", "waitGeneration": 0},
 	"capability": {
 		"name": "document.change.propose",
@@ -19,7 +19,7 @@ request := {
 	"obligations": {"required": ["RETAIN_PROVENANCE"], "satisfied": ["RETAIN_PROVENANCE"]},
 	"policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 	"independentReview": {"required": false, "present": false, "independent": false, "reviewerId": "", "reviewedAt": "1970-01-01T00:00:00Z"},
-	"ownerApproval": {"required": false, "present": false, "ownerId": "", "approverId": "", "approvedAt": "1970-01-01T00:00:00Z", "validUntil": "1970-01-01T00:00:00Z"},
+	"ownerApproval": {"required": false, "present": false, "ownerId": "", "approverId": "", "approvedAt": "1970-01-01T00:00:00Z", "validUntil": "1970-01-01T00:00:00Z", "payloadDigest": "", "policyRevision": ""},
 	"assurance": {"minimum": "OBSERVED", "achieved": "OBSERVED"},
 	"time": "2026-08-12T10:00:01Z",
 }
@@ -44,10 +44,17 @@ test_missing_obligation_requires_approval if {
 
 test_stale_owner_approval_requires_approval if {
 	capability := object.union(request.capability, {"name": "execution.cell.vm.provision"})
-	approval := {"required": true, "present": true, "ownerId": "owner", "approverId": "owner", "approvedAt": "2026-08-12T10:00:00Z", "validUntil": "2026-08-12T09:59:00Z"}
+	approval := {"required": true, "present": true, "ownerId": "owner", "approverId": "owner", "approvedAt": "2026-08-12T10:00:00Z", "validUntil": "2026-08-12T09:59:00Z", "payloadDigest": "sha256:payload", "policyRevision": request.policyRevision}
 	result := data.jumo.authz.decision with input as object.union(request, {"action": "execution.cell.vm.provision", "capability": capability, "ownerApproval": approval})
 	result.decision == "REQUIRE_APPROVAL"
 	result.obligations == ["HUMAN_OWNER_APPROVAL"]
+}
+
+test_fresh_owner_approval_allows_without_second_approver if {
+	capability := object.union(request.capability, {"name": "execution.cell.vm.provision"})
+	approval := {"required": true, "present": true, "ownerId": "owner", "approverId": "owner", "approvedAt": "2026-08-12T09:59:00Z", "validUntil": "2026-08-12T10:05:00Z", "payloadDigest": "sha256:payload", "policyRevision": request.policyRevision}
+	result := data.jumo.authz.decision with input as object.union(request, {"action": "execution.cell.vm.provision", "capability": capability, "ownerApproval": approval})
+	result.decision == "ALLOW"
 }
 
 test_realm_mismatch_denies if {
@@ -105,6 +112,14 @@ test_other_external_effect_requires_owner_approval if {
 	approval := object.union(request.ownerApproval, {"required": false})
 	result := data.jumo.authz.decision with input as object.union(request, {"action": "execution.cell.vm.provision", "capability": capability, "ownerApproval": approval})
 	result.decision == "DENY"
+}
+
+test_owner_approval_requires_exact_payload_and_policy_revision if {
+	capability := object.union(request.capability, {"name": "execution.cell.vm.provision"})
+	approval := {"required": true, "present": true, "ownerId": "owner", "approverId": "owner", "approvedAt": "2026-08-12T09:59:00Z", "validUntil": "2026-08-12T10:05:00Z", "payloadDigest": "sha256:other", "policyRevision": "wrong"}
+	result := data.jumo.authz.decision with input as object.union(request, {"action": "execution.cell.vm.provision", "capability": capability, "ownerApproval": approval})
+	result.decision == "REQUIRE_APPROVAL"
+	result.obligations == ["HUMAN_OWNER_APPROVAL"]
 }
 
 test_independent_review_required_must_match_assurance if {

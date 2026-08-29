@@ -90,6 +90,9 @@ approval_valid if {
 	input.ownerApproval.approverId != ""
 	input.ownerApproval.ownerId != ""
 	input.ownerApproval.approverId == input.ownerApproval.ownerId
+	input.ownerApproval.payloadDigest != ""
+	input.ownerApproval.payloadDigest == input.resource.attributes.canonicalPayloadDigest
+	input.ownerApproval.policyRevision == input.policyRevision
 	approved := time.parse_rfc3339_ns(input.ownerApproval.approvedAt)
 	valid_until := time.parse_rfc3339_ns(input.ownerApproval.validUntil)
 	now := time.parse_rfc3339_ns(input.time)

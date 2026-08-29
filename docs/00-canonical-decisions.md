@@ -26,7 +26,9 @@ audience: PROJECT_SCOPED
 7. AI CLI workers execute in isolated rootless OCI runtimes under strict output schemas with no auto-repair,
    and evidence is collected exclusively after secret-aware sanitization (ADR-0049).
 8. Connectors are LinkML-governed packages under `.jumo/connector-packages/`, built through a 10-step journey
-   with target-machine discovery, independent appraisal, and dual-consent for irreversible effects. The shared
+   with target-machine discovery and independent appraisal at admission. Irreversible external effects require
+   one fresh, step-up-verified approval by the addressed Realm owner over the exact canonical payload digest
+   and policy revision; appraisal is not a second per-effect consent. The shared
    MCP registry records sourced catalog signals only and grants neither installation nor execution (ADR-0050).
 9. Public interoperability exposition under `/u/{handle}` is governed by `OrganizationPublicationPolicy` and
    `RealmPublication` with sealed adapters, signed manifests, A2A read tasks gated by ACS/OPA PEP, and

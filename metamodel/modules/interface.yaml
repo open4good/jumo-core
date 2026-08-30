@@ -41,6 +41,7 @@ enums:
       JOURNEYS: {}
       JOURNEY_RUN: {}
       CONNECTOR_CATALOG: {}
+      MCP_CATALOG: {}
       ATTENTION_ITEMS: {}
       THEME_PACK: {}
       ACCOUNT_PROFILE: {}

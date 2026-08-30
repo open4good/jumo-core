@@ -272,6 +272,7 @@ spec:
         - PROVIDER_QUOTAS
         - CONNECTOR_INTEGRATIONS
         - CONNECTOR_CATALOG
+        - MCP_CATALOG
         - CONTEXT_GRAPH
       proposes:
         - machine.read
@@ -282,6 +283,7 @@ spec:
         - quota.read
         - connector.read
         - connector.test
+        - mcp.catalog.read
         - contract.change.propose
         - context.graph.read
       writePaths:

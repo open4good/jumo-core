@@ -1,0 +1,27 @@
+apiVersion: jumo.dev/v1
+kind: KnowledgeIndexProfile
+metadata:
+  id: local-hybrid-v1
+  namespace: dev.jumo.core
+  name: Local hybrid (lexical + vector) retrieval profile v1
+spec:
+  # HYBRID, additive to local-lexical-v1 (KnowledgeCorpus references a profile by id, so switching
+  # a corpus over is a pointer change, not a rewrite). intfloat/multilingual-e5-small, 384 dims,
+  # MIT, quantized ONNX -- pinned and digest-verified by deploy/fetch-knowledge-embedding-model.py
+  # (knowledge-retrieval-git-vertical AC2, this order's own evidenceRefs). Digests below were read
+  # from the running control-plane's own sha256 of the two files that script fetches; corpus.
+  # knowledge.index-pins (jumo-core policy/corpus/knowledge-retrieval.rego) enforces the pattern.
+  mode: HYBRID
+  chunkMaximumTokens: 400
+  chunkOverlapTokens: 40
+  maximumResults: 10
+  lexicalWeight: 1.0
+  vectorWeight: 1.0
+  embedding:
+    executionMode: LOCAL_ONLY
+    modelName: intfloat/multilingual-e5-small
+    dimensions: 384
+    license: MIT
+    buildUri: https://huggingface.co/intfloat/multilingual-e5-small/resolve/614241f622f53c4eeff9890bdc4f31cfecc418b3/onnx/model_qint8_avx512_vnni.onnx
+    modelDigest: sha256:dd476dd0c2514e9b9be83aeb3853fac0763e0bdf4a71645407587d77c48a2d88
+    tokenizerDigest: sha256:0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39

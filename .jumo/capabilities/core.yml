@@ -220,6 +220,16 @@ spec:
         - STEP_UP_AUTHENTICATION
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
+    - name: account.theme.preference.propose
+      description: Record a hash-bound proposal changing the authenticated principal's own declared
+        theme preference (portable-theme-runtime-and-preference) for isolated forge projection.
+      riskTier: LOW
+      reversible: true
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+      minimumAssurance: OBSERVED
+      appliedBy: jumo.effect.ForgeProposalApplier
     - name: team.roster.read
       description: Read team composition, roles, and independence groups within the authenticated Realm.
       riskTier: LOW

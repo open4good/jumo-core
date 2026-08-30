@@ -245,7 +245,8 @@ spec:
           requiredObligations:
             - RETAIN_PROVENANCE
     - id: account
-      purpose: Read and update the signed-in principal's own account profile, and self-service account deletion.
+      purpose: Read and update the signed-in principal's own account profile, self-service account
+        deletion, and a governed proposal for the signed-in principal's own theme preference.
       audience: REALM_PRIVATE
       reads:
         - ACCOUNT_PROFILE
@@ -253,6 +254,14 @@ spec:
         - account.profile.read
         - account.profile.update
         - account.delete
+        - account.theme.preference.propose
+      writePaths:
+        - pathGlob: .jumo/preferences/**
+          ring: RING_3_GOVERNED_PROJECT
+          capabilityRef: account.theme.preference.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
     - id: machines
       purpose: Monitor and manage execution machines, CLI runtimes, quota observations, and connectors.
       audience: REALM_PRIVATE

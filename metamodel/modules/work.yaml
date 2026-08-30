@@ -1552,6 +1552,14 @@ classes:
       field:
         range: string
         required: true
+      sourceField:
+        range: string
+        description: The collected field this projection reads its raw items from, when it differs
+          from the emitted field. Defaults to field. Two projections declaring the same field and
+          different sourceField accumulate, in declaration order, into one emitted collection --
+          the mechanism a journey uses to fold more than one collected field (an ENTITY_COLLECTION
+          of existing references alongside a STRUCTURED_YAML of newly proposed ones, say) into a
+          single contract-typed roster while keeping each source's own itemValidations in force.
       keys:
         range: string
         multivalued: true

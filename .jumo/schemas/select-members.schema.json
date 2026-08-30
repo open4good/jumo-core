@@ -15,7 +15,7 @@
         "type": "object",
         "properties": {
           "roleRef": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
-          "roleName": { "type": "string", "minLength": 1 },
+          "role": { "type": "string", "minLength": 3 },
           "mission": { "type": "string", "minLength": 10 },
           "independenceGroup": { "type": "string", "minLength": 1 },
           "responsibilities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
@@ -26,7 +26,7 @@
           "reasoningEffort": { "type": "string" },
           "requiredIndependenceGroup": { "type": "string" }
         },
-        "required": ["roleRef", "roleName", "mission", "independenceGroup", "responsibilities",
+        "required": ["roleRef", "role", "mission", "independenceGroup", "responsibilities",
           "requestedCapabilities", "taskClasses", "modalities", "minimumTokens", "reasoningEffort"]
       }
     }

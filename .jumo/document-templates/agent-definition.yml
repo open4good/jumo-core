@@ -12,7 +12,7 @@ spec:
     metadata:
       id: ${id}
       namespace: ${realmNamespace}
-      defaultDisplayName: ${roleName}
+      defaultDisplayName: ${role}
     spec:
       responsibilities: ${responsibilities}
       requestedCapabilities: ${requestedCapabilities}

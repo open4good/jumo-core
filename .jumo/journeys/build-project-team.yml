@@ -18,38 +18,11 @@ spec:
   policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
   emissionBundle:
-    - emission:
-        targetKind: TeamSpec
-        identifier: {fromField: teamId}
-        pathTemplate: .jumo/teams/${id}.yml
-        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: team-spec}
-        validations:
-          - {field: teamId, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
-          - {field: teamName, required: true}
-          - {field: projectPurpose, required: true, minimumLength: 10}
-          - {field: members, minimumItems: 2}
-        fieldDefaults:
-          - {field: purpose, value: '${projectPurpose}'}
-        referenceChecks:
-          - {field: members, kind: RoleDefinition, itemPath: roleRef}
-        collectionProjections:
-          - field: members
-            keys: [roleRef, role]
-            optionalKeys: [independenceGroup]
-            itemReferenceKind: RoleDefinition
-            itemValidations:
-              - {field: role, minimumLength: 3}
-    - emission:
-        targetKind: RoutingEligibility
-        identifier: {fromField: teamId}
-        pathTemplate: .jumo/routing-eligibilities/${id}.yml
-        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: routing-eligibility}
-        validations:
-          - {field: teamId, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
-          - {field: projectRef, required: true}
-        referenceChecks:
-          - {field: projectRef, kind: Project}
-          - {field: teamId, kind: TeamSpec}
+    # The four fan-out items render before TeamSpec/RoutingEligibility (not declaration order by
+    # accident): TeamSpec's own members projection now folds proposedMembers in (team-and-operator-
+    # design-journeys AC2), and its referenceChecks resolve each proposed roleRef only through the
+    # same-bundle registry (registerBundleEmission) -- so the RoleDefinition a proposed member names
+    # must already have rendered by the time TeamSpec's reference check runs.
     - fanOutCollection: proposedMembers
       emission:
         targetKind: RoleDefinition
@@ -58,7 +31,7 @@ spec:
         documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: role-definition}
         validations:
           - {field: roleRef, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
-          - {field: roleName, required: true}
+          - {field: role, required: true, minimumLength: 3}
           - {field: mission, required: true, minimumLength: 10}
     - fanOutCollection: proposedMembers
       emission:
@@ -88,6 +61,44 @@ spec:
           - {field: roleRef, kind: RoleDefinition}
           - {field: roleRef, kind: AgentDefinition}
           - {field: roleRef, kind: WorkerRequirementProfile}
+    - emission:
+        targetKind: TeamSpec
+        identifier: {fromField: teamId}
+        pathTemplate: .jumo/teams/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: team-spec}
+        validations:
+          - {field: teamId, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: teamName, required: true}
+          - {field: projectPurpose, required: true, minimumLength: 10}
+          - {field: members, minimumItems: 2}
+        fieldDefaults:
+          - {field: purpose, value: '${projectPurpose}'}
+        referenceChecks:
+          - {field: members, kind: RoleDefinition, itemPath: roleRef}
+        collectionProjections:
+          - field: members
+            keys: [roleRef, role]
+            optionalKeys: [independenceGroup]
+            itemReferenceKind: RoleDefinition
+            itemValidations:
+              - {field: role, minimumLength: 3}
+          - field: members
+            sourceField: proposedMembers
+            keys: [roleRef, role]
+            optionalKeys: [independenceGroup]
+            itemValidations:
+              - {field: role, minimumLength: 3}
+    - emission:
+        targetKind: RoutingEligibility
+        identifier: {fromField: teamId}
+        pathTemplate: .jumo/routing-eligibilities/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: routing-eligibility}
+        validations:
+          - {field: teamId, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: projectRef, required: true}
+        referenceChecks:
+          - {field: projectRef, kind: Project}
+          - {field: teamId, kind: TeamSpec}
   steps:
     - id: analyze-team-need
       requiredObligations: []

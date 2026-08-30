@@ -12,7 +12,7 @@ spec:
     metadata:
       id: ${id}
       namespace: ${realmNamespace}
-      name: ${roleName}
+      name: ${role}
     spec:
       ownerRealm: ${realmId}
       taskClasses: ${taskClasses}

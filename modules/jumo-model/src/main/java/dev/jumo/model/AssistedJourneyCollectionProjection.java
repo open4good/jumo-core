@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record AssistedJourneyCollectionProjection(String field, List<String> keys, List<String> optionalKeys, List<AssistedJourneyFieldValidation> itemValidations, String itemReferenceKind)  {
+public record AssistedJourneyCollectionProjection(String field, String sourceField, List<String> keys, List<String> optionalKeys, List<AssistedJourneyFieldValidation> itemValidations, String itemReferenceKind)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,6 +17,7 @@ public record AssistedJourneyCollectionProjection(String field, List<String> key
     public static class Builder {
 
         private String field = "";
+        private String sourceField = "";
         private List<String> keys = List.of();
         private List<String> optionalKeys = List.of();
         private List<AssistedJourneyFieldValidation> itemValidations = List.of();
@@ -25,6 +26,11 @@ public record AssistedJourneyCollectionProjection(String field, List<String> key
 
         public Builder field(String field) {
             this.field = Objects.requireNonNull(field);
+            return this;
+        }
+
+        public Builder sourceField(String sourceField) {
+            this.sourceField = Objects.requireNonNull(sourceField);
             return this;
         }
 
@@ -49,7 +55,7 @@ public record AssistedJourneyCollectionProjection(String field, List<String> key
         }
 
     public AssistedJourneyCollectionProjection build() {
-            return new AssistedJourneyCollectionProjection(field, keys, optionalKeys, itemValidations, itemReferenceKind);
+            return new AssistedJourneyCollectionProjection(field, sourceField, keys, optionalKeys, itemValidations, itemReferenceKind);
         }
     }
 }

@@ -21,6 +21,7 @@ spec:
         id: ${executionMachineRef}
       lifecycle: DECLARED
       substrate: LOCAL_CLI_CONTAINER
+      cli: ${cli}
       image:
         reference: ${artifactReference}
         digest: ${artifactDigest}

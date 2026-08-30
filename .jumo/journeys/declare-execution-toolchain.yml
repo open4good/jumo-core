@@ -38,6 +38,7 @@ spec:
           - {field: substrateName, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
           - {field: executionMachineRef, required: true}
           - {field: providerAccountRef, required: true}
+          - {field: cli, required: true}
   steps:
     - id: declare-artifact
       requiredObligations: []
@@ -71,6 +72,7 @@ spec:
         - {field: substrateName, i18nKey: journeyToolchainSubstrateNameField}
         - {field: executionMachineRef, i18nKey: journeyToolchainExecutionMachineField}
         - {field: providerAccountRef, i18nKey: journeyToolchainProviderAccountField}
+        - {field: cli, i18nKey: journeyToolchainCliField}
     - id: confirm-toolchain
       requiredObligations: []
       name: Bilan et proposition

@@ -40,3 +40,10 @@ spec:
           helpI18nKey: journeyToolchainProviderAccountHelp
           order: 3
           required: true
+        - path: cli
+          representation: ENUMERATION
+          optionsFromEnum: WorkerCli
+          i18nKey: journeyToolchainCliField
+          helpI18nKey: journeyToolchainCliHelp
+          order: 4
+          required: true

@@ -6,7 +6,8 @@
   "properties": {
     "substrateName": { "type": "string", "minLength": 1, "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
     "executionMachineRef": { "type": "string", "minLength": 1 },
-    "providerAccountRef": { "type": "string", "minLength": 1 }
+    "providerAccountRef": { "type": "string", "minLength": 1 },
+    "cli": { "type": "string", "enum": ["CLAUDE_CODE", "CODEX", "GEMINI_CLI", "COPILOT_CLI"] }
   },
-  "required": ["substrateName", "executionMachineRef", "providerAccountRef"]
+  "required": ["substrateName", "executionMachineRef", "providerAccountRef", "cli"]
 }

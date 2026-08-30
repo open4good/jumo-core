@@ -38,6 +38,17 @@ spec:
         itemValidations:
           - {field: role, minimumLength: 3}
   steps:
+    - id: analyze-evolution-need
+      requiredObligations: []
+      name: Analyse du besoin d'évolution
+      description: Nestor examine le besoin d'évolution exprimé avant la sélection de l'équipe.
+      personaNarration: Avant de faire évoluer une équipe, discutons de ce qui doit changer.
+      stepKind: DIALOGUE_COLLECT
+      requiredFields: []
+      promptTemplateRef:
+        kind: PromptTemplate
+        namespace: dev.jumo.core
+        id: nestor-deliberation
     - id: select-team
       requiredObligations: []
       name: Sélection de l'équipe

@@ -38,6 +38,17 @@ spec:
         itemValidations:
           - {field: role, minimumLength: 3}
   steps:
+    - id: analyze-team-need
+      requiredObligations: []
+      name: Analyse du besoin
+      description: Nestor examine le besoin exprimé pour ce projet avant la composition de l'équipe.
+      personaNarration: Avant de composer l'équipe, discutons du besoin réel de ce projet.
+      stepKind: DIALOGUE_COLLECT
+      requiredFields: []
+      promptTemplateRef:
+        kind: PromptTemplate
+        namespace: dev.jumo.core
+        id: nestor-deliberation
     - id: define-team-scope
       requiredObligations: []
       name: Définition de l'équipe

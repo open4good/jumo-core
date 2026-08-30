@@ -1,0 +1,25 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: routing-eligibility
+  namespace: dev.jumo.core
+  name: Project-scoped team routing eligibility
+spec:
+  renders: RoutingEligibility
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: RoutingEligibility
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${teamName}
+    spec:
+      ownerRealm: ${realmId}
+      projectRef:
+        kind: Project
+        namespace: ${realmNamespace}
+        id: ${projectRef}
+      eligibleTeamSpecRefs:
+        - kind: TeamSpec
+          namespace: ${realmNamespace}
+          id: ${teamId}

@@ -14,13 +14,27 @@ spec:
       i18nKey: journeyTeamSection
       columns: 1
       fields:
+        - path: teamId
+          representation: IDENTIFIER
+          i18nKey: journeyTeamIdField
+          order: 1
+          required: true
         - path: teamName
           representation: SHORT_TEXT
           i18nKey: journeyTeamNameField
           helpI18nKey: journeyTeamNameHelp
+          order: 2
+          required: true
+        - path: projectRef
+          representation: ENTITY_REFERENCE
+          optionsFrom: Project
+          i18nKey: journeyProjectRefField
+          helpI18nKey: journeyProjectRefHelp
+          order: 3
           required: true
         - path: projectPurpose
           representation: MULTILINE_TEXT
           i18nKey: journeyProjectPurposeField
           helpI18nKey: journeyProjectPurposeHelp
+          order: 4
           required: true

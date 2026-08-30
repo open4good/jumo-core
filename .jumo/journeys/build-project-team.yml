@@ -17,26 +17,39 @@ spec:
   requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
   policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
-  emission:
-    targetKind: TeamSpec
-    identifier: {fromField: nickname, defaultValue: workspace, suffix: RUN_PREFIX}
-    pathTemplate: .jumo/teams/${id}.yml
-    documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: team-spec}
-    validations:
-      - {field: teamName, required: true}
-      - {field: projectPurpose, required: true, minimumLength: 10}
-      - {field: members, minimumItems: 2}
-    fieldDefaults:
-      - {field: purpose, value: '${projectPurpose}'}
-    referenceChecks:
-      - {field: members, kind: RoleDefinition, itemPath: roleRef}
-    collectionProjections:
-      - field: members
-        keys: [roleRef, role]
-        optionalKeys: [independenceGroup]
-        itemReferenceKind: RoleDefinition
-        itemValidations:
-          - {field: role, minimumLength: 3}
+  emissionBundle:
+    - emission:
+        targetKind: TeamSpec
+        identifier: {fromField: teamId}
+        pathTemplate: .jumo/teams/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: team-spec}
+        validations:
+          - {field: teamId, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: teamName, required: true}
+          - {field: projectPurpose, required: true, minimumLength: 10}
+          - {field: members, minimumItems: 2}
+        fieldDefaults:
+          - {field: purpose, value: '${projectPurpose}'}
+        referenceChecks:
+          - {field: members, kind: RoleDefinition, itemPath: roleRef}
+        collectionProjections:
+          - field: members
+            keys: [roleRef, role]
+            optionalKeys: [independenceGroup]
+            itemReferenceKind: RoleDefinition
+            itemValidations:
+              - {field: role, minimumLength: 3}
+    - emission:
+        targetKind: RoutingEligibility
+        identifier: {fromField: teamId}
+        pathTemplate: .jumo/routing-eligibilities/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: routing-eligibility}
+        validations:
+          - {field: teamId, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: projectRef, required: true}
+        referenceChecks:
+          - {field: projectRef, kind: Project}
+          - {field: teamId, kind: TeamSpec}
   steps:
     - id: analyze-team-need
       requiredObligations: []
@@ -56,7 +69,9 @@ spec:
       personaNarration: Définissons ensemble les objectifs de cette nouvelle équipe projet et son champ d'action.
       stepKind: COLLECT
       requiredFields:
+        - {field: teamId, i18nKey: journeyTeamIdField}
         - {field: teamName, i18nKey: journeyTeamNameField}
+        - {field: projectRef, i18nKey: journeyProjectRefField}
         - {field: projectPurpose, i18nKey: journeyProjectPurposeField}
       projectionSpecRef:
         kind: ProjectionSpec

@@ -32,3 +32,19 @@ spec:
       chiefOfStaffForm: sigil
       density: CALM
       motion: SUBTLE
+  designTokens:
+    light:
+      schemaVersion: "1.0"
+      asset: .jumo/assets/themes/default/tokens/light.json
+    dark:
+      schemaVersion: "1.0"
+      asset: .jumo/assets/themes/default/tokens/dark.json
+  localizations:
+    - locale: fr
+      messages:
+        schemaVersion: "1.0"
+        asset: .jumo/assets/themes/default/localizations/fr.json
+    - locale: en
+      messages:
+        schemaVersion: "1.0"
+        asset: .jumo/assets/themes/default/localizations/en.json

@@ -68,10 +68,8 @@ spec:
           - {field: teamId, required: true}
           - {field: purpose, required: true, minimumLength: 10}
           - {field: members, minimumItems: 2}
-          # team-and-operator-design-journeys AC3: an explicit declared Project is required. This
-          # journey does not emit or update a RoutingEligibility -- whether/how it should is still
-          # unsettled (see this order's own evidence) -- so projectRef is validated as a real Project
-          # reference here but not otherwise consumed.
+          # team-and-operator-design-journeys AC3: an explicit declared Project is required, and
+          # also feeds the new RoutingEligibility emission below.
           - {field: projectRef, required: true}
         fieldDefaults:
           - {field: teamName, value: 'Evolved Team ${id}'}
@@ -91,6 +89,25 @@ spec:
             optionalKeys: [independenceGroup]
             itemValidations:
               - {field: role, minimumLength: 3}
+    # team-and-operator-design-journeys AC3, 2026-08-30 owner ruling: a team-composition change
+    # emits a new RoutingEligibility record rather than updating one in place or leaving it
+    # untouched, matching the append-only-projection convention WorkOrder evidence/ledger records
+    # already use. suffix: RUN_PREFIX (AssistedJourneyIdentifierSuffix, already used by
+    # the-onboarding-trip.yml) gives every run its own id/path, so this never collides with the
+    # team's original RoutingEligibility from build-project-team or an earlier evolution.
+    - emission:
+        targetKind: RoutingEligibility
+        identifier: {fromField: teamId, suffix: RUN_PREFIX}
+        pathTemplate: .jumo/routing-eligibilities/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: routing-eligibility}
+        validations:
+          - {field: teamId, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: projectRef, required: true}
+        fieldDefaults:
+          - {field: teamName, value: 'Evolved Team ${teamId}'}
+        referenceChecks:
+          - {field: projectRef, kind: Project}
+          - {field: teamId, kind: TeamSpec}
   steps:
     - id: analyze-evolution-need
       requiredObligations: []

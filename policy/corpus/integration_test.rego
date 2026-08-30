@@ -550,3 +550,87 @@ test_secret_work_order_unresolved_refs_fail if {
 	has_rule(violations, "corpus.secret.work-order-kind")
 	has_rule(violations, "corpus.secret.binding-work-order-kind")
 }
+
+# McpRegistrySource (official-sync, ADR-0050 6)
+
+registry_source(id, fields) := document(sprintf(".jumo/mcp-registry-sources/%s.yml", [id]), "McpRegistrySource", id, fields)
+
+official_registry_source := registry_source("official", {
+	"sourceType": "OFFICIAL_REGISTRY", "adapter": "official-registry-v0.1", "lifecycle": "ENABLED",
+	"baseUrlAllowlist": ["https://registry.modelcontextprotocol.io"],
+	"syncMode": "FULL_THEN_INCREMENTAL", "cadence": "PT1H",
+})
+
+test_official_registry_source_accepted if {
+	violations := data.jumo.corpus.deny with input as [official_registry_source]
+	not has_rule(violations, "corpus.registry-source.no-secret-when-official")
+	not has_rule(violations, "corpus.registry-source.disabled-types")
+	not has_rule(violations, "corpus.registry-source.enrichment-requires-terms")
+	not has_rule(violations, "corpus.registry-source.cadence-format")
+	not has_rule(violations, "corpus.registry-source.cadence-floor")
+}
+
+test_official_registry_source_with_secret_binding_rejected if {
+	source := registry_source("official-with-secret", {
+		"sourceType": "OFFICIAL_REGISTRY", "adapter": "official-registry-v0.1", "lifecycle": "ENABLED",
+		"baseUrlAllowlist": ["https://registry.modelcontextprotocol.io"], "cadence": "PT1H",
+		"secretBindingRef": {"kind": "SecretBinding", "namespace": "home.jumo.dev", "id": "registry-token"},
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	has_rule(violations, "corpus.registry-source.no-secret-when-official")
+}
+
+test_enabled_glama_source_rejected if {
+	source := registry_source("glama", {
+		"sourceType": "GLAMA", "adapter": "glama-v1", "lifecycle": "ENABLED", "cadence": "PT1H",
+		"baseUrlAllowlist": ["https://glama.ai"],
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	has_rule(violations, "corpus.registry-source.disabled-types")
+}
+
+test_disabled_glama_source_accepted if {
+	source := registry_source("glama-disabled", {
+		"sourceType": "GLAMA", "adapter": "glama-v1", "lifecycle": "DISABLED", "cadence": "PT1H",
+		"baseUrlAllowlist": ["https://glama.ai"],
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	not has_rule(violations, "corpus.registry-source.disabled-types")
+}
+
+test_enabled_github_enrichment_without_terms_rejected if {
+	source := registry_source("github-enrichment", {
+		"sourceType": "GITHUB_ENRICHMENT", "adapter": "github-v1", "lifecycle": "ENABLED", "cadence": "PT1H",
+		"baseUrlAllowlist": ["https://api.github.com"],
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	has_rule(violations, "corpus.registry-source.enrichment-requires-terms")
+}
+
+test_enabled_github_enrichment_with_terms_accepted if {
+	source := registry_source("github-enrichment-approved", {
+		"sourceType": "GITHUB_ENRICHMENT", "adapter": "github-v1", "lifecycle": "ENABLED", "cadence": "PT1H",
+		"baseUrlAllowlist": ["https://api.github.com"],
+		"termsApprovalRef": {"kind": "TermsApproval", "namespace": "home.jumo.dev", "id": "github-terms"},
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	not has_rule(violations, "corpus.registry-source.enrichment-requires-terms")
+}
+
+test_registry_source_cadence_below_floor_rejected if {
+	source := registry_source("too-frequent", {
+		"sourceType": "OFFICIAL_REGISTRY", "adapter": "official-registry-v0.1", "lifecycle": "ENABLED",
+		"baseUrlAllowlist": ["https://registry.modelcontextprotocol.io"], "cadence": "PT5M",
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	has_rule(violations, "corpus.registry-source.cadence-floor")
+}
+
+test_registry_source_malformed_cadence_rejected if {
+	source := registry_source("bad-cadence", {
+		"sourceType": "OFFICIAL_REGISTRY", "adapter": "official-registry-v0.1", "lifecycle": "ENABLED",
+		"baseUrlAllowlist": ["https://registry.modelcontextprotocol.io"], "cadence": "one hour",
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	has_rule(violations, "corpus.registry-source.cadence-format")
+}

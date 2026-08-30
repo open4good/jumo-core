@@ -964,3 +964,54 @@ deny contains corpus.violation("corpus.bundle.package-certified", document, mess
 		[package_id],
 	)
 }
+
+# ADR-0050 6: only the Official Registry source is credential-free by design; the sync it drives
+# never holds an Authorization header or OpenBao token, so a declared secretBindingRef would be
+# dead configuration signalling a design a McpRegistrySource of this type must never take.
+deny contains corpus.violation("corpus.registry-source.no-secret-when-official", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpRegistrySource"
+	corpus.spec(document).sourceType == "OFFICIAL_REGISTRY"
+	object.get(corpus.spec(document), "secretBindingRef", null) != null
+	message := "spec.secretBindingRef: an OFFICIAL_REGISTRY source is credential-free by design and must declare no secretBindingRef"
+}
+
+# ADR-0050 6: "other registry types are disabled" -- GLAMA, SMITHERY and PULSE_MCP have no
+# approved worker, credential binding or terms evidence yet.
+deny contains corpus.violation("corpus.registry-source.disabled-types", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpRegistrySource"
+	corpus.spec(document).sourceType in {"GLAMA", "SMITHERY", "PULSE_MCP"}
+	corpus.spec(document).lifecycle == "ENABLED"
+	message := sprintf("spec.lifecycle: sourceType %q may not be ENABLED (ADR-0050 6)", [corpus.spec(document).sourceType])
+}
+
+# ADR-0050 6: GitHub enrichment "remains disabled until ... terms evidence are approved".
+deny contains corpus.violation("corpus.registry-source.enrichment-requires-terms", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpRegistrySource"
+	corpus.spec(document).sourceType == "GITHUB_ENRICHMENT"
+	corpus.spec(document).lifecycle == "ENABLED"
+	object.get(corpus.spec(document), "termsApprovalRef", null) == null
+	message := "spec.termsApprovalRef: required for an ENABLED GITHUB_ENRICHMENT source"
+}
+
+deny contains corpus.violation("corpus.registry-source.cadence-format", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpRegistrySource"
+	cadence := object.get(corpus.spec(document), "cadence", "")
+	cadence != ""
+	not iso8601_duration_ns(cadence)
+	message := sprintf("spec.cadence: %q is not a valid ISO-8601 duration", [cadence])
+}
+
+# A source with no documented upstream rate limit (official-sync AC2/AC3) must not be scheduled
+# tightly enough to make undocumented throttling the common case rather than the rare one.
+deny contains corpus.violation("corpus.registry-source.cadence-floor", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpRegistrySource"
+	cadence := object.get(corpus.spec(document), "cadence", "")
+	cadence != ""
+	iso8601_duration_ns(cadence) < iso8601_duration_ns("PT15M")
+	message := sprintf("spec.cadence: %q is below the PT15M floor", [cadence])
+}

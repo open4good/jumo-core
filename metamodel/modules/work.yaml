@@ -1582,6 +1582,21 @@ classes:
           carried by the submission itself -- keys read spec.<key>, falling back to metadata.name
           -- so the emitted item never trusts a client-submitted facet the contract can resolve
           authoritatively instead.
+      asContractReferences:
+        range: boolean
+        ifabsent: false
+        description: When true, keys/optionalKeys are ignored and each item instead renders as a
+          ContractReference {kind, namespace, id} -- kind from itemReferenceKind (required when
+          this is true), namespace from the emitting Realm, id from the item's own reference id
+          (itemIdKey when a raw item is an object). The mechanism a journey uses to bind a
+          projected roster into another document's own typed reference list, e.g.
+          RoutingEligibility.eligibleRoleDefinitionRefs.
+      itemIdKey:
+        range: string
+        description: The key a raw object item's own reference id is read from, before projection.
+          Only meaningful together with asContractReferences -- referenceChecks.itemPath names the
+          key on the already-rendered item instead (id, once asContractReferences has run), so the
+          two cannot share one declaration when the projection changes an item's shape.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

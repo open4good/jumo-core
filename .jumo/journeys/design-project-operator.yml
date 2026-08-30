@@ -110,6 +110,20 @@ spec:
         referenceChecks:
           - {field: projectRef, kind: Project}
           - {field: teamId, kind: TeamSpec}
+          # itemPath: id, not roleRef -- this checks the already-rendered ContractReference shape
+          # asContractReferences produces below, not the raw collected item.
+          - {field: eligibleRoleDefinitionRefs, kind: RoleDefinition, itemPath: id}
+        # Scoped to the operator this run designs, not the team's unrelated existing roster: unlike
+        # TeamSpec's own members projection above, existingSpecValues seeds from a document of the
+        # *emission's own* targetKind/id (RoutingEligibility here, always a fresh RUN_PREFIX id), so
+        # it never sees the existing TeamSpec's roster -- only this run's own collected fields.
+        collectionProjections:
+          - field: eligibleRoleDefinitionRefs
+            sourceField: proposedMembers
+            keys: [roleRef]
+            itemReferenceKind: RoleDefinition
+            itemIdKey: roleRef
+            asContractReferences: true
   steps:
     - id: analyze-operator-need
       requiredObligations: []

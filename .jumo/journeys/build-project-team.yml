@@ -99,6 +99,24 @@ spec:
         referenceChecks:
           - {field: projectRef, kind: Project}
           - {field: teamId, kind: TeamSpec}
+          # itemPath: id, not roleRef -- this checks the already-rendered ContractReference shape
+          # asContractReferences produces below, not the raw collected item.
+          - {field: eligibleRoleDefinitionRefs, kind: RoleDefinition, itemPath: id}
+        # team-and-operator-design-journeys AC3: binds the same roster TeamSpec.spec.members
+        # renders (existing selections plus newly proposed ones) into typed role references, not
+        # just the team.
+        collectionProjections:
+          - field: eligibleRoleDefinitionRefs
+            sourceField: members
+            keys: [roleRef]
+            itemReferenceKind: RoleDefinition
+            asContractReferences: true
+          - field: eligibleRoleDefinitionRefs
+            sourceField: proposedMembers
+            keys: [roleRef]
+            itemReferenceKind: RoleDefinition
+            asContractReferences: true
+            itemIdKey: roleRef
   steps:
     - id: analyze-team-need
       requiredObligations: []

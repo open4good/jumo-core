@@ -19,6 +19,7 @@ spec:
         kind: Project
         namespace: ${realmNamespace}
         id: ${projectRef}
+      eligibleRoleDefinitionRefs: ${eligibleRoleDefinitionRefs}
       eligibleTeamSpecRefs:
         - kind: TeamSpec
           namespace: ${realmNamespace}

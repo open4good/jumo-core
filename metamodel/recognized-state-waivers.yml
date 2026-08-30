@@ -7,3 +7,9 @@ waivers:
   - table: lease_invocation_grant_binding
     reason: join table binding an ExecutionCellLease to a capability grant the trusted control
       plane already issued; it carries no independent recognized business state of its own.
+  - table: mcp_discovery_snapshot
+    reason: append-only observation log of one bounded MCP discovery negotiation outcome, machine-
+      derived and never Git-governed -- same character as this corpus's own already-uncovered
+      audit_event and mcp_registry_raw_payload tables, both plain observational logs rather than
+      recognized business state. Reviewed now rather than left silently uncovered because this
+      table is what newly pushed the ratchet past its ceiling (mcp-target-machine-discovery).

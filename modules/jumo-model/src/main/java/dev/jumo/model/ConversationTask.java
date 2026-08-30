@@ -21,7 +21,9 @@ public enum ConversationTask {
 
   STRUCTURED_INTENT("STRUCTURED_INTENT"),
 
-  INTAKE("INTAKE");
+  INTAKE("INTAKE"),
+
+  TEAM_ANALYSIS("TEAM_ANALYSIS");
 
   private final static Map<String, ConversationTask> MAP;
 

@@ -134,7 +134,7 @@ spec:
       promptTemplateRef:
         kind: PromptTemplate
         namespace: dev.jumo.core
-        id: nestor-deliberation
+        id: team-analysis
     - id: select-team
       requiredObligations: []
       name: Sélection de l'équipe

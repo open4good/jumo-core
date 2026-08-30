@@ -128,7 +128,7 @@ spec:
       promptTemplateRef:
         kind: PromptTemplate
         namespace: dev.jumo.core
-        id: nestor-deliberation
+        id: team-analysis
     - id: define-team-scope
       requiredObligations: []
       name: Définition de l'équipe

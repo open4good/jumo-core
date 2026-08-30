@@ -183,6 +183,7 @@ enums:
       COMPACT: {}
       STRUCTURED_INTENT: {}
       INTAKE: {}
+      TEAM_ANALYSIS: {}
   VariableTrust:
     description: 'UNTRUSTED carries content originating outside the trust boundary -- email bodies, web pages, transcripts,
       inbound channel messages. This is propagated provenance metadata, not by itself a security boundary
@@ -1127,6 +1128,51 @@ classes:
           same role AssistedJourneyEmission.targetKind already plays -- one class serving every domain that needs the
           shape instead of one class per target kind (canonical decision 15); absent when javaType is not generic over
           a target kind.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  DiagnosticDimensionProposal:
+    description: 'Structured output of a DIALOGUE_COLLECT step (team-and-operator-design-journeys AC4) capturing which
+      diagnostic dimensions Nestor considers relevant to the stated project need, and why. The eleven named dimensions
+      in the serving PromptTemplate''s own system prompt -- engineering, product, design, security, operations,
+      compliance, marketing, analytics, performance, accessibility, SEO -- are illustrative, not a closed enum:
+      DiagnosticDimension.dimension is free text, so a justified different discipline may be proposed. Identifies
+      which functions matter and why; it proposes no member, role or capability -- that is select-members'' own
+      STRUCTURED_INTENT step (AC2), downstream of this one.'
+    attributes:
+      dimensions:
+        range: DiagnosticDimension
+        multivalued: true
+        inlined_as_list: true
+        description: One entry per diagnostic dimension considered relevant to this need. Empty when the need is too
+          ambiguous to analyze yet -- see clarifyingQuestion.
+      clarifyingQuestion:
+        range: string
+        description: A clarifying question to continue the dialogue when the stated need is still too ambiguous to
+          analyze. Absent once the proposal is considered final for this turn.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  DiagnosticDimension:
+    attributes:
+      dimension:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+        description: A diagnostic discipline relevant to this need -- one of the eleven illustrative ones the prompt
+          names, or a justified different one; free text, never a closed enum.
+      rationale:
+        range: string
+        required: true
+        pattern: ^.{1,}$
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

@@ -433,6 +433,15 @@ deny contains corpus.violation("corpus.bundle.system-effect-kill-switch", docume
 	message := sprintf("spec.semanticProfile.operations[%d]: an ENABLED SYSTEM_EFFECT operation requires killSwitchRef (ADR-0056 decision 4)", [index])
 }
 
+deny contains corpus.violation("corpus.bundle.system-effect-not-mcp-exposed", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpBundle"
+	corpus.spec(document).lifecycle == "ENABLED"
+	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
+	operation.effect == "SYSTEM_EFFECT"
+	message := sprintf("spec.semanticProfile.operations[%d]: SYSTEM_EFFECT is never exposed as a generic MCP tool (ADR-0056 decision 1, linux-root-effect-executor AC1)", [index])
+}
+
 exposed_tools(appraisal) := {item.upstreamToolName |
 	some item in object.get(corpus.spec(appraisal), "upstreamInventory", [])
 	item.disposition == "EXPOSED"

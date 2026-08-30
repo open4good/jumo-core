@@ -127,6 +127,7 @@ enums:
       MCP_REGISTRY: {}
       MCP_GATEWAY: {}
       MCP_DISCOVERY: {}
+      SYSTEM_EFFECT: {}
   WorkloadCommandStatus:
     permissible_values:
       QUEUED: {}

@@ -17,7 +17,9 @@ public enum WorkloadDriverKind {
 
   MCP_GATEWAY("MCP_GATEWAY"),
 
-  MCP_DISCOVERY("MCP_DISCOVERY");
+  MCP_DISCOVERY("MCP_DISCOVERY"),
+
+  SYSTEM_EFFECT("SYSTEM_EFFECT");
 
   private final static Map<String, WorkloadDriverKind> MAP;
 

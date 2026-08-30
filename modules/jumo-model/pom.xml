@@ -14,7 +14,7 @@
   <artifactId>jumo-model</artifactId>
   <!-- Kept in step with metamodel/VERSION by hand until pin-contract-sources.sh does it
        (metamodel-and-policy-to-core AC5, out of scope this pass). -->
-  <version>0.25.0</version>
+  <version>0.26.0</version>
   <name>Jumo :: jumo-model</name>
   <description>
     Generated Java records for every class metamodel/jumo-v1.yaml declares, plus

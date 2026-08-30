@@ -1,0 +1,102 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: design-advisor
+  namespace: dev.jumo.core
+  name: Concevoir un profil de conseil pour un rôle
+spec:
+  journeyId: design-advisor
+  name: Concevoir un profil de conseil pour un rôle
+  summaryI18nKey: designAdvisorSummary
+  description: Donnez à un rôle existant une capacité de conseil contextuel -- un dialogue borné,
+    non-décisionnel, distinct de son travail de production.
+  category: teamsProjects
+  icon: mdi-account-question-outline
+  interruptible: true
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
+  emitsCapability: contract.change.propose
+  emissionBundle:
+    # PromptTemplate before EngagementMethod before AdvisorProfile: each later emission's own
+    # referenceChecks resolve the earlier one's id through the same-bundle registry (same ordering
+    # rule as build/evolve-project-team's own fan-out, team-and-operator-design-journeys AC2).
+    - emission:
+        targetKind: PromptTemplate
+        identifier: {fromField: advisorTopicId}
+        pathTemplate: .jumo/prompts/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: advisor-dialogue-prompt-template}
+        validations:
+          - {field: advisorTopicId, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: promptPurpose, required: true, minimumLength: 10}
+          - {field: systemPrompt, required: true, minimumLength: 20}
+          - {field: workerRequirementProfileRef, required: true}
+        referenceChecks:
+          - {field: roleRef, kind: RoleDefinition}
+          - {field: roleRef, kind: AgentDefinition}
+          - {field: workerRequirementProfileRef, kind: WorkerRequirementProfile}
+    - emission:
+        targetKind: EngagementMethod
+        identifier: {fromField: advisorTopicId}
+        pathTemplate: .jumo/engagement-methods/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: advisor-engagement-method}
+        validations:
+          - {field: deliverable, required: true, minimumLength: 3}
+        referenceChecks:
+          - {field: roleRef, kind: AgentDefinition}
+          - {field: workerRequirementProfileRef, kind: WorkerRequirementProfile}
+          - {field: advisorTopicId, kind: PromptTemplate}
+    - emission:
+        targetKind: AdvisorProfile
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/advisor-profiles/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: advisor-profile}
+        validations:
+          - {field: roleRef, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: capabilityProfileRef, required: true}
+        referenceChecks:
+          - {field: roleRef, kind: RoleDefinition}
+          - {field: capabilityProfileRef, kind: CapabilityProfile}
+          - {field: advisorTopicId, kind: EngagementMethod}
+  steps:
+    - id: analyze-advisor-need
+      requiredObligations: []
+      name: Analyse du besoin
+      description: Nestor examine le besoin de conseil exprimé avant la conception du profil.
+      personaNarration: Avant de concevoir ce conseil, discutons du besoin réel de ce rôle.
+      stepKind: DIALOGUE_COLLECT
+      requiredFields: []
+      promptTemplateRef:
+        kind: PromptTemplate
+        namespace: dev.jumo.core
+        id: nestor-deliberation
+    - id: select-role
+      requiredObligations: []
+      name: Sélection du rôle
+      description: Choisissez le rôle existant qui recevra cette capacité de conseil.
+      personaNarration: Quel rôle établi doit pouvoir être consulté de cette manière ?
+      requiredFields:
+        - {field: roleRef, i18nKey: journeyAdvisorRoleField}
+    - id: design-advisor-dialogue
+      requiredObligations: []
+      name: Conception du dialogue de conseil
+      description: Définissez le profil de capacité repris, l'exigence de worker et le prompt du dialogue.
+      personaNarration: Structurons ensemble ce que ce conseil peut offrir et comment il doit se comporter.
+      requiredFields:
+        - {field: advisorTopicId, i18nKey: journeyAdvisorTopicIdField}
+        - {field: capabilityProfileRef, i18nKey: journeyCapabilityProfileField}
+        - {field: workerRequirementProfileRef, i18nKey: journeyWorkerRequirementField}
+        - {field: promptPurpose, i18nKey: journeyPromptPurposeField}
+        - {field: systemPrompt, i18nKey: journeySystemPromptField}
+        - {field: deliverable, i18nKey: journeyDeliverableField}
+    - id: confirm-advisor
+      requiredObligations: []
+      name: Confirmation du profil de conseil
+      description: Vérifiez le récapitulatif avant d'enregistrer la proposition.
+      personaNarration: Tout est prêt pour enregistrer ce profil de conseil dans votre Realm.
+      requiredFields:
+        - {field: confirmed, i18nKey: journeyConfirmField}
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

@@ -1,0 +1,40 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: advisor-dialogue-prompt-template
+  namespace: dev.jumo.core
+  name: Role advisor dialogue prompt
+spec:
+  renders: PromptTemplate
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: PromptTemplate
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${advisorTopicId} dialogue
+    spec:
+      purpose: ${promptPurpose}
+      template:
+        engine: literal
+        system: ${systemPrompt}
+        user: '{{transcript}}'
+      variables:
+        - name: transcript
+          trust: UNTRUSTED
+      output:
+        form: TEXT
+      minimumAssurance: OBSERVED
+      ring: RING_2_AGENT_BEHAVIOR
+      agentDefinitionRef:
+        kind: AgentDefinition
+        namespace: dev.jumo.core
+        id: ${roleRef}
+      workerRequirementProfileRef:
+        kind: WorkerRequirementProfile
+        namespace: dev.jumo.core
+        id: ${workerRequirementProfileRef}
+      resourceBudgetRef:
+        kind: ResourceBudget
+        namespace: dev.jumo.core
+        id: interactive

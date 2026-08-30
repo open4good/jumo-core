@@ -1,0 +1,32 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: advisor-profile
+  namespace: dev.jumo.core
+  name: Role advisor profile
+spec:
+  renders: AdvisorProfile
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: AdvisorProfile
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${roleRef} advisor
+    spec:
+      ownerRealm: ${realmId}
+      roleDefinitionRef:
+        kind: RoleDefinition
+        namespace: dev.jumo.core
+        id: ${roleRef}
+      dialogueOptions:
+        - capabilityProfileRef:
+            kind: CapabilityProfile
+            namespace: dev.jumo.core
+            id: ${capabilityProfileRef}
+          engagementMethodRef:
+            kind: EngagementMethod
+            namespace: ${realmNamespace}
+            id: ${advisorTopicId}
+          defaultOption: true
+      practiceRefs: []

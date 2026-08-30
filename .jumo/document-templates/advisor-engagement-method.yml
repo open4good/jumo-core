@@ -1,0 +1,40 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: advisor-engagement-method
+  namespace: dev.jumo.core
+  name: Role advisor engagement method
+spec:
+  renders: EngagementMethod
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: EngagementMethod
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${advisorTopicId} engagement
+    spec:
+      agentDefinitionRef:
+        kind: AgentDefinition
+        namespace: dev.jumo.core
+        id: ${roleRef}
+      workerRequirementProfileRef:
+        kind: WorkerRequirementProfile
+        namespace: dev.jumo.core
+        id: ${workerRequirementProfileRef}
+      resourceBudgetRef:
+        kind: ResourceBudget
+        namespace: dev.jumo.core
+        id: interactive
+      assurance: OBSERVED
+      stages:
+        - id: dialogue
+          promptTemplateRef:
+            kind: PromptTemplate
+            namespace: ${realmNamespace}
+            id: ${advisorTopicId}
+          gate: NONE
+          deliverable: ${deliverable}
+      termination:
+        maximumDuration: PT10M
+        allowEarlyTermination: true

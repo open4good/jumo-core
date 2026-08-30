@@ -68,11 +68,9 @@ spec:
           - {field: teamId, required: true}
           - {field: purpose, required: true, minimumLength: 10}
           - {field: members, minimumItems: 2}
-          # team-and-operator-design-journeys AC3: an explicit declared Project is required. Like
-          # evolve-project-team, this is checked here but not itself persisted onto TeamSpec (which
-          # has no projectRef field) -- whether/how a RoutingEligibility should bind this new operator's
-          # role to the Project is the same open design question evolve-project-team's own evidence
-          # already recorded, not settled by this journey either.
+          # team-and-operator-design-journeys AC3: an explicit declared Project is required. Checked
+          # here but not itself persisted onto TeamSpec (which has no projectRef field); it also
+          # feeds the new RoutingEligibility emission below.
           - {field: projectRef, required: true}
         referenceChecks:
           - {field: projectRef, kind: Project}
@@ -96,6 +94,22 @@ spec:
             optionalKeys: [independenceGroup]
             itemValidations:
               - {field: role, minimumLength: 3}
+    # team-and-operator-design-journeys AC3, same owner ruling and precedent as evolve-project-team's
+    # own emission: a team-composition change (here, adding one operator) emits a new
+    # RoutingEligibility record rather than updating one in place or leaving it untouched.
+    - emission:
+        targetKind: RoutingEligibility
+        identifier: {fromField: teamId, suffix: RUN_PREFIX}
+        pathTemplate: .jumo/routing-eligibilities/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: routing-eligibility}
+        validations:
+          - {field: teamId, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: projectRef, required: true}
+        fieldDefaults:
+          - {field: teamName, value: 'Evolved Team ${teamId}'}
+        referenceChecks:
+          - {field: projectRef, kind: Project}
+          - {field: teamId, kind: TeamSpec}
   steps:
     - id: analyze-operator-need
       requiredObligations: []

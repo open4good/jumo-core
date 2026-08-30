@@ -1,0 +1,141 @@
+apiVersion: jumo.dev/v1
+kind: AssistedJourney
+metadata:
+  id: design-project-operator
+  namespace: dev.jumo.core
+  name: Concevoir un opérateur pour l'équipe projet
+spec:
+  journeyId: design-project-operator
+  name: Concevoir un opérateur pour l'équipe projet
+  summaryI18nKey: designProjectOperatorSummary
+  description: Ajoutez un nouvel opérateur IA à une équipe projet existante sans reconstruire le reste
+    de sa composition.
+  category: teamsProjects
+  icon: mdi-account-plus-outline
+  interruptible: true
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
+  emitsCapability: contract.change.propose
+  emissionBundle:
+    # Fan-out first, TeamSpec last -- same ordering rule as build/evolve-project-team
+    # (team-and-operator-design-journeys AC2): the new operator's own RoleDefinition must already
+    # have rendered by the time TeamSpec's own collectionProjections run over it.
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: RoleDefinition
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/roles/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: role-definition}
+        validations:
+          - {field: roleRef, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: role, required: true, minimumLength: 3}
+          - {field: mission, required: true, minimumLength: 10}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: AgentDefinition
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/agents/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: agent-definition}
+        validations:
+          - {field: responsibilities, minimumItems: 1}
+          - {field: requestedCapabilities, minimumItems: 1}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: WorkerRequirementProfile
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/worker-requirements/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: worker-requirement-profile}
+        validations:
+          - {field: taskClasses, minimumItems: 1}
+          - {field: modalities, minimumItems: 1}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: RoleAssignment
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/role-assignments/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: role-assignment}
+        referenceChecks:
+          - {field: roleRef, kind: RoleDefinition}
+          - {field: roleRef, kind: AgentDefinition}
+          - {field: roleRef, kind: WorkerRequirementProfile}
+    - emission:
+        targetKind: TeamSpec
+        identifier: {fromField: teamId}
+        pathTemplate: .jumo/teams/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: team-spec}
+        validations:
+          - {field: teamId, required: true}
+          - {field: purpose, required: true, minimumLength: 10}
+          - {field: members, minimumItems: 2}
+          # team-and-operator-design-journeys AC3: an explicit declared Project is required. Like
+          # evolve-project-team, this is checked here but not itself persisted onto TeamSpec (which
+          # has no projectRef field) -- whether/how a RoutingEligibility should bind this new operator's
+          # role to the Project is the same open design question evolve-project-team's own evidence
+          # already recorded, not settled by this journey either.
+          - {field: projectRef, required: true}
+        referenceChecks:
+          - {field: projectRef, kind: Project}
+        collectionProjections:
+          # Seeded from the existing team's own current roster (JourneyService#existingSpecValues, an
+          # existing-document base every emission may now draw on), re-projected as-is so the rest of
+          # the roster survives byte-for-byte -- unlike build/evolve-project-team's own ENTITY_COLLECTION
+          # reselection, this journey's own step never asks the user to resupply it (purpose: "can add
+          # one member without rebuilding unrelated members"). Keyed on the real metamodel field name,
+          # roleDefinitionRef, since a committed TeamMember carries that, not the roleRef shorthand
+          # build/evolve's own newly-proposed entries use (references.rego tolerates both as synonyms;
+          # roleDefinitionRef is the canonical one, unifying the two is a separate concern).
+          - field: members
+            keys: [roleDefinitionRef, role]
+            optionalKeys: [independenceGroup]
+            itemValidations:
+              - {field: role, minimumLength: 3}
+          - field: members
+            sourceField: proposedMembers
+            keys: [roleRef, role]
+            optionalKeys: [independenceGroup]
+            itemValidations:
+              - {field: role, minimumLength: 3}
+  steps:
+    - id: analyze-operator-need
+      requiredObligations: []
+      name: Analyse du besoin
+      description: Nestor examine le besoin de ce nouvel opérateur avant sa conception.
+      personaNarration: Avant de concevoir cet opérateur, discutons du besoin réel de l'équipe.
+      stepKind: DIALOGUE_COLLECT
+      requiredFields: []
+      promptTemplateRef:
+        kind: PromptTemplate
+        namespace: dev.jumo.core
+        id: nestor-deliberation
+    - id: select-team
+      requiredObligations: []
+      name: Sélection de l'équipe
+      description: Choisissez l'équipe projet existante qui accueillera ce nouvel opérateur.
+      personaNarration: À quelle équipe ce nouvel opérateur doit-il se joindre ?
+      requiredFields:
+        - {field: teamId, i18nKey: journeyTeamIdField}
+        - {field: projectRef, i18nKey: journeyProjectRefField}
+    - id: design-operator
+      requiredObligations: []
+      name: Conception de l'opérateur
+      description: Définissez le rôle, la mission et les exigences du nouvel opérateur.
+      personaNarration: Structurons ensemble ce nouvel opérateur, ses responsabilités et ses capacités.
+      stepKind: COLLECT
+      requiredFields:
+        - {field: proposedMembers, i18nKey: journeyNewOperatorField}
+      projectionSpecRef:
+        kind: ProjectionSpec
+        namespace: dev.jumo.core
+        id: design-project-operator
+    - id: confirm-operator
+      requiredObligations: []
+      name: Confirmation de l'opérateur
+      description: Vérifiez le diff contractuel avant d'enregistrer la proposition.
+      personaNarration: Tout est prêt pour enregistrer ce nouvel opérateur dans votre Realm.
+      requiredFields:
+        - {field: confirmed, i18nKey: journeyConfirmField}
+  resourceBudgetRef:
+    kind: ResourceBudget
+    namespace: dev.jumo.core
+    id: interactive

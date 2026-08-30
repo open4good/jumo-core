@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/step-payload/design-project-operator",
+  "title": "Design one project operator step payload",
+  "type": "object",
+  "properties": {
+    "proposedMembers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleRef": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+          "role": { "type": "string", "minLength": 3 },
+          "mission": { "type": "string", "minLength": 10 },
+          "independenceGroup": { "type": "string", "minLength": 1 },
+          "responsibilities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "requestedCapabilities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "taskClasses": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "modalities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "minimumTokens": { "type": "integer", "minimum": 1024 },
+          "reasoningEffort": { "type": "string" },
+          "requiredIndependenceGroup": { "type": "string" }
+        },
+        "required": ["roleRef", "role", "mission", "independenceGroup", "responsibilities",
+          "requestedCapabilities", "taskClasses", "modalities", "minimumTokens", "reasoningEffort"]
+      }
+    }
+  },
+  "required": ["proposedMembers"]
+}

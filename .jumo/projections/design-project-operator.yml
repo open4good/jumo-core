@@ -1,0 +1,21 @@
+apiVersion: jumo.dev/v1
+kind: ProjectionSpec
+metadata:
+  id: design-project-operator
+  namespace: dev.jumo.core
+  name: Design one project operator step form
+spec:
+  ownerRealm: home
+  payloadSchemaRef: design-project-operator
+  projectionKind: FORM
+  renderedBy: home
+  sections:
+    - id: new-operator
+      i18nKey: journeyNewOperatorSection
+      columns: 1
+      fields:
+        - path: proposedMembers
+          representation: STRUCTURED_YAML
+          i18nKey: journeyNewOperatorField
+          helpI18nKey: journeyNewOperatorHelp
+          required: true

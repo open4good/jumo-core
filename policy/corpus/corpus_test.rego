@@ -30,7 +30,10 @@ valid_corpus := [
 	}),
 	document(".jumo/operators/implementer.yml", "RoleDefinition", "implementer", {"ownerRealm": "home"}),
 	document(".jumo/operators/reviewer.yml", "RoleDefinition", "reviewer", {"ownerRealm": "home"}),
-	document(".jumo/agents/reviewer.yml", "AgentDefinition", "reviewer", {"requestedCapabilities": ["change.review"]}),
+	document(".jumo/agents/reviewer.yml", "AgentDefinition", "reviewer", {
+		"requestedCapabilities": ["change.review"],
+		"prohibitedAuthority": ["self_grant_capability", "bypass_policy", "self_approve_privilege_change"],
+	}),
 	document(
 		".jumo/operator-assignments/implementer.yml",
 		"RoleAssignment",

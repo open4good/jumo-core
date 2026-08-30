@@ -17,26 +17,80 @@ spec:
   requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
   policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
-  emission:
-    targetKind: TeamSpec
-    identifier: {fromField: teamId}
-    pathTemplate: .jumo/teams/${id}.yml
-    documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: team-spec}
-    validations:
-      - {field: teamId, required: true}
-      - {field: purpose, required: true, minimumLength: 10}
-      - {field: members, minimumItems: 2}
-    fieldDefaults:
-      - {field: teamName, value: 'Evolved Team ${id}'}
-    referenceChecks:
-      - {field: members, kind: RoleDefinition, itemPath: roleRef}
-    collectionProjections:
-      - field: members
-        keys: [roleRef, role]
-        optionalKeys: [independenceGroup]
-        itemReferenceKind: RoleDefinition
-        itemValidations:
-          - {field: role, minimumLength: 3}
+  emissionBundle:
+    # Fan-out first, TeamSpec last -- same rule build-project-team uses (team-and-operator-design-
+    # journeys AC2): TeamSpec's own referenceChecks resolve a proposed roleRef only through the
+    # same-bundle registry, which needs that RoleDefinition already rendered.
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: RoleDefinition
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/roles/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: role-definition}
+        validations:
+          - {field: roleRef, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: role, required: true, minimumLength: 3}
+          - {field: mission, required: true, minimumLength: 10}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: AgentDefinition
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/agents/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: agent-definition}
+        validations:
+          - {field: responsibilities, minimumItems: 1}
+          - {field: requestedCapabilities, minimumItems: 1}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: WorkerRequirementProfile
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/worker-requirements/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: worker-requirement-profile}
+        validations:
+          - {field: taskClasses, minimumItems: 1}
+          - {field: modalities, minimumItems: 1}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: RoleAssignment
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/role-assignments/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: role-assignment}
+        referenceChecks:
+          - {field: roleRef, kind: RoleDefinition}
+          - {field: roleRef, kind: AgentDefinition}
+          - {field: roleRef, kind: WorkerRequirementProfile}
+    - emission:
+        targetKind: TeamSpec
+        identifier: {fromField: teamId}
+        pathTemplate: .jumo/teams/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: team-spec}
+        validations:
+          - {field: teamId, required: true}
+          - {field: purpose, required: true, minimumLength: 10}
+          - {field: members, minimumItems: 2}
+          # team-and-operator-design-journeys AC3: an explicit declared Project is required. This
+          # journey does not emit or update a RoutingEligibility -- whether/how it should is still
+          # unsettled (see this order's own evidence) -- so projectRef is validated as a real Project
+          # reference here but not otherwise consumed.
+          - {field: projectRef, required: true}
+        fieldDefaults:
+          - {field: teamName, value: 'Evolved Team ${id}'}
+        referenceChecks:
+          - {field: members, kind: RoleDefinition, itemPath: roleRef}
+          - {field: projectRef, kind: Project}
+        collectionProjections:
+          - field: members
+            keys: [roleRef, role]
+            optionalKeys: [independenceGroup]
+            itemReferenceKind: RoleDefinition
+            itemValidations:
+              - {field: role, minimumLength: 3}
+          - field: members
+            sourceField: proposedMembers
+            keys: [roleRef, role]
+            optionalKeys: [independenceGroup]
+            itemValidations:
+              - {field: role, minimumLength: 3}
   steps:
     - id: analyze-evolution-need
       requiredObligations: []
@@ -57,6 +111,7 @@ spec:
       requiredFields:
         - {field: teamId, i18nKey: journeyTeamIdField}
         - {field: purpose, i18nKey: journeyTeamEvolutionPurposeField}
+        - {field: projectRef, i18nKey: journeyProjectRefField}
     - id: update-members
       requiredObligations: []
       name: Composition des membres

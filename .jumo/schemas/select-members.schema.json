@@ -8,6 +8,27 @@
       "type": "array",
       "items": { "type": "string", "minLength": 1 },
       "minItems": 1
+    },
+    "proposedMembers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleRef": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+          "roleName": { "type": "string", "minLength": 1 },
+          "mission": { "type": "string", "minLength": 10 },
+          "independenceGroup": { "type": "string", "minLength": 1 },
+          "responsibilities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "requestedCapabilities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "taskClasses": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "modalities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "minimumTokens": { "type": "integer", "minimum": 1024 },
+          "reasoningEffort": { "type": "string" },
+          "requiredIndependenceGroup": { "type": "string" }
+        },
+        "required": ["roleRef", "roleName", "mission", "independenceGroup", "responsibilities",
+          "requestedCapabilities", "taskClasses", "modalities", "minimumTokens", "reasoningEffort"]
+      }
     }
   },
   "required": ["members"]

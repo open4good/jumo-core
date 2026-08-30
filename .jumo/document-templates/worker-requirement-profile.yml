@@ -1,0 +1,35 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: worker-requirement-profile
+  namespace: dev.jumo.core
+  name: Proposed team member worker requirement profile
+spec:
+  renders: WorkerRequirementProfile
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: WorkerRequirementProfile
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${roleName}
+    spec:
+      ownerRealm: ${realmId}
+      taskClasses: ${taskClasses}
+      modalities: ${modalities}
+      dataScopeCeiling: REALM_PRIVATE
+      context:
+        minimumTokens: ${minimumTokens}
+      interaction:
+        toolUse: NONE
+        structuredOutput: OPTIONAL
+      quality:
+        minimumAssurance: OBSERVED
+        minimumReliability: 0.8
+        minimumTaskHorizon: PT2M
+        maximumEvaluationAge: P30D
+        reasoningEffort: ${reasoningEffort}
+      requiredIndependenceGroup: ${requiredIndependenceGroup}
+      limits:
+        maximumLatency: PT2M
+        maximumCostClass: MEDIUM

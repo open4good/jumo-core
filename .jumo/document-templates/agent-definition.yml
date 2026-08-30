@@ -1,0 +1,26 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: agent-definition
+  namespace: dev.jumo.core
+  name: Proposed team member agent definition
+spec:
+  renders: AgentDefinition
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: AgentDefinition
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      defaultDisplayName: ${roleName}
+    spec:
+      responsibilities: ${responsibilities}
+      requestedCapabilities: ${requestedCapabilities}
+      prohibitedAuthority:
+        - self_grant_capability
+        - bypass_policy
+        - self_approve_privilege_change
+        - modify_root_of_trust
+        - act_as_super_administrator
+      defaultAutonomy: SUPERVISED
+      modificationRing: RING_2_AGENT_BEHAVIOR

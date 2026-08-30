@@ -1,0 +1,30 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: role-assignment
+  namespace: dev.jumo.core
+  name: Proposed team member role assignment
+spec:
+  renders: RoleAssignment
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: RoleAssignment
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+    spec:
+      ownerRealm: ${realmId}
+      roleDefinitionRef:
+        kind: RoleDefinition
+        namespace: ${realmNamespace}
+        id: ${roleRef}
+      bearer:
+        kind: AGENT
+        agentDefinitionRef:
+          kind: AgentDefinition
+          namespace: ${realmNamespace}
+          id: ${roleRef}
+        defaultWorkerRequirementProfileRef:
+          kind: WorkerRequirementProfile
+          namespace: ${realmNamespace}
+          id: ${roleRef}

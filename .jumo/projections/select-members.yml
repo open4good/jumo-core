@@ -22,3 +22,8 @@ spec:
             - path: spec.independenceGroup
               present: true
           required: true
+        - path: proposedMembers
+          representation: STRUCTURED_YAML
+          i18nKey: journeyProposedMembersField
+          helpI18nKey: journeyProposedMembersHelp
+          required: false

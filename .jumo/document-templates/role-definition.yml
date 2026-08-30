@@ -1,0 +1,19 @@
+apiVersion: jumo.dev/v1
+kind: DocumentTemplate
+metadata:
+  id: role-definition
+  namespace: dev.jumo.core
+  name: Proposed team member role definition
+spec:
+  renders: RoleDefinition
+  body: |
+    apiVersion: jumo.dev/v1
+    kind: RoleDefinition
+    metadata:
+      id: ${id}
+      namespace: ${realmNamespace}
+      name: ${roleName}
+    spec:
+      ownerRealm: ${realmId}
+      mission: ${mission}
+      independenceGroup: ${independenceGroup}

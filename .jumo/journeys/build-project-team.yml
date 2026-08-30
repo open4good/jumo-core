@@ -50,6 +50,44 @@ spec:
         referenceChecks:
           - {field: projectRef, kind: Project}
           - {field: teamId, kind: TeamSpec}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: RoleDefinition
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/roles/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: role-definition}
+        validations:
+          - {field: roleRef, required: true, pattern: '^[a-z][a-z0-9]*(-[a-z0-9]+)*$'}
+          - {field: roleName, required: true}
+          - {field: mission, required: true, minimumLength: 10}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: AgentDefinition
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/agents/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: agent-definition}
+        validations:
+          - {field: responsibilities, minimumItems: 1}
+          - {field: requestedCapabilities, minimumItems: 1}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: WorkerRequirementProfile
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/worker-requirements/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: worker-requirement-profile}
+        validations:
+          - {field: taskClasses, minimumItems: 1}
+          - {field: modalities, minimumItems: 1}
+    - fanOutCollection: proposedMembers
+      emission:
+        targetKind: RoleAssignment
+        identifier: {fromField: roleRef}
+        pathTemplate: .jumo/role-assignments/${id}.yml
+        documentTemplateRef: {kind: DocumentTemplate, namespace: dev.jumo.core, id: role-assignment}
+        referenceChecks:
+          - {field: roleRef, kind: RoleDefinition}
+          - {field: roleRef, kind: AgentDefinition}
+          - {field: roleRef, kind: WorkerRequirementProfile}
   steps:
     - id: analyze-team-need
       requiredObligations: []

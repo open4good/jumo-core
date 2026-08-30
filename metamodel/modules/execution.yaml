@@ -138,6 +138,12 @@ enums:
       TIMED_OUT: {}
       CANCELLED: {}
       EXPIRED: {}
+      UNKNOWN:
+        description: A dispatched command whose terminal outcome was never observed (lost
+          connectivity, a crashed machine agent). Distinct from FAILED, which is a driver's own
+          negative report -- UNKNOWN means no report arrived at all. Automatic retry is prohibited
+          (ADR-0056 decision 6, linux-root-effect-executor AC6); only reconciliation or recorded
+          recovery may move a command out of this state.
 classes:
   ProcessSpec:
     description: 'A durable process: a graph of typed steps and flows, compiled to a Temporal Workflow and projected
@@ -966,6 +972,71 @@ classes:
       jumo.state_authority: POSTGRES
       jumo.model_role: EVENT
       jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SystemEffectPolicy:
+    description: Realm-declared, per-machine opt-in for the ADR-0056 SYSTEM_EFFECT driver
+      (linux-root-effect-executor AC2). No machine may receive a SYSTEM_EFFECT WorkloadCommand
+      unless one of these names it, optedIn is true, and its own tested-restore attestation is
+      still fresh -- the owner declares the attestation in this same contract rather than a
+      separate observation, so the two facts cannot drift apart.
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: SystemEffectPolicy
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: SystemEffectPolicySpec
+        required: true
+        inlined: true
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  SystemEffectPolicySpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      machineRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: Must resolve to an ExecutionMachine of the same ownerRealm (Rego).
+      optedIn:
+        range: boolean
+        required: true
+      lastTestedRestoreAt:
+        range: string
+        required: true
+        description: When the owner last verified this machine's restore procedure end to end.
+          Warning-only recovery is not attestation (ADR-0056 decision 3); this records a completed
+          test, not a scheduled or intended one.
+      restoreProcedureDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      restoreAttestationMaxAge:
+        range: Duration
+        required: true
+        description: How long lastTestedRestoreAt counts as recent before a proposal is refused.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

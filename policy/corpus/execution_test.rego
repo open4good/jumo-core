@@ -484,6 +484,43 @@ test_one_playbook_per_capability_accepted if {
 	not has_rule(violations, "corpus.machine-admin-playbook.capability-unique")
 }
 
+user_provided_machine := document(".jumo/execution-machines/laptop.yml", "ExecutionMachine", "laptop", {
+	"ownerRealm": "home", "origin": "USER_PROVIDED", "environment": "LOCAL_DEV", "desiredState": "ACTIVE",
+})
+
+managed_machine := document(".jumo/execution-machines/managed.yml", "ExecutionMachine", "managed", {
+	"ownerRealm": "home", "origin": "JUMO_MANAGED_LOCAL", "environment": "LOCAL_DEV", "desiredState": "ACTIVE",
+})
+
+system_effect_policy(machine_id) := document(".jumo/system-effect-policies/one.yml", "SystemEffectPolicy", "one", {
+	"ownerRealm": "home", "machineRef": {"kind": "ExecutionMachine", "id": machine_id}, "optedIn": true,
+	"lastTestedRestoreAt": "2026-08-01T00:00:00Z",
+	"restoreProcedureDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+	"restoreAttestationMaxAge": "P30D",
+})
+
+test_system_effect_policy_for_user_provided_machine_accepted if {
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [user_provided_machine, system_effect_policy("laptop")])
+	not has_rule(violations, "corpus.system-effect-policy.origin-user-provided")
+}
+
+test_system_effect_policy_for_managed_machine_rejected if {
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [managed_machine, system_effect_policy("managed")])
+	has_rule(violations, "corpus.system-effect-policy.origin-user-provided")
+}
+
+test_two_system_effect_policies_for_one_machine_rejected if {
+	first := system_effect_policy("laptop")
+	second := object.union(system_effect_policy("laptop"), {"path": ".jumo/system-effect-policies/two.yml", "contents": object.union(system_effect_policy("laptop").contents, {"metadata": {"id": "two", "namespace": "dev.jumo.test"}})})
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [user_provided_machine, first, second])
+	has_rule(violations, "corpus.system-effect-policy.machine-unique")
+}
+
+test_system_effect_policy_with_unresolved_machine_rejected if {
+	violations := data.jumo.corpus.deny with input as array.concat(execution_base, [system_effect_policy("ghost")])
+	has_rule(violations, "corpus.reference.kind-id")
+}
+
 remote_machine(allowlist) := document(".jumo/execution-machines/registry.yml", "ExecutionMachine", "registry", {
 	"ownerRealm": "registry", "origin": "JUMO_MANAGED_CLOUD_RESERVED", "environment": "REMOTE", "desiredState": "DECLARED",
 	"network": {"outboundControlUrl": "https://control-plane.internal", "egressAllowlist": allowlist},

@@ -736,6 +736,14 @@ references contains {"document": document, "location": sprintf("spec.installedCo
 	some index, ref in object.get(corpus.spec(document), "installedConnectorRefs", [])
 }
 
+# SystemEffectPolicy (linux-root-effect-executor AC2)
+references contains {"document": document, "location": "spec.machineRef", "expected_kind": "ExecutionMachine", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "SystemEffectPolicy"
+	ref := object.get(corpus.spec(document), "machineRef", null)
+	ref != null
+}
+
 # CliRelease
 references contains {"document": document, "location": "spec.toolRef", "expected_kind": "CliToolDefinition", "ref": ref} if {
 	some document in corpus.documents

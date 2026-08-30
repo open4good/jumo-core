@@ -24,7 +24,12 @@ public enum WorkloadCommandStatus {
 
   CANCELLED("CANCELLED"),
 
-  EXPIRED("EXPIRED");
+  EXPIRED("EXPIRED"),
+
+  /**
+   * A dispatched command whose terminal outcome was never observed (lost connectivity, a crashed machine agent). Distinct from FAILED, which is a driver's own negative report -- UNKNOWN means no report arrived at all. Automatic retry is prohibited (ADR-0056 decision 6, linux-root-effect-executor AC6); only reconciliation or recorded recovery may move a command out of this state.
+   */
+  UNKNOWN("UNKNOWN");
 
   private final static Map<String, WorkloadCommandStatus> MAP;
 

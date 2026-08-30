@@ -216,6 +216,10 @@ public final class ContractReferenceExtractor {
             extractFromSelfDescription(m, refs);
             return refs;
         }
+        if (model instanceof SystemEffectPolicy m) {
+            extractFromSystemEffectPolicy(m, refs);
+            return refs;
+        }
         if (model instanceof TeamSpec m) {
             extractFromTeamSpec(m, refs);
             return refs;
@@ -1294,6 +1298,16 @@ public final class ContractReferenceExtractor {
             for (SelfDescriptionAnswer item : obj.answers()) {
                 extractFromSelfDescriptionAnswer(item, refs);
             }
+        }
+    }
+    public static void extractFromSystemEffectPolicy(SystemEffectPolicy obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromSystemEffectPolicySpec(obj.spec(), refs);
+    }
+    public static void extractFromSystemEffectPolicySpec(SystemEffectPolicySpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.machineRef() != null) {
+            refs.add(new OutgoingReference("machineRef", obj.machineRef()));
         }
     }
     public static void extractFromTeamCoordination(TeamCoordination obj, List<OutgoingReference> refs) {

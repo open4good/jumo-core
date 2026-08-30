@@ -892,6 +892,38 @@ deny contains corpus.violation("corpus.machine-admin-playbook.capability-unique"
 	message := sprintf("spec.appliesToCapability: %q is claimed by more than one MachineAdminPlaybook", [capability])
 }
 
+# linux-root-effect-executor AC2: SYSTEM_EFFECT is admitted only for an explicitly opted-in,
+# USER_PROVIDED machine. references.rego's generic kind-match/kind-id/same-realm rules already
+# refuse a malformed, unresolved or cross-Realm machineRef; this rule adds the origin constraint
+# ADR-0056 itself names.
+deny contains corpus.violation("corpus.system-effect-policy.origin-user-provided", document, message) if {
+	some document in corpus.documents
+	document.kind == "SystemEffectPolicy"
+	machine_id := object.get(corpus.spec(document), "machineRef", {}).id
+	machine_id in corpus.ids_of_kind("ExecutionMachine")
+	machine := corpus.document_by_kind_id("ExecutionMachine", machine_id)
+	origin := object.get(corpus.spec(machine), "origin", "")
+	origin != "USER_PROVIDED"
+	message := sprintf("spec.machineRef: %q is a %s machine, SYSTEM_EFFECT is admitted only for a USER_PROVIDED one (ADR-0056)", [machine_id, origin])
+}
+
+# At most one SystemEffectPolicy may govern a given machine -- two policies naming the same
+# machineRef would make "is this machine opted in" ambiguous, same reasoning as
+# corpus.machine-admin-playbook.capability-unique above.
+deny contains corpus.violation("corpus.system-effect-policy.machine-unique", document, message) if {
+	some document in corpus.documents
+	document.kind == "SystemEffectPolicy"
+	machine_id := object.get(corpus.spec(document), "machineRef", {}).id
+	machine_id != ""
+	peers := {other |
+		some other in corpus.documents
+		other.kind == "SystemEffectPolicy"
+		object.get(corpus.spec(other), "machineRef", {}).id == machine_id
+	}
+	count(peers) > 1
+	message := sprintf("spec.machineRef: machine %q is governed by more than one SystemEffectPolicy", [machine_id])
+}
+
 prompt_references contains {
 	"document": document,
 	"field": field,

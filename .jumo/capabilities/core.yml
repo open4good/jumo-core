@@ -315,6 +315,18 @@ spec:
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
       appliedBy: jumo.effect.ExecutionCellProvisioningApplier
+    - name: system.effect.execute
+      description: Dispatch an ADR-0056 root script to an opted-in USER_PROVIDED machine's
+        transient systemd unit.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: jumo.machineagent.workload.SystemEffectWorkloadDriver
     - name: cli.runtime.install
       description: Dispatch the signed Ansible install-cli playbook to install a qualified CLI runtime on a machine.
       riskTier: HIGH
@@ -398,3 +410,8 @@ spec:
         - STEP_UP_AUTHENTICATION
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
+    - name: mcp.catalog.read
+      description: Read the platform MCP catalog projection without installing, executing, or granting anything.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED

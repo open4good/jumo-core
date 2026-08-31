@@ -571,6 +571,12 @@ public final class ContractReferenceExtractor {
         if (obj == null) return;
         extractFromDispositionMatch(obj.match(), refs);
     }
+    public static void extractFromEffectBatch(EffectBatch obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.approverRef() != null) {
+            refs.add(new OutgoingReference("approverRef", obj.approverRef()));
+        }
+    }
     public static void extractFromEffectTestAuthorization(EffectTestAuthorization obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.approverPrincipalRefs() != null) {

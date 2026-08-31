@@ -274,6 +274,50 @@ enums:
     permissible_values:
       SUCCEEDED: {}
       FAILED: {}
+  ActionRunStatus:
+    description: Recognized-state lifecycle of a resumable ActionRun (connector-action-runs-and-effect-batches AC1).
+    permissible_values:
+      PROPOSED: {}
+      IN_PROGRESS: {}
+      AWAITING_APPROVAL: {}
+      PAUSED:
+        description: At least one ActionStep resolved UNKNOWN; the run is paused pending
+          reconciliation or an owner decision, never a blind retry (connector-action-runs-and-effect-batches AC3, not yet built).
+      COMPLETED: {}
+      FAILED: {}
+      CANCELLED: {}
+  ActionStepStatus:
+    description: Recognized-state lifecycle of a single typed action inside an ActionRun.
+    permissible_values:
+      PROPOSED: {}
+      EXECUTING: {}
+      SUCCEEDED: {}
+      FAILED: {}
+      UNKNOWN:
+        description: A dispatched step whose terminal outcome was never observed. Automatic retry
+          is prohibited; only reconciliation or a recorded owner decision may move a step out of
+          this state (same discipline as WorkloadCommandStatus.UNKNOWN).
+  EffectBatchStatus:
+    description: Recognized-state lifecycle of an EffectBatch, the approval and recovery unit for
+      owner-approved external-effect lines.
+    permissible_values:
+      DRAFT: {}
+      AWAITING_APPROVAL: {}
+      APPROVED: {}
+      DISPATCHING: {}
+      COMPLETED: {}
+      PAUSED: {}
+      CANCELLED: {}
+  EffectBatchLineStatus:
+    description: Per-line dispatch outcome. Recognized now so AC1's typed contract does not need
+      revisiting when connector-action-runs-and-effect-batches AC3 builds the trusted applier.
+    permissible_values:
+      PENDING: {}
+      SUCCESS: {}
+      FAILED: {}
+      UNKNOWN:
+        description: The applier's dispatch of this line had no observed terminal outcome. Never
+          retried blindly (connector-action-runs-and-effect-batches AC3).
 classes:
   McpRegistrySource:
     description: Platform-scoped configuration for a bounded registry adapter. It authorizes neither installation nor execution.
@@ -3217,6 +3261,182 @@ classes:
     annotations:
       jumo.state_authority: POSTGRES
       jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ActionRun:
+    description: A resumable, catalog-pinned unit composing typed connector reads, owner
+      selections and an owner-approved EffectBatch (connector-action-runs-and-effect-batches AC1,
+      generalizing the single NestorTurnProposal.ActionCandidate and effect_proposal row).
+    attributes:
+      runId:
+        range: Identifier
+        required: true
+      realmId:
+        range: Identifier
+        required: true
+      conversationId:
+        range: Identifier
+      turnId:
+        range: Identifier
+      actionCatalogRevision:
+        range: string
+        required: true
+        description: The ActionCatalog.contractRevision this run is pinned to. An ActionStep
+          proposed against any other revision is refused as stale.
+      status:
+        range: ActionRunStatus
+        required: true
+      createdAt:
+        range: string
+        required: true
+      updatedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: COMMAND
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ActionStep:
+    description: A single typed action within an ActionRun -- a connector read, an owner
+      selection, or the step that opens an EffectBatch. Pins the exact catalog operation and input
+      schema its arguments were validated against; never carries an upstream MCP tool name
+      (McpBundleOperation.upstreamToolName never leaves its own document, ADR-0019 decision 161).
+    attributes:
+      stepId:
+        range: Identifier
+        required: true
+      runId:
+        range: Identifier
+        required: true
+      stepIndex:
+        range: integer
+        required: true
+      connectorId:
+        range: Identifier
+        required: true
+      operationRef:
+        range: string
+        required: true
+        description: The ActionCatalogItem.actionId this step invokes -- the connector's own
+          semantic operation id, never a raw upstream tool name.
+      operationSchemaRef:
+        range: string
+        required: true
+        description: The ConnectorOperation.inputSchemaRef this step's arguments were validated
+          against; PackageOperationSchemaResolver verifies schema $id-equality before it is trusted.
+      argumentsJson:
+        range: string
+        required: true
+      argumentsDigest:
+        range: string
+        required: true
+      status:
+        range: ActionStepStatus
+        required: true
+      createdAt:
+        range: string
+        required: true
+      updatedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: COMMAND
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  EffectBatchLine:
+    description: One typed, schema-pinned external-effect line inside an EffectBatch's canonical
+      display projection. Never carries an upstream MCP tool name, same discipline as ActionStep.
+    attributes:
+      lineIndex:
+        range: integer
+        required: true
+      connectorId:
+        range: Identifier
+        required: true
+      operationRef:
+        range: string
+        required: true
+      operationSchemaRef:
+        range: string
+        required: true
+      argumentsJson:
+        range: string
+        required: true
+      argumentsDigest:
+        range: string
+        required: true
+      idempotencyKey:
+        range: string
+        required: true
+      reconciliation:
+        range: OperationReconciliation
+        required: true
+      status:
+        range: EffectBatchLineStatus
+        required: true
+      resultDigest:
+        range: string
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  EffectBatch:
+    description: The approval and recovery unit for owner-approved external-effect lines opened by
+      an ActionStep (connector-action-runs-and-effect-batches). AC1 covers only its typed,
+      recognized-state shape; the trusted reconciled applier that dispatches its lines is AC3, and
+      stays blocked on CapabilityGatewayService's applier-reconciliation refusal until that
+      applier exists.
+    attributes:
+      batchId:
+        range: Identifier
+        required: true
+      runId:
+        range: Identifier
+        required: true
+      stepId:
+        range: Identifier
+        required: true
+      actionCatalogRevision:
+        range: string
+        required: true
+      lines:
+        range: EffectBatchLine
+        required: true
+        multivalued: true
+        inlined_as_list: true
+      linesDigest:
+        range: string
+        required: true
+        description: Digest of the complete canonical lines projection. One owner approval binds
+          to this exact digest and to nothing else (AC3).
+      status:
+        range: EffectBatchStatus
+        required: true
+      approverRef:
+        range: ContractReference
+        inlined: true
+      approvedAt:
+        range: string
+      createdAt:
+        range: string
+        required: true
+      updatedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: COMMAND
       jumo.audience: REALM_PRIVATE
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true

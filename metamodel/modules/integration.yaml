@@ -73,6 +73,14 @@ enums:
     description: Monetary limits are scoped to their declaring Realm only; no broader scope is available in v1.
     permissible_values:
       REALM_ONLY: {}
+  MonetaryReservationStatus:
+    description: RESERVED counts toward its window's cumulative total and blocks dispatch of
+      anything that would exceed it. CONSUMED is terminal and still counts (the money was spent).
+      RELEASED is terminal and no longer counts (the reservation was never spent).
+    permissible_values:
+      RESERVED: {}
+      CONSUMED: {}
+      RELEASED: {}
   ExecutionCellPlacement:
     permissible_values:
       PLATFORM: {}
@@ -3063,6 +3071,68 @@ classes:
         inlined: true
       approvedAt:
         range: string
+      createdAt:
+        range: string
+        required: true
+      updatedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: COMMAND
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  MonetaryReservation:
+    description: Postgres-only recognized reservation of capacity against one MonetaryRiskPolicy's
+      declared window for one EffectBatch (action-run-monetary-risk-enforcement AC1) -- never
+      authored in Git, unlike MonetaryRiskPolicy itself, which declares limits only. windowStart
+      and windowEnd are fixed, epoch-aligned bucket boundaries derived from the policy's declared
+      window Duration, not a rolling window -- two reservations minutes apart can land in
+      different windows if a bucket edge falls between them.
+    attributes:
+      reservationId:
+        range: Identifier
+        required: true
+      realmId:
+        range: Identifier
+        required: true
+      batchId:
+        range: Identifier
+        required: true
+      policyId:
+        range: Identifier
+        required: true
+      policyRevision:
+        range: string
+        required: true
+        description: The ContractLoader revision the MonetaryRiskPolicy was resolved at when this
+          reservation was made. AC2 refuses approval if a fresh resolution no longer agrees.
+      currency:
+        range: string
+        required: true
+        pattern: '^[A-Z]{3}$'
+      amount:
+        range: float
+        required: true
+        minimum_value: 0
+      windowStart:
+        range: string
+        required: true
+      windowEnd:
+        range: string
+        required: true
+      payloadDigest:
+        range: string
+        required: true
+      status:
+        range: MonetaryReservationStatus
+        required: true
+      reasonCode:
+        range: string
+        description: Set when status becomes RELEASED without ever reaching CONSUMED (e.g. a
+          verified dispatch failure). Never set for a RESERVED or CONSUMED reservation.
       createdAt:
         range: string
         required: true

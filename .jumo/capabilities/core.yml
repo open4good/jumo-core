@@ -430,3 +430,27 @@ spec:
       riskTier: LOW
       reversible: true
       minimumAssurance: OBSERVED
+    - name: effect.batch.read
+      description: Read one EffectBatch's canonical display projection, including its decrypted arguments until purged on terminal closure.
+      riskTier: MEDIUM
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: effect.batch.approve
+      description: Bind one owner approval to an EffectBatch's exact recomputed canonical lines digest, without dispatching it.
+      riskTier: MEDIUM
+      reversible: false
+      requiredObligations:
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: effect.batch.apply
+      description: Dispatch every approved line of a previously owner-approved EffectBatch through its reconciled connector applier.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: dev.jumo.controlplane.capability.EffectBatchApplierService

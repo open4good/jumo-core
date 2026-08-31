@@ -81,6 +81,7 @@ spec:
         - ATTENTION_ITEMS
         - THEME_PACK
         - CONTEXT_GRAPH
+        - EFFECT_BATCH
       proposes:
         - interface.manifest.read
         - execution.cell.pair.confirm
@@ -102,6 +103,9 @@ spec:
         - notification.email.send
         - notification.push.send
         - context.graph.read
+        - effect.batch.read
+        - effect.batch.approve
+        - effect.batch.apply
       writePaths:
         - pathGlob: .jumo/agents/**
           ring: RING_1_CONTROL_PLANE

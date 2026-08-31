@@ -64,6 +64,7 @@ enums:
       CLI_TOOLS: {}
       PROVIDER_QUOTAS: {}
       CONNECTOR_INTEGRATIONS: {}
+      EFFECT_BATCH: {}
   WritePathEditor:
     permissible_values:
       WYSIWYG_MARKDOWN: {}

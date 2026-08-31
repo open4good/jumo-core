@@ -415,3 +415,18 @@ spec:
       riskTier: LOW
       reversible: true
       minimumAssurance: SELF_REPORTED
+    - name: gmail.message.search
+      description: Search the authenticated Realm principal's Gmail with a typed query and return only a bounded header projection, never a message body.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED
+    - name: gmail.message.read
+      description: Read one Gmail message body, by an id previously returned to the same caller by gmail.message.search only.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED
+    - name: calendar.list.read
+      description: List the authenticated Realm principal's own owner-owned Google Calendar calendars, excluding calendars merely shared with them.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1.0",
+  "background": "scene/background.png",
+  "objects": [
+    {"id": "lamp", "asset": "scene/objects/lamp.png", "x": 0.07, "y": 0.15, "width": 0.18, "z": 10, "decorative": true}
+  ],
+  "presence": {"x": 0.34, "y": 0.08, "width": 0.58, "z": 20}
+}

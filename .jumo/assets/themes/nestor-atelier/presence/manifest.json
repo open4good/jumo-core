@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "canvas": {"width": 1024, "height": 1024},
+  "base": "presence/base.png",
+  "layers": {
+    "expressions": {
+      "idle": "presence/expressions/idle.png",
+      "bored": "presence/expressions/bored.png",
+      "thinking": "presence/expressions/thinking.png",
+      "responding": "presence/expressions/responding.png",
+      "success": "presence/expressions/success.png",
+      "blocked": "presence/expressions/blocked.png"
+    }
+  },
+  "personality": {
+    "blinkProfile": "calm",
+    "gazeWeight": 0.25,
+    "doubleBlinkProbability": 0.05,
+    "motionStyle": "very-retro"
+  }
+}

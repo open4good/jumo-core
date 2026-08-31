@@ -1,0 +1,51 @@
+apiVersion: jumo.dev/v1
+kind: ThemePack
+metadata:
+  id: nestor-atelier
+  namespace: dev.jumo.core
+  name: Nestor atelier
+spec:
+  terminology:
+    - roleKey: chiefOfStaff
+      displayName: Nestor
+  voice:
+    style: CALM_PRECISE
+    verbosity: TERSE
+  visualization:
+    ecosystem: atelier
+    palette: restrained
+    defaultRoomId: atelier
+    presence:
+      chiefOfStaffForm: nestor-atelier
+      density: CALM
+      motion: SUBTLE
+      livingBitmapManifest:
+        schemaVersion: "1.0"
+        asset: .jumo/assets/themes/nestor-atelier/presence/manifest.json
+    rooms:
+      - roomId: atelier
+        background: atelier
+        sceneManifest:
+          schemaVersion: "1.0"
+          asset: .jumo/assets/themes/nestor-atelier/scene/manifest.json
+  designTokens:
+    light:
+      schemaVersion: "1.0"
+      asset: .jumo/assets/themes/nestor-atelier/tokens/light.json
+    dark:
+      schemaVersion: "1.0"
+      asset: .jumo/assets/themes/nestor-atelier/tokens/dark.json
+  localizations:
+    - locale: fr
+      messages:
+        schemaVersion: "1.0"
+        asset: .jumo/assets/themes/nestor-atelier/localizations/fr.json
+    - locale: en
+      messages:
+        schemaVersion: "1.0"
+        asset: .jumo/assets/themes/nestor-atelier/localizations/en.json
+  creativeRights:
+    origin: original synthetic art
+    author: Jumo Studio, owner-reviewed
+    source: generated reference pack
+    license: Jumo Platform reference asset

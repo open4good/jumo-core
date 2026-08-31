@@ -24,7 +24,20 @@
           "modalities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
           "minimumTokens": { "type": "integer", "minimum": 1024 },
           "reasoningEffort": { "type": "string" },
-          "requiredIndependenceGroup": { "type": "string" }
+          "requiredIndependenceGroup": { "type": "string" },
+          "requiredExecutionToolchainRefs": {
+            "type": "array",
+            "description": "Non-AI build or language-tool environments this member's own task requires (WorkerRequirementProfileSpec.requiredExecutionToolchainRefs). Absent for an AI-only member; each entry must name a same-Realm ExecutionToolchain a WorkerSubstrate provides, refused otherwise.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": { "const": "ExecutionToolchain" },
+                "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*){1,7}$" },
+                "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+              },
+              "required": ["kind", "namespace", "id"]
+            }
+          }
         },
         "required": ["roleRef", "role", "mission", "independenceGroup", "responsibilities",
           "requestedCapabilities", "taskClasses", "modalities", "minimumTokens", "reasoningEffort"]

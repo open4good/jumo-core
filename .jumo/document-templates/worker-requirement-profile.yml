@@ -30,6 +30,7 @@ spec:
         maximumEvaluationAge: P30D
         reasoningEffort: ${reasoningEffort}
       requiredIndependenceGroup: ${requiredIndependenceGroup}
+      requiredExecutionToolchainRefs: ${requiredExecutionToolchainRefs}
       limits:
         maximumLatency: PT2M
         maximumCostClass: MEDIUM

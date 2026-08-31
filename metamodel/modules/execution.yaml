@@ -1612,6 +1612,14 @@ classes:
         range: string
         required: true
         pattern: ^.{1,64}$
+      digest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+        description: Content digest of the tool's own installed artifact, distinct from
+          ExecutionToolchainArtifact.digest (the whole image). Computed by
+          scripts/generate/compute-execution-toolchain-digests.py, mirroring
+          compute-package-digests.py's own recipe (execution-cell-toolchain-self-attestation).
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

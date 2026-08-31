@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * One observable tool the artifact provides, named and versioned generically -- the schema itself never names Java, Maven, an LSP or any other specific tool.
  */
-public record ExecutionToolchainTool(String name, String version)  {
+public record ExecutionToolchainTool(String name, String version, String digest)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,6 +17,7 @@ public record ExecutionToolchainTool(String name, String version)  {
 
         private String name = "";
         private String version = "";
+        private String digest = "";
 
 
         public Builder name(String name) {
@@ -29,8 +30,13 @@ public record ExecutionToolchainTool(String name, String version)  {
             return this;
         }
 
+        public Builder digest(String digest) {
+            this.digest = Objects.requireNonNull(digest);
+            return this;
+        }
+
     public ExecutionToolchainTool build() {
-            return new ExecutionToolchainTool(name, version);
+            return new ExecutionToolchainTool(name, version, digest);
         }
     }
 }

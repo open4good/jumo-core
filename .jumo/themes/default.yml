@@ -39,6 +39,9 @@ spec:
     dark:
       schemaVersion: "1.0"
       asset: .jumo/assets/themes/default/tokens/dark.json
+    fontManifest:
+      schemaVersion: "1.0"
+      asset: .jumo/assets/themes/default/fonts/manifest.json
   localizations:
     - locale: fr
       messages:

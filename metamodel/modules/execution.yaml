@@ -1112,6 +1112,52 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RealmContractSnapshot:
+    description: Immutable, digest-keyed record of one Realm revision's contract set, recognized
+      only once commit signature, branch membership, required CI and policy checks have all
+      passed and an owner decision authorized it (hot-realm-contract-activation). Git remains
+      canonical; this is the atomic selection point ExecutionCellLease.contractSetDigest reads
+      from.
+    attributes:
+      contractSetDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      realmId:
+        range: Identifier
+        required: true
+      realmRevision:
+        range: string
+        required: true
+        pattern: ^[0-9a-f]{40}$
+      canonicalSnapshot:
+        range: string
+        required: true
+      commitSignatureVerified:
+        range: boolean
+        required: true
+      branchMembershipVerified:
+        range: boolean
+        required: true
+      requiredCiVerified:
+        range: boolean
+        required: true
+      policyVerified:
+        range: boolean
+        required: true
+      ownerDecisionRef:
+        range: string
+        required: true
+      recognizedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EXECUTION_HISTORY
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   DelegatedSecretGrant:
     description: One response-wrapped OpenBao child token grant issued for a lease and SecretBinding
       pair (openbao-delegated-lease). Never carries the token or accessor value itself -- only an

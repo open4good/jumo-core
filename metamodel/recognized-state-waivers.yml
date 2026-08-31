@@ -13,3 +13,9 @@ waivers:
       audit_event and mcp_registry_raw_payload tables, both plain observational logs rather than
       recognized business state. Reviewed now rather than left silently uncovered because this
       table is what newly pushed the ratchet past its ceiling (mcp-target-machine-discovery).
+  - table: mcp_discovery_binding
+    reason: owner-approved, single-use, max-TTL-PT2M DISCOVERY-binding runtime lease
+      (mcp-target-machine-discovery AC3) -- deliberately not a Git-declared class, same owner
+      ruling that already rejected SecretBinding as the wrong shape for this ephemeral credential.
+      Every row is expected to expire and be superseded within minutes; a POSTGRES-authority class
+      would document a shape with no lasting recognized business state to project.

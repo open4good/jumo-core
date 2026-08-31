@@ -364,3 +364,20 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: Append a sanitized terminal outcome for a dispatched MCP invocation.
+    - operationId: consumeMcpDiscoveryBinding
+      method: GET
+      path: /mcp-discovery-bindings/{bindingId}
+      audience: MACHINE_MTLS
+      authAction: mcp-discovery-binding.consume
+      requestBinding: null
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: SchemaBoundPayload
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/SchemaBoundPayload
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Consume a single-use, owner-approved DISCOVERY-binding credential (read-only scope, max TTL PT2M) for
+            a fresh discovery re-dispatch after AUTH_REQUIRED.

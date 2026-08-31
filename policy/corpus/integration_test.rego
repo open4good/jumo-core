@@ -11,6 +11,7 @@ document(path, kind, identifier, namespace, spec) := {
 		"spec": spec,
 	},
 }
+
 has_rule(violations, rule) if {
 	some violation in violations
 	violation.rule == rule
@@ -43,27 +44,30 @@ tool := {
 	"requiresGrant": true,
 }
 
-recipe_spec(owner, supply, exposures, overrides) := object.union({
-	"ownerRealm": owner,
-	"importedSourceDigest": sha,
-	"supply": supply,
-	"protocol": {"minVersion": "2025-06-18", "maxVersion": "2025-11-25", "transports": ["STDIO"]},
-	"parameters": [],
-	"credentialSlots": [],
-	"argv": [],
-	"env": [],
-	"headers": [],
-	"egressOrigins": [],
-	"limits": {
-		"maxMemoryBytes": 268435456,
-		"maxCpuMillis": 1000,
-		"maxPayloadBytes": 1048576,
-		"timeoutMillis": 30000,
-		"maxCallsPerMinute": 60,
+recipe_spec(owner, supply, exposures, overrides) := object.union(
+	{
+		"ownerRealm": owner,
+		"importedSourceDigest": sha,
+		"supply": supply,
+		"protocol": {"minVersion": "2025-06-18", "maxVersion": "2025-11-25", "transports": ["STDIO"]},
+		"parameters": [],
+		"credentialSlots": [],
+		"argv": [],
+		"env": [],
+		"headers": [],
+		"egressOrigins": [],
+		"limits": {
+			"maxMemoryBytes": 268435456,
+			"maxCpuMillis": 1000,
+			"maxPayloadBytes": 1048576,
+			"timeoutMillis": 30000,
+			"maxCallsPerMinute": 60,
+		},
+		"auth": {"mode": "NONE"},
+		"exposures": exposures,
 	},
-	"auth": {"mode": "NONE"},
-	"exposures": exposures,
-}, overrides)
+	overrides,
+)
 
 recipe(owner, spec) := document(
 	".jumo/mcp-server-recipes/server.yml",
@@ -89,7 +93,7 @@ binding(lifecycle, appraisal_ref) := document(
 	},
 )
 
-appraisal(proposer, verifier) := document(
+appraisal(proposer, verifier, digest) := document(
 	".jumo/mcp-server-appraisals/review.yml",
 	"McpServerAppraisal",
 	"review",
@@ -98,10 +102,10 @@ appraisal(proposer, verifier) := document(
 		"ownerRealm": "home",
 		"recipeRef": {"kind": "McpServerRecipe", "namespace": "home.jumo.dev", "id": "server"},
 		"bindingRef": {"kind": "McpServerBinding", "namespace": "home.jumo.dev", "id": "server-binding"},
-		"recipeDigest": sha,
-		"supplyDigest": sha,
-		"inventoryDigest": sha,
-		"bindingDigest": sha,
+		"recipeDigest": digest,
+		"supplyDigest": digest,
+		"inventoryDigest": digest,
+		"bindingDigest": digest,
 		"appraisedByRoleDefinitionRef": {"kind": "RoleDefinition", "namespace": "dev.jumo.core", "id": proposer},
 		"verifiedByRoleDefinitionRef": {"kind": "RoleDefinition", "namespace": "dev.jumo.core", "id": verifier},
 		"verdict": "ACCEPTED",
@@ -131,25 +135,34 @@ test_recipe_refuses_secret_value_and_shell if {
 
 test_package_supplies_require_exact_versions if {
 	some supply_kind in {"NPM_STDIO", "PYTHON_UV_STDIO"}
-	spec := recipe_spec("home", {
-		"supplyKind": supply_kind, "packageName": "example", "exactVersion": "latest",
-	}, [tool], {})
+	spec := recipe_spec(
+		"home", {
+			"supplyKind": supply_kind, "packageName": "example", "exactVersion": "latest",
+		},
+		[tool], {},
+	)
 	violations := data.jumo.corpus.deny with input as array.concat(base, [recipe("home", spec)])
 	has_rule(violations, "corpus.mcp.recipe-exact-version")
 }
 
 test_native_supply_requires_all_immutable_pins if {
-	spec := recipe_spec("home", {
-		"supplyKind": "NATIVE_STDIO", "sourceOrigin": "https://example.test/server",
-	}, [tool], {})
+	spec := recipe_spec(
+		"home", {
+			"supplyKind": "NATIVE_STDIO", "sourceOrigin": "https://example.test/server",
+		},
+		[tool], {},
+	)
 	violations := data.jumo.corpus.deny with input as array.concat(base, [recipe("home", spec)])
 	has_rule(violations, "corpus.mcp.recipe-native-pins")
 }
 
 test_remote_supply_requires_streamable_http if {
-	spec := recipe_spec("home", {
-		"supplyKind": "REMOTE_STREAMABLE_HTTP", "endpointOrigin": "https://mcp.example.test",
-	}, [tool], {})
+	spec := recipe_spec(
+		"home", {
+			"supplyKind": "REMOTE_STREAMABLE_HTTP", "endpointOrigin": "https://mcp.example.test",
+		},
+		[tool], {},
+	)
 	violations := data.jumo.corpus.deny with input as array.concat(base, [recipe("home", spec)])
 	has_rule(violations, "corpus.mcp.recipe-http-transport")
 }
@@ -164,9 +177,12 @@ test_opaque_output_prompt_and_sampling_are_bounded if {
 	sampling := object.union(tool, {
 		"primitiveKind": "SAMPLING", "maxSamplingCalls": 0, "maxSamplingTokens": 0,
 	})
-	spec := recipe_spec("home", {
-		"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
-	}, [opaque, prompt, sampling], {})
+	spec := recipe_spec(
+		"home", {
+			"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
+		},
+		[opaque, prompt, sampling], {},
+	)
 	violations := data.jumo.corpus.deny with input as array.concat(base, [recipe("home", spec)])
 	has_rule(violations, "corpus.mcp.recipe-opaque-output")
 	has_rule(violations, "corpus.mcp.recipe-static-prompt")
@@ -174,9 +190,12 @@ test_opaque_output_prompt_and_sampling_are_bounded if {
 }
 
 test_enabled_binding_requires_appraisal if {
-	spec := recipe_spec("home", {
-		"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
-	}, [tool], {})
+	spec := recipe_spec(
+		"home", {
+			"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
+		},
+		[tool], {},
+	)
 	violations := data.jumo.corpus.deny with input as array.concat(base, [
 		recipe("home", spec),
 		binding("ENABLED", null),
@@ -185,9 +204,12 @@ test_enabled_binding_requires_appraisal if {
 }
 
 test_cross_realm_binding_is_refused if {
-	spec := recipe_spec("other", {
-		"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
-	}, [tool], {})
+	spec := recipe_spec(
+		"other", {
+			"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
+		},
+		[tool], {},
+	)
 	violations := data.jumo.corpus.deny with input as array.concat(base, [
 		recipe("other", spec),
 		binding("DECLARED", null),
@@ -196,26 +218,32 @@ test_cross_realm_binding_is_refused if {
 }
 
 test_appraisal_must_be_independent if {
-	spec := recipe_spec("home", {
-		"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
-	}, [tool], {})
+	spec := recipe_spec(
+		"home", {
+			"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
+		},
+		[tool], {},
+	)
 	violations := data.jumo.corpus.deny with input as array.concat(base, [
 		recipe("home", spec),
 		binding("DECLARED", null),
-		appraisal("proposer", "proposer"),
+		appraisal("proposer", "proposer", sha),
 	])
 	has_rule(violations, "corpus.mcp.appraisal-independent")
 }
 
 test_enabled_binding_with_matching_appraisal_passes_admission_rules if {
-	spec := recipe_spec("home", {
-		"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
-	}, [tool], {})
+	spec := recipe_spec(
+		"home", {
+			"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha,
+		},
+		[tool], {},
+	)
 	review_ref := {"kind": "McpServerAppraisal", "namespace": "home.jumo.dev", "id": "review"}
 	violations := data.jumo.corpus.deny with input as array.concat(base, [
 		recipe("home", spec),
 		binding("ENABLED", review_ref),
-		appraisal("proposer", "verifier"),
+		appraisal("proposer", "verifier", sha),
 	])
 	not has_rule(violations, "corpus.mcp.binding-appraisal-required")
 	not has_rule(violations, "corpus.mcp.binding-appraisal-verdict")

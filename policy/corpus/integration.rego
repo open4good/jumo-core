@@ -65,7 +65,7 @@ deny contains corpus.violation("corpus.mcp.recipe-secret-field", document, messa
 	walk(corpus.spec(document), [path, _])
 	count(path) > 0
 	key := lower(sprintf("%v", [path[count(path) - 1]]))
-	regex.match("(password|token|secret|apikey|api[_-]key)", key)
+	regex.match(`(password|token|secret|apikey|api[_-]key)`, key)
 	key != "secretbindingref"
 	message := sprintf("%s: secret values are not representable in MCP recipe or binding YAML", [json.marshal(path)])
 }
@@ -76,7 +76,7 @@ deny contains corpus.violation("corpus.mcp.recipe-no-shell", document, message) 
 	spec := corpus.spec(document)
 	some argument in object.get(spec, "argv", [])
 	argument.valueKind == "LITERAL"
-	regex.match("[;&|<>`$\n\r]", object.get(argument, "literal", ""))
+	regex.match(`[;&|<>\x60$\n\r]`, object.get(argument, "literal", ""))
 	message := "spec.argv: shell metacharacters are refused; argv is passed directly without a shell"
 }
 
@@ -85,7 +85,7 @@ deny contains corpus.violation("corpus.mcp.recipe-no-shell", document, message) 
 	document.kind == "McpServerRecipe"
 	some named in array.concat(object.get(corpus.spec(document), "env", []), object.get(corpus.spec(document), "headers", []))
 	named.value.valueKind == "LITERAL"
-	regex.match("[\n\r]", object.get(named.value, "literal", ""))
+	regex.match(`[\n\r]`, object.get(named.value, "literal", ""))
 	message := "spec.env/spec.headers: newline-bearing literal values are refused"
 }
 
@@ -130,7 +130,7 @@ deny contains corpus.violation("corpus.mcp.recipe-supply", document, message) if
 	document.kind == "McpServerRecipe"
 	supply := corpus.spec(document).supply
 	supply.supplyKind == "OCI_STDIO"
-	not regex.match("^sha256:[0-9a-f]{64}$", object.get(supply, "artifactDigest", ""))
+	not regex.match(`^sha256:[0-9a-f]{64}$`, object.get(supply, "artifactDigest", ""))
 	message := "spec.supply.artifactDigest: exact OCI digest is required"
 }
 
@@ -139,7 +139,7 @@ deny contains corpus.violation("corpus.mcp.recipe-exact-version", document, mess
 	document.kind == "McpServerRecipe"
 	supply := corpus.spec(document).supply
 	supply.supplyKind in {"NPM_STDIO", "PYTHON_UV_STDIO"}
-	not regex.match("^[0-9]+\\.[0-9]+\\.[0-9]+([+.-][0-9A-Za-z.-]+)?$", object.get(supply, "exactVersion", ""))
+	not regex.match(`^[0-9]+\.[0-9]+\.[0-9]+([+.-][0-9A-Za-z.-]+)?$`, object.get(supply, "exactVersion", ""))
 	message := "spec.supply.exactVersion: an exact immutable version is required"
 }
 
@@ -218,7 +218,7 @@ deny contains corpus.violation("corpus.mcp.recipe-static-prompt", document, mess
 	some index, exposure in corpus.spec(document).exposures
 	exposure.primitiveKind == "PROMPT"
 	exposure.taskInstructionsAllowed == true
-	not regex.match("^sha256:[0-9a-f]{64}$", object.get(exposure, "staticContentDigest", ""))
+	not regex.match(`^sha256:[0-9a-f]{64}$`, object.get(exposure, "staticContentDigest", ""))
 	message := sprintf("spec.exposures[%d]: only a static prompt at an exact digest may become task instructions", [index])
 }
 
@@ -318,8 +318,8 @@ mcp_binding_secret_refs contains {"binding": binding, "slot": credential.credent
 
 deny contains corpus.violation("corpus.mcp.binding-secret", document, message) if {
 	some entry in mcp_binding_secret_refs
-	document := entry.binding
 	not entry.secret_id in corpus.ids_of_kind("SecretBinding")
+	document := entry.binding
 	message := sprintf("spec.credentialBindings: no SecretBinding declares id %q", [entry.secret_id])
 }
 
@@ -437,7 +437,6 @@ deny contains corpus.violation("corpus.mcp.appraisal-realm", document, message) 
 	message := "McpServerAppraisal and binding must belong to the same Realm"
 }
 
-
 connector_secret_references contains {
 	"document": document,
 	"index": index,
@@ -512,7 +511,6 @@ deny contains corpus.violation("corpus.connector.effect-semantics", document, me
 	message := sprintf("spec.operations[%d].reconciliation: only external effects require reconciliation", [index])
 }
 
-
 # SecretBinding), so its Realm is the first label of its Realm-owned namespace (e.g.
 # "home.jumo.dev" -> "home"), the same convention jumo-gof's realm-templates/*.yml declares.
 work_order_realm(document) := split(corpus.namespace(document), ".")[0]
@@ -582,7 +580,6 @@ deny contains corpus.violation("corpus.secret.binding-work-order-reciprocity", d
 	not corpus.id(document) in allowed
 	message := sprintf("spec.allowedWorkOrderRefs: WorkOrder %q does not reciprocate in secretBindingRefs", [wo_id])
 }
-
 
 deny contains corpus.violation("corpus.execution-cell.connector", document, message) if {
 	some document in corpus.documents
@@ -701,7 +698,6 @@ deny contains corpus.violation("corpus.registry-binding.machine-realm", document
 	not same_owner_realm(document, machine)
 	message := "McpRegistrySourceBinding and its ExecutionMachine must belong to the same Realm -- cross-Realm machine use is refused"
 }
-
 
 # ADR-0050 6: only the Official Registry source is credential-free by design; the sync it drives
 # never holds an Authorization header or OpenBao token, so a declared secretBindingRef would be

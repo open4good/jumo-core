@@ -1,6 +1,0 @@
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://jumo.dev/schemas/connector-packages/github-read-only/repository-manifest-response-v1",
-  "type": "object",
-  "additionalProperties": true
-}

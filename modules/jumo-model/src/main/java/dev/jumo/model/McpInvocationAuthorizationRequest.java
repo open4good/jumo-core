@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Machine-authenticated request to authorize one planned MCP operation without persisting arguments.
  */
-public record McpInvocationAuthorizationRequest(String invocationId, String grantId, String leaseId, String operationName, String argumentsDigest, int argumentsSize, String schemaDigest, String policyRevision)  {
+public record McpInvocationAuthorizationRequest(String invocationId, String grantId, String leaseId, String contractSetDigest, String operationName, String argumentsDigest, int argumentsSize, String schemaDigest, String policyRevision)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,6 +18,7 @@ public record McpInvocationAuthorizationRequest(String invocationId, String gran
         private String invocationId = "";
         private String grantId = "";
         private String leaseId = "";
+        private String contractSetDigest = "";
         private String operationName = "";
         private String argumentsDigest = "";
         private int argumentsSize = 0;
@@ -37,6 +38,11 @@ public record McpInvocationAuthorizationRequest(String invocationId, String gran
 
         public Builder leaseId(String leaseId) {
             this.leaseId = Objects.requireNonNull(leaseId);
+            return this;
+        }
+
+        public Builder contractSetDigest(String contractSetDigest) {
+            this.contractSetDigest = Objects.requireNonNull(contractSetDigest);
             return this;
         }
 
@@ -66,7 +72,7 @@ public record McpInvocationAuthorizationRequest(String invocationId, String gran
         }
 
     public McpInvocationAuthorizationRequest build() {
-            return new McpInvocationAuthorizationRequest(invocationId, grantId, leaseId, operationName, argumentsDigest, argumentsSize, schemaDigest, policyRevision);
+            return new McpInvocationAuthorizationRequest(invocationId, grantId, leaseId, contractSetDigest, operationName, argumentsDigest, argumentsSize, schemaDigest, policyRevision);
         }
     }
 }

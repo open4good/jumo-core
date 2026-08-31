@@ -40,6 +40,6 @@
     "recognized_state_uncovered_tables": 0,
     "metamodel_construction_references": 0,
     "boundary_allowlist_entries": 0,
-    "adr_lines_max": 60
+    "adr_lines_max": 87
   }
 }

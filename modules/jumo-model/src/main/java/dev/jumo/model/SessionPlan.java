@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Signed MCP gateway session plan scoped to one ExecutionCellLease (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope dev.jumo.mcpgateway.plan.SessionPlan's javadoc names but does not yet have a field for.
+ * Signed MCP gateway session plan scoped to one ExecutionCellLease. It is the only executable MCP form and carries every exact contract and supply digest used by the gateway.
  */
-public record SessionPlan(String planId, String realmId, String leaseId, String upstreamToolsDigest, List<PlannedOperation> operations, String planExpiresAt, String signingKeyName, String planSignature)  {
+public record SessionPlan(String planId, String realmId, String leaseId, String contractSetDigest, String recipeDigest, String bindingDigest, String appraisalDigest, String supplyDigest, String negotiatedVersion, McpTransportType negotiatedTransport, String upstreamToolsDigest, List<PlannedOperation> operations, String planExpiresAt, String signingKeyName, String planSignature)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,6 +19,13 @@ public record SessionPlan(String planId, String realmId, String leaseId, String 
         private String planId = "";
         private String realmId = "";
         private String leaseId = "";
+        private String contractSetDigest = "";
+        private String recipeDigest = "";
+        private String bindingDigest = "";
+        private String appraisalDigest = "";
+        private String supplyDigest = "";
+        private String negotiatedVersion = "";
+        private McpTransportType negotiatedTransport = null;
         private String upstreamToolsDigest = "";
         private List<PlannedOperation> operations = List.of();
         private String planExpiresAt = "";
@@ -38,6 +45,41 @@ public record SessionPlan(String planId, String realmId, String leaseId, String 
 
         public Builder leaseId(String leaseId) {
             this.leaseId = Objects.requireNonNull(leaseId);
+            return this;
+        }
+
+        public Builder contractSetDigest(String contractSetDigest) {
+            this.contractSetDigest = Objects.requireNonNull(contractSetDigest);
+            return this;
+        }
+
+        public Builder recipeDigest(String recipeDigest) {
+            this.recipeDigest = Objects.requireNonNull(recipeDigest);
+            return this;
+        }
+
+        public Builder bindingDigest(String bindingDigest) {
+            this.bindingDigest = Objects.requireNonNull(bindingDigest);
+            return this;
+        }
+
+        public Builder appraisalDigest(String appraisalDigest) {
+            this.appraisalDigest = Objects.requireNonNull(appraisalDigest);
+            return this;
+        }
+
+        public Builder supplyDigest(String supplyDigest) {
+            this.supplyDigest = Objects.requireNonNull(supplyDigest);
+            return this;
+        }
+
+        public Builder negotiatedVersion(String negotiatedVersion) {
+            this.negotiatedVersion = Objects.requireNonNull(negotiatedVersion);
+            return this;
+        }
+
+        public Builder negotiatedTransport(McpTransportType negotiatedTransport) {
+            this.negotiatedTransport = Objects.requireNonNull(negotiatedTransport);
             return this;
         }
 
@@ -67,7 +109,7 @@ public record SessionPlan(String planId, String realmId, String leaseId, String 
         }
 
     public SessionPlan build() {
-            return new SessionPlan(planId, realmId, leaseId, upstreamToolsDigest, operations, planExpiresAt, signingKeyName, planSignature);
+            return new SessionPlan(planId, realmId, leaseId, contractSetDigest, recipeDigest, bindingDigest, appraisalDigest, supplyDigest, negotiatedVersion, negotiatedTransport, upstreamToolsDigest, operations, planExpiresAt, signingKeyName, planSignature);
         }
     }
 }

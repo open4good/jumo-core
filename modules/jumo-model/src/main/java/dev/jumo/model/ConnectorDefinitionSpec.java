@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record ConnectorDefinitionSpec(String ownerRealm, ConnectorLifecycle lifecycle, ConnectorTransport transport, String configurationRef, ContractReference mcpBundleRef, ContractReference remoteMcpServiceRef, ContractReference connectorPackageRef, ConnectorPlacement placement, List<ConnectorOperation> operations)  {
+public record ConnectorDefinitionSpec(String ownerRealm, ConnectorLifecycle lifecycle, ConnectorTransport transport, String configurationRef, ConnectorPlacement placement, List<ConnectorOperation> operations)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,9 +18,6 @@ public record ConnectorDefinitionSpec(String ownerRealm, ConnectorLifecycle life
         private ConnectorLifecycle lifecycle = null;
         private ConnectorTransport transport = null;
         private String configurationRef = "";
-        private ContractReference mcpBundleRef = null;
-        private ContractReference remoteMcpServiceRef = null;
-        private ContractReference connectorPackageRef = null;
         private ConnectorPlacement placement = null;
         private List<ConnectorOperation> operations = List.of();
 
@@ -45,21 +42,6 @@ public record ConnectorDefinitionSpec(String ownerRealm, ConnectorLifecycle life
             return this;
         }
 
-        public Builder mcpBundleRef(ContractReference mcpBundleRef) {
-            this.mcpBundleRef = Objects.requireNonNull(mcpBundleRef);
-            return this;
-        }
-
-        public Builder remoteMcpServiceRef(ContractReference remoteMcpServiceRef) {
-            this.remoteMcpServiceRef = Objects.requireNonNull(remoteMcpServiceRef);
-            return this;
-        }
-
-        public Builder connectorPackageRef(ContractReference connectorPackageRef) {
-            this.connectorPackageRef = Objects.requireNonNull(connectorPackageRef);
-            return this;
-        }
-
         public Builder placement(ConnectorPlacement placement) {
             this.placement = Objects.requireNonNull(placement);
             return this;
@@ -71,7 +53,7 @@ public record ConnectorDefinitionSpec(String ownerRealm, ConnectorLifecycle life
         }
 
     public ConnectorDefinitionSpec build() {
-            return new ConnectorDefinitionSpec(ownerRealm, lifecycle, transport, configurationRef, mcpBundleRef, remoteMcpServiceRef, connectorPackageRef, placement, operations);
+            return new ConnectorDefinitionSpec(ownerRealm, lifecycle, transport, configurationRef, placement, operations);
         }
     }
 }

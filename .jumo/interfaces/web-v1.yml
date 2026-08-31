@@ -106,38 +106,38 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: List real observed quota and usage states.
-    - operationId: listConnectors
+    - operationId: listMcpServerRecipes
       method: GET
-      path: /realms/{realmId}/connectors
+      path: /realms/{realmId}/mcp-server-recipes
       audience: REALM_PRIVATE
-      authAction: connector.list
+      authAction: mcp.recipe.list
       requestBinding: null
       responseBindings:
         - statusCode: 200
           mediaType: application/json
           schemaBinding:
-            modelClass: ConnectorPackage
+            modelClass: McpServerRecipe
             schemaVersion: 1.0.0
-            schemaId: https://jumo.dev/schemas/jumo-v1/ConnectorPackage
+            schemaId: https://jumo.dev/schemas/jumo-v1/McpServerRecipe
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
-          description: List active and declared connector packages.
-    - operationId: listConnectorIntegrations
+          description: List imported immutable MCP server recipes; listing grants no authority.
+    - operationId: listMcpServerBindings
       method: GET
-      path: /realms/{realmId}/connector-integrations
+      path: /realms/{realmId}/mcp-server-bindings
       audience: REALM_PRIVATE
-      authAction: connector.integration.list
+      authAction: mcp.binding.list
       requestBinding: null
       responseBindings:
         - statusCode: 200
           mediaType: application/json
           schemaBinding:
-            modelClass: ConnectorIntegration
+            modelClass: McpServerBinding
             schemaVersion: 1.0.0
-            schemaId: https://jumo.dev/schemas/jumo-v1/ConnectorIntegration
+            schemaId: https://jumo.dev/schemas/jumo-v1/McpServerBinding
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
-          description: List grouped connector integrations.
+          description: List Realm MCP bindings and their separate lifecycle.
     - operationId: administerMachine
       method: POST
       path: /realms/{realmId}/machines/{machineId}/admin

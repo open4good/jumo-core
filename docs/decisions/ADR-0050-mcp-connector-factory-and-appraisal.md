@@ -8,6 +8,10 @@ decisions: [8]
 
 # ADR-0050 — MCP connector factory, target-machine discovery, TypeScript runtime, and owner effect approval
 
+> The package/factory, generated-adapter, bundle and remote-service branches in this ADR are superseded by
+> ADR-0063. Its catalogue-without-authority, Realm isolation, independent-appraisal and per-effect owner-approval
+> boundaries remain in force.
+
 ## Boundary
 
 The internal MCP registry is a shared, platform-scoped catalogue of sourced static signals, not an installer, executor, capability grant, or substitute for Realm approval.

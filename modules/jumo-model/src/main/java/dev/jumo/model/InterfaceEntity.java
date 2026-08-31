@@ -30,7 +30,7 @@ public enum InterfaceEntity {
 
   CLITOOL("CliTool"),
 
-  CONNECTORPACKAGE("ConnectorPackage");
+  MCPSERVERRECIPE("McpServerRecipe");
 
   private final static Map<String, InterfaceEntity> MAP;
 

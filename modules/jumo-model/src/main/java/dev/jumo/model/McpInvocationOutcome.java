@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Sanitized terminal outcome for one dispatched MCP invocation.
  */
-public record McpInvocationOutcome(String invocationId, String leaseId, McpInvocationOutcomeType outcome, String resultDigest, Integer resultSize, String reasonCode)  {
+public record McpInvocationOutcome(String invocationId, String leaseId, String contractSetDigest, McpInvocationOutcomeType outcome, String resultDigest, Integer resultSize, String reasonCode)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,6 +17,7 @@ public record McpInvocationOutcome(String invocationId, String leaseId, McpInvoc
 
         private String invocationId = "";
         private String leaseId = "";
+        private String contractSetDigest = "";
         private McpInvocationOutcomeType outcome = null;
         private String resultDigest = "";
         private Integer resultSize = null;
@@ -30,6 +31,11 @@ public record McpInvocationOutcome(String invocationId, String leaseId, McpInvoc
 
         public Builder leaseId(String leaseId) {
             this.leaseId = Objects.requireNonNull(leaseId);
+            return this;
+        }
+
+        public Builder contractSetDigest(String contractSetDigest) {
+            this.contractSetDigest = Objects.requireNonNull(contractSetDigest);
             return this;
         }
 
@@ -54,7 +60,7 @@ public record McpInvocationOutcome(String invocationId, String leaseId, McpInvoc
         }
 
     public McpInvocationOutcome build() {
-            return new McpInvocationOutcome(invocationId, leaseId, outcome, resultDigest, resultSize, reasonCode);
+            return new McpInvocationOutcome(invocationId, leaseId, contractSetDigest, outcome, resultDigest, resultSize, reasonCode);
         }
     }
 }

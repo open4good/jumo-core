@@ -5,7 +5,7 @@ package dev.jumo.model;
 import java.util.Objects;
 
 /**
- * A single typed action within an ActionRun -- a connector read, an owner selection, or the step that opens an EffectBatch. Pins the exact catalog operation and input schema its arguments were validated against; never carries an upstream MCP tool name (McpBundleOperation.upstreamToolName never leaves its own document, ADR-0019 decision 161).
+ * A single typed action within an ActionRun -- a connector read, an owner selection, or the step that opens an EffectBatch. Pins the exact catalog operation and input schema its arguments were validated against; never carries an upstream MCP primitive name (McpPrimitiveExposure.upstreamName never leaves its recipe, ADR-0019 and ADR-0063).
  */
 public record ActionStep(String stepId, String runId, int stepIndex, String connectorId, String operationRef, String operationSchemaRef, String argumentsJson, String argumentsDigest, ActionStepStatus status, String createdAt, String updatedAt)  {
 

@@ -23,7 +23,6 @@ enums:
       RETIRED: {}
   ConnectorTransport:
     permissible_values:
-      MCP: {}
       HTTP: {}
       LOCAL_PROCESS: {}
       FORGE: {}
@@ -57,30 +56,6 @@ enums:
       CONCERN: {}
       FAIL: {}
       UNKNOWN: {}
-  UpstreamToolDisposition:
-    description: EXPOSED is reachable through a declared semantic operation. WITHHELD was considered and left out. QUARANTINED
-      was found actively unsafe.
-    permissible_values:
-      EXPOSED: {}
-      WITHHELD: {}
-      QUARANTINED: {}
-  McpBundleLifecycle:
-    permissible_values:
-      DECLARED: {}
-      REVIEWED: {}
-      ENABLED: {}
-      SUSPENDED: {}
-      RETIRED: {}
-  McpBundleTrustClass:
-    permissible_values:
-      JUMO_REVIEWED: {}
-      PROVIDER_TRUSTED: {}
-      CLIENT_QUARANTINED: {}
-  McpBundlePlacement:
-    permissible_values:
-      CLIENT_CELL: {}
-      EXECUTION_CELL: {}
-      REMOTE: {}
   OperationEffect:
     description: SYSTEM_EFFECT is the recovery-gated root system-effect branch (ADR-0056); an ENABLED bundle operation with
       this effect requires recoveryPlanDigest and killSwitchRef -- enforced in Rego, not schema.
@@ -98,10 +73,6 @@ enums:
     description: Monetary limits are scoped to their declaring Realm only; no broader scope is available in v1.
     permissible_values:
       REALM_ONLY: {}
-  RemoteMcpAppraisalVerdict:
-    permissible_values:
-      ACCEPTED: {}
-      REFUSED: {}
   ExecutionCellPlacement:
     permissible_values:
       PLATFORM: {}
@@ -232,8 +203,64 @@ enums:
   McpTransportType:
     permissible_values:
       STREAMABLE_HTTP: {}
-      STDIO_OCI: {}
-      STDIO_SOURCE: {}
+      STDIO: {}
+      LEGACY_HTTP_SSE: {}
+  McpSupplyKind:
+    permissible_values:
+      REMOTE_STREAMABLE_HTTP: {}
+      OCI_STDIO: {}
+      NPM_STDIO: {}
+      PYTHON_UV_STDIO: {}
+      NATIVE_STDIO: {}
+  McpBindingLifecycle:
+    permissible_values:
+      DECLARED: {}
+      ENABLED: {}
+      SUSPENDED: {}
+  McpParameterType:
+    permissible_values:
+      STRING: {}
+      INTEGER: {}
+      BOOLEAN: {}
+      ENUM: {}
+      ORIGIN: {}
+  McpArgumentValueKind:
+    permissible_values:
+      LITERAL: {}
+      PARAMETER: {}
+      CREDENTIAL: {}
+  McpPrimitiveKind:
+    permissible_values:
+      TOOL: {}
+      RESOURCE: {}
+      RESOURCE_TEMPLATE: {}
+      PROMPT: {}
+      TASK: {}
+      SAMPLING: {}
+      ELICITATION: {}
+  McpAuthMode:
+    permissible_values:
+      NONE: {}
+      STATIC_HEADERS: {}
+      OAUTH_2_1: {}
+  McpOAuthClientMode:
+    permissible_values:
+      PREREGISTERED: {}
+      CIMD: {}
+      DCR: {}
+  McpQualificationOutcome:
+    permissible_values:
+      QUALIFIED: {}
+      REFUSED: {}
+      DRIFTED: {}
+  McpQuarantineReason:
+    permissible_values:
+      SUPPLY_DRIFT: {}
+      INVENTORY_DRIFT: {}
+      SCHEMA_DRIFT: {}
+      PROMPT_DRIFT: {}
+      PRIMITIVE_DRIFT: {}
+      POLICY_REFUSAL: {}
   McpRegistrySourceType:
     permissible_values:
       OFFICIAL_REGISTRY: {}
@@ -319,6 +346,342 @@ enums:
         description: The applier's dispatch of this line had no observed terminal outcome. Never
           retried blindly (connector-action-runs-and-effect-batches AC3).
 classes:
+  McpServerRecipe:
+    description: Immutable Realm-imported recipe for one MCP server. It describes mechanism and exposure but grants no authority.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion: {range: string, equals_string: jumo.dev/v1, required: true}
+      kind: {range: string, equals_string: McpServerRecipe, required: true}
+      metadata: {range: Metadata, required: true, inlined: true}
+      spec: {range: McpServerRecipeSpec, required: true, inlined: true}
+  McpServerRecipeSpec:
+    attributes:
+      ownerRealm: {range: Identifier, required: true}
+      importedSourceDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      supply: {range: McpServerSupply, required: true, inlined: true}
+      protocol: {range: McpRecipeProtocol, required: true, inlined: true}
+      parameters: {range: McpRecipeParameter, multivalued: true, inlined_as_list: true}
+      credentialSlots: {range: McpCredentialSlot, multivalued: true, inlined_as_list: true}
+      argv: {range: McpArgumentValue, multivalued: true, inlined_as_list: true}
+      env: {range: McpNamedValue, multivalued: true, inlined_as_list: true}
+      headers: {range: McpNamedValue, multivalued: true, inlined_as_list: true}
+      egressOrigins: {range: string, multivalued: true, pattern: '^https://[^/?#]+(?::[0-9]+)?$'}
+      limits: {range: McpRuntimeLimits, required: true, inlined: true}
+      auth: {range: McpRecipeAuth, required: true, inlined: true}
+      exposures: {range: McpPrimitiveExposure, multivalued: true, inlined_as_list: true, required: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpServerSupply:
+    attributes:
+      supplyKind: {range: McpSupplyKind, required: true}
+      endpointOrigin: {range: string, pattern: '^https://[^/?#]+(?::[0-9]+)?$'}
+      endpointPath: {range: string, pattern: '^/[^?#]*$'}
+      ociReference: {range: string}
+      packageName: {range: string}
+      exactVersion: {range: string}
+      sourceOrigin: {range: string, pattern: '^https://[^?#]+$'}
+      architecture: {range: string}
+      artifactDigest: {range: string, pattern: '^sha256:[0-9a-f]{64}$'}
+      signatureDigest: {range: string, pattern: '^sha256:[0-9a-f]{64}$'}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpRecipeProtocol:
+    attributes:
+      minVersion: {range: string, required: true}
+      maxVersion: {range: string, required: true}
+      transports: {range: McpTransportType, multivalued: true, required: true, minimum_cardinality: 1}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpRecipeParameter:
+    attributes:
+      name: {range: Identifier, required: true}
+      type: {range: McpParameterType, required: true}
+      required: {range: boolean, required: true}
+      allowedValues: {range: string, multivalued: true}
+      pattern: {range: string}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpCredentialSlot:
+    attributes:
+      name: {range: Identifier, required: true}
+      injectionTarget: {range: string, required: true}
+      required: {range: boolean, required: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpArgumentValue:
+    attributes:
+      valueKind: {range: McpArgumentValueKind, required: true}
+      literal: {range: string}
+      parameterRef: {range: Identifier}
+      credentialSlotRef: {range: Identifier}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpNamedValue:
+    attributes:
+      name: {range: string, required: true}
+      value: {range: McpArgumentValue, required: true, inlined: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpRuntimeLimits:
+    attributes:
+      maxMemoryBytes: {range: integer, required: true}
+      maxCpuMillis: {range: integer, required: true}
+      maxPayloadBytes: {range: integer, required: true}
+      timeoutMillis: {range: integer, required: true}
+      maxCallsPerMinute: {range: integer, required: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpRecipeAuth:
+    attributes:
+      mode: {range: McpAuthMode, required: true}
+      oauthClientMode: {range: McpOAuthClientMode}
+      metadataOrigin: {range: string, pattern: '^https://[^/?#]+(?::[0-9]+)?$'}
+      resourceIndicator: {range: string, pattern: '^https://[^?#]+$'}
+      scopes: {range: string, multivalued: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpPrimitiveExposure:
+    attributes:
+      primitiveKind: {range: McpPrimitiveKind, required: true}
+      upstreamName: {range: string, required: true}
+      exposedName: {range: string, required: true}
+      description: {range: string, required: true, pattern: '^.{10,}$'}
+      capabilityRef: {range: CapabilityName}
+      inputSchemaDigest: {range: string, pattern: '^sha256:[0-9a-f]{64}$'}
+      outputSchemaDigest: {range: string, pattern: '^sha256:[0-9a-f]{64}$'}
+      opaqueOutput: {range: boolean, required: true}
+      allowedMimeTypes: {range: string, multivalued: true}
+      resourceUriPatterns: {range: string, multivalued: true}
+      staticContentDigest: {range: string, pattern: '^sha256:[0-9a-f]{64}$'}
+      taskInstructionsAllowed: {range: boolean, required: true}
+      maxSamplingCalls: {range: integer}
+      maxSamplingTokens: {range: integer}
+      allowedDataClasses: {range: string, multivalued: true}
+      elicitationSensitiveAllowed: {range: boolean}
+      allowedOrigins: {range: string, multivalued: true, pattern: '^https://[^/?#]+(?::[0-9]+)?$'}
+      fixedArguments: {range: McpNamedValue, multivalued: true, inlined_as_list: true}
+      hiddenArguments: {range: Identifier, multivalued: true}
+      jsonProjection: {range: string, multivalued: true}
+      jsonRedaction: {range: string, multivalued: true}
+      effect: {range: OperationEffect, required: true}
+      requiresGrant: {range: boolean, required: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpServerBinding:
+    description: Realm contract assigning non-secret recipe values and SecretBinding references to one target machine.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion: {range: string, equals_string: jumo.dev/v1, required: true}
+      kind: {range: string, equals_string: McpServerBinding, required: true}
+      metadata: {range: Metadata, required: true, inlined: true}
+      spec: {range: McpServerBindingSpec, required: true, inlined: true}
+  McpServerBindingSpec:
+    attributes:
+      ownerRealm: {range: Identifier, required: true}
+      recipeRef: {range: ContractReference, required: true, inlined: true}
+      executionMachineRef: {range: ContractReference, required: true, inlined: true}
+      lifecycle: {range: McpBindingLifecycle, required: true}
+      appraisalRef: {range: ContractReference, inlined: true}
+      parameterValues: {range: McpBindingParameter, multivalued: true, inlined_as_list: true}
+      credentialBindings: {range: McpCredentialBinding, multivalued: true, inlined_as_list: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpBindingParameter:
+    attributes:
+      parameterRef: {range: Identifier, required: true}
+      value: {range: string, required: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpCredentialBinding:
+    attributes:
+      credentialSlotRef: {range: Identifier, required: true}
+      secretBindingRef: {range: ContractReference, required: true, inlined: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpServerAppraisal:
+    description: Independent Realm decision bound to exact recipe, supply, inventory and binding digests; it grants no authority.
+    annotations:
+      jumo.composition: REALM_ONLY
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion: {range: string, equals_string: jumo.dev/v1, required: true}
+      kind: {range: string, equals_string: McpServerAppraisal, required: true}
+      metadata: {range: Metadata, required: true, inlined: true}
+      spec: {range: McpServerAppraisalSpec, required: true, inlined: true}
+  McpServerAppraisalSpec:
+    attributes:
+      ownerRealm: {range: Identifier, required: true}
+      recipeRef: {range: ContractReference, required: true, inlined: true}
+      bindingRef: {range: ContractReference, required: true, inlined: true}
+      recipeDigest: {range: string, required: true, pattern: '^sha256:[0-9a-f]{64}$'}
+      supplyDigest: {range: string, required: true, pattern: '^sha256:[0-9a-f]{64}$'}
+      inventoryDigest: {range: string, required: true, pattern: '^sha256:[0-9a-f]{64}$'}
+      bindingDigest: {range: string, required: true, pattern: '^sha256:[0-9a-f]{64}$'}
+      appraisedByRoleDefinitionRef: {range: ContractReference, required: true, inlined: true}
+      verifiedByRoleDefinitionRef: {range: ContractReference, required: true, inlined: true}
+      verdict: {range: AppraisalVerdict, required: true}
+      evidenceRefs: {range: string, multivalued: true, required: true, minimum_cardinality: 1}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpMaterializationSnapshot:
+    attributes:
+      snapshotId: {range: Identifier, required: true}
+      realmId: {range: Identifier, required: true}
+      recipeDigest: {range: string, required: true}
+      resolvedLockDigest: {range: string, required: true}
+      sbomDigest: {range: string, required: true}
+      materializationDigest: {range: string, required: true}
+      architecture: {range: string, required: true}
+      createdAt: {range: datetime, required: true}
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: INTERNAL_WORKER
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpQualificationSnapshot:
+    attributes:
+      snapshotId: {range: Identifier, required: true}
+      realmId: {range: Identifier, required: true}
+      recipeDigest: {range: string, required: true}
+      bindingDigest: {range: string, required: true}
+      supplyDigest: {range: string, required: true}
+      inventoryDigest: {range: string, required: true}
+      negotiatedVersion: {range: string, required: true}
+      negotiatedTransport: {range: McpTransportType, required: true}
+      outcome: {range: McpQualificationOutcome, required: true}
+      observedAt: {range: datetime, required: true}
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ActiveContractSet:
+    attributes:
+      realmId: {range: Identifier, required: true}
+      contractSetDigest: {range: string, required: true}
+      realmRevision: {range: string, required: true}
+      activatedAt: {range: datetime, required: true}
+      activatedByDecisionRef: {range: Identifier, required: true}
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: PROJECTION
+      jumo.audience: INTERNAL_WORKER
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpQuarantine:
+    attributes:
+      quarantineId: {range: Identifier, required: true}
+      realmId: {range: Identifier, required: true}
+      bindingRef: {range: ContractReference, required: true, inlined: true}
+      contractSetDigest: {range: string, required: true}
+      reason: {range: McpQuarantineReason, required: true}
+      expectedDigest: {range: string, required: true}
+      observedDigest: {range: string, required: true}
+      quarantinedAt: {range: datetime, required: true}
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   McpRegistrySource:
     description: Platform-scoped configuration for a bounded registry adapter. It authorizes neither installation nor execution.
     annotations:
@@ -708,8 +1071,8 @@ classes:
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   ConnectorDefinition:
-    description: A Realm-owned catalog entry for an external system boundary. MCP is one transport among several. Discovery
-      is observational; only operations mapped to declared capabilities can be requested.
+    description: A Realm-owned catalog entry for a non-MCP external system boundary such as FORGE. MCP servers use
+      McpServerRecipe and McpServerBinding exclusively (ADR-0063).
     annotations:
       jumo.composition: ADDITIVE
       jumo.state_authority: GIT
@@ -749,15 +1112,6 @@ classes:
       configurationRef:
         range: ConfigurationRef
         required: true
-      mcpBundleRef:
-        range: ContractReference
-        inlined: true
-      remoteMcpServiceRef:
-        range: ContractReference
-        inlined: true
-      connectorPackageRef:
-        range: ContractReference
-        inlined: true
       placement:
         range: ConnectorPlacement
       operations:
@@ -784,8 +1138,6 @@ classes:
       description:
         range: string
         pattern: ^.{10,}$
-      bundleOperationRef:
-        range: Identifier
       inputSchemaRef:
         range: string
       outputSchemaRef:
@@ -846,507 +1198,6 @@ classes:
         range: string
         required: true
         pattern: ^.{1,}$
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  ConnectorAppraisal:
-    description: 'The reviewed judgement that lets an McpBundle leave DECLARED. Findings live here because they are a decision;
-      the runs behind them stay recognized state and are cited by evidenceRefs. An appraisal grants no authority: it unlocks
-      a lifecycle transition.'
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: CONTRACT
-      jumo.composition: REALM_ONLY
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-    attributes:
-      apiVersion:
-        range: string
-        equals_string: jumo.dev/v1
-        required: true
-      kind:
-        range: string
-        equals_string: ConnectorAppraisal
-        required: true
-      metadata:
-        range: Metadata
-        required: true
-        inlined: true
-      spec:
-        range: ConnectorAppraisalSpec
-        required: true
-        inlined: true
-  ConnectorAppraisalSpec:
-    attributes:
-      ownerRealm:
-        range: Identifier
-        required: true
-      mcpBundleRef:
-        range: ContractReference
-        required: true
-        inlined: true
-        description: The McpBundle this appraises. Refused across Realms (Rego).
-      appraisedDigest:
-        range: string
-        required: true
-        pattern: ^sha256:[0-9a-f]{64}$
-        description: The exact artifact that was looked at. When the bundle digest moves, this appraisal stops being accepted,
-          so an upstream version bump cannot inherit the prior review.
-      appraisedByRoleDefinitionRef:
-        range: ContractReference
-        required: true
-        inlined: true
-      verifiedByRoleDefinitionRef:
-        range: ContractReference
-        required: true
-        inlined: true
-        description: The role that checked it, which is not the one that performed it.
-      appraisedAt:
-        range: datetime
-      verdict:
-        range: AppraisalVerdict
-        required: true
-      conditions:
-        range: string
-        multivalued: true
-        pattern: ^.{10,}$
-        description: Required and non-empty under ACCEPTED_WITH_CONDITIONS (Rego).
-      dimensions:
-        range: AppraisalDimensions
-        required: true
-        inlined: true
-      upstreamInventory:
-        range: UpstreamToolEntry
-        multivalued: true
-        inlined_as_list: true
-        required: true
-        minimum_cardinality: 1
-        description: Every tool the upstream server offered when it was looked at, exposed or not -- enumerating what was
-          held back is the point of the whole document.
-      evidenceRefs:
-        range: string
-        multivalued: true
-        required: true
-        minimum_cardinality: 1
-        pattern: ^.{1,}$
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  AppraisalDimensions:
-    description: 'Four questions asked of every submission, separate because they fail independently: a perfectly signed artifact
-      can be unusable by an agent, and a well-described tool can have no business in this Realm.'
-    attributes:
-      provenance:
-        range: AppraisalDimension
-        required: true
-        inlined: true
-        description: Signature, digest, SBOM, licence and publisher.
-      security:
-        range: AppraisalDimension
-        required: true
-        inlined: true
-        description: Blast radius per operation, network egress, secret material held, and untrusted output.
-      relevance:
-        range: AppraisalDimension
-        required: true
-        inlined: true
-        description: Whether each exposed operation maps to a capability this Realm already declares.
-      agentUsability:
-        range: AppraisalDimension
-        required: true
-        inlined: true
-        description: Whether an agent can use it without guessing.
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  AppraisalDimension:
-    attributes:
-      outcome:
-        range: AppraisalDimensionOutcome
-        required: true
-      finding:
-        range: string
-        required: true
-        pattern: ^.{10,}$
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  UpstreamToolEntry:
-    description: 'Reason required when disposition is WITHHELD or QUARANTINED (Rego): exposing a tool is justified
-      by the operation that maps it to a capability; holding one back has no such document, so the reason lives here or nowhere.'
-    attributes:
-      upstreamToolName:
-        range: string
-        required: true
-        pattern: ^.{1,}$
-      disposition:
-        range: UpstreamToolDisposition
-        required: true
-      reason:
-        range: string
-        pattern: ^.{10,}$
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  McpBundle:
-    description: A reviewed, deployable MCP package. Describes mechanism and semantic affordances; never grants authority.
-    annotations:
-      jumo.composition: ADDITIVE
-      jumo.state_authority: GIT
-      jumo.model_role: CONTRACT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-    attributes:
-      apiVersion:
-        range: string
-        equals_string: jumo.dev/v1
-        required: true
-      kind:
-        range: string
-        equals_string: McpBundle
-        required: true
-      metadata:
-        range: Metadata
-        required: true
-        inlined: true
-      spec:
-        range: McpBundleSpec
-        required: true
-        inlined: true
-  McpBundleSpec:
-    attributes:
-      ownerRealm:
-        range: Identifier
-        required: true
-      lifecycle:
-        range: McpBundleLifecycle
-        required: true
-      trustClass:
-        range: McpBundleTrustClass
-        required: true
-      connectorPackageRef:
-        range: ContractReference
-        inlined: true
-      artifact:
-        range: McpBundleArtifact
-        required: true
-        inlined: true
-      runtime:
-        range: McpBundleRuntime
-        required: true
-        inlined: true
-      semanticProfile:
-        range: McpBundleSemanticProfile
-        required: true
-        inlined: true
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  McpBundleArtifact:
-    attributes:
-      format:
-        range: string
-        equals_string: OCI
-        required: true
-      reference:
-        range: string
-        required: true
-        pattern: ^.{3,}$
-      digest:
-        range: string
-        required: true
-        pattern: ^sha256:[0-9a-f]{64}$
-      publisher:
-        range: string
-        required: true
-        pattern: ^.{2,}$
-      signatureRef:
-        range: string
-        required: true
-        pattern: ^.{3,}$
-      sbomRef:
-        range: string
-        required: true
-        pattern: ^.{3,}$
-      license:
-        range: string
-        required: true
-        pattern: ^.{2,}$
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  McpBundleRuntime:
-    description: An McpBundle's single upstream branch is always OCI_STDIO with a pinned artifact (McpBundleSpec.artifact);
-      the STREAMABLE_HTTP branch has no bundle and is reached only through ConnectorDefinitionSpec.remoteMcpServiceRef and
-      RemoteMcpServiceSpec.transport MCP_STREAMABLE_HTTP (ADR-0050 decisions 6-7).
-    attributes:
-      transport:
-        range: string
-        equals_string: MCP
-        required: true
-      upstreamKind:
-        range: string
-        equals_string: OCI_STDIO
-        description: Not schema-required -- the pinned jumo-core sibling source only gains this field at its own
-          pace; enforced unconditionally in Rego instead (corpus.bundle.upstream-kind-required), which reads the
-          live composed corpus rather than a stale lock.
-      placement:
-        range: McpBundlePlacement
-        required: true
-        description: v2 admits only EXECUTION_CELL; CLIENT_CELL and REMOTE remain declarable at the schema level but
-          are refused by corpus.bundle.execution-cell-only-placement (Rego, not schema) for the same reason.
-      entrypoint:
-        range: string
-        pattern: ^.{1,}$
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  McpBundleSemanticProfile:
-    attributes:
-      purpose:
-        range: string
-        required: true
-        pattern: ^.{10,}$
-      dataScope:
-        range: DataScope
-        required: true
-      operations:
-        range: McpBundleOperation
-        multivalued: true
-        inlined_as_list: true
-        required: true
-        minimum_cardinality: 1
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: PERSONAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  McpBundleOperation:
-    attributes:
-      id:
-        range: Identifier
-        required: true
-      exposedName:
-        range: string
-        required: true
-        pattern: ^.{3,}$
-      upstreamToolName:
-        range: string
-        required: true
-        pattern: ^.{1,}$
-        description: The raw MCP tool this semantic operation wraps. Never leaves this document -- there is no generic connector.invoke
-          (ADR-0019, decision 161).
-      untrustedOutput:
-        range: boolean
-        required: true
-        description: Whether this operation returns content originating outside the trust boundary.
-      agentGuidance:
-        range: string
-        pattern: ^.{10,}$
-        description: When to reach for this operation and when not to, written for the choosing agent.
-      capabilityRef:
-        range: CapabilityName
-        required: true
-      description:
-        range: string
-        required: true
-        pattern: ^.{10,}$
-      effect:
-        range: OperationEffect
-        required: true
-      idempotency:
-        range: OperationIdempotency
-        required: true
-      reconciliation:
-        range: OperationReconciliation
-        required: true
-      monetaryAmountInput:
-        range: Identifier
-        description: Typed input field carrying the monetary amount. Its presence declares this as a monetary external operation.
-      monetaryCurrency:
-        range: string
-        pattern: '^[A-Z]{3}$'
-        description: ISO 4217 currency of monetaryAmountInput. Required by Rego whenever monetaryAmountInput is declared.
-      inputSchemaRef:
-        range: string
-        pattern: ^.{3,}$
-      outputSchemaRef:
-        range: string
-        pattern: ^.{3,}$
-      secretBindingRefs:
-        range: ContractReference
-        multivalued: true
-        inlined_as_list: true
-      recoveryPlanDigest:
-        range: string
-        pattern: ^sha256:[0-9a-f]{64}$
-        description: Required in Rego when effect is SYSTEM_EFFECT and the bundle is ENABLED (ADR-0056 decision 3).
-      killSwitchRef:
-        range: string
-        pattern: ^.{3,}$
-        description: Required in Rego when effect is SYSTEM_EFFECT and the bundle is ENABLED (ADR-0056 decision 4).
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  RemoteMcpService:
-    description: A Realm-local remote MCP endpoint. URLs and OAuth material are references resolved only in the Realm Cell.
-    annotations:
-      jumo.composition: ADDITIVE
-      jumo.state_authority: GIT
-      jumo.model_role: CONTRACT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-    attributes:
-      apiVersion:
-        range: string
-        equals_string: jumo.dev/v1
-        required: true
-      kind:
-        range: string
-        equals_string: RemoteMcpService
-        required: true
-      metadata:
-        range: Metadata
-        required: true
-        inlined: true
-      spec:
-        range: RemoteMcpServiceSpec
-        required: true
-        inlined: true
-  RemoteMcpServiceSpec:
-    attributes:
-      ownerRealm:
-        range: Identifier
-        required: true
-      lifecycle:
-        range: ConnectorLifecycle
-        required: true
-      transport:
-        range: string
-        equals_string: MCP_STREAMABLE_HTTP
-        required: true
-      endpointConfigurationRef:
-        range: ConfigurationRef
-        required: true
-      oauthSecretBindingRef:
-        range: ContractReference
-        required: true
-        inlined: true
-      remoteMcpAppraisalRef:
-        range: ContractReference
-        inlined: true
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  RemoteMcpAppraisal:
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: CONTRACT
-      jumo.composition: REALM_ONLY
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-    attributes:
-      apiVersion:
-        range: string
-        equals_string: jumo.dev/v1
-        required: true
-      kind:
-        range: string
-        equals_string: RemoteMcpAppraisal
-        required: true
-      metadata:
-        range: Metadata
-        required: true
-        inlined: true
-      spec:
-        range: RemoteMcpAppraisalSpec
-        required: true
-        inlined: true
-  RemoteMcpAppraisalSpec:
-    attributes:
-      ownerRealm:
-        range: Identifier
-        required: true
-      remoteMcpServiceRef:
-        range: ContractReference
-        required: true
-        inlined: true
-      verdict:
-        range: RemoteMcpAppraisalVerdict
-        required: true
-      inventoryDigest:
-        range: string
-        required: true
-        pattern: ^sha256:[0-9a-f]{64}$
-      observedAt:
-        range: datetime
-        required: true
-      validUntil:
-        range: datetime
-        required: true
-      verifiedByRoleDefinitionRef:
-        range: ContractReference
-        required: true
-        inlined: true
-      evidenceRefs:
-        range: string
-        multivalued: true
-        required: true
-        minimum_cardinality: 1
-        pattern: ^.{3,}$
-      semanticTools:
-        range: Identifier
-        multivalued: true
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -1671,8 +1522,7 @@ classes:
         required: true
         inlined: true
   SecretBindingSpec:
-    description: anyOf(allowedBundleRefs, allowedRemoteServiceRefs, allowedConnectorRefs, allowedWorkerSubstrateRefs) moves
-      to Rego.
+    description: Allowed MCP bindings, non-MCP connectors, worker substrates and WorkOrders are explicit references checked by Rego.
     attributes:
       ownerRealm:
         range: Identifier
@@ -1684,11 +1534,7 @@ classes:
         range: OpenBaoRuntimeRef
         required: true
         description: Account- or connector-scoped OpenBao KV-v2 reference resolved by the per-Realm SecretBroker; not a secret value.
-      allowedMcpBundleRefs:
-        range: ContractReference
-        multivalued: true
-        inlined_as_list: true
-      allowedRemoteMcpServiceRefs:
+      allowedMcpServerBindingRefs:
         range: ContractReference
         multivalued: true
         inlined_as_list: true
@@ -2481,29 +2327,6 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  McpServerDescriptor:
-    description: Descriptor specifying MCP server transport and connection target.
-    attributes:
-      transport:
-        range: McpTransportType
-        required: true
-      endpointUrl:
-        range: string
-      ociImage:
-        range: string
-      sourceRepository:
-        range: string
-      sourceCommitSha:
-        range: string
-      tlsRequired:
-        range: boolean
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   McpProtocolProfile:
     description: Supported MCP protocol capabilities and versions.
     attributes:
@@ -2639,9 +2462,8 @@ classes:
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   SessionPlan:
-    description: Signed MCP gateway session plan scoped to one ExecutionCellLease
-      (mcp-gateway-session-plan-signing AC2) -- carries the planSignature envelope
-      dev.jumo.mcpgateway.plan.SessionPlan's javadoc names but does not yet have a field for.
+    description: Signed MCP gateway session plan scoped to one ExecutionCellLease. It is the only
+      executable MCP form and carries every exact contract and supply digest used by the gateway.
     attributes:
       planId:
         range: Identifier
@@ -2651,6 +2473,32 @@ classes:
         required: true
       leaseId:
         range: Identifier
+        required: true
+      contractSetDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      recipeDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      bindingDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      appraisalDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      supplyDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
+      negotiatedVersion:
+        range: string
+        required: true
+      negotiatedTransport:
+        range: McpTransportType
         required: true
       upstreamToolsDigest:
         description: Digest of the complete discovered tool inventory of the one upstream connector
@@ -2690,6 +2538,10 @@ classes:
       leaseId:
         range: Identifier
         required: true
+      contractSetDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
       operationName:
         range: string
         required: true
@@ -2724,6 +2576,10 @@ classes:
       leaseId:
         range: Identifier
         required: true
+      contractSetDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
       operationName:
         range: string
         required: true
@@ -2772,6 +2628,10 @@ classes:
       leaseId:
         range: Identifier
         required: true
+      contractSetDigest:
+        range: string
+        required: true
+        pattern: ^sha256:[0-9a-f]{64}$
       outcome:
         range: McpInvocationOutcomeType
         required: true
@@ -2809,231 +2669,6 @@ classes:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
       jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  ConnectorIntegration:
-    description: Durable Git contract grouping related connectors (e.g. Google Workspace) into a coherent UX unit.
-    attributes:
-      apiVersion:
-        range: string
-        equals_string: jumo.dev/v1
-        required: true
-      kind:
-        range: string
-        equals_string: ConnectorIntegration
-        required: true
-      metadata:
-        range: Metadata
-        required: true
-        inlined: true
-      spec:
-        range: ConnectorIntegrationSpec
-        required: true
-        inlined: true
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: CONTRACT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-      jumo.composition: ADDITIVE
-  ConnectorIntegrationSpec:
-    description: Specification for a ConnectorIntegration contract.
-    attributes:
-      ownerRealm:
-        range: Identifier
-        required: true
-      category:
-        range: string
-        required: true
-      memberConnectorRefs:
-        range: ContractReference
-        multivalued: true
-        inlined_as_list: true
-      description:
-        range: string
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: REALM_PRIVATE
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  ConnectorPackage:
-    description: Platform-only Git contract manifest defining a complete connector package under .jumo/connector-packages/<id>/.
-      Publication in the Platform corpus is a technical-reuse fact and confers no Realm consent, secret or activation authority
-      (ADR-0050 decision 8).
-    attributes:
-      apiVersion:
-        range: string
-        equals_string: jumo.dev/v1
-        required: true
-      kind:
-        range: string
-        equals_string: ConnectorPackage
-        required: true
-      metadata:
-        range: Metadata
-        required: true
-        inlined: true
-      spec:
-        range: ConnectorPackageSpec
-        required: true
-        inlined: true
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: CONTRACT
-      jumo.audience: INTERNAL_WORKER
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-      jumo.composition: SEALED
-  ConnectorPackageSpec:
-    description: Specification for a ConnectorPackage manifest.
-    attributes:
-      connectorId:
-        range: Identifier
-        required: true
-      version:
-        range: string
-        required: true
-      packageDigest:
-        range: string
-        required: true
-        pattern: ^sha256:[0-9a-f]{64}$
-        description: >-
-          SHA-256 of the package's content manifest. The manifest lists one line per content file,
-          "<sha256 hex>  <path relative to the package directory>", sorted by path, newline
-          terminated; packageDigest is sha256: followed by the SHA-256 of those bytes. Content files
-          are exactly sourcePaths when declared, otherwise every file in the package directory
-          except this manifest, which carries the digest and so cannot hash itself. Computed and
-          checked by scripts/generate/compute-package-digests.py.
-      supportedTransports:
-        range: McpServerDescriptor
-        multivalued: true
-        inlined_as_list: true
-        description: >-
-          The MCP transports this package exposes. A ConnectorPackageCertification attests to
-          exactly this set through supportedTransportDigests, one digest per descriptor.
-      manifestPath:
-        range: string
-      contractsPath:
-        range: string
-      runtimeImageDigest:
-        range: string
-      sbomDigest:
-        range: string
-      provenanceDigest:
-        range: string
-      signatureDigest:
-        range: string
-      licenceDigest:
-        range: string
-      testDigest:
-        range: string
-      provenancePins:
-        range: McpCatalogProvenancePin
-        multivalued: true
-        inlined_as_list: true
-      sourcePaths:
-        range: string
-        multivalued: true
-      contractPaths:
-        range: string
-        multivalued: true
-      testPlanRefs:
-        range: string
-        multivalued: true
-      buildRecipeRef:
-        range: string
-      requiresAdapter:
-        range: boolean
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: INTERNAL_WORKER
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-  ConnectorPackageCertification:
-    description: Platform-only technical certification of an exact ConnectorPackage build. Records CI-verified digests only
-      (ADR-0050 decision 8); carries no Realm consent, activation or secret-authority field. Distinct from the Realm-scoped
-      ConnectorAppraisal, which records human dual-consent appraisal.
-    annotations:
-      jumo.composition: SEALED
-      jumo.state_authority: GIT
-      jumo.model_role: CONTRACT
-      jumo.audience: INTERNAL_WORKER
-      jumo.sensitivity: INTERNAL
-      jumo.boundary_eligible: true
-      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
-    attributes:
-      apiVersion:
-        range: string
-        equals_string: jumo.dev/v1
-        required: true
-      kind:
-        range: string
-        equals_string: ConnectorPackageCertification
-        required: true
-      metadata:
-        range: Metadata
-        required: true
-        inlined: true
-      spec:
-        range: ConnectorPackageCertificationSpec
-        required: true
-        inlined: true
-  ConnectorPackageCertificationSpec:
-    attributes:
-      connectorPackageRef:
-        range: ContractReference
-        required: true
-        inlined: true
-      packageDigest:
-        range: string
-        required: true
-        pattern: ^sha256:[0-9a-f]{64}$
-      imageDigest:
-        range: string
-        required: true
-        pattern: ^sha256:[0-9a-f]{64}$
-      signatureDigest:
-        range: string
-        pattern: ^sha256:[0-9a-f]{64}$
-      sbomDigest:
-        range: string
-        required: true
-        pattern: ^sha256:[0-9a-f]{64}$
-      provenanceDigest:
-        range: string
-        required: true
-        pattern: ^sha256:[0-9a-f]{64}$
-      licenceDigest:
-        range: string
-        pattern: ^sha256:[0-9a-f]{64}$
-      testDigest:
-        range: string
-        pattern: ^sha256:[0-9a-f]{64}$
-      supportedTransportDigests:
-        range: string
-        multivalued: true
-        required: true
-        minimum_cardinality: 1
-        pattern: ^sha256:[0-9a-f]{64}$
-        description: >-
-          One digest per McpServerDescriptor in the certified package's supportedTransports, each
-          sha256: followed by the SHA-256 of that descriptor's canonical JSON -- object keys sorted,
-          no insignificant whitespace, absent fields omitted. Certifying a transport the package
-          does not declare, or omitting one it does, is refused by
-          corpus.certification.transport-consistency. Computed by
-          scripts/generate/compute-package-digests.py.
-    annotations:
-      jumo.state_authority: GIT
-      jumo.model_role: VALUE_OBJECT
-      jumo.audience: INTERNAL_WORKER
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
@@ -3304,8 +2939,8 @@ classes:
   ActionStep:
     description: A single typed action within an ActionRun -- a connector read, an owner
       selection, or the step that opens an EffectBatch. Pins the exact catalog operation and input
-      schema its arguments were validated against; never carries an upstream MCP tool name
-      (McpBundleOperation.upstreamToolName never leaves its own document, ADR-0019 decision 161).
+      schema its arguments were validated against; never carries an upstream MCP primitive name
+      (McpPrimitiveExposure.upstreamName never leaves its recipe, ADR-0019 and ADR-0063).
     attributes:
       stepId:
         range: Identifier

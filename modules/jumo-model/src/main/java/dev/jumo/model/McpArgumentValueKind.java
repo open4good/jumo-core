@@ -8,19 +8,19 @@ import java.util.Collections;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public enum McpTransportType {
+public enum McpArgumentValueKind {
 
-  STREAMABLE_HTTP("STREAMABLE_HTTP"),
+  LITERAL("LITERAL"),
 
-  STDIO("STDIO"),
+  PARAMETER("PARAMETER"),
 
-  LEGACY_HTTP_SSE("LEGACY_HTTP_SSE");
+  CREDENTIAL("CREDENTIAL");
 
-  private final static Map<String, McpTransportType> MAP;
+  private final static Map<String, McpArgumentValueKind> MAP;
 
   static {
-    Map<String, McpTransportType> map = new HashMap<String, McpTransportType>();
-    for ( McpTransportType value : McpTransportType.values() ) {
+    Map<String, McpArgumentValueKind> map = new HashMap<String, McpArgumentValueKind>();
+    for ( McpArgumentValueKind value : McpArgumentValueKind.values() ) {
       map.put(value.toString(), value);
     }
 
@@ -29,7 +29,7 @@ public enum McpTransportType {
 
   private final String repr;
 
-  McpTransportType(String repr) {
+  McpArgumentValueKind(String repr) {
     this.repr = repr;
   }
 
@@ -39,7 +39,7 @@ public enum McpTransportType {
   }
 
   @JsonCreator
-  public static McpTransportType fromString(String v) {
+  public static McpArgumentValueKind fromString(String v) {
     return MAP.get(v);
   }
 

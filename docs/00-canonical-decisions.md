@@ -25,11 +25,13 @@ audience: PROJECT_SCOPED
 6. OpenBao extends to connector credentials with short-lived delegated leases issued to machines (ADR-0048).
 7. AI CLI workers execute in isolated rootless OCI runtimes under strict output schemas with no auto-repair,
    and evidence is collected exclusively after secret-aware sanitization (ADR-0049).
-8. Connectors are LinkML-governed packages under `.jumo/connector-packages/`, built through a 10-step journey
-   with target-machine discovery and independent appraisal at admission. Irreversible external effects require
-   one fresh, step-up-verified approval by the addressed Realm owner over the exact canonical payload digest
-   and policy revision; appraisal is not a second per-effect consent. The shared
-   MCP registry records sourced catalog signals only and grants neither installation nor execution (ADR-0050).
+8. MCP servers are admitted as immutable Realm-owned `McpServerRecipe` contracts and separately activated
+   `McpServerBinding` contracts; Jumo builds, signs and ships only the generic MCP runtime. Qualification on the
+   target machine, independent appraisal over exact recipe, supply, inventory and binding digests, and a distinct
+   owner activation are mandatory. The signed session plan is the only executable form, every primitive is
+   default-deny, and drift quarantines the whole binding without repairing Git. Irreversible external effects still
+   require one fresh, step-up-verified owner approval over the exact payload and policy revision. The shared MCP
+   registry remains a source of signals with no installation or execution authority (ADR-0050, ADR-0063).
 9. Public interoperability exposition under `/u/{handle}` is governed by `OrganizationPublicationPolicy` and
    `RealmPublication` with sealed adapters, signed manifests, A2A read tasks gated by ACS/OPA PEP, and
    CI auto-publication of static read-only projections (ADR-0051).

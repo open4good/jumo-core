@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record ConnectorOperation(String id, String capabilityRef, String description, String bundleOperationRef, String inputSchemaRef, String outputSchemaRef, OperationIdempotency idempotency, OperationReconciliation reconciliation, List<ContractReference> secretBindingRefs)  {
+public record ConnectorOperation(String id, String capabilityRef, String description, String inputSchemaRef, String outputSchemaRef, OperationIdempotency idempotency, OperationReconciliation reconciliation, List<ContractReference> secretBindingRefs)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,7 +17,6 @@ public record ConnectorOperation(String id, String capabilityRef, String descrip
         private String id = "";
         private String capabilityRef = "";
         private String description = "";
-        private String bundleOperationRef = "";
         private String inputSchemaRef = "";
         private String outputSchemaRef = "";
         private OperationIdempotency idempotency = null;
@@ -37,11 +36,6 @@ public record ConnectorOperation(String id, String capabilityRef, String descrip
 
         public Builder description(String description) {
             this.description = Objects.requireNonNull(description);
-            return this;
-        }
-
-        public Builder bundleOperationRef(String bundleOperationRef) {
-            this.bundleOperationRef = Objects.requireNonNull(bundleOperationRef);
             return this;
         }
 
@@ -71,7 +65,7 @@ public record ConnectorOperation(String id, String capabilityRef, String descrip
         }
 
     public ConnectorOperation build() {
-            return new ConnectorOperation(id, capabilityRef, description, bundleOperationRef, inputSchemaRef, outputSchemaRef, idempotency, reconciliation, secretBindingRefs);
+            return new ConnectorOperation(id, capabilityRef, description, inputSchemaRef, outputSchemaRef, idempotency, reconciliation, secretBindingRefs);
         }
     }
 }

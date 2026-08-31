@@ -13,143 +13,430 @@ external_effect_capability(name) if {
 	capability.producesExternalEffect == true
 }
 
-active_monetary_risk_policy(realm, currency) if {
-	some policy in corpus.documents
-	policy.kind == "MonetaryRiskPolicy"
-	spec := corpus.spec(policy)
-	spec.ownerRealm == realm
-	spec.scope == "REALM_ONLY"
-	spec.currency == currency
-	spec.lifecycle == "ENABLED"
-}
-
-connector_appraisal(bundle_id) := document if {
-	some document in corpus.documents
-	document.kind == "ConnectorAppraisal"
-	corpus.ref_id(object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", ""))) == bundle_id
-}
-
-remote_appraisal(service_id) := document if {
-	some document in corpus.documents
-	document.kind == "RemoteMcpAppraisal"
-	corpus.ref_id(object.get(corpus.spec(document), "remoteMcpServiceRef", object.get(corpus.spec(document), "serviceRef", ""))) == service_id
-}
-
-bundle_operation(bundle, operation_id) := operation if {
-	some operation in object.get(
-		object.get(corpus.spec(bundle), "semanticProfile", {}),
-		"operations",
-		[],
-	)
-	operation.id == operation_id
-}
-
-deny contains corpus.violation("corpus.connector.single-source", document, message) if {
+# ADR-0063: ConnectorDefinition is reserved for non-MCP integrations.
+deny contains corpus.violation("corpus.connector.mcp-retired", document, message) if {
 	some document in corpus.documents
 	document.kind == "ConnectorDefinition"
 	spec := corpus.spec(document)
-	object.get(spec, "mcpBundleRef", object.get(spec, "bundleRef", null)) != null
-	object.get(spec, "remoteMcpServiceRef", object.get(spec, "remoteServiceRef", null)) != null
-	message := "ConnectorDefinition may reference a McpBundle or a RemoteMcpService, not both"
+	spec.transport == "MCP"
+	message := "ConnectorDefinition cannot represent MCP; import an McpServerRecipe and declare a separate McpServerBinding"
 }
 
-deny contains corpus.violation("corpus.connector.remote-resolves", document, message) if {
+deny contains corpus.violation("corpus.connector.mcp-retired", document, message) if {
 	some document in corpus.documents
 	document.kind == "ConnectorDefinition"
-	remote_ref := corpus.ref_id(object.get(corpus.spec(document), "remoteMcpServiceRef", object.get(corpus.spec(document), "remoteServiceRef", null)))
-	remote_ref != null
-	not remote_ref in corpus.ids_of_kind("RemoteMcpService")
-	message := sprintf("spec.remoteMcpServiceRef: no RemoteMcpService declares id %q", [remote_ref])
+	spec := corpus.spec(document)
+	some field in {"mcpBundleRef", "remoteMcpServiceRef", "connectorPackageRef", "bundleRef", "remoteServiceRef"}
+	object.get(spec, field, null) != null
+	message := sprintf("spec.%s: package-era MCP executable references are refused", [field])
 }
 
-deny contains corpus.violation("corpus.connector.remote-realm", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorDefinition"
-	remote_ref := corpus.ref_id(object.get(corpus.spec(document), "remoteMcpServiceRef", object.get(corpus.spec(document), "remoteServiceRef", null)))
-	remote_ref != null
-	remote := corpus.document_by_kind_id("RemoteMcpService", remote_ref)
-	not same_owner_realm(document, remote)
-	message := "ConnectorDefinition and RemoteMcpService must belong to the same Realm"
+mcp_ref_id(value) := corpus.ref_id(value)
+
+mcp_recipe_for(binding) := recipe if {
+	recipe_id := mcp_ref_id(corpus.spec(binding).recipeRef)
+	recipe := corpus.document_by_kind_id("McpServerRecipe", recipe_id)
 }
 
-deny contains corpus.violation("corpus.connector.bundle-resolves", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorDefinition"
-	bundle_ref := corpus.ref_id(object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", null)))
-	bundle_ref != null
-	not bundle_ref in corpus.ids_of_kind("McpBundle")
-	message := sprintf("spec.mcpBundleRef: no McpBundle declares id %q", [bundle_ref])
+mcp_appraisal_for(binding) := appraisal if {
+	appraisal_id := mcp_ref_id(object.get(corpus.spec(binding), "appraisalRef", null))
+	appraisal := corpus.document_by_kind_id("McpServerAppraisal", appraisal_id)
 }
 
-deny contains corpus.violation("corpus.connector.bundle-realm", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorDefinition"
-	bundle_ref := corpus.ref_id(object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", null)))
-	bundle_ref != null
-	bundle := corpus.document_by_kind_id("McpBundle", bundle_ref)
-	not same_owner_realm(document, bundle)
-	message := "ConnectorDefinition and McpBundle must belong to the same Realm"
+recipe_parameter_names(recipe) := {parameter.name |
+	some parameter in object.get(corpus.spec(recipe), "parameters", [])
 }
 
-deny contains corpus.violation("corpus.connector.bundle-operation", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorDefinition"
-	bundle_ref := corpus.ref_id(object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", null)))
-	bundle_ref != null
-	bundle := corpus.document_by_kind_id("McpBundle", bundle_ref)
-	some index, operation in object.get(corpus.spec(document), "operations", [])
-	operation_ref := object.get(operation, "bundleOperationRef", null)
-	operation_ref != null
-	not bundle_operation(bundle, operation_ref)
-	message := sprintf(
-		"spec.operations[%d].bundleOperationRef: McpBundle %q has no semantic operation %q",
-		[index, bundle_ref, operation_ref],
-	)
+recipe_credential_slots(recipe) := {slot.name |
+	some slot in object.get(corpus.spec(recipe), "credentialSlots", [])
 }
 
-deny contains corpus.violation("corpus.connector.bundle-capability", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorDefinition"
-	bundle_ref := corpus.ref_id(object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", null)))
-	bundle_ref != null
-	bundle := corpus.document_by_kind_id("McpBundle", bundle_ref)
-	some index, operation in object.get(corpus.spec(document), "operations", [])
-	operation_ref := object.get(operation, "bundleOperationRef", null)
-	operation_ref != null
-	semantic := bundle_operation(bundle, operation_ref)
-	operation.capabilityRef != semantic.capabilityRef
-	message := sprintf("spec.operations[%d].capabilityRef weakens McpBundle %q", [index, bundle_ref])
+binding_parameter_names(binding) := {parameter.parameterRef |
+	some parameter in object.get(corpus.spec(binding), "parameterValues", [])
 }
 
-deny contains corpus.violation("corpus.connector.bundle-idempotency", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorDefinition"
-	bundle_ref := corpus.ref_id(object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", null)))
-	bundle_ref != null
-	bundle := corpus.document_by_kind_id("McpBundle", bundle_ref)
-	some index, operation in object.get(corpus.spec(document), "operations", [])
-	operation_ref := object.get(operation, "bundleOperationRef", null)
-	operation_ref != null
-	semantic := bundle_operation(bundle, operation_ref)
-	semantic.idempotency == "REQUIRED"
-	object.get(operation, "idempotency", "") != "REQUIRED"
-	message := sprintf("spec.operations[%d].idempotency weakens the bundle semantic profile", [index])
+binding_credential_slots(binding) := {credential.credentialSlotRef |
+	some credential in object.get(corpus.spec(binding), "credentialBindings", [])
 }
 
-deny contains corpus.violation("corpus.connector.bundle-reconciliation", document, message) if {
+deny contains corpus.violation("corpus.mcp.recipe-secret-field", document, message) if {
 	some document in corpus.documents
-	document.kind == "ConnectorDefinition"
-	bundle_ref := corpus.ref_id(object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", null)))
-	bundle_ref != null
-	bundle := corpus.document_by_kind_id("McpBundle", bundle_ref)
-	some index, operation in object.get(corpus.spec(document), "operations", [])
-	operation_ref := object.get(operation, "bundleOperationRef", null)
-	operation_ref != null
-	semantic := bundle_operation(bundle, operation_ref)
-	semantic.reconciliation == "REQUIRED"
-	object.get(operation, "reconciliation", "") != "REQUIRED"
-	message := sprintf("spec.operations[%d].reconciliation weakens the bundle semantic profile", [index])
+	document.kind in {"McpServerRecipe", "McpServerBinding"}
+	walk(corpus.spec(document), [path, _])
+	count(path) > 0
+	key := lower(sprintf("%v", [path[count(path) - 1]]))
+	regex.match("(password|token|secret|apikey|api[_-]key)", key)
+	key != "secretbindingref"
+	message := sprintf("%s: secret values are not representable in MCP recipe or binding YAML", [json.marshal(path)])
 }
+
+deny contains corpus.violation("corpus.mcp.recipe-no-shell", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	spec := corpus.spec(document)
+	some argument in object.get(spec, "argv", [])
+	argument.valueKind == "LITERAL"
+	regex.match("[;&|<>`$\n\r]", object.get(argument, "literal", ""))
+	message := "spec.argv: shell metacharacters are refused; argv is passed directly without a shell"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-no-shell", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some named in array.concat(object.get(corpus.spec(document), "env", []), object.get(corpus.spec(document), "headers", []))
+	named.value.valueKind == "LITERAL"
+	regex.match("[\n\r]", object.get(named.value, "literal", ""))
+	message := "spec.env/spec.headers: newline-bearing literal values are refused"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-argument-reference", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some argument in object.get(corpus.spec(document), "argv", [])
+	argument.valueKind == "PARAMETER"
+	not argument.parameterRef in recipe_parameter_names(document)
+	message := sprintf("spec.argv: parameterRef %q is not declared", [argument.parameterRef])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-argument-reference", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some named in array.concat(object.get(corpus.spec(document), "env", []), object.get(corpus.spec(document), "headers", []))
+	named.value.valueKind == "CREDENTIAL"
+	not named.value.credentialSlotRef in recipe_credential_slots(document)
+	message := sprintf("spec.env/spec.headers: credentialSlotRef %q is not declared", [named.value.credentialSlotRef])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-supply", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	supply := corpus.spec(document).supply
+	supply.supplyKind == "REMOTE_STREAMABLE_HTTP"
+	object.get(supply, "endpointOrigin", "") == ""
+	message := "spec.supply.endpointOrigin: required for REMOTE_STREAMABLE_HTTP"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-supply", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	supply := corpus.spec(document).supply
+	supply.supplyKind == "OCI_STDIO"
+	object.get(supply, "ociReference", "") == ""
+	message := "spec.supply.ociReference: required for OCI_STDIO"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-supply", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	supply := corpus.spec(document).supply
+	supply.supplyKind == "OCI_STDIO"
+	not regex.match("^sha256:[0-9a-f]{64}$", object.get(supply, "artifactDigest", ""))
+	message := "spec.supply.artifactDigest: exact OCI digest is required"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-exact-version", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	supply := corpus.spec(document).supply
+	supply.supplyKind in {"NPM_STDIO", "PYTHON_UV_STDIO"}
+	not regex.match("^[0-9]+\\.[0-9]+\\.[0-9]+([+.-][0-9A-Za-z.-]+)?$", object.get(supply, "exactVersion", ""))
+	message := "spec.supply.exactVersion: an exact immutable version is required"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-supply", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	supply := corpus.spec(document).supply
+	supply.supplyKind in {"NPM_STDIO", "PYTHON_UV_STDIO"}
+	object.get(supply, "packageName", "") == ""
+	message := "spec.supply.packageName: required for package materialization"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-native-pins", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	supply := corpus.spec(document).supply
+	supply.supplyKind == "NATIVE_STDIO"
+	some field in {"sourceOrigin", "architecture", "artifactDigest", "signatureDigest"}
+	object.get(supply, field, "") == ""
+	message := sprintf("spec.supply.%s: required for NATIVE_STDIO", [field])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-http-transport", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	corpus.spec(document).supply.supplyKind == "REMOTE_STREAMABLE_HTTP"
+	not "STREAMABLE_HTTP" in corpus.spec(document).protocol.transports
+	message := "spec.protocol.transports: remote supply requires STREAMABLE_HTTP"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-stdio-transport", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	corpus.spec(document).supply.supplyKind != "REMOTE_STREAMABLE_HTTP"
+	not "STDIO" in corpus.spec(document).protocol.transports
+	message := "spec.protocol.transports: materialized supply requires STDIO"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-legacy-transport", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	"LEGACY_HTTP_SSE" in corpus.spec(document).protocol.transports
+	object.get(corpus.spec(document).supply, "supplyKind", "") != "REMOTE_STREAMABLE_HTTP"
+	message := "spec.protocol.transports: LEGACY_HTTP_SSE is allowlist-only for remote HTTP"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-exposure-grant", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, exposure in corpus.spec(document).exposures
+	exposure.requiresGrant != true
+	message := sprintf("spec.exposures[%d].requiresGrant: every MCP primitive is grant-only", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-opaque-output", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, exposure in corpus.spec(document).exposures
+	object.get(exposure, "outputSchemaDigest", "") == ""
+	exposure.opaqueOutput != true
+	message := sprintf("spec.exposures[%d]: missing output schema requires an opaque untrusted envelope", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-opaque-output", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, exposure in corpus.spec(document).exposures
+	exposure.opaqueOutput == true
+	count(object.get(exposure, "allowedMimeTypes", [])) == 0
+	message := sprintf("spec.exposures[%d].allowedMimeTypes: opaque output requires an allowlist", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-static-prompt", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, exposure in corpus.spec(document).exposures
+	exposure.primitiveKind == "PROMPT"
+	exposure.taskInstructionsAllowed == true
+	not regex.match("^sha256:[0-9a-f]{64}$", object.get(exposure, "staticContentDigest", ""))
+	message := sprintf("spec.exposures[%d]: only a static prompt at an exact digest may become task instructions", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-sampling-budget", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, exposure in corpus.spec(document).exposures
+	exposure.primitiveKind == "SAMPLING"
+	object.get(exposure, "maxSamplingCalls", 0) <= 0
+	message := sprintf("spec.exposures[%d].maxSamplingCalls: sampling requires a positive call budget", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-sampling-budget", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, exposure in corpus.spec(document).exposures
+	exposure.primitiveKind == "SAMPLING"
+	object.get(exposure, "maxSamplingTokens", 0) <= 0
+	message := sprintf("spec.exposures[%d].maxSamplingTokens: sampling requires a positive token budget", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-elicitation-origin", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, exposure in corpus.spec(document).exposures
+	exposure.primitiveKind == "ELICITATION"
+	some origin in object.get(exposure, "allowedOrigins", [])
+	not origin in object.get(corpus.spec(document), "egressOrigins", [])
+	message := sprintf("spec.exposures[%d].allowedOrigins: elicitation origin %q is not appraised egress", [index, origin])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-recipe", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	recipe_id := mcp_ref_id(corpus.spec(document).recipeRef)
+	not recipe_id in corpus.ids_of_kind("McpServerRecipe")
+	message := sprintf("spec.recipeRef: no McpServerRecipe declares id %q", [recipe_id])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-realm", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	recipe := mcp_recipe_for(document)
+	not same_owner_realm(document, recipe)
+	message := "McpServerBinding and McpServerRecipe must belong to the same Realm"
+}
+
+deny contains corpus.violation("corpus.mcp.binding-machine", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	machine_id := mcp_ref_id(corpus.spec(document).executionMachineRef)
+	not machine_id in corpus.ids_of_kind("ExecutionMachine")
+	message := sprintf("spec.executionMachineRef: no ExecutionMachine declares id %q", [machine_id])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-machine-realm", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	machine := corpus.document_by_kind_id("ExecutionMachine", mcp_ref_id(corpus.spec(document).executionMachineRef))
+	not same_owner_realm(document, machine)
+	message := "McpServerBinding and ExecutionMachine must belong to the same Realm"
+}
+
+deny contains corpus.violation("corpus.mcp.binding-parameter", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	recipe := mcp_recipe_for(document)
+	some parameter in binding_parameter_names(document)
+	not parameter in recipe_parameter_names(recipe)
+	message := sprintf("spec.parameterValues: parameter %q is not declared by the recipe", [parameter])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-required-parameter", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	recipe := mcp_recipe_for(document)
+	some parameter in object.get(corpus.spec(recipe), "parameters", [])
+	parameter.required == true
+	not parameter.name in binding_parameter_names(document)
+	message := sprintf("spec.parameterValues: required parameter %q is missing", [parameter.name])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-credential-slot", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	recipe := mcp_recipe_for(document)
+	some slot in binding_credential_slots(document)
+	not slot in recipe_credential_slots(recipe)
+	message := sprintf("spec.credentialBindings: credential slot %q is not declared by the recipe", [slot])
+}
+
+mcp_binding_secret_refs contains {"binding": binding, "slot": credential.credentialSlotRef, "secret_id": mcp_ref_id(credential.secretBindingRef)} if {
+	some binding in corpus.documents
+	binding.kind == "McpServerBinding"
+	some credential in object.get(corpus.spec(binding), "credentialBindings", [])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-secret", document, message) if {
+	some entry in mcp_binding_secret_refs
+	document := entry.binding
+	not entry.secret_id in corpus.ids_of_kind("SecretBinding")
+	message := sprintf("spec.credentialBindings: no SecretBinding declares id %q", [entry.secret_id])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-secret-realm", document, message) if {
+	some entry in mcp_binding_secret_refs
+	document := entry.binding
+	secret := corpus.document_by_kind_id("SecretBinding", entry.secret_id)
+	not same_owner_realm(document, secret)
+	message := sprintf("spec.credentialBindings: SecretBinding %q belongs to another Realm", [entry.secret_id])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-secret-lifecycle", document, message) if {
+	some entry in mcp_binding_secret_refs
+	document := entry.binding
+	corpus.spec(document).lifecycle == "ENABLED"
+	secret := corpus.document_by_kind_id("SecretBinding", entry.secret_id)
+	corpus.spec(secret).lifecycle != "ENABLED"
+	message := sprintf("spec.credentialBindings: SecretBinding %q is not ENABLED", [entry.secret_id])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-required-credential", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	corpus.spec(document).lifecycle == "ENABLED"
+	recipe := mcp_recipe_for(document)
+	some slot in object.get(corpus.spec(recipe), "credentialSlots", [])
+	slot.required == true
+	not slot.name in binding_credential_slots(document)
+	message := sprintf("spec.credentialBindings: required credential slot %q is missing", [slot.name])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-secret-reciprocity", document, message) if {
+	some entry in mcp_binding_secret_refs
+	document := entry.binding
+	secret := corpus.document_by_kind_id("SecretBinding", entry.secret_id)
+	allowed := {mcp_ref_id(ref) | some ref in object.get(corpus.spec(secret), "allowedMcpServerBindingRefs", [])}
+	not corpus.id(document) in allowed
+	message := sprintf("spec.credentialBindings: SecretBinding %q does not allow binding %q", [entry.secret_id, corpus.id(document)])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-appraisal-required", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	corpus.spec(document).lifecycle == "ENABLED"
+	object.get(corpus.spec(document), "appraisalRef", null) == null
+	message := "spec.appraisalRef: required before an MCP binding can be ENABLED"
+}
+
+deny contains corpus.violation("corpus.mcp.binding-empty-exposure", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	corpus.spec(document).lifecycle == "ENABLED"
+	recipe := mcp_recipe_for(document)
+	count(object.get(corpus.spec(recipe), "exposures", [])) == 0
+	message := "spec.recipeRef: an enabled binding requires at least one appraised primitive exposure"
+}
+
+deny contains corpus.violation("corpus.mcp.binding-appraisal-required", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	corpus.spec(document).lifecycle == "ENABLED"
+	appraisal_id := mcp_ref_id(corpus.spec(document).appraisalRef)
+	not appraisal_id in corpus.ids_of_kind("McpServerAppraisal")
+	message := sprintf("spec.appraisalRef: no McpServerAppraisal declares id %q", [appraisal_id])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-appraisal-verdict", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	corpus.spec(document).lifecycle == "ENABLED"
+	appraisal := mcp_appraisal_for(document)
+	not corpus.spec(appraisal).verdict in {"ACCEPTED", "ACCEPTED_WITH_CONDITIONS"}
+	message := "spec.appraisalRef: appraisal is not accepted"
+}
+
+deny contains corpus.violation("corpus.mcp.binding-appraisal-target", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	corpus.spec(document).lifecycle == "ENABLED"
+	appraisal := mcp_appraisal_for(document)
+	mcp_ref_id(corpus.spec(appraisal).bindingRef) != corpus.id(document)
+	message := "spec.appraisalRef: appraisal targets another binding"
+}
+
+deny contains corpus.violation("corpus.mcp.binding-appraisal-recipe", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	corpus.spec(document).lifecycle == "ENABLED"
+	appraisal := mcp_appraisal_for(document)
+	mcp_ref_id(corpus.spec(appraisal).recipeRef) != mcp_ref_id(corpus.spec(document).recipeRef)
+	message := "spec.appraisalRef: appraisal targets another recipe"
+}
+
+deny contains corpus.violation("corpus.mcp.appraisal-independent", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerAppraisal"
+	spec := corpus.spec(document)
+	mcp_ref_id(spec.appraisedByRoleDefinitionRef) == mcp_ref_id(spec.verifiedByRoleDefinitionRef)
+	message := "spec.verifiedByRoleDefinitionRef: proposer/appraiser and verifier must be independent"
+}
+
+deny contains corpus.violation("corpus.mcp.appraisal-realm", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerAppraisal"
+	recipe := corpus.document_by_kind_id("McpServerRecipe", mcp_ref_id(corpus.spec(document).recipeRef))
+	not same_owner_realm(document, recipe)
+	message := "McpServerAppraisal and recipe must belong to the same Realm"
+}
+
+deny contains corpus.violation("corpus.mcp.appraisal-realm", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerAppraisal"
+	binding := corpus.document_by_kind_id("McpServerBinding", mcp_ref_id(corpus.spec(document).bindingRef))
+	not same_owner_realm(document, binding)
+	message := "McpServerAppraisal and binding must belong to the same Realm"
+}
+
 
 connector_secret_references contains {
 	"document": document,
@@ -225,448 +512,7 @@ deny contains corpus.violation("corpus.connector.effect-semantics", document, me
 	message := sprintf("spec.operations[%d].reconciliation: only external effects require reconciliation", [index])
 }
 
-deny contains corpus.violation("corpus.bundle.execution-cell-only-placement", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	placement := object.get(corpus.spec(document).runtime, "placement", "")
-	placement != "EXECUTION_CELL"
-	message := sprintf("spec.runtime.placement %q: v2 McpBundleRuntime admits only EXECUTION_CELL", [placement])
-}
 
-deny contains corpus.violation("corpus.bundle.upstream-kind-required", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	object.get(corpus.spec(document).runtime, "upstreamKind", "") != "OCI_STDIO"
-	message := "spec.runtime.upstreamKind: v2 McpBundleRuntime's single upstream branch must be OCI_STDIO"
-}
-
-deny contains corpus.violation("corpus.bundle.quarantine", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	spec := corpus.spec(document)
-	spec.lifecycle == "ENABLED"
-	spec.trustClass == "CLIENT_QUARANTINED"
-	message := "CLIENT_QUARANTINED bundles may not be ENABLED"
-}
-
-reviewed_lifecycle(lifecycle) if {
-	lifecycle in {"REVIEWED", "ENABLED"}
-}
-
-deny contains corpus.violation("corpus.bundle.appraisal-required", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	reviewed_lifecycle(corpus.spec(document).lifecycle)
-	not connector_appraisal(corpus.id(document))
-	message := sprintf("lifecycle requires a ConnectorAppraisal of bundle %q", [corpus.id(document)])
-}
-
-deny contains corpus.violation("corpus.bundle.appraisal-verdict", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	reviewed_lifecycle(corpus.spec(document).lifecycle)
-	appraisal := connector_appraisal(corpus.id(document))
-	corpus.spec(appraisal).verdict == "REFUSED"
-	message := sprintf("ConnectorAppraisal of %q returned REFUSED", [corpus.id(document)])
-}
-
-deny contains corpus.violation("corpus.bundle.appraisal-digest", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	reviewed_lifecycle(corpus.spec(document).lifecycle)
-	appraisal := connector_appraisal(corpus.id(document))
-	corpus.spec(appraisal).appraisedDigest != corpus.spec(document).artifact.digest
-	message := sprintf("ConnectorAppraisal of %q appraised a different digest", [corpus.id(document)])
-}
-
-deny contains corpus.violation("corpus.bundle.operation-unique", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	operations := object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	ids := [operation.id | some operation in operations]
-	count(ids) != count({identifier | some identifier in ids})
-	message := "spec.semanticProfile.operations: operation ids must be unique"
-}
-
-deny contains corpus.violation("corpus.bundle.external-capability", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	operation.effect == "EXTERNAL_EFFECT"
-	not external_effect_capability(operation.capabilityRef)
-	message := sprintf("spec.semanticProfile.operations[%d].effect maps to a non-effect capability", [index])
-}
-
-deny contains corpus.violation("corpus.bundle.schema-pins-required", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	object.get(operation, "inputSchemaRef", "") == ""
-	message := sprintf("spec.semanticProfile.operations[%d]: MCP bundle operations require inputSchemaRef (ADR-0050 schema-pin discussion)", [index])
-}
-
-deny contains corpus.violation("corpus.bundle.schema-pins-required", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	object.get(operation, "outputSchemaRef", "") == ""
-	message := sprintf("spec.semanticProfile.operations[%d]: MCP bundle operations require outputSchemaRef (ADR-0050 schema-pin discussion)", [index])
-}
-
-deny contains corpus.violation("corpus.connector.schema-pins-required", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorDefinition"
-	corpus.spec(document).transport == "MCP"
-	some index, operation in object.get(corpus.spec(document), "operations", [])
-	object.get(operation, "inputSchemaRef", "") == ""
-	message := sprintf("spec.operations[%d]: an MCP-transport connector requires inputSchemaRef (ADR-0050 schema-pin discussion; FORGE/HTTP/LOCAL_PROCESS/CHANNEL connectors are exempt)", [index])
-}
-
-deny contains corpus.violation("corpus.connector.schema-pins-required", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorDefinition"
-	corpus.spec(document).transport == "MCP"
-	some index, operation in object.get(corpus.spec(document), "operations", [])
-	object.get(operation, "outputSchemaRef", "") == ""
-	message := sprintf("spec.operations[%d]: an MCP-transport connector requires outputSchemaRef (ADR-0050 schema-pin discussion; FORGE/HTTP/LOCAL_PROCESS/CHANNEL connectors are exempt)", [index])
-}
-
-deny contains corpus.violation("corpus.bundle.external-idempotency", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	operation.effect == "EXTERNAL_EFFECT"
-	object.get(operation, "idempotency", "") != "REQUIRED"
-	message := sprintf("spec.semanticProfile.operations[%d]: external effects require idempotency", [index])
-}
-
-deny contains corpus.violation("corpus.bundle.external-reconciliation", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	operation.effect == "EXTERNAL_EFFECT"
-	object.get(operation, "reconciliation", "") != "REQUIRED"
-	message := sprintf("spec.semanticProfile.operations[%d]: external effects require reconciliation", [index])
-}
-
-deny contains corpus.violation("corpus.monetary-risk.scope", document, message) if {
-	some document in corpus.documents
-	document.kind == "MonetaryRiskPolicy"
-	corpus.spec(document).scope != "REALM_ONLY"
-	message := "spec.scope: MonetaryRiskPolicy may govern its declaring Realm only"
-}
-
-deny contains corpus.violation("corpus.monetary-risk.limits", document, message) if {
-	some document in corpus.documents
-	document.kind == "MonetaryRiskPolicy"
-	spec := corpus.spec(document)
-	per_effect := object.get(spec, "perEffectLimit", 0)
-	per_effect <= 0
-	message := "spec.perEffectLimit: monetary limits must be positive"
-}
-
-deny contains corpus.violation("corpus.monetary-risk.limits", document, message) if {
-	some document in corpus.documents
-	document.kind == "MonetaryRiskPolicy"
-	spec := corpus.spec(document)
-	cumulative := object.get(spec, "cumulativeLimit", 0)
-	cumulative <= 0
-	message := "spec.cumulativeLimit: monetary limits must be positive"
-}
-
-deny contains corpus.violation("corpus.monetary-risk.limits", document, message) if {
-	some document in corpus.documents
-	document.kind == "MonetaryRiskPolicy"
-	spec := corpus.spec(document)
-	spec.perEffectLimit > spec.cumulativeLimit
-	message := "spec.perEffectLimit: may not exceed cumulativeLimit"
-}
-
-deny contains corpus.violation("corpus.monetary-risk.operation-declaration", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	amount_input := object.get(operation, "monetaryAmountInput", "")
-	amount_input != ""
-	operation.effect != "EXTERNAL_EFFECT"
-	message := sprintf("spec.semanticProfile.operations[%d].monetaryAmountInput: monetary operations must be EXTERNAL_EFFECT", [index])
-}
-
-deny contains corpus.violation("corpus.monetary-risk.operation-declaration", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	amount_input := object.get(operation, "monetaryAmountInput", "")
-	amount_input != ""
-	object.get(operation, "monetaryCurrency", "") == ""
-	message := sprintf("spec.semanticProfile.operations[%d].monetaryCurrency: a monetary amount requires a currency", [index])
-}
-
-deny contains corpus.violation("corpus.monetary-risk.active-policy", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	object.get(operation, "monetaryAmountInput", "") != ""
-	currency := object.get(operation, "monetaryCurrency", "")
-	currency != ""
-	not active_monetary_risk_policy(corpus.owner_realm(document), currency)
-	message := sprintf("spec.semanticProfile.operations[%d]: declared monetary operation has no compatible active MonetaryRiskPolicy", [index])
-}
-
-deny contains corpus.violation("corpus.bundle.system-effect-recovery", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	corpus.spec(document).lifecycle == "ENABLED"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	operation.effect == "SYSTEM_EFFECT"
-	object.get(operation, "recoveryPlanDigest", "") == ""
-	message := sprintf("spec.semanticProfile.operations[%d]: an ENABLED SYSTEM_EFFECT operation requires recoveryPlanDigest (ADR-0056 decision 3)", [index])
-}
-
-deny contains corpus.violation("corpus.bundle.system-effect-kill-switch", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	corpus.spec(document).lifecycle == "ENABLED"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	operation.effect == "SYSTEM_EFFECT"
-	object.get(operation, "killSwitchRef", "") == ""
-	message := sprintf("spec.semanticProfile.operations[%d]: an ENABLED SYSTEM_EFFECT operation requires killSwitchRef (ADR-0056 decision 4)", [index])
-}
-
-deny contains corpus.violation("corpus.bundle.system-effect-not-mcp-exposed", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	corpus.spec(document).lifecycle == "ENABLED"
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	operation.effect == "SYSTEM_EFFECT"
-	message := sprintf("spec.semanticProfile.operations[%d]: SYSTEM_EFFECT is never exposed as a generic MCP tool (ADR-0056 decision 1, linux-root-effect-executor AC1)", [index])
-}
-
-exposed_tools(appraisal) := {item.upstreamToolName |
-	some item in object.get(corpus.spec(appraisal), "upstreamInventory", [])
-	item.disposition == "EXPOSED"
-}
-
-deny contains corpus.violation("corpus.bundle.appraisal-exposure", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	appraisal := connector_appraisal(corpus.id(document))
-	some index, operation in object.get(object.get(corpus.spec(document), "semanticProfile", {}), "operations", [])
-	not operation.upstreamToolName in exposed_tools(appraisal)
-	message := sprintf("spec.semanticProfile.operations[%d]: upstream tool is not exposed by appraisal", [index])
-}
-
-deny contains corpus.violation("corpus.remote.oauth-secret", document, message) if {
-	some document in corpus.documents
-	document.kind == "RemoteMcpService"
-	secret_ref := corpus.ref_id(object.get(corpus.spec(document), "oauthSecretBindingRef", null))
-	secret_ref != null
-	not secret_ref in corpus.ids_of_kind("SecretBinding")
-	message := sprintf("spec.oauthSecretBindingRef: no SecretBinding declares id %q", [secret_ref])
-}
-
-deny contains corpus.violation("corpus.remote.oauth-secret-realm", document, message) if {
-	some document in corpus.documents
-	document.kind == "RemoteMcpService"
-	secret_ref := corpus.ref_id(object.get(corpus.spec(document), "oauthSecretBindingRef", null))
-	secret_ref != null
-	secret := corpus.document_by_kind_id("SecretBinding", secret_ref)
-	not same_owner_realm(document, secret)
-	message := "spec.oauthSecretBindingRef: SecretBinding belongs to another Realm"
-}
-
-deny contains corpus.violation("corpus.remote.appraisal-required", document, message) if {
-	some document in corpus.documents
-	document.kind == "RemoteMcpService"
-	corpus.spec(document).lifecycle == "ENABLED"
-	appraisal := remote_appraisal(corpus.id(document))
-	corpus.spec(appraisal).verdict != "ACCEPTED"
-	message := "ENABLED RemoteMcpService requires an accepted appraisal"
-}
-
-deny contains corpus.violation("corpus.remote.appraisal-required", document, message) if {
-	some document in corpus.documents
-	document.kind == "RemoteMcpService"
-	corpus.spec(document).lifecycle == "ENABLED"
-	not remote_appraisal(corpus.id(document))
-	message := "ENABLED RemoteMcpService requires an accepted appraisal"
-}
-
-deny contains corpus.violation("corpus.appraisal.remote-service", document, message) if {
-	some document in corpus.documents
-	document.kind == "RemoteMcpAppraisal"
-	service_ref := corpus.ref_id(object.get(corpus.spec(document), "remoteMcpServiceRef", object.get(corpus.spec(document), "serviceRef", null)))
-	not service_ref in corpus.ids_of_kind("RemoteMcpService")
-	message := sprintf("spec.remoteMcpServiceRef: no RemoteMcpService declares id %q", [service_ref])
-}
-
-deny contains corpus.violation("corpus.appraisal.remote-realm", document, message) if {
-	some document in corpus.documents
-	document.kind == "RemoteMcpAppraisal"
-	service_ref := corpus.ref_id(object.get(corpus.spec(document), "remoteMcpServiceRef", object.get(corpus.spec(document), "serviceRef", null)))
-	service := corpus.document_by_kind_id("RemoteMcpService", service_ref)
-	not same_owner_realm(document, service)
-	message := "spec.remoteMcpServiceRef: RemoteMcpService belongs to another Realm"
-}
-
-deny contains corpus.violation("corpus.appraisal.validity-order", document, message) if {
-	some document in corpus.documents
-	document.kind == "RemoteMcpAppraisal"
-	spec := corpus.spec(document)
-	valid_until := object.get(spec, "validUntil", null)
-	valid_until != null
-	observed_at := object.get(spec, "observedAt", object.get(spec, "appraisedAt", null))
-	observed_at != null
-	time.parse_rfc3339_ns(sprintf("%sT00:00:00Z", [substring(valid_until, 0, 10)])) <= time.parse_rfc3339_ns(sprintf("%sT00:00:00Z", [substring(observed_at, 0, 10)]))
-	message := "spec.validUntil must remain after the appraisal observation"
-}
-
-deny contains corpus.violation("corpus.appraisal.bundle", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorAppraisal"
-	bundle_ref := corpus.ref_id(object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", null)))
-	not bundle_ref in corpus.ids_of_kind("McpBundle")
-	message := sprintf("spec.mcpBundleRef: no McpBundle declares id %q", [bundle_ref])
-}
-
-deny contains corpus.violation("corpus.appraisal.bundle-realm", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorAppraisal"
-	bundle_ref := corpus.ref_id(object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", null)))
-	bundle := corpus.document_by_kind_id("McpBundle", bundle_ref)
-	not same_owner_realm(document, bundle)
-	message := "ConnectorAppraisal and McpBundle must belong to the same Realm"
-}
-
-is_local_dev_non_promotable(document) if {
-	spec := corpus.spec(document)
-	spec.environment == "LOCAL_DEV"
-	spec.promotable == false
-}
-
-is_local_dev_non_promotable(document) if {
-	spec := corpus.spec(document)
-	realm_id := corpus.owner_realm(document)
-	realm := corpus.document_by_kind_id("RealmTemplate", realm_id)
-	corpus.spec(realm).environment == "LOCAL_DEV"
-	spec.promotable == false
-}
-
-deny contains corpus.violation("corpus.appraisal.independent", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorAppraisal"
-	spec := corpus.spec(document)
-	appraised_by := corpus.ref_id(object.get(spec, "appraisedByRoleDefinitionRef", object.get(spec, "appraisedBy", null)))
-	verified_by := corpus.ref_id(object.get(spec, "verifiedByRoleDefinitionRef", object.get(spec, "verifiedBy", null)))
-	appraised_by == verified_by
-	not is_local_dev_non_promotable(document)
-	message := sprintf("spec.verifiedByRoleDefinitionRef: %q also performed this appraisal (mono-operator only allowed in LOCAL_DEV with promotable: false)", [verified_by])
-}
-
-deny contains corpus.violation("corpus.appraisal.local-dev-promotion-blocked", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorAppraisal"
-	spec := corpus.spec(document)
-	appraised_by := corpus.ref_id(object.get(spec, "appraisedByRoleDefinitionRef", object.get(spec, "appraisedBy", null)))
-	verified_by := corpus.ref_id(object.get(spec, "verifiedByRoleDefinitionRef", object.get(spec, "verifiedBy", null)))
-	appraised_by == verified_by
-	spec.promotable == true
-	message := "mono-operator appraisal cannot be marked promotable"
-}
-
-deny contains corpus.violation("corpus.appraisal.operator-reference", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorAppraisal"
-	some field in {"appraisedByRoleDefinitionRef", "verifiedByRoleDefinitionRef", "appraisedBy", "verifiedBy"}
-	ref := object.get(corpus.spec(document), field, null)
-	ref != null
-	identifier := corpus.ref_id(ref)
-	not identifier in corpus.ids_of_kind("RoleDefinition")
-	message := sprintf("spec.%s: no RoleDefinition declares id %q", [field, identifier])
-}
-
-deny contains corpus.violation("corpus.appraisal.operator-realm", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorAppraisal"
-	some field in {"appraisedByRoleDefinitionRef", "verifiedByRoleDefinitionRef", "appraisedBy", "verifiedBy"}
-	ref := object.get(corpus.spec(document), field, null)
-	ref != null
-	identifier := corpus.ref_id(ref)
-	operator := corpus.document_by_kind_id("RoleDefinition", identifier)
-	not same_owner_realm(document, operator)
-	message := sprintf("spec.%s: operator belongs to another Realm", [field])
-}
-
-deny contains corpus.violation("corpus.appraisal.inventory-unique", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorAppraisal"
-	inventory := object.get(corpus.spec(document), "upstreamInventory", [])
-	names := [item.upstreamToolName | some item in inventory]
-	count(names) != count({name | some name in names})
-	message := "spec.upstreamInventory: upstream tool names must be unique"
-}
-
-allowed_endpoint_operations(binding) := {operation.id |
-	some bundle_ref in object.get(corpus.spec(binding), "allowedMcpBundleRefs", object.get(corpus.spec(binding), "allowedBundleRefs", []))
-	bundle := corpus.document_by_kind_id("McpBundle", corpus.ref_id(bundle_ref))
-	some operation in object.get(object.get(corpus.spec(bundle), "semanticProfile", {}), "operations", [])
-} | {operation.id |
-	some connector_ref in object.get(corpus.spec(binding), "allowedConnectorDefinitionRefs", object.get(corpus.spec(binding), "allowedConnectorRefs", []))
-	connector := corpus.document_by_kind_id("ConnectorDefinition", corpus.ref_id(connector_ref))
-	some operation in object.get(corpus.spec(connector), "operations", [])
-}
-
-secret_references contains {
-	"document": document,
-	"field": field,
-	"target_kind": target_kind,
-	"identifier": corpus.ref_id(identifier),
-} if {
-	some document in corpus.documents
-	document.kind == "SecretBinding"
-	some field in {"allowedMcpBundleRefs", "allowedBundleRefs", "allowedConnectorDefinitionRefs", "allowedConnectorRefs", "allowedRemoteMcpServiceRefs", "allowedRemoteServiceRefs"}
-	some identifier in object.get(corpus.spec(document), field, [])
-	target_kind := {
-		"allowedMcpBundleRefs": "McpBundle",
-		"allowedBundleRefs": "McpBundle",
-		"allowedConnectorDefinitionRefs": "ConnectorDefinition",
-		"allowedConnectorRefs": "ConnectorDefinition",
-		"allowedRemoteMcpServiceRefs": "RemoteMcpService",
-		"allowedRemoteServiceRefs": "RemoteMcpService",
-	}[field]
-}
-
-deny contains corpus.violation("corpus.secret.reference", document, message) if {
-	some reference in secret_references
-	document := reference.document
-	field := reference.field
-	target_kind := reference.target_kind
-	identifier := reference.identifier
-	not identifier in corpus.ids_of_kind(target_kind)
-	message := sprintf("spec.%s: no %s declares id %q", [field, target_kind, identifier])
-}
-
-deny contains corpus.violation("corpus.secret.reference-realm", document, message) if {
-	some reference in secret_references
-	document := reference.document
-	field := reference.field
-	target_kind := reference.target_kind
-	identifier := reference.identifier
-	target := corpus.document_by_kind_id(target_kind, identifier)
-	not same_owner_realm(document, target)
-	message := sprintf("spec.%s: %s %q belongs to another Realm", [field, target_kind, identifier])
-}
-
-deny contains corpus.violation("corpus.secret.operation", document, message) if {
-	some document in corpus.documents
-	document.kind == "SecretBinding"
-	some operation_ref in object.get(corpus.spec(document), "allowedOperationRefs", [])
-	not operation_ref in allowed_endpoint_operations(document)
-	message := sprintf("spec.allowedOperationRefs: no allowed endpoint declares operation %q", [operation_ref])
-}
-
-# openbao-delegated-lease AC2: WorkOrder.secretBindingRefs <-> SecretBinding.allowedWorkOrderRefs
-# reciprocity, same-Realm and lifecycle-enabled. WorkOrder carries no ownerRealm attribute (unlike
 # SecretBinding), so its Realm is the first label of its Realm-owned namespace (e.g.
 # "home.jumo.dev" -> "home"), the same convention jumo-gof's realm-templates/*.yml declares.
 work_order_realm(document) := split(corpus.namespace(document), ".")[0]
@@ -736,6 +582,7 @@ deny contains corpus.violation("corpus.secret.binding-work-order-reciprocity", d
 	not corpus.id(document) in allowed
 	message := sprintf("spec.allowedWorkOrderRefs: WorkOrder %q does not reciprocate in secretBindingRefs", [wo_id])
 }
+
 
 deny contains corpus.violation("corpus.execution-cell.connector", document, message) if {
 	some document in corpus.documents
@@ -855,124 +702,6 @@ deny contains corpus.violation("corpus.registry-binding.machine-realm", document
 	message := "McpRegistrySourceBinding and its ExecutionMachine must belong to the same Realm -- cross-Realm machine use is refused"
 }
 
-deny contains corpus.violation("corpus.certification.platform-only", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorPackageCertification"
-	corpus.namespace(document) != "dev.jumo.core"
-	message := sprintf(
-		"metadata.namespace %q: ConnectorPackageCertification is Platform-only and must use namespace dev.jumo.core, not a Realm-owned namespace",
-		[corpus.namespace(document)],
-	)
-}
-
-# ConnectorPackage is Platform-only too (AC1, mcp-platform-package-certification), but unlike the
-# certification rule above it must not require the exact dev.jumo.core namespace: the live
-# package (google) already uses dev.jumo.connectors, a second legitimate Platform namespace for
-# reusable package manifests (verified against the real composed corpus, not a fixture -- the
-# only other namespaces are dev.jumo.core and home.jumo.dev). The real Platform/Realm boundary
-# this corpus enforces is "not home.jumo.dev", the one
-# private Realm namespace (composition.rego's sealed-no-private-reference rule reads it the same
-# way) -- so that is the predicate here, deliberately not mirrored onto the certification rule
-# above, which stays as shipped.
-deny contains corpus.violation("corpus.package.platform-only", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorPackage"
-	corpus.namespace(document) == "home.jumo.dev"
-	message := sprintf(
-		"metadata.namespace %q: ConnectorPackage is Platform-only and must not use the private home.jumo.dev Realm namespace",
-		[corpus.namespace(document)],
-	)
-}
-
-# AC1's second half: reject a certification whose digests differ from the package it certifies.
-# One field is spelled differently (imageDigest <-> runtimeImageDigest); the other six are named
-# the same on both sides. signatureDigest/licenceDigest/testDigest are optional on both specs --
-# no local package supplies them yet (no LICENSE file, no cosign/sigstore signing, no committed
-# test report), so the comparison is vacuously true (package_digest == null) until one exists.
-package_certified_digest_fields := {
-	"packageDigest": "packageDigest",
-	"imageDigest": "runtimeImageDigest",
-	"sbomDigest": "sbomDigest",
-	"provenanceDigest": "provenanceDigest",
-	"signatureDigest": "signatureDigest",
-	"licenceDigest": "licenceDigest",
-	"testDigest": "testDigest",
-}
-
-deny contains corpus.violation("corpus.certification.digest-consistency", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorPackageCertification"
-	package_id := corpus.ref_id(corpus.spec(document).connectorPackageRef)
-	certified_package := corpus.document_by_kind_id("ConnectorPackage", package_id)
-	some cert_field, package_field in package_certified_digest_fields
-	cert_digest := corpus.spec(document)[cert_field]
-	package_digest := object.get(corpus.spec(certified_package), package_field, null)
-	package_digest != null
-	cert_digest != package_digest
-	message := sprintf(
-		"spec.%s %q does not match ConnectorPackage %q spec.%s %q",
-		[cert_field, cert_digest, package_id, package_field, package_digest],
-	)
-}
-
-# O-A (owner, 2026-08-25): supportedTransportDigests was required with cardinality 1 and a 64-hex
-# pattern while nothing said what it was a digest of, so no Core certification could be authored
-# without inventing a Platform contract. It pins one McpServerDescriptor per entry from the
-# certified package's supportedTransports -- sha256: followed by the SHA-256 of the descriptor's
-# canonical JSON, which scripts/generate/compute-package-digests.py computes. Certifying a
-# transport the package does not declare, or omitting one it does, is the thing this refuses:
-# without it the field would be a number a certifier could assert about nothing.
-package_transport_digests(package_spec) := {digest |
-	some descriptor in object.get(package_spec, "supportedTransports", [])
-	digest := sprintf("sha256:%s", [crypto.sha256(json.marshal(descriptor))])
-}
-
-deny contains corpus.violation("corpus.certification.transport-consistency", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorPackageCertification"
-	package_id := corpus.ref_id(corpus.spec(document).connectorPackageRef)
-	certified_package := corpus.document_by_kind_id("ConnectorPackage", package_id)
-	expected := package_transport_digests(corpus.spec(certified_package))
-	count(expected) > 0
-	certified := {digest | some digest in object.get(corpus.spec(document), "supportedTransportDigests", [])}
-	certified != expected
-	message := sprintf(
-		"spec.supportedTransportDigests %v does not pin ConnectorPackage %q spec.supportedTransports, whose descriptors digest to %v",
-		[sort(certified), package_id, sort(expected)],
-	)
-}
-
-deny contains corpus.violation("corpus.certification.package-resolves", document, message) if {
-	some document in corpus.documents
-	document.kind == "ConnectorPackageCertification"
-	package_id := corpus.ref_id(corpus.spec(document).connectorPackageRef)
-	not package_id in corpus.ids_of_kind("ConnectorPackage")
-	message := sprintf("spec.connectorPackageRef: no ConnectorPackage declares id %q", [package_id])
-}
-
-# AC3: a Realm McpBundle that names a ConnectorPackage must reference an exactly certified one --
-# references.rego already checks the package itself resolves; this checks it is certified. A
-# bundle with no connectorPackageRef (e.g. github-read-only, which predates this mechanism) is
-# unaffected -- only additive for a bundle that opts in.
-certified_package_ids contains package_id if {
-	some certification in corpus.documents
-	certification.kind == "ConnectorPackageCertification"
-	package_id := corpus.ref_id(corpus.spec(certification).connectorPackageRef)
-}
-
-deny contains corpus.violation("corpus.bundle.package-certified", document, message) if {
-	some document in corpus.documents
-	document.kind == "McpBundle"
-	package_ref := object.get(corpus.spec(document), "connectorPackageRef", null)
-	package_ref != null
-	package_id := corpus.ref_id(package_ref)
-	package_id in corpus.ids_of_kind("ConnectorPackage")
-	not package_id in certified_package_ids
-	message := sprintf(
-		"spec.connectorPackageRef: ConnectorPackage %q has no ConnectorPackageCertification",
-		[package_id],
-	)
-}
 
 # ADR-0050 6: only the Official Registry source is credential-free by design; the sync it drives
 # never holds an Authorization header or OpenBao token, so a declared secretBindingRef would be

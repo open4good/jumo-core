@@ -5,9 +5,9 @@ package dev.jumo.model;
 import java.util.Objects;
 
 /**
- * A Realm-owned catalog entry for a non-MCP external system boundary such as FORGE. MCP servers use McpServerRecipe and McpServerBinding exclusively (ADR-0063).
+ * Independent Realm decision bound to exact recipe, supply, inventory and binding digests; it grants no authority.
  */
-public record ConnectorDefinition(String apiVersion, String kind, Metadata metadata, ConnectorDefinitionSpec spec)  {
+public record McpServerAppraisal(String apiVersion, String kind, Metadata metadata, McpServerAppraisalSpec spec)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,7 +18,7 @@ public record ConnectorDefinition(String apiVersion, String kind, Metadata metad
         private String apiVersion = "";
         private String kind = "";
         private Metadata metadata = null;
-        private ConnectorDefinitionSpec spec = null;
+        private McpServerAppraisalSpec spec = null;
 
 
         public Builder apiVersion(String apiVersion) {
@@ -36,13 +36,13 @@ public record ConnectorDefinition(String apiVersion, String kind, Metadata metad
             return this;
         }
 
-        public Builder spec(ConnectorDefinitionSpec spec) {
+        public Builder spec(McpServerAppraisalSpec spec) {
             this.spec = Objects.requireNonNull(spec);
             return this;
         }
 
-    public ConnectorDefinition build() {
-            return new ConnectorDefinition(apiVersion, kind, metadata, spec);
+    public McpServerAppraisal build() {
+            return new McpServerAppraisal(apiVersion, kind, metadata, spec);
         }
     }
 }

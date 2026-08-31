@@ -7,13 +7,12 @@ import java.util.List;
 import java.util.List;
 import java.util.List;
 import java.util.List;
-import java.util.List;
 import java.util.Objects;
 
 /**
- * anyOf(allowedBundleRefs, allowedRemoteServiceRefs, allowedConnectorRefs, allowedWorkerSubstrateRefs) moves to Rego.
+ * Allowed MCP bindings, non-MCP connectors, worker substrates and WorkOrders are explicit references checked by Rego.
  */
-public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecycle, String runtimeRef, List<ContractReference> allowedMcpBundleRefs, List<ContractReference> allowedRemoteMcpServiceRefs, List<ContractReference> allowedConnectorDefinitionRefs, List<String> allowedOperationRefs, List<ContractReference> allowedWorkerSubstrateRefs, List<ContractReference> allowedWorkOrderRefs, SecretInjection injection, SecretRotation rotation)  {
+public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecycle, String runtimeRef, List<ContractReference> allowedMcpServerBindingRefs, List<ContractReference> allowedConnectorDefinitionRefs, List<String> allowedOperationRefs, List<ContractReference> allowedWorkerSubstrateRefs, List<ContractReference> allowedWorkOrderRefs, SecretInjection injection, SecretRotation rotation)  {
 
     public static Builder builder() {
         return new Builder();
@@ -24,8 +23,7 @@ public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecy
         private String ownerRealm = "";
         private SecretBindingLifecycle lifecycle = null;
         private String runtimeRef = "";
-        private List<ContractReference> allowedMcpBundleRefs = List.of();
-        private List<ContractReference> allowedRemoteMcpServiceRefs = List.of();
+        private List<ContractReference> allowedMcpServerBindingRefs = List.of();
         private List<ContractReference> allowedConnectorDefinitionRefs = List.of();
         private List<String> allowedOperationRefs = List.of();
         private List<ContractReference> allowedWorkerSubstrateRefs = List.of();
@@ -49,13 +47,8 @@ public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecy
             return this;
         }
 
-        public Builder allowedMcpBundleRefs(List<ContractReference> allowedMcpBundleRefs) {
-            this.allowedMcpBundleRefs = Objects.requireNonNull(allowedMcpBundleRefs);
-            return this;
-        }
-
-        public Builder allowedRemoteMcpServiceRefs(List<ContractReference> allowedRemoteMcpServiceRefs) {
-            this.allowedRemoteMcpServiceRefs = Objects.requireNonNull(allowedRemoteMcpServiceRefs);
+        public Builder allowedMcpServerBindingRefs(List<ContractReference> allowedMcpServerBindingRefs) {
+            this.allowedMcpServerBindingRefs = Objects.requireNonNull(allowedMcpServerBindingRefs);
             return this;
         }
 
@@ -90,7 +83,7 @@ public record SecretBindingSpec(String ownerRealm, SecretBindingLifecycle lifecy
         }
 
     public SecretBindingSpec build() {
-            return new SecretBindingSpec(ownerRealm, lifecycle, runtimeRef, allowedMcpBundleRefs, allowedRemoteMcpServiceRefs, allowedConnectorDefinitionRefs, allowedOperationRefs, allowedWorkerSubstrateRefs, allowedWorkOrderRefs, injection, rotation);
+            return new SecretBindingSpec(ownerRealm, lifecycle, runtimeRef, allowedMcpServerBindingRefs, allowedConnectorDefinitionRefs, allowedOperationRefs, allowedWorkerSubstrateRefs, allowedWorkOrderRefs, injection, rotation);
         }
     }
 }

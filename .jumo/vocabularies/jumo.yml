@@ -70,30 +70,12 @@ spec:
     displayFr: 'Profil de conformité'
     pluralEn: 'Compliance Profiles'
     pluralFr: 'Profils de conformité'
-  - canonical: ConnectorAppraisal
-    displayEn: 'Connector Appraisal'
-    displayFr: 'Évaluation de connecteur'
-    pluralEn: 'Connector Appraisals'
-    pluralFr: 'Évaluations de connecteur'
-    directory: appraisals
   - canonical: ConnectorDefinition
     displayEn: 'Connector Definition'
     displayFr: 'Définition de connecteur'
     pluralEn: 'Connector Definitions'
     pluralFr: 'Définitions de connecteur'
     directory: connectors
-  - canonical: ConnectorIntegration
-    displayEn: 'Connector Integration'
-    displayFr: 'Intégration de connecteur'
-    pluralEn: 'Connector Integrations'
-    pluralFr: 'Intégrations de connecteur'
-    directory: connector-packages
-  - canonical: ConnectorPackage
-    displayEn: 'Connector Package'
-    displayFr: 'Paquet de connecteur'
-    pluralEn: 'Connector Packages'
-    pluralFr: 'Paquets de connecteur'
-    directory: connector-packages
   - canonical: ContractReference
     displayEn: 'Contract Reference'
     displayFr: 'Référence de contrat'
@@ -211,18 +193,30 @@ spec:
     displayFr: 'Installation du runtime de machine'
     pluralEn: 'Machine Runtime Installations'
     pluralFr: 'Installations du runtime de machine'
-  - canonical: McpBundle
-    displayEn: 'MCP Bundle'
-    displayFr: 'Paquet MCP'
-    pluralEn: 'MCP Bundles'
-    pluralFr: 'Paquets MCP'
-    directory: bundles
   - canonical: McpRegistrySource
     displayEn: 'MCP Registry Source'
     displayFr: 'Source de registre MCP'
     pluralEn: 'MCP Registry Sources'
     pluralFr: 'Sources de registre MCP'
     directory: mcp-registry-sources
+  - canonical: McpServerAppraisal
+    displayEn: 'MCP Server Appraisal'
+    displayFr: 'Évaluation de serveur MCP'
+    pluralEn: 'MCP Server Appraisals'
+    pluralFr: 'Évaluations de serveurs MCP'
+    directory: mcp-server-appraisals
+  - canonical: McpServerBinding
+    displayEn: 'MCP Server Binding'
+    displayFr: 'Liaison de serveur MCP'
+    pluralEn: 'MCP Server Bindings'
+    pluralFr: 'Liaisons de serveurs MCP'
+    directory: mcp-server-bindings
+  - canonical: McpServerRecipe
+    displayEn: 'MCP Server Recipe'
+    displayFr: 'Recette de serveur MCP'
+    pluralEn: 'MCP Server Recipes'
+    pluralFr: 'Recettes de serveurs MCP'
+    directory: mcp-server-recipes
   - canonical: OAuthClientBinding
     displayEn: 'OAuth Client Binding'
     displayFr: 'Liaison client OAuth'
@@ -392,16 +386,6 @@ spec:
     pluralEn: 'Realm Templates'
     pluralFr: 'Modèles de Realm'
     directory: realm-templates
-  - canonical: RemoteMcpAppraisal
-    displayEn: 'Remote MCP Appraisal'
-    displayFr: 'Évaluation MCP distante'
-    pluralEn: 'Remote MCP Appraisals'
-    pluralFr: 'Évaluations MCP distantes'
-  - canonical: RemoteMcpService
-    displayEn: 'Remote MCP Service'
-    displayFr: 'Service MCP distant'
-    pluralEn: 'Remote MCP Services'
-    pluralFr: 'Services MCP distants'
   - canonical: ResourceBudget
     displayEn: 'Resource Budget'
     displayFr: 'Budget de ressources'

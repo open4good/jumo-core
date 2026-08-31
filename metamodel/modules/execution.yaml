@@ -1075,7 +1075,7 @@ classes:
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   ExecutionCellLease:
-    description: Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and contract digest.
+    description: Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and immutable active contract-set digest.
     attributes:
       leaseId:
         range: Identifier
@@ -1089,9 +1089,10 @@ classes:
       gitCommitSha:
         range: string
         required: true
-      contractDigest:
+      contractSetDigest:
         range: string
         required: true
+        pattern: ^sha256:[0-9a-f]{64}$
       status:
         range: string
         required: true

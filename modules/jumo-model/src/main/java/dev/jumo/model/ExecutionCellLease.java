@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and contract digest.
+ * Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and immutable active contract-set digest.
  */
-public record ExecutionCellLease(String leaseId, String machineId, String workOrderId, String gitCommitSha, String contractDigest, String status, String grantedAt, String expiresAt, List<String> delegatedSecretBindings)  {
+public record ExecutionCellLease(String leaseId, String machineId, String workOrderId, String gitCommitSha, String contractSetDigest, String status, String grantedAt, String expiresAt, List<String> delegatedSecretBindings)  {
 
     public static Builder builder() {
         return new Builder();
@@ -20,7 +20,7 @@ public record ExecutionCellLease(String leaseId, String machineId, String workOr
         private String machineId = "";
         private String workOrderId = "";
         private String gitCommitSha = "";
-        private String contractDigest = "";
+        private String contractSetDigest = "";
         private String status = "";
         private String grantedAt = "";
         private String expiresAt = "";
@@ -47,8 +47,8 @@ public record ExecutionCellLease(String leaseId, String machineId, String workOr
             return this;
         }
 
-        public Builder contractDigest(String contractDigest) {
-            this.contractDigest = Objects.requireNonNull(contractDigest);
+        public Builder contractSetDigest(String contractSetDigest) {
+            this.contractSetDigest = Objects.requireNonNull(contractSetDigest);
             return this;
         }
 
@@ -73,7 +73,7 @@ public record ExecutionCellLease(String leaseId, String machineId, String workOr
         }
 
     public ExecutionCellLease build() {
-            return new ExecutionCellLease(leaseId, machineId, workOrderId, gitCommitSha, contractDigest, status, grantedAt, expiresAt, delegatedSecretBindings);
+            return new ExecutionCellLease(leaseId, machineId, workOrderId, gitCommitSha, contractSetDigest, status, grantedAt, expiresAt, delegatedSecretBindings);
         }
     }
 }

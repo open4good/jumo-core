@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum ConnectorTransport {
 
-  MCP("MCP"),
-
   HTTP("HTTP"),
 
   LOCAL_PROCESS("LOCAL_PROCESS"),

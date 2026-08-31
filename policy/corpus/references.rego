@@ -37,14 +37,15 @@ capability_references contains {"document": document, "location": location, "nam
 
 capability_references contains {"document": document, "location": location, "name": name} if {
 	some document in corpus.documents
-	document.kind == "McpBundle"
+	document.kind == "McpServerRecipe"
 	some operation_index, operation in object.get(
-		object.get(corpus.spec(document), "semanticProfile", {}),
-		"operations",
+		corpus.spec(document),
+		"exposures",
 		[],
 	)
+	object.get(operation, "capabilityRef", null) != null
 	name := operation.capabilityRef
-	location := sprintf("spec.semanticProfile.operations[%d].capabilityRef", [operation_index])
+	location := sprintf("spec.exposures[%d].capabilityRef", [operation_index])
 }
 
 capability_references contains {"document": document, "location": location, "name": name} if {
@@ -99,7 +100,6 @@ owner_realm_kind(kind) if {
 		"CapabilityProfile",
 		"AdvisorProfile",
 		"ChiefOfStaffProfile",
-		"ConnectorAppraisal",
 		"ConnectorDefinition",
 		"ExecutionCell",
 		"ExecutionToolchain",
@@ -115,12 +115,13 @@ owner_realm_kind(kind) if {
 
 owner_realm_kind(kind) if {
 	kind in {
-		"McpBundle",
+		"McpServerAppraisal",
+		"McpServerBinding",
+		"McpServerRecipe",
 		"MonetaryRiskPolicy",
 		"PersonalSpace",
 		"PrincipalIdentityBinding",
 		"Project",
-		"RemoteMcpService",
 		"RoleAssignment",
 		"RoleDefinition",
 		"RoutingEligibility",
@@ -575,40 +576,49 @@ references contains {"document": document, "location": sprintf("spec.steps[%d].v
 	ref != null
 }
 
-# ConnectorDefinition & Appraisal
-references contains {"document": document, "location": "spec.connectorPackageRef", "expected_kind": "ConnectorPackage", "ref": ref} if {
+# Declarative MCP recipe, binding and appraisal
+references contains {"document": document, "location": "spec.recipeRef", "expected_kind": "McpServerRecipe", "ref": ref} if {
 	some document in corpus.documents
-	document.kind in {"ConnectorDefinition", "McpBundle"}
-	ref := object.get(corpus.spec(document), "connectorPackageRef", null)
+	document.kind in {"McpServerBinding", "McpServerAppraisal"}
+	ref := corpus.spec(document).recipeRef
+}
+
+references contains {"document": document, "location": "spec.bindingRef", "expected_kind": "McpServerBinding", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "McpServerAppraisal"
+	ref := corpus.spec(document).bindingRef
+}
+
+references contains {"document": document, "location": "spec.executionMachineRef", "expected_kind": "ExecutionMachine", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	ref := corpus.spec(document).executionMachineRef
+}
+
+references contains {"document": document, "location": "spec.appraisalRef", "expected_kind": "McpServerAppraisal", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	ref := object.get(corpus.spec(document), "appraisalRef", null)
 	ref != null
 }
 
-references contains {"document": document, "location": "spec.mcpBundleRef", "expected_kind": "McpBundle", "ref": ref} if {
+references contains {"document": document, "location": sprintf("spec.credentialBindings[%d].secretBindingRef", [index]), "expected_kind": "SecretBinding", "ref": ref} if {
 	some document in corpus.documents
-	document.kind in {"ConnectorDefinition", "ConnectorAppraisal"}
-	ref := object.get(corpus.spec(document), "mcpBundleRef", object.get(corpus.spec(document), "bundleRef", null))
-	ref != null
-}
-
-references contains {"document": document, "location": "spec.remoteMcpServiceRef", "expected_kind": "RemoteMcpService", "ref": ref} if {
-	some document in corpus.documents
-	document.kind in {"ConnectorDefinition", "RemoteMcpAppraisal"}
-	ref := object.get(corpus.spec(document), "remoteMcpServiceRef", object.get(corpus.spec(document), "remoteServiceRef", object.get(corpus.spec(document), "serviceRef", null)))
-	ref != null
+	document.kind == "McpServerBinding"
+	some index, credential in object.get(corpus.spec(document), "credentialBindings", [])
+	ref := credential.secretBindingRef
 }
 
 references contains {"document": document, "location": "spec.appraisedByRoleDefinitionRef", "expected_kind": "RoleDefinition", "ref": ref} if {
 	some document in corpus.documents
-	document.kind == "ConnectorAppraisal"
-	ref := object.get(corpus.spec(document), "appraisedByRoleDefinitionRef", object.get(corpus.spec(document), "appraisedBy", null))
-	ref != null
+	document.kind == "McpServerAppraisal"
+	ref := corpus.spec(document).appraisedByRoleDefinitionRef
 }
 
 references contains {"document": document, "location": "spec.verifiedByRoleDefinitionRef", "expected_kind": "RoleDefinition", "ref": ref} if {
 	some document in corpus.documents
-	document.kind in {"ConnectorAppraisal", "RemoteMcpAppraisal"}
-	ref := object.get(corpus.spec(document), "verifiedByRoleDefinitionRef", object.get(corpus.spec(document), "verifiedBy", null))
-	ref != null
+	document.kind == "McpServerAppraisal"
+	ref := corpus.spec(document).verifiedByRoleDefinitionRef
 }
 
 # ExecutionCell
@@ -625,16 +635,10 @@ references contains {"document": document, "location": sprintf("spec.mountedPers
 }
 
 # SecretBinding
-references contains {"document": document, "location": sprintf("spec.allowedMcpBundleRefs[%d]", [index]), "expected_kind": "McpBundle", "ref": ref} if {
+references contains {"document": document, "location": sprintf("spec.allowedMcpServerBindingRefs[%d]", [index]), "expected_kind": "McpServerBinding", "ref": ref} if {
 	some document in corpus.documents
 	document.kind == "SecretBinding"
-	some index, ref in object.get(corpus.spec(document), "allowedMcpBundleRefs", object.get(corpus.spec(document), "allowedBundleRefs", []))
-}
-
-references contains {"document": document, "location": sprintf("spec.allowedRemoteMcpServiceRefs[%d]", [index]), "expected_kind": "RemoteMcpService", "ref": ref} if {
-	some document in corpus.documents
-	document.kind == "SecretBinding"
-	some index, ref in object.get(corpus.spec(document), "allowedRemoteMcpServiceRefs", object.get(corpus.spec(document), "allowedRemoteServiceRefs", []))
+	some index, ref in object.get(corpus.spec(document), "allowedMcpServerBindingRefs", [])
 }
 
 references contains {"document": document, "location": sprintf("spec.allowedConnectorDefinitionRefs[%d]", [index]), "expected_kind": "ConnectorDefinition", "ref": ref} if {

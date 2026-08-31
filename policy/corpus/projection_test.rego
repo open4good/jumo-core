@@ -346,7 +346,7 @@ test_rejects_an_emission_whose_template_renders_another_kind if {
 		"documentTemplateRef": {"kind": "DocumentTemplate", "namespace": "dev.jumo.test", "id": "t"},
 	}))
 	other := document(".jumo/document-templates/t.yml", "DocumentTemplate", "t", {
-		"renders": "ConnectorPackage", "body": "kind: ConnectorPackage\n",
+		"renders": "McpServerRecipe", "body": "kind: McpServerRecipe\n",
 	})
 	violations := data.jumo.corpus.deny with input as [facts, capabilities, bad, other]
 	has_rule(violations, "corpus.journey.emission-template-kind")

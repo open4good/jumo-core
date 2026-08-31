@@ -23,7 +23,7 @@ enums:
       WorkOrder: {}
       ExecutionMachine: {}
       CliTool: {}
-      ConnectorPackage: {}
+      McpServerRecipe: {}
   FacetCreateMode:
     permissible_values:
       LIFECYCLE_COMMAND: {}

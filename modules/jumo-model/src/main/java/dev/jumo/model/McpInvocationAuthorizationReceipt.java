@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Signed, short-lived authorization receipt bound to exactly one MCP invocation.
  */
-public record McpInvocationAuthorizationReceipt(String invocationId, String grantId, String leaseId, String operationName, String argumentsDigest, String schemaDigest, String expiresAt, String signingKeyName, String signature)  {
+public record McpInvocationAuthorizationReceipt(String invocationId, String grantId, String leaseId, String contractSetDigest, String operationName, String argumentsDigest, String schemaDigest, String expiresAt, String signingKeyName, String signature)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,6 +18,7 @@ public record McpInvocationAuthorizationReceipt(String invocationId, String gran
         private String invocationId = "";
         private String grantId = "";
         private String leaseId = "";
+        private String contractSetDigest = "";
         private String operationName = "";
         private String argumentsDigest = "";
         private String schemaDigest = "";
@@ -38,6 +39,11 @@ public record McpInvocationAuthorizationReceipt(String invocationId, String gran
 
         public Builder leaseId(String leaseId) {
             this.leaseId = Objects.requireNonNull(leaseId);
+            return this;
+        }
+
+        public Builder contractSetDigest(String contractSetDigest) {
+            this.contractSetDigest = Objects.requireNonNull(contractSetDigest);
             return this;
         }
 
@@ -72,7 +78,7 @@ public record McpInvocationAuthorizationReceipt(String invocationId, String gran
         }
 
     public McpInvocationAuthorizationReceipt build() {
-            return new McpInvocationAuthorizationReceipt(invocationId, grantId, leaseId, operationName, argumentsDigest, schemaDigest, expiresAt, signingKeyName, signature);
+            return new McpInvocationAuthorizationReceipt(invocationId, grantId, leaseId, contractSetDigest, operationName, argumentsDigest, schemaDigest, expiresAt, signingKeyName, signature);
         }
     }
 }

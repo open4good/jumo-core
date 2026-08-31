@@ -10,7 +10,7 @@ journey_verifications := corpus.documents_of_kind("JourneyVerificationSpec")
 # Process payloads deliberately name generated LinkML classes, rather than an open string protocol.
 # The small, release-bound vocabulary keeps this Rego gate authoritative without creating another
 # type checker: the same names are emitted by execution.yaml and committed in the manifest.
-generated_types := {"ApprovalSignal", "AttentionItem", "ChangeProposalRef", "ConnectorAppraisal", "ExecutionCellProvisioningRef", "ForgeProjectionRef", "ProcessRunRef"}
+generated_types := {"ApprovalSignal", "AttentionItem", "ChangeProposalRef", "ExecutionCellProvisioningRef", "ForgeProjectionRef", "ProcessRunRef"}
 opa_entrypoints := {"jumo.authz.decision"}
 
 steps(document) := object.get(corpus.spec(document), "steps", [])

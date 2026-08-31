@@ -20,6 +20,10 @@ public final class ContractReferenceExtractor {
             extractFromAdvisorProfile(m, refs);
             return refs;
         }
+        if (model instanceof AgentDefinition m) {
+            extractFromAgentDefinition(m, refs);
+            return refs;
+        }
         if (model instanceof AssistedJourney m) {
             extractFromAssistedJourney(m, refs);
             return refs;
@@ -265,6 +269,18 @@ public final class ContractReferenceExtractor {
         if (obj.practiceRefs() != null) {
             for (ContractReference r : obj.practiceRefs()) {
                 if (r != null) refs.add(new OutgoingReference("practiceRefs", r));
+            }
+        }
+    }
+    public static void extractFromAgentDefinition(AgentDefinition obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromAgentDefinitionSpec(obj.spec(), refs);
+    }
+    public static void extractFromAgentDefinitionSpec(AgentDefinitionSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.recommendedConnectorRefs() != null) {
+            for (RecommendedConnectorReference item : obj.recommendedConnectorRefs()) {
+                extractFromRecommendedConnectorReference(item, refs);
             }
         }
     }
@@ -1151,6 +1167,12 @@ public final class ContractReferenceExtractor {
             for (ContractReference r : obj.kitBindingRefs()) {
                 if (r != null) refs.add(new OutgoingReference("kitBindingRefs", r));
             }
+        }
+    }
+    public static void extractFromRecommendedConnectorReference(RecommendedConnectorReference obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.connectorRef() != null) {
+            refs.add(new OutgoingReference("connectorRef", obj.connectorRef()));
         }
     }
     public static void extractFromRemoteMcpAppraisal(RemoteMcpAppraisal obj, List<OutgoingReference> refs) {

@@ -446,6 +446,16 @@ references contains {"document": document, "location": sprintf("spec.providedExe
 	some index, ref in object.get(corpus.spec(document), "providedExecutionToolchainRefs", [])
 }
 
+# AgentDefinition (team-and-operator-design-journeys AC7): a recommendation, never a grant --
+# validated with the same kind-match/kind-id/same-realm mechanism as any other typed reference.
+references contains {"document": document, "location": sprintf("spec.recommendedConnectorRefs[%d].connectorRef", [index]), "expected_kind": "ConnectorDefinition", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "AgentDefinition"
+	some index, entry in object.get(corpus.spec(document), "recommendedConnectorRefs", [])
+	ref := object.get(entry, "connectorRef", null)
+	ref != null
+}
+
 # EventIngress (event-ingress-contract-foundations)
 references contains {"document": document, "location": "spec.verificationSecretBindingRef", "expected_kind": "SecretBinding", "ref": ref} if {
 	some document in corpus.documents

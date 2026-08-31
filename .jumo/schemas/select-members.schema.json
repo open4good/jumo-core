@@ -37,6 +37,26 @@
               },
               "required": ["kind", "namespace", "id"]
             }
+          },
+          "recommendedConnectorRefs": {
+            "type": "array",
+            "description": "Declared Realm connectors this member's mission would plausibly use, each with a rationale (AgentDefinitionSpec.recommendedConnectorRefs). A recommendation, never a grant: it creates no connector grant, secret binding or activation. Each connectorRef must name a same-Realm ConnectorDefinition, refused otherwise.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "connectorRef": {
+                  "type": "object",
+                  "properties": {
+                    "kind": { "const": "ConnectorDefinition" },
+                    "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*){1,7}$" },
+                    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+                  },
+                  "required": ["kind", "namespace", "id"]
+                },
+                "rationale": { "type": "string", "minLength": 10 }
+              },
+              "required": ["connectorRef", "rationale"]
+            }
           }
         },
         "required": ["roleRef", "role", "mission", "independenceGroup", "responsibilities",

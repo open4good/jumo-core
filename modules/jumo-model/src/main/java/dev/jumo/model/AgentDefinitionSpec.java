@@ -5,10 +5,11 @@ package dev.jumo.model;
 import java.util.List;
 import java.util.List;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record AgentDefinitionSpec(List<String> responsibilities, List<String> requestedCapabilities, List<ProhibitedAuthority> prohibitedAuthority, AutonomyLevel defaultAutonomy, Ring modificationRing)  {
+public record AgentDefinitionSpec(List<String> responsibilities, List<String> requestedCapabilities, List<ProhibitedAuthority> prohibitedAuthority, List<RecommendedConnectorReference> recommendedConnectorRefs, AutonomyLevel defaultAutonomy, Ring modificationRing)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,6 +20,7 @@ public record AgentDefinitionSpec(List<String> responsibilities, List<String> re
         private List<String> responsibilities = List.of();
         private List<String> requestedCapabilities = List.of();
         private List<ProhibitedAuthority> prohibitedAuthority = List.of();
+        private List<RecommendedConnectorReference> recommendedConnectorRefs = List.of();
         private AutonomyLevel defaultAutonomy = null;
         private Ring modificationRing = null;
 
@@ -38,6 +40,11 @@ public record AgentDefinitionSpec(List<String> responsibilities, List<String> re
             return this;
         }
 
+        public Builder recommendedConnectorRefs(List<RecommendedConnectorReference> recommendedConnectorRefs) {
+            this.recommendedConnectorRefs = Objects.requireNonNull(recommendedConnectorRefs);
+            return this;
+        }
+
         public Builder defaultAutonomy(AutonomyLevel defaultAutonomy) {
             this.defaultAutonomy = Objects.requireNonNull(defaultAutonomy);
             return this;
@@ -49,7 +56,7 @@ public record AgentDefinitionSpec(List<String> responsibilities, List<String> re
         }
 
     public AgentDefinitionSpec build() {
-            return new AgentDefinitionSpec(responsibilities, requestedCapabilities, prohibitedAuthority, defaultAutonomy, modificationRing);
+            return new AgentDefinitionSpec(responsibilities, requestedCapabilities, prohibitedAuthority, recommendedConnectorRefs, defaultAutonomy, modificationRing);
         }
     }
 }

@@ -245,10 +245,35 @@ classes:
         multivalued: true
         required: true
         minimum_cardinality: 1
+      recommendedConnectorRefs:
+        range: RecommendedConnectorReference
+        multivalued: true
+        inlined_as_list: true
+        description: Declared Realm connectors this agent's mission would plausibly use, each with a
+          rationale (team-and-operator-design-journeys AC7). A recommendation, like
+          requestedCapabilities -- it creates no connector grant, secret binding or activation by
+          itself; policy decides. Absent by default.
       defaultAutonomy:
         range: AutonomyLevel
       modificationRing:
         range: Ring
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RecommendedConnectorReference:
+    attributes:
+      connectorRef:
+        range: ContractReference
+        required: true
+        inlined: true
+      rationale:
+        range: string
+        required: true
+        pattern: ^.{10,}$
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

@@ -28,7 +28,7 @@ audience: PROJECT_SCOPED
 | [ADR-0047](ADR-0047-execution-machine-and-ephemeral-sandbox.md) | ExecutionMachine contract, multi-instance host agents, and ephemeral execution leases | 5 | `ExecutionCell`, `ExecutionMachine`, `WorkOrder` |
 | [ADR-0048](ADR-0048-openbao-connector-credentials-delegation.md) | OpenBao connector credentials custody and short-lived delegated leases | 6 | `Principal`, `SecretBinding`, `WorkOrder` |
 | [ADR-0049](ADR-0049-cli-adapters-and-oci-isolation.md) | OCI containerized CLI runtimes, strict output profiles, and secret-aware sanitization | 7 | `CliRelease`, `CliToolDefinition` |
-| [ADR-0050](ADR-0050-mcp-connector-factory-and-appraisal.md) | Superseded MCP connector factory and package appraisal | 8 | historical only |
+| [ADR-0050](ADR-0050-mcp-connector-factory-and-appraisal.md) | MCP connector factory, target-machine discovery, TypeScript runtime, and dual-consent appraisal | 8 | `ConnectorDefinition`, `ExecutionMachine`, `McpRegistrySource`, `WorkOrder` |
 | [ADR-0051](ADR-0051-public-interoperability-exposition.md) | Governed interoperability exposition under /u/{handle}, sealed adapter registry, and ACS PEP | 9 | `Organization`, `OrganizationPublicationPolicy`, `RealmPublication` |
 | [ADR-0052](ADR-0052-provider-credential-ingress-and-account-routing.md) | Provider credential ingress and named-account routing | 10 | `ProviderAccount` |
 | [ADR-0053](ADR-0053-kvm-pinned-cloud-image.md) | Pinned cloud-image KVM | 11 | — |
@@ -41,4 +41,4 @@ audience: PROJECT_SCOPED
 | [ADR-0060](ADR-0060-execution-toolchain-contract.md) | Execution toolchain contract | 1, 5, 7, 14, 15 | `ExecutionToolchain`, `SecretBinding`, `WorkerRequirementProfile`, `WorkerSubstrate` |
 | [ADR-0061](ADR-0061-event-ingress-contract.md) | Event ingress contract | 1, 2, 14, 15 | `EventIngress`, `ProcessSpec`, `SecretBinding`, `WorkOrder` |
 | [ADR-0062](ADR-0062-portable-theme-contract.md) | Portable theme contract | 1, 2, 14, 15 | `InterfaceSurface`, `Preferences`, `ThemePack`, `VocabularySet` |
-| [ADR-0063](ADR-0063-declarative-generic-mcp-runtime.md) | Declarative generic MCP runtime and hot Realm activation | 8 | `McpServerRecipe`, `McpServerBinding`, `McpServerAppraisal`, `ExecutionMachine`, `SecretBinding` |
+| [ADR-0063](ADR-0063-declarative-generic-mcp-runtime.md) | Declarative generic MCP runtime and hot Realm activation | 8 | `ConnectorDefinition`, `ExecutionMachine`, `McpServerAppraisal`, `McpServerBinding`, `McpServerRecipe`, `SecretBinding` |

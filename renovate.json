@@ -1,0 +1,81 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":semanticCommits"
+  ],
+  "timezone": "Europe/Paris",
+  "schedule": ["* 0-5 * * 1"],
+  "prConcurrentLimit": 1,
+  "branchConcurrentLimit": 1,
+  "prCreation": "immediate",
+  "automerge": false,
+  "major": {
+    "dependencyDashboardApproval": true,
+    "groupName": null
+  },
+  "labels": ["dependencies"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["* 0-5 * * 1"]
+  },
+  "packageRules": [
+    {
+      "description": "Group non-major backend Maven updates for one manual review.",
+      "matchManagers": ["maven"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "pinDigest", "rollback", "replacement"],
+      "groupName": "backend Maven non-major dependencies",
+      "labels": ["dependencies", "backend"]
+    },
+    {
+      "description": "Group non-major LinkML toolchain (metamodel/requirements.txt) updates for one manual review.",
+      "matchManagers": ["pip_requirements"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "pinDigest", "rollback", "replacement"],
+      "groupName": "LinkML toolchain non-major dependencies",
+      "labels": ["dependencies", "metamodel"]
+    },
+    {
+      "description": "Group non-major GitHub Actions updates for one manual review.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "pinDigest", "rollback", "replacement"],
+      "groupName": "GitHub Actions non-major dependencies",
+      "labels": ["dependencies", "build-infrastructure"]
+    },
+    {
+      "description": "Group backend Maven major updates behind one Dependency Dashboard approval instead of one PR per dependency.",
+      "matchManagers": ["maven"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "backend Maven major dependencies",
+      "dependencyDashboardApproval": true,
+      "labels": ["dependencies", "backend"]
+    },
+    {
+      "description": "Group LinkML toolchain major updates behind one Dependency Dashboard approval instead of one PR per dependency.",
+      "matchManagers": ["pip_requirements"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "LinkML toolchain major dependencies",
+      "dependencyDashboardApproval": true,
+      "labels": ["dependencies", "metamodel"]
+    },
+    {
+      "description": "Group GitHub Actions major updates behind one Dependency Dashboard approval instead of one PR per dependency.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "GitHub Actions major dependencies",
+      "dependencyDashboardApproval": true,
+      "labels": ["dependencies", "build-infrastructure"]
+    },
+    {
+      "description": "dev.jumo is this repo's own Maven reactor/publish groupId (jumo-core-reactor, jumo-model), never an external dependency; stop Renovate from attempting (and failing) to look it up.",
+      "matchManagers": ["maven"],
+      "matchPackageNames": ["/^dev\\.jumo:/"],
+      "enabled": false
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "groupName": null,
+    "labels": ["dependencies", "security"],
+    "automerge": false,
+    "prCreation": "immediate"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/prompt-output/connector-access-proposal",
+  "title": "Connector access proposal",
+  "type": "object",
+  "properties": {
+    "availableConnectorDefinitionRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "connectorRef": { "$ref": "#/$defs/contractReference" },
+          "rationale": { "type": "string", "minLength": 10 }
+        },
+        "required": ["connectorRef", "rationale"]
+      }
+    },
+    "sourcedCatalogCandidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "catalogId": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        },
+        "required": ["catalogId", "reason"]
+      }
+    },
+    "unresolvedAccessNeeds": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "required": ["availableConnectorDefinitionRefs", "sourcedCatalogCandidates", "unresolvedAccessNeeds"],
+  "$defs": {
+    "contractReference": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]+$" },
+        "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*){1,7}$" },
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }
+      },
+      "required": ["kind", "namespace", "id"]
+    }
+  }
+}

@@ -23,7 +23,9 @@ public enum ConversationTask {
 
   INTAKE("INTAKE"),
 
-  TEAM_ANALYSIS("TEAM_ANALYSIS");
+  TEAM_ANALYSIS("TEAM_ANALYSIS"),
+
+  CONNECTOR_RECOMMENDATION("CONNECTOR_RECOMMENDATION");
 
   private final static Map<String, ConversationTask> MAP;
 

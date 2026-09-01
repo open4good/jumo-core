@@ -1216,6 +1216,61 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ConnectorAccessProposal:
+    description: 'Structured output of a DIALOGUE_COLLECT step (operator-connector-recommendation-handoff AC2)
+      distinguishing three kinds of connector need for a stated project purpose: a Realm connector that already
+      exists, an MCP catalogue entry that is sourced but not yet installed, and a need with no governed candidate
+      at all. Never a grant, install, activation or invocation -- the user still confirms a selection explicitly,
+      and only create-connector''s own journey can turn a sourcedCatalogCandidates entry into a declared
+      connector. availableConnectorDefinitionRefs entries must resolve in the Realm''s own declared catalog
+      (supplied as connectorCatalog); sourcedCatalogCandidates entries must resolve in the supplied
+      mcpCatalogCandidates generation; unresolvedAccessNeeds carries plain text only, with no ref or catalogue id
+      slot, so it can never itself assert that a connector product exists.'
+    attributes:
+      availableConnectorDefinitionRefs:
+        range: RecommendedConnectorReference
+        multivalued: true
+        inlined_as_list: true
+        description: Already-declared Realm ConnectorDefinitions recommended for the stated need, each with its
+          own rationale -- the same shape AgentDefinition.recommendedConnectorRefs already uses
+          (team-and-operator-design-journeys AC7), reused here rather than duplicated (canonical decision 15).
+          Every connectorRef must appear in the supplied connectorCatalog; the runtime refuses one that does not.
+      sourcedCatalogCandidates:
+        range: RecommendedCatalogCandidate
+        multivalued: true
+        inlined_as_list: true
+        description: MCP catalogue entries not yet declared as a Realm connector, each with its own rationale.
+          Every catalogId must appear in the supplied mcpCatalogCandidates generation; the runtime refuses one
+          that does not.
+      unresolvedAccessNeeds:
+        range: string
+        multivalued: true
+        description: Free-text description of access the stated need calls for that names neither a declared
+          connector nor a sourced catalogue candidate. Plain text only -- never a connector product assertion.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  RecommendedCatalogCandidate:
+    attributes:
+      catalogId:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+      reason:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   ExecutionCell:
     description: A Realm-bound execution cell boundary that manages compute placement, local credential custody, and outbound
       mTLS execution leases.

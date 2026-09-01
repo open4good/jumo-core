@@ -435,6 +435,14 @@ public final class ContractReferenceExtractor {
             }
         }
     }
+    public static void extractFromConnectorAccessProposal(ConnectorAccessProposal obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.availableConnectorDefinitionRefs() != null) {
+            for (RecommendedConnectorReference item : obj.availableConnectorDefinitionRefs()) {
+                extractFromRecommendedConnectorReference(item, refs);
+            }
+        }
+    }
     public static void extractFromConnectorActivationDecision(ConnectorActivationDecision obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.connectorRef() != null) {

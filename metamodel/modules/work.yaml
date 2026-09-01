@@ -184,6 +184,7 @@ enums:
       STRUCTURED_INTENT: {}
       INTAKE: {}
       TEAM_ANALYSIS: {}
+      CONNECTOR_RECOMMENDATION: {}
   VariableTrust:
     description: 'UNTRUSTED carries content originating outside the trust boundary -- email bodies, web pages, transcripts,
       inbound channel messages. This is propagated provenance metadata, not by itself a security boundary

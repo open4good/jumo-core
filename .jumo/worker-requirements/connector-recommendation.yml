@@ -1,0 +1,27 @@
+apiVersion: jumo.dev/v1
+kind: WorkerRequirementProfile
+metadata:
+  id: connector-recommendation
+  namespace: dev.jumo.core
+  name: Connector recommendation worker
+spec:
+  ownerRealm: home
+  taskClasses:
+    - REASONING
+  modalities:
+    - TEXT
+  dataScopeCeiling: REALM_PRIVATE
+  context:
+    minimumTokens: 16384
+  interaction:
+    toolUse: NONE
+    structuredOutput: REQUIRED
+  quality:
+    minimumAssurance: OBSERVED
+    minimumReliability: 0.8
+    minimumTaskHorizon: PT1M
+    maximumEvaluationAge: P30D
+    reasoningEffort: MEDIUM
+  limits:
+    maximumLatency: PT1M
+    maximumCostClass: MEDIUM

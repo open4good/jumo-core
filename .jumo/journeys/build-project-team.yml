@@ -157,6 +157,20 @@ spec:
         kind: ProjectionSpec
         namespace: dev.jumo.core
         id: select-members
+    - id: recommend-connectors
+      requiredObligations: []
+      name: Recommandation de connecteurs
+      description: Nestor distingue les connecteurs déjà déclarés, les candidats du catalogue MCP et les besoins
+        d'accès non couverts, sans en créer, installer ni activer aucun.
+      personaNarration: Voyons quels accès cette équipe pourrait utiliser -- ce que vous avez déjà, ce qui existe
+        dans le catalogue, et ce qui reste à clarifier.
+      stepKind: DIALOGUE_COLLECT
+      dependsOn: [select-members]
+      requiredFields: []
+      promptTemplateRef:
+        kind: PromptTemplate
+        namespace: dev.jumo.core
+        id: connector-recommendation
     - id: confirm-team
       requiredObligations: []
       name: Validation de l'équipe

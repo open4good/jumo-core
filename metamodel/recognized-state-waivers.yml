@@ -27,3 +27,14 @@ waivers:
       entry. The code_verifier it holds must never reach Git by design (it is generated fresh per
       ceremony and only ever compared against the corresponding request, never persisted anywhere
       durable), ruling out a metamodel class on the same grounds that already excluded one here.
+  - table: knowledge_corpus_grant
+    reason: short-lived, server-derived narrowing of an already Git-declared KnowledgeCorpus set
+      (knowledge-retrieval-access-and-cockpit AC1) -- same ephemeral-authorization character as
+      invocation_capability_grant (jumo's own sibling table, itself still uncovered rather than
+      waived only because no prior pass reviewed it under ratchet pressure). Reviewed now because
+      this table is what newly pushed the ratchet past its ceiling. A grant documents no business
+      state beyond what the KnowledgeCorpus contracts it narrows already declare.
+  - table: knowledge_corpus_grant_event
+    reason: append-only lifecycle log for knowledge_corpus_grant above -- same reasoning, and the
+      same relationship mcp_discovery_snapshot's entry already draws to this corpus's plain
+      observational logs.

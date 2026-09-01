@@ -106,6 +106,8 @@ spec:
         - effect.batch.read
         - effect.batch.approve
         - effect.batch.apply
+        - mcp.oauth.initiate
+        - mcp.oauth.complete
       writePaths:
         - pathGlob: .jumo/agents/**
           ring: RING_1_CONTROL_PLANE

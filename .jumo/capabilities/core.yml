@@ -415,6 +415,21 @@ spec:
       riskTier: LOW
       reversible: true
       minimumAssurance: SELF_REPORTED
+    - name: mcp.oauth.initiate
+      description: Build a discovery-validated, PKCE-bound authorization URL for one Realm-owned McpServerBinding's OAuth ceremony, without reaching the external authorization server.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: mcp.oauth.complete
+      description: Exchange a single-use authorization code for OAuth tokens against a live external authorization server and land them in OpenBao, completing one McpServerBinding's ceremony.
+      riskTier: MEDIUM
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: gmail.message.search
       description: Search the authenticated Realm principal's Gmail with a typed query and return only a bounded header projection, never a message body.
       riskTier: LOW

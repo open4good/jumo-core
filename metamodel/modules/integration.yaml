@@ -2519,6 +2519,42 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PlannedResource:
+    description: One resource or resource template exposed by a signed MCP gateway session plan,
+      resolved from an appraised, enabled McpServerBinding's recipe without any
+      InvocationCapabilityGrant (ADR-0063 decision 9's asymmetry -- tools need a per-call grant,
+      resources need only to be appraised and bounded; generic-mcp-full-protocol AC1, 2026-09-01
+      owner ruling). Mirrors dev.jumo.mcpgateway.plan.PlannedResource on the gateway side. Size,
+      pagination and subscription bounds are enforced by the resources protocol methods this
+      order's own AC1 has not yet built, not by a per-resource field here.
+    attributes:
+      exposedName:
+        range: string
+        required: true
+      upstreamUri:
+        range: string
+        required: true
+      description:
+        range: string
+      isTemplate:
+        range: boolean
+        required: true
+      allowedMimeTypes:
+        range: string
+        multivalued: true
+      resourceUriPatterns:
+        range: string
+        multivalued: true
+      staticContentDigest:
+        range: string
+        pattern: '^sha256:[0-9a-f]{64}$'
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   SessionPlanRequest:
     description: Request to issue a signed MCP gateway session plan for one ExecutionCellLease
       (mcp-gateway-session-plan-signing AC2).
@@ -2580,6 +2616,10 @@ classes:
         required: true
       operations:
         range: PlannedOperation
+        multivalued: true
+        inlined_as_list: true
+      resources:
+        range: PlannedResource
         multivalued: true
         inlined_as_list: true
       planExpiresAt:

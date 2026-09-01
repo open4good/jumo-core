@@ -3,12 +3,13 @@ package dev.jumo.model;
 
 
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Signed MCP gateway session plan scoped to one ExecutionCellLease. It is the only executable MCP form and carries every exact contract and supply digest used by the gateway.
  */
-public record SessionPlan(String planId, String realmId, String leaseId, String contractSetDigest, String recipeDigest, String bindingDigest, String appraisalDigest, String supplyDigest, String negotiatedVersion, McpTransportType negotiatedTransport, String upstreamToolsDigest, List<PlannedOperation> operations, String planExpiresAt, String signingKeyName, String planSignature)  {
+public record SessionPlan(String planId, String realmId, String leaseId, String contractSetDigest, String recipeDigest, String bindingDigest, String appraisalDigest, String supplyDigest, String negotiatedVersion, McpTransportType negotiatedTransport, String upstreamToolsDigest, List<PlannedOperation> operations, List<PlannedResource> resources, String planExpiresAt, String signingKeyName, String planSignature)  {
 
     public static Builder builder() {
         return new Builder();
@@ -28,6 +29,7 @@ public record SessionPlan(String planId, String realmId, String leaseId, String 
         private McpTransportType negotiatedTransport = null;
         private String upstreamToolsDigest = "";
         private List<PlannedOperation> operations = List.of();
+        private List<PlannedResource> resources = List.of();
         private String planExpiresAt = "";
         private String signingKeyName = "";
         private String planSignature = "";
@@ -93,6 +95,11 @@ public record SessionPlan(String planId, String realmId, String leaseId, String 
             return this;
         }
 
+        public Builder resources(List<PlannedResource> resources) {
+            this.resources = Objects.requireNonNull(resources);
+            return this;
+        }
+
         public Builder planExpiresAt(String planExpiresAt) {
             this.planExpiresAt = Objects.requireNonNull(planExpiresAt);
             return this;
@@ -109,7 +116,7 @@ public record SessionPlan(String planId, String realmId, String leaseId, String 
         }
 
     public SessionPlan build() {
-            return new SessionPlan(planId, realmId, leaseId, contractSetDigest, recipeDigest, bindingDigest, appraisalDigest, supplyDigest, negotiatedVersion, negotiatedTransport, upstreamToolsDigest, operations, planExpiresAt, signingKeyName, planSignature);
+            return new SessionPlan(planId, realmId, leaseId, contractSetDigest, recipeDigest, bindingDigest, appraisalDigest, supplyDigest, negotiatedVersion, negotiatedTransport, upstreamToolsDigest, operations, resources, planExpiresAt, signingKeyName, planSignature);
         }
     }
 }

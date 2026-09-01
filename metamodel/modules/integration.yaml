@@ -652,6 +652,9 @@ classes:
       negotiatedTransport: {range: McpTransportType, required: true}
       outcome: {range: McpQualificationOutcome, required: true}
       observedAt: {range: datetime, required: true}
+      pagesObserved: {range: integer}
+      bytesObserved: {range: integer}
+      networkIsolationMode: {range: string}
     annotations:
       jumo.state_authority: POSTGRES
       jumo.model_role: EVENT
@@ -2417,6 +2420,12 @@ classes:
       discoveredAt:
         range: string
         required: true
+      pagesObserved:
+        range: integer
+      bytesObserved:
+        range: integer
+      networkIsolationMode:
+        range: string
     annotations:
       jumo.state_authority: POSTGRES
       jumo.model_role: EVENT

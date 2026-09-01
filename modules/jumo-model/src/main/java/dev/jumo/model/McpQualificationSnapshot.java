@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 
-public record McpQualificationSnapshot(String snapshotId, String realmId, String recipeDigest, String bindingDigest, String supplyDigest, String inventoryDigest, String negotiatedVersion, McpTransportType negotiatedTransport, McpQualificationOutcome outcome, ZonedDateTime observedAt)  {
+public record McpQualificationSnapshot(String snapshotId, String realmId, String recipeDigest, String bindingDigest, String supplyDigest, String inventoryDigest, String negotiatedVersion, McpTransportType negotiatedTransport, McpQualificationOutcome outcome, ZonedDateTime observedAt, Integer pagesObserved, Integer bytesObserved, String networkIsolationMode)  {
 
     public static Builder builder() {
         return new Builder();
@@ -24,6 +24,9 @@ public record McpQualificationSnapshot(String snapshotId, String realmId, String
         private McpTransportType negotiatedTransport = null;
         private McpQualificationOutcome outcome = null;
         private ZonedDateTime observedAt = null;
+        private Integer pagesObserved = null;
+        private Integer bytesObserved = null;
+        private String networkIsolationMode = "";
 
 
         public Builder snapshotId(String snapshotId) {
@@ -76,8 +79,23 @@ public record McpQualificationSnapshot(String snapshotId, String realmId, String
             return this;
         }
 
+        public Builder pagesObserved(Integer pagesObserved) {
+            this.pagesObserved = Objects.requireNonNull(pagesObserved);
+            return this;
+        }
+
+        public Builder bytesObserved(Integer bytesObserved) {
+            this.bytesObserved = Objects.requireNonNull(bytesObserved);
+            return this;
+        }
+
+        public Builder networkIsolationMode(String networkIsolationMode) {
+            this.networkIsolationMode = Objects.requireNonNull(networkIsolationMode);
+            return this;
+        }
+
     public McpQualificationSnapshot build() {
-            return new McpQualificationSnapshot(snapshotId, realmId, recipeDigest, bindingDigest, supplyDigest, inventoryDigest, negotiatedVersion, negotiatedTransport, outcome, observedAt);
+            return new McpQualificationSnapshot(snapshotId, realmId, recipeDigest, bindingDigest, supplyDigest, inventoryDigest, negotiatedVersion, negotiatedTransport, outcome, observedAt, pagesObserved, bytesObserved, networkIsolationMode);
         }
     }
 }

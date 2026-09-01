@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * PostgreSQL event recording an MCP inventory discovered under an exact Realm lease; it is not a Git contract.
  */
-public record McpInventorySnapshot(String serverId, String ownerRealm, ContractReference workOrderRef, String executionCellLeaseRef, ContractReference executionMachineRef, String contractRevision, String artifactOrEndpoint, String serverName, String serverVersion, String protocolVersion, List<String> capabilities, List<McpToolDescriptor> tools, String inventoryDigest, String discoveredAt)  {
+public record McpInventorySnapshot(String serverId, String ownerRealm, ContractReference workOrderRef, String executionCellLeaseRef, ContractReference executionMachineRef, String contractRevision, String artifactOrEndpoint, String serverName, String serverVersion, String protocolVersion, List<String> capabilities, List<McpToolDescriptor> tools, String inventoryDigest, String discoveredAt, Integer pagesObserved, Integer bytesObserved, String networkIsolationMode)  {
 
     public static Builder builder() {
         return new Builder();
@@ -31,6 +31,9 @@ public record McpInventorySnapshot(String serverId, String ownerRealm, ContractR
         private List<McpToolDescriptor> tools = List.of();
         private String inventoryDigest = "";
         private String discoveredAt = "";
+        private Integer pagesObserved = null;
+        private Integer bytesObserved = null;
+        private String networkIsolationMode = "";
 
 
         public Builder serverId(String serverId) {
@@ -103,8 +106,23 @@ public record McpInventorySnapshot(String serverId, String ownerRealm, ContractR
             return this;
         }
 
+        public Builder pagesObserved(Integer pagesObserved) {
+            this.pagesObserved = Objects.requireNonNull(pagesObserved);
+            return this;
+        }
+
+        public Builder bytesObserved(Integer bytesObserved) {
+            this.bytesObserved = Objects.requireNonNull(bytesObserved);
+            return this;
+        }
+
+        public Builder networkIsolationMode(String networkIsolationMode) {
+            this.networkIsolationMode = Objects.requireNonNull(networkIsolationMode);
+            return this;
+        }
+
     public McpInventorySnapshot build() {
-            return new McpInventorySnapshot(serverId, ownerRealm, workOrderRef, executionCellLeaseRef, executionMachineRef, contractRevision, artifactOrEndpoint, serverName, serverVersion, protocolVersion, capabilities, tools, inventoryDigest, discoveredAt);
+            return new McpInventorySnapshot(serverId, ownerRealm, workOrderRef, executionCellLeaseRef, executionMachineRef, contractRevision, artifactOrEndpoint, serverName, serverVersion, protocolVersion, capabilities, tools, inventoryDigest, discoveredAt, pagesObserved, bytesObserved, networkIsolationMode);
         }
     }
 }

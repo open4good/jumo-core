@@ -1496,6 +1496,12 @@ classes:
       evidenceDigest:
         range: string
         required: true
+      preflightOutcome:
+        range: string
+        description: SATISFIED or REFUSED when an execution-toolchain preflight ran before this
+          invocation, absent when none was due. Independent of sanitizedOutputPayload, which a
+          REFUSED preflight also populates with the full per-tool evidence but a SATISFIED one
+          deliberately leaves null (reserved for the CLI's own real output).
       tokensConsumed:
         range: integer
       completedAt:

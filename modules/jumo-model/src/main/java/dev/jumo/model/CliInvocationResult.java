@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Sanitized final output payload, exit code, and evidence digest from a CLI execution.
  */
-public record CliInvocationResult(String workOrderId, String status, int exitCode, SchemaBoundPayload sanitizedOutputPayload, String evidenceDigest, Integer tokensConsumed, String completedAt)  {
+public record CliInvocationResult(String workOrderId, String status, int exitCode, SchemaBoundPayload sanitizedOutputPayload, String evidenceDigest, String preflightOutcome, Integer tokensConsumed, String completedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -20,6 +20,7 @@ public record CliInvocationResult(String workOrderId, String status, int exitCod
         private int exitCode = 0;
         private SchemaBoundPayload sanitizedOutputPayload = null;
         private String evidenceDigest = "";
+        private String preflightOutcome = "";
         private Integer tokensConsumed = null;
         private String completedAt = "";
 
@@ -49,6 +50,11 @@ public record CliInvocationResult(String workOrderId, String status, int exitCod
             return this;
         }
 
+        public Builder preflightOutcome(String preflightOutcome) {
+            this.preflightOutcome = Objects.requireNonNull(preflightOutcome);
+            return this;
+        }
+
         public Builder tokensConsumed(Integer tokensConsumed) {
             this.tokensConsumed = Objects.requireNonNull(tokensConsumed);
             return this;
@@ -60,7 +66,7 @@ public record CliInvocationResult(String workOrderId, String status, int exitCod
         }
 
     public CliInvocationResult build() {
-            return new CliInvocationResult(workOrderId, status, exitCode, sanitizedOutputPayload, evidenceDigest, tokensConsumed, completedAt);
+            return new CliInvocationResult(workOrderId, status, exitCode, sanitizedOutputPayload, evidenceDigest, preflightOutcome, tokensConsumed, completedAt);
         }
     }
 }

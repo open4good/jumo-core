@@ -19,3 +19,11 @@ waivers:
       ruling that already rejected SecretBinding as the wrong shape for this ephemeral credential.
       Every row is expected to expire and be superseded within minutes; a POSTGRES-authority class
       would document a shape with no lasting recognized business state to project.
+  - table: oauth_authorization_states
+    reason: server-side PKCE state for one in-flight OAuth authorization-code ceremony
+      (generic-mcp-runtime-tools AC2) -- single-use (consumed via DELETE ... RETURNING on the
+      callback that redeems it) and short-TTL (10 minutes), same "deliberately not a Git-declared
+      class, no lasting recognized business state" character as this file's own mcp_discovery_binding
+      entry. The code_verifier it holds must never reach Git by design (it is generated fresh per
+      ceremony and only ever compared against the corresponding request, never persisted anywhere
+      durable), ruling out a metamodel class on the same grounds that already excluded one here.

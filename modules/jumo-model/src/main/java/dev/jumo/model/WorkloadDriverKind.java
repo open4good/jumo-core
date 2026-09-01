@@ -19,7 +19,12 @@ public enum WorkloadDriverKind {
 
   MCP_DISCOVERY("MCP_DISCOVERY"),
 
-  SYSTEM_EFFECT("SYSTEM_EFFECT");
+  SYSTEM_EFFECT("SYSTEM_EFFECT"),
+
+  /**
+   * Materializes an OCI_STDIO/NPM_STDIO/PYTHON_UV_STDIO McpServerSupply's real content on the machine, generates a real SBOM from it, and reports the resolved lock, materialization and SBOM digests back to control-plane (mcp-supply-materialization-sbom). NATIVE_STDIO is out of scope -- its own signature-verification design is a separate, still-blocked order (mcp-native-archive-supply-materialization).
+   */
+  MCP_SUPPLY_MATERIALIZATION("MCP_SUPPLY_MATERIALIZATION");
 
   private final static Map<String, WorkloadDriverKind> MAP;
 

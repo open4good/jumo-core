@@ -2981,6 +2981,15 @@ classes:
       status:
         range: ActionStepStatus
         required: true
+      resultJson:
+        range: string
+        description: Transit-encrypted ciphertext of a read-only step's result (connector-action-runs-and-effect-batches
+          AC2's "sensitive read results" half). Absent for a step that opened an EffectBatch instead --
+          that step's own outcome is a digest only, same discipline as EffectBatchLine.resultDigest.
+      resultDigest:
+        range: string
+        description: Digest of resultJson's plaintext, computed before encryption so it stays a stable
+          fingerprint regardless of Transit's own per-call nonce.
       createdAt:
         range: string
         required: true

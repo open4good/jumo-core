@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * A single typed action within an ActionRun -- a connector read, an owner selection, or the step that opens an EffectBatch. Pins the exact catalog operation and input schema its arguments were validated against; never carries an upstream MCP primitive name (McpPrimitiveExposure.upstreamName never leaves its recipe, ADR-0019 and ADR-0063).
  */
-public record ActionStep(String stepId, String runId, int stepIndex, String connectorId, String operationRef, String operationSchemaRef, String argumentsJson, String argumentsDigest, ActionStepStatus status, String createdAt, String updatedAt)  {
+public record ActionStep(String stepId, String runId, int stepIndex, String connectorId, String operationRef, String operationSchemaRef, String argumentsJson, String argumentsDigest, ActionStepStatus status, String resultJson, String resultDigest, String createdAt, String updatedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -24,6 +24,8 @@ public record ActionStep(String stepId, String runId, int stepIndex, String conn
         private String argumentsJson = "";
         private String argumentsDigest = "";
         private ActionStepStatus status = null;
+        private String resultJson = "";
+        private String resultDigest = "";
         private String createdAt = "";
         private String updatedAt = "";
 
@@ -73,6 +75,16 @@ public record ActionStep(String stepId, String runId, int stepIndex, String conn
             return this;
         }
 
+        public Builder resultJson(String resultJson) {
+            this.resultJson = Objects.requireNonNull(resultJson);
+            return this;
+        }
+
+        public Builder resultDigest(String resultDigest) {
+            this.resultDigest = Objects.requireNonNull(resultDigest);
+            return this;
+        }
+
         public Builder createdAt(String createdAt) {
             this.createdAt = Objects.requireNonNull(createdAt);
             return this;
@@ -84,7 +96,7 @@ public record ActionStep(String stepId, String runId, int stepIndex, String conn
         }
 
     public ActionStep build() {
-            return new ActionStep(stepId, runId, stepIndex, connectorId, operationRef, operationSchemaRef, argumentsJson, argumentsDigest, status, createdAt, updatedAt);
+            return new ActionStep(stepId, runId, stepIndex, connectorId, operationRef, operationSchemaRef, argumentsJson, argumentsDigest, status, resultJson, resultDigest, createdAt, updatedAt);
         }
     }
 }

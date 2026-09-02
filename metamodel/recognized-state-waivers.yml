@@ -46,3 +46,13 @@ waivers:
       server-derived character as mcp_discovery_snapshot and knowledge_corpus_grant's own waiver
       entries; append-only, no audit trigger. Reviewed now, at the table's own creation, rather
       than left silently uncovered.
+  - table: mcp_sampling_dispatch_state
+    reason: one row per ExecutionCellLease, a pure cumulative call counter mediating the
+      Git-declared McpPrimitiveExposure.maxSamplingCalls bound (generic-mcp-full-protocol AC3) --
+      same "no business state beyond what a Git-declared contract already commits to" character as
+      process_timer_dispatch_state (its own sibling atomic-claim table, itself never needing a
+      waiver because it did not push the ratchet past its ceiling at the time). Not purged on lease
+      expiry -- a recorded gap, not a design claim of retention -- but a stale row commits no
+      recognized business fact beyond a count that a new lease's own fresh row would restart from
+      zero. Reviewed now, at the table's own creation, because it is what pushed this ratchet past
+      its ceiling.

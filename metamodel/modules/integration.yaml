@@ -519,6 +519,21 @@ classes:
       taskInstructionsAllowed: {range: boolean, required: true}
       maxSamplingCalls: {range: integer}
       maxSamplingTokens: {range: integer}
+      allowedModels:
+        range: string
+        multivalued: true
+        description: ADR-0063 decision 9's "bounded by model" clause -- exact model identifiers a
+          SAMPLING exposure may complete against. Empty/absent refuses every sampling/createMessage
+          request for this exposure rather than defaulting to unbounded (generic-mcp-full-protocol
+          AC3).
+      resourceBudgetRef:
+        range: ContractReference
+        inlined: true
+        description: ADR-0063 decision 9's "bounded by ... budget" clause for a SAMPLING exposure --
+          the same ResourceBudget contract kind an Episode already uses, reused rather than
+          duplicated (canonical decision 15); BudgetLimits.estimatedCostEur is the field this bound
+          actually reads, since modelCalls/tokens are already covered per-exposure by
+          maxSamplingCalls/maxSamplingTokens above (generic-mcp-full-protocol AC3).
       allowedDataClasses: {range: string, multivalued: true}
       elicitationSensitiveAllowed: {range: boolean}
       allowedOrigins: {range: string, multivalued: true, pattern: '^https://[^/?#]+(?::[0-9]+)?$'}

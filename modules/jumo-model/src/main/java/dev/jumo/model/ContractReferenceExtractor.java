@@ -112,6 +112,10 @@ public final class ContractReferenceExtractor {
             extractFromMcpServerBinding(m, refs);
             return refs;
         }
+        if (model instanceof McpServerRecipe m) {
+            extractFromMcpServerRecipe(m, refs);
+            return refs;
+        }
         if (model instanceof Organization m) {
             extractFromOrganization(m, refs);
             return refs;
@@ -751,6 +755,12 @@ public final class ContractReferenceExtractor {
             refs.add(new OutgoingReference("executionMachineRef", obj.executionMachineRef()));
         }
     }
+    public static void extractFromMcpPrimitiveExposure(McpPrimitiveExposure obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.resourceBudgetRef() != null) {
+            refs.add(new OutgoingReference("resourceBudgetRef", obj.resourceBudgetRef()));
+        }
+    }
     public static void extractFromMcpQuarantine(McpQuarantine obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.bindingRef() != null) {
@@ -841,6 +851,18 @@ public final class ContractReferenceExtractor {
         if (obj.credentialBindings() != null) {
             for (McpCredentialBinding item : obj.credentialBindings()) {
                 extractFromMcpCredentialBinding(item, refs);
+            }
+        }
+    }
+    public static void extractFromMcpServerRecipe(McpServerRecipe obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromMcpServerRecipeSpec(obj.spec(), refs);
+    }
+    public static void extractFromMcpServerRecipeSpec(McpServerRecipeSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.exposures() != null) {
+            for (McpPrimitiveExposure item : obj.exposures()) {
+                extractFromMcpPrimitiveExposure(item, refs);
             }
         }
     }

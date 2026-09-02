@@ -364,6 +364,27 @@ spec:
             schemaDigest: sha256-linkml-v1
             profile: DRAFT_2020_12
           description: Append a sanitized terminal outcome for a dispatched MCP invocation.
+    - operationId: recordMcpResourceReadAudit
+      method: POST
+      path: /mcp-gateway/resource-reads
+      audience: MACHINE_MTLS
+      authAction: mcp-invocation.resource-read
+      requestBinding:
+        modelClass: McpResourceReadAudit
+        schemaVersion: 1.0.0
+        schemaId: https://jumo.dev/schemas/jumo-v1/McpResourceReadAudit
+        schemaDigest: sha256-linkml-v1
+        profile: DRAFT_2020_12
+      responseBindings:
+        - statusCode: 200
+          mediaType: application/json
+          schemaBinding:
+            modelClass: McpResourceReadAudit
+            schemaVersion: 1.0.0
+            schemaId: https://jumo.dev/schemas/jumo-v1/McpResourceReadAudit
+            schemaDigest: sha256-linkml-v1
+            profile: DRAFT_2020_12
+          description: Record a sanitized audit event for one MCP resource read.
     - operationId: consumeMcpDiscoveryBinding
       method: GET
       path: /mcp-discovery-bindings/{bindingId}

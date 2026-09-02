@@ -35,6 +35,8 @@ spec:
       description: Configuration du nickname (exposition yamaka.me/u/<nickname>). L’identité de machine reste interne à l’enrôlement mTLS.
       personaNarration: Bienvenue sur Jumo ! Je suis Nestor, votre coordinateur. Commençons par définir votre identité et
         préparer votre espace.
+      descriptionI18nKey: journeyOnboardingSetupIdentityDescription
+      narrationI18nKey: journeyOnboardingSetupIdentityNarration
       stepKind: COLLECT
       requiredFields:
         - {field: nickname, i18nKey: journeyNicknameField}
@@ -47,6 +49,8 @@ spec:
       name: Provisioning de la VM d'exécution
       description: En attente du démarrage de la VM et de la vérification du propriétaire.
       personaNarration: Votre machine virtuelle d'exécution se prépare. Nous attendons son initialisation et sa vérification.
+      descriptionI18nKey: journeyOnboardingProvisionExecutionCellDescription
+      narrationI18nKey: journeyOnboardingProvisionExecutionCellNarration
       stepKind: AWAIT
       dependsOn: [setup-identity]
       parallelizable: true
@@ -61,6 +65,8 @@ spec:
       description: Liaison de votre dépôt Git racine garantissant la portabilité complète de votre espace.
       personaNarration: Votre dépôt Git est la source contractuelle de vérité de tout votre environnement. Renseignez votre
         dépôt racine.
+      descriptionI18nKey: journeyOnboardingLinkRepositoryDescription
+      narrationI18nKey: journeyOnboardingLinkRepositoryNarration
       stepKind: COLLECT
       dependsOn: [setup-identity]
       parallelizable: true
@@ -76,6 +82,8 @@ spec:
       name: Configuration de vos API
       description: Activation des comptes API déclarés et qualification réelle des modèles accessibles, sans compte implicite.
       personaNarration: Sélectionnons les comptes déclarés, activons-les en toute sécurité et observons réellement leurs capacités.
+      descriptionI18nKey: journeyOnboardingConfigureApiAccountsDescription
+      narrationI18nKey: journeyOnboardingConfigureApiAccountsNarration
       stepKind: SUB_JOURNEY
       dependsOn: [setup-identity]
       parallelizable: true
@@ -87,6 +95,8 @@ spec:
       name: Découverte des Connecteurs
       description: Dialogue avec Nestor pour analyser vos outils et sélectionner les connecteurs appropriés.
       personaNarration: Discutons de votre quotidien de développeur pour déterminer quels connecteurs et MCP activer.
+      descriptionI18nKey: journeyOnboardingCaptureConnectorIntentDescription
+      narrationI18nKey: journeyOnboardingCaptureConnectorIntentNarration
       stepKind: DIALOGUE_COLLECT
       dependsOn: [setup-identity]
       parallelizable: true
@@ -101,6 +111,8 @@ spec:
       name: Mise en Place des Connecteurs
       description: Sélection puis confirmation des connecteurs à appairer, via le parcours réutilisable dédié.
       personaNarration: Passons à la mise en place concrète des connecteurs que nous venons de choisir ensemble.
+      descriptionI18nKey: journeyOnboardingSetupConnectorsDescription
+      narrationI18nKey: journeyOnboardingSetupConnectorsNarration
       stepKind: SUB_JOURNEY
       dependsOn: [setup-identity]
       parallelizable: true
@@ -115,6 +127,8 @@ spec:
       description: Récapitulatif de votre espace initialisé, émission de la proposition contractuelle et activation.
       personaNarration: Tout est prêt ! Vérifions ensemble le récapitulatif avant de sceller la configuration racine de votre
         espace.
+      descriptionI18nKey: journeyOnboardingSummaryAndActivateDescription
+      narrationI18nKey: journeyOnboardingSummaryAndActivateNarration
       stepKind: COLLECT
       dependsOn: [provision-execution-cell, link-repository, configure-api-accounts, capture-connector-intent, setup-connectors]
       requiredFields:

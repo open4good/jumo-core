@@ -38,3 +38,11 @@ waivers:
     reason: append-only lifecycle log for knowledge_corpus_grant above -- same reasoning, and the
       same relationship mcp_discovery_snapshot's entry already draws to this corpus's plain
       observational logs.
+  - table: event_ingress_receipt
+    reason: sanitized, deduplicated receipt of one verified external event
+      (event-ingress-admission-and-attention-runtime AC2) -- bounded and purged at the owning
+      EventIngress's own retentionBoundary, documenting no business state beyond what the
+      Git-declared EventIngress/ProcessSpec pairing already commits to. Same ephemeral,
+      server-derived character as mcp_discovery_snapshot and knowledge_corpus_grant's own waiver
+      entries; append-only, no audit trigger. Reviewed now, at the table's own creation, rather
+      than left silently uncovered.

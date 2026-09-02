@@ -26,6 +26,18 @@ spec:
       riskTier: LOW
       reversible: true
       minimumAssurance: SELF_REPORTED
+    - name: knowledge.search.request
+      description: Issue a single-request knowledge-corpus grant and search it -- fragments and citations, no model call.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: knowledge.answer.request
+      description: Search then authorize one single-use model call on the same grant, recording a content-free ContextBundleManifest -- never a synthesized answer itself.
+      riskTier: MEDIUM
+      reversible: false
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: change.status.read
       description: Read Realm-scoped proposal and forge projection status.
       riskTier: LOW

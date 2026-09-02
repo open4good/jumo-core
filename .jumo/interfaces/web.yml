@@ -227,6 +227,8 @@ spec:
         - document.change.propose
         - change.review
         - knowledge.corpus.read
+        - knowledge.search.request
+        - knowledge.answer.request
       writePaths:
         - pathGlob: docs/architecture/**/*.md
           ring: RING_3_GOVERNED_PROJECT

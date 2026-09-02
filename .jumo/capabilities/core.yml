@@ -415,6 +415,19 @@ spec:
       riskTier: LOW
       reversible: true
       minimumAssurance: SELF_REPORTED
+    - name: mcp.elicitation.consent.read
+      description: Read pending and recently resolved MCP elicitation consent requests for a Realm-owned lease.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: mcp.elicitation.consent.resolve
+      description: Accept or decline one pending MCP elicitation consent request, unblocking the gateway's own blocking wait for it.
+      riskTier: MEDIUM
+      reversible: false
+      requiredObligations:
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: mcp.oauth.initiate
       description: Build a discovery-validated, PKCE-bound authorization URL for one Realm-owned McpServerBinding's OAuth ceremony, without reaching the external authorization server.
       riskTier: LOW

@@ -78,7 +78,9 @@ public enum ProjectionSource {
 
   CONNECTOR_INTEGRATIONS("CONNECTOR_INTEGRATIONS"),
 
-  EFFECT_BATCH("EFFECT_BATCH");
+  EFFECT_BATCH("EFFECT_BATCH"),
+
+  MCP_ELICITATION_CONSENTS("MCP_ELICITATION_CONSENTS");
 
   private final static Map<String, ProjectionSource> MAP;
 

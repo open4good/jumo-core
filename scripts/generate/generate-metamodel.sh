@@ -179,7 +179,7 @@ if [[ "$MODE" == "check-java" ]]; then
   # not a committed reproducibility target; only the tracked Java records are compared here.
   DIFF_STATUS=0
   if ! diff -rq "$COMMITTED_JAVA_MODEL_DIR" "$JAVA_MODEL_DIR" \
-      >> /tmp/generate-metamodel-diff.txt 2>&1; then
+      > /tmp/generate-metamodel-diff.txt 2>&1; then
     DIFF_STATUS=1
   fi
 

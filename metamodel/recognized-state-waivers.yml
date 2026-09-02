@@ -56,3 +56,11 @@ waivers:
       recognized business fact beyond a count that a new lease's own fresh row would restart from
       zero. Reviewed now, at the table's own creation, because it is what pushed this ratchet past
       its ceiling.
+  - table: mcp_elicitation_consent
+    reason: one row per elicitation/create-URL request the control-plane bridge blocks a gateway
+      call on (generic-mcp-full-protocol AC4), mediating the Git-declared
+      McpPrimitiveExposure.allowedOrigins bound the same way mcp_sampling_dispatch_state mediates
+      maxSamplingCalls -- the owner's ACCEPT/DECLINE/TIMED_OUT decision itself commits no
+      recognized business fact beyond what the bridge already returns once to the one caller
+      waiting on it; nothing else reads a resolved row afterward. Reviewed now, at the table's own
+      creation, because it is what pushed this ratchet past its ceiling.

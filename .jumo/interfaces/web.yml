@@ -279,6 +279,7 @@ spec:
         - CONNECTOR_INTEGRATIONS
         - CONNECTOR_CATALOG
         - MCP_CATALOG
+        - MCP_ELICITATION_CONSENTS
         - CONTEXT_GRAPH
       proposes:
         - machine.read
@@ -290,6 +291,8 @@ spec:
         - connector.read
         - connector.test
         - mcp.catalog.read
+        - mcp.elicitation.consent.read
+        - mcp.elicitation.consent.resolve
         - contract.change.propose
         - context.graph.read
       writePaths:

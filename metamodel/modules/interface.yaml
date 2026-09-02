@@ -65,6 +65,7 @@ enums:
       PROVIDER_QUOTAS: {}
       CONNECTOR_INTEGRATIONS: {}
       EFFECT_BATCH: {}
+      MCP_ELICITATION_CONSENTS: {}
   WritePathEditor:
     permissible_values:
       WYSIWYG_MARKDOWN: {}

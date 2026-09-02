@@ -1546,6 +1546,11 @@ classes:
   ProviderQuotaObservation:
     description: Observed quota and rate limit status from an upstream provider.
     attributes:
+      providerAccountId:
+        description: The ProviderAccount this observation was captured for. Optional so a caller
+          that has not yet been extended to pass it (none exists yet) does not need a placeholder
+          value; the real producer (provider-quota-observation-surface AC2) always sets it.
+        range: string
       kind:
         range: string
         required: true

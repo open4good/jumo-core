@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Observed quota and rate limit status from an upstream provider.
  */
-public record ProviderQuotaObservation(String kind, String scope, Float limit, Float remaining, String unit, String capturedAt, String staleAt, String resetAt, String provenance, Float confidence, QuotaStatus status)  {
+public record ProviderQuotaObservation(String providerAccountId, String kind, String scope, Float limit, Float remaining, String unit, String capturedAt, String staleAt, String resetAt, String provenance, Float confidence, QuotaStatus status)  {
 
     public static Builder builder() {
         return new Builder();
@@ -15,6 +15,7 @@ public record ProviderQuotaObservation(String kind, String scope, Float limit, F
 
     public static class Builder {
 
+        private String providerAccountId = "";
         private String kind = "";
         private String scope = "";
         private Float limit = null;
@@ -27,6 +28,11 @@ public record ProviderQuotaObservation(String kind, String scope, Float limit, F
         private Float confidence = null;
         private QuotaStatus status = null;
 
+
+        public Builder providerAccountId(String providerAccountId) {
+            this.providerAccountId = Objects.requireNonNull(providerAccountId);
+            return this;
+        }
 
         public Builder kind(String kind) {
             this.kind = Objects.requireNonNull(kind);
@@ -84,7 +90,7 @@ public record ProviderQuotaObservation(String kind, String scope, Float limit, F
         }
 
     public ProviderQuotaObservation build() {
-            return new ProviderQuotaObservation(kind, scope, limit, remaining, unit, capturedAt, staleAt, resetAt, provenance, confidence, status);
+            return new ProviderQuotaObservation(providerAccountId, kind, scope, limit, remaining, unit, capturedAt, staleAt, resetAt, provenance, confidence, status);
         }
     }
 }

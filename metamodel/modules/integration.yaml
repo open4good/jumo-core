@@ -246,6 +246,11 @@ enums:
       TASK: {}
       SAMPLING: {}
       ELICITATION: {}
+  McpElicitationValueType:
+    permissible_values:
+      TEXT: {}
+      BOOLEAN: {}
+      ENUM: {}
   McpAuthMode:
     permissible_values:
       NONE: {}
@@ -536,6 +541,7 @@ classes:
           maxSamplingCalls/maxSamplingTokens above (generic-mcp-full-protocol AC3).
       allowedDataClasses: {range: string, multivalued: true}
       elicitationSensitiveAllowed: {range: boolean}
+      elicitationFields: {range: McpElicitationField, multivalued: true, inlined_as_list: true}
       allowedOrigins: {range: string, multivalued: true, pattern: '^https://[^/?#]+(?::[0-9]+)?$'}
       fixedArguments: {range: McpNamedValue, multivalued: true, inlined_as_list: true}
       hiddenArguments: {range: Identifier, multivalued: true}
@@ -543,6 +549,23 @@ classes:
       jsonRedaction: {range: string, multivalued: true}
       effect: {range: OperationEffect, required: true}
       requiresGrant: {range: boolean, required: true}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpElicitationField:
+    description: One closed, appraised field a FORM-mode MCP elicitation may request. Values are never contractual state.
+    attributes:
+      name: {range: Identifier, required: true}
+      label: {range: string, required: true, pattern: '^.{1,120}$'}
+      valueType: {range: McpElicitationValueType, required: true}
+      required: {range: boolean, required: true}
+      sensitive: {range: boolean, required: true}
+      maxLength: {range: integer}
+      allowedValues: {range: string, multivalued: true}
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -2653,6 +2676,10 @@ classes:
         required: true
       elicitationSensitiveAllowed:
         range: boolean
+      elicitationFields:
+        range: McpElicitationField
+        multivalued: true
+        inlined_as_list: true
       allowedOrigins:
         range: string
         multivalued: true

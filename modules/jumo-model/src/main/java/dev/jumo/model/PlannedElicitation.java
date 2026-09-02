@@ -3,12 +3,13 @@ package dev.jumo.model;
 
 
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * One ELICITATION exposure's bounds carried in a signed MCP gateway session plan -- opt-in per ADR-0063 decision 9, mirroring PlannedSampling's own asymmetry -- a plan with zero PlannedElicitation entries refuses every elicitation/create request outright, a plan with one bounds every request against it (elicitationSensitiveAllowed, allowedOrigins, both carried verbatim from the declared McpPrimitiveExposure rather than resolved eagerly, since neither names a live reference the way resourceBudgetRef or staticContentDigest do). Mirrors dev.jumo.mcpgateway.plan.PlannedElicitation on the gateway side. Like resources, prompts and sampling, elicitation carries no InvocationCapabilityGrant -- there is no per-call receipt to authorize or consume (generic-mcp-full-protocol AC4).
  */
-public record PlannedElicitation(String exposedName, Boolean elicitationSensitiveAllowed, List<String> allowedOrigins)  {
+public record PlannedElicitation(String exposedName, Boolean elicitationSensitiveAllowed, List<McpElicitationField> elicitationFields, List<String> allowedOrigins)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,6 +19,7 @@ public record PlannedElicitation(String exposedName, Boolean elicitationSensitiv
 
         private String exposedName = "";
         private Boolean elicitationSensitiveAllowed = null;
+        private List<McpElicitationField> elicitationFields = List.of();
         private List<String> allowedOrigins = List.of();
 
 
@@ -31,13 +33,18 @@ public record PlannedElicitation(String exposedName, Boolean elicitationSensitiv
             return this;
         }
 
+        public Builder elicitationFields(List<McpElicitationField> elicitationFields) {
+            this.elicitationFields = Objects.requireNonNull(elicitationFields);
+            return this;
+        }
+
         public Builder allowedOrigins(List<String> allowedOrigins) {
             this.allowedOrigins = Objects.requireNonNull(allowedOrigins);
             return this;
         }
 
     public PlannedElicitation build() {
-            return new PlannedElicitation(exposedName, elicitationSensitiveAllowed, allowedOrigins);
+            return new PlannedElicitation(exposedName, elicitationSensitiveAllowed, elicitationFields, allowedOrigins);
         }
     }
 }

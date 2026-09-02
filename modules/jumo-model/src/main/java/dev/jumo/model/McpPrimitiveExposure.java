@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.List;
 import java.util.List;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record McpPrimitiveExposure(McpPrimitiveKind primitiveKind, String upstreamName, String exposedName, String description, String capabilityRef, String inputSchemaDigest, String outputSchemaDigest, boolean opaqueOutput, List<String> allowedMimeTypes, List<String> resourceUriPatterns, String staticContentDigest, boolean taskInstructionsAllowed, Integer maxSamplingCalls, Integer maxSamplingTokens, List<String> allowedModels, ContractReference resourceBudgetRef, List<String> allowedDataClasses, Boolean elicitationSensitiveAllowed, List<String> allowedOrigins, List<McpNamedValue> fixedArguments, List<String> hiddenArguments, List<String> jsonProjection, List<String> jsonRedaction, OperationEffect effect, boolean requiresGrant)  {
+public record McpPrimitiveExposure(McpPrimitiveKind primitiveKind, String upstreamName, String exposedName, String description, String capabilityRef, String inputSchemaDigest, String outputSchemaDigest, boolean opaqueOutput, List<String> allowedMimeTypes, List<String> resourceUriPatterns, String staticContentDigest, boolean taskInstructionsAllowed, Integer maxSamplingCalls, Integer maxSamplingTokens, List<String> allowedModels, ContractReference resourceBudgetRef, List<String> allowedDataClasses, Boolean elicitationSensitiveAllowed, List<McpElicitationField> elicitationFields, List<String> allowedOrigins, List<McpNamedValue> fixedArguments, List<String> hiddenArguments, List<String> jsonProjection, List<String> jsonRedaction, OperationEffect effect, boolean requiresGrant)  {
 
     public static Builder builder() {
         return new Builder();
@@ -40,6 +41,7 @@ public record McpPrimitiveExposure(McpPrimitiveKind primitiveKind, String upstre
         private ContractReference resourceBudgetRef = null;
         private List<String> allowedDataClasses = List.of();
         private Boolean elicitationSensitiveAllowed = null;
+        private List<McpElicitationField> elicitationFields = List.of();
         private List<String> allowedOrigins = List.of();
         private List<McpNamedValue> fixedArguments = List.of();
         private List<String> hiddenArguments = List.of();
@@ -139,6 +141,11 @@ public record McpPrimitiveExposure(McpPrimitiveKind primitiveKind, String upstre
             return this;
         }
 
+        public Builder elicitationFields(List<McpElicitationField> elicitationFields) {
+            this.elicitationFields = Objects.requireNonNull(elicitationFields);
+            return this;
+        }
+
         public Builder allowedOrigins(List<String> allowedOrigins) {
             this.allowedOrigins = Objects.requireNonNull(allowedOrigins);
             return this;
@@ -175,7 +182,7 @@ public record McpPrimitiveExposure(McpPrimitiveKind primitiveKind, String upstre
         }
 
     public McpPrimitiveExposure build() {
-            return new McpPrimitiveExposure(primitiveKind, upstreamName, exposedName, description, capabilityRef, inputSchemaDigest, outputSchemaDigest, opaqueOutput, allowedMimeTypes, resourceUriPatterns, staticContentDigest, taskInstructionsAllowed, maxSamplingCalls, maxSamplingTokens, allowedModels, resourceBudgetRef, allowedDataClasses, elicitationSensitiveAllowed, allowedOrigins, fixedArguments, hiddenArguments, jsonProjection, jsonRedaction, effect, requiresGrant);
+            return new McpPrimitiveExposure(primitiveKind, upstreamName, exposedName, description, capabilityRef, inputSchemaDigest, outputSchemaDigest, opaqueOutput, allowedMimeTypes, resourceUriPatterns, staticContentDigest, taskInstructionsAllowed, maxSamplingCalls, maxSamplingTokens, allowedModels, resourceBudgetRef, allowedDataClasses, elicitationSensitiveAllowed, elicitationFields, allowedOrigins, fixedArguments, hiddenArguments, jsonProjection, jsonRedaction, effect, requiresGrant);
         }
     }
 }

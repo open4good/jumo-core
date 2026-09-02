@@ -321,6 +321,13 @@ spec:
           requiredObligations:
             - RETAIN_PROVENANCE
             - STEP_UP_AUTHENTICATION
+        - pathGlob: .jumo/mcp-server-recipes/**
+          ring: RING_1_CONTROL_PLANE
+          capabilityRef: contract.change.propose
+          editor: STRUCTURED_YAML
+          requiredObligations:
+            - RETAIN_PROVENANCE
+            - STEP_UP_AUTHENTICATION
     - id: organization-governance
       purpose: Read an admitted Organization's governance boundary and submit bounded Git proposals or Realm provisioning
         requests without transitive Realm access.

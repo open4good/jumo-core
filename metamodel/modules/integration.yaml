@@ -2604,6 +2604,39 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PlannedSampling:
+    description: One SAMPLING exposure's bounds carried in a signed MCP gateway session plan --
+      opt-in per ADR-0063 decision 9 -- a plan with zero PlannedSampling entries refuses every
+      sampling/createMessage request outright, a plan with one bounds every request against it
+      (allowedModels, maxCalls, maxTokens, allowedDataClasses, maxCostEur -- resolved eagerly from
+      the exposure's resourceBudgetRef at plan-issuance time, not carried as a live reference, the
+      same way staticContentDigest resolves eagerly rather than pointing at a live document).
+      Mirrors dev.jumo.mcpgateway.plan.PlannedSampling on the gateway side. Like resources and
+      prompts, sampling carries no InvocationCapabilityGrant -- there is no per-call receipt to
+      authorize or consume, only a post-callback audit record (generic-mcp-full-protocol AC3).
+    attributes:
+      exposedName:
+        range: string
+        required: true
+      allowedModels:
+        range: string
+        multivalued: true
+      maxCalls:
+        range: integer
+      maxTokens:
+        range: integer
+      allowedDataClasses:
+        range: string
+        multivalued: true
+      maxCostEur:
+        range: float
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   SessionPlanRequest:
     description: Request to issue a signed MCP gateway session plan for one ExecutionCellLease
       (mcp-gateway-session-plan-signing AC2).
@@ -2673,6 +2706,10 @@ classes:
         inlined_as_list: true
       prompts:
         range: PlannedPrompt
+        multivalued: true
+        inlined_as_list: true
+      sampling:
+        range: PlannedSampling
         multivalued: true
         inlined_as_list: true
       planExpiresAt:

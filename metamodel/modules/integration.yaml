@@ -2555,6 +2555,40 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PlannedPrompt:
+    description: One static prompt exposed by a signed MCP gateway session plan, resolved from an
+      appraised, enabled McpServerBinding's recipe without any InvocationCapabilityGrant -- the
+      same asymmetry PlannedResource documents (ADR-0063 decision 9 -- a prompt needs only to be
+      appraised and bounded, not a per-call grant; generic-mcp-full-protocol AC2). Mirrors
+      dev.jumo.mcpgateway.plan.PlannedPrompt on the gateway side. taskInstructionsAllowed is
+      copied from the McpPrimitiveExposure that produced this entry; only a prompt whose
+      staticContentDigest is both declared and verified against the fetched content may ever form
+      bounded task instructions -- that consuming half (MCP Tasks, create/read/notify/cancel) is
+      not built by this order's own AC2 pass, since the pinned MCP SDK carries no Task primitive
+      support at all (verified -- no io.modelcontextprotocol.spec.McpSchema$Task* class exists in
+      mcp-core 2.0.1, the latest published SDK version).
+    attributes:
+      exposedName:
+        range: string
+        required: true
+      upstreamName:
+        range: string
+        required: true
+      description:
+        range: string
+      staticContentDigest:
+        range: string
+        pattern: '^sha256:[0-9a-f]{64}$'
+      taskInstructionsAllowed:
+        range: boolean
+        required: true
+    annotations:
+      jumo.state_authority: NONE
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   SessionPlanRequest:
     description: Request to issue a signed MCP gateway session plan for one ExecutionCellLease
       (mcp-gateway-session-plan-signing AC2).
@@ -2620,6 +2654,10 @@ classes:
         inlined_as_list: true
       resources:
         range: PlannedResource
+        multivalued: true
+        inlined_as_list: true
+      prompts:
+        range: PlannedPrompt
         multivalued: true
         inlined_as_list: true
       planExpiresAt:

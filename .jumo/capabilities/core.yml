@@ -21,6 +21,11 @@ spec:
       riskTier: LOW
       reversible: true
       minimumAssurance: SELF_REPORTED
+    - name: knowledge.corpus.read
+      description: Read knowledge-corpus/source grouping, freshness and sync diagnostics -- never fragment content or a search question.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
     - name: change.status.read
       description: Read Realm-scoped proposal and forge projection status.
       riskTier: LOW

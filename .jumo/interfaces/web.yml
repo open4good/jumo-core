@@ -220,11 +220,13 @@ spec:
       reads:
         - DOCUMENT_TREE
         - DOCUMENT_CONTENT
+        - KNOWLEDGE_CORPUS_OVERVIEW
       proposes:
         - document.content.read
         - model.document.draft
         - document.change.propose
         - change.review
+        - knowledge.corpus.read
       writePaths:
         - pathGlob: docs/architecture/**/*.md
           ring: RING_3_GOVERNED_PROJECT

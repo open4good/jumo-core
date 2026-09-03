@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.List;
 import java.util.List;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * Signed MCP gateway session plan scoped to one ExecutionCellLease. It is the only executable MCP form and carries every exact contract and supply digest used by the gateway.
+ * Signed MCP gateway session plan scoped to one ExecutionCellLease. It is the only executable MCP form and carries every exact contract and supply digest used by the gateway. recipeDigest/bindingDigest/appraisalDigest/supplyDigest/negotiatedVersion/negotiatedTransport/ upstreamToolsDigest are optional (knowledge-retrieval-access-and-cockpit AC3) -- a lease bound only to PLATFORM operations (platformOperations, resolved from a KnowledgeCorpusGrant, never an McpServerBinding) has no upstream MCP authority to carry any of the seven -- widened from required, additive/backward-compatible since every existing plan producer already always populates them for a connector-bound lease.
  */
-public record SessionPlan(String planId, String realmId, String leaseId, String contractSetDigest, String recipeDigest, String bindingDigest, String appraisalDigest, String supplyDigest, String negotiatedVersion, McpTransportType negotiatedTransport, String upstreamToolsDigest, List<PlannedOperation> operations, List<PlannedResource> resources, List<PlannedPrompt> prompts, List<PlannedSampling> sampling, List<PlannedElicitation> elicitation, String planExpiresAt, String signingKeyName, String planSignature)  {
+public record SessionPlan(String planId, String realmId, String leaseId, String contractSetDigest, String recipeDigest, String bindingDigest, String appraisalDigest, String supplyDigest, String negotiatedVersion, McpTransportType negotiatedTransport, String upstreamToolsDigest, List<PlannedOperation> operations, List<PlannedResource> resources, List<PlannedPrompt> prompts, List<PlannedSampling> sampling, List<PlannedElicitation> elicitation, List<PlannedPlatformOperation> platformOperations, String planExpiresAt, String signingKeyName, String planSignature)  {
 
     public static Builder builder() {
         return new Builder();
@@ -36,6 +37,7 @@ public record SessionPlan(String planId, String realmId, String leaseId, String 
         private List<PlannedPrompt> prompts = List.of();
         private List<PlannedSampling> sampling = List.of();
         private List<PlannedElicitation> elicitation = List.of();
+        private List<PlannedPlatformOperation> platformOperations = List.of();
         private String planExpiresAt = "";
         private String signingKeyName = "";
         private String planSignature = "";
@@ -121,6 +123,11 @@ public record SessionPlan(String planId, String realmId, String leaseId, String 
             return this;
         }
 
+        public Builder platformOperations(List<PlannedPlatformOperation> platformOperations) {
+            this.platformOperations = Objects.requireNonNull(platformOperations);
+            return this;
+        }
+
         public Builder planExpiresAt(String planExpiresAt) {
             this.planExpiresAt = Objects.requireNonNull(planExpiresAt);
             return this;
@@ -137,7 +144,7 @@ public record SessionPlan(String planId, String realmId, String leaseId, String 
         }
 
     public SessionPlan build() {
-            return new SessionPlan(planId, realmId, leaseId, contractSetDigest, recipeDigest, bindingDigest, appraisalDigest, supplyDigest, negotiatedVersion, negotiatedTransport, upstreamToolsDigest, operations, resources, prompts, sampling, elicitation, planExpiresAt, signingKeyName, planSignature);
+            return new SessionPlan(planId, realmId, leaseId, contractSetDigest, recipeDigest, bindingDigest, appraisalDigest, supplyDigest, negotiatedVersion, negotiatedTransport, upstreamToolsDigest, operations, resources, prompts, sampling, elicitation, platformOperations, planExpiresAt, signingKeyName, planSignature);
         }
     }
 }

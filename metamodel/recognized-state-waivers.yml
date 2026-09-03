@@ -7,6 +7,11 @@ waivers:
   - table: lease_invocation_grant_binding
     reason: join table binding an ExecutionCellLease to a capability grant the trusted control
       plane already issued; it carries no independent recognized business state of its own.
+  - table: lease_knowledge_corpus_grant_binding
+    reason: the KnowledgeCorpusGrant counterpart to lease_invocation_grant_binding above
+      (knowledge-retrieval-access-and-cockpit AC3), same join-table shape and same reasoning --
+      binds an ExecutionCellLease to a KnowledgeCorpusGrant the trusted control plane already
+      issued, carrying no independent recognized business state of its own.
   - table: mcp_discovery_snapshot
     reason: append-only observation log of one bounded MCP discovery negotiation outcome, machine-
       derived and never Git-governed -- same character as this corpus's own already-uncovered

@@ -324,6 +324,14 @@ classes:
           nothing to validate a request against). Absent by default -- resolved by the lease-issuance
           path and passed to CapabilityGatewayService#issueGrantForLease; no field means no MCP tool
           grant is issued for this WorkOrder's lease.
+      knowledgeSearchGrant:
+        range: boolean
+        description: When true, the lease-issuance path also issues a KnowledgeCorpusGrant scoped to
+          this WorkOrder's own projectRef (Realm-wide when projectRef is absent) and binds it to the
+          lease, so a CLI holding it receives knowledge.search as a PLATFORM operation in its signed
+          SessionPlan (knowledge-retrieval-access-and-cockpit AC3). Absent/false by default -- no
+          field means no knowledge grant is issued for this WorkOrder's lease, the same
+          absent-means-nothing-issued discipline connectorOperationGrant above already establishes.
       ring:
         range: Ring
         description: 'The ring this work acts on. RING_0_ROOT_OF_TRUST exclusion (source schema''s `not: const`) moves to

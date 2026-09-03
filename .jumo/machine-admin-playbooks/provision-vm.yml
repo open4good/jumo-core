@@ -6,7 +6,7 @@ metadata:
   name: Provision isolated KVM execution guest
 spec:
   playbookPath: ansible/provision_vm.yml
-  playbookDigest: sha256:46a4bad7a372a626f6abc016830031a135afb6ca9bb711fbaf136c4ec4e2b535
+  playbookDigest: sha256:8ff8d98532ab81e9dac647d4aae119426e350e276e1319af00e93832aa4fad26
   allowedRealms: [home]
   description: Create a pinned Ubuntu guest on the isolated Jumo network.
   appliesToCapability: execution.cell.vm.provision

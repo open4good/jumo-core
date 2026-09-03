@@ -315,6 +315,15 @@ classes:
         description: SecretBindings this WorkOrder is authorized to request a delegated lease
           grant for. Empty by default. Reciprocity with SecretBindingSpec.allowedWorkOrderRefs
           is required by policy (openbao-delegated-lease AC2).
+      connectorOperationGrant:
+        range: ConnectorOperationGrantTarget
+        inlined: true
+        description: The single McpServerBinding-bound tool operation this WorkOrder's lease should
+          be granted (connector-operation-grant-issuance AC1, owner ruling 2026-09-03 -- declared on
+          the WorkOrder rather than resolved from a CLI-initiated request, since the CLI side has
+          nothing to validate a request against). Absent by default -- resolved by the lease-issuance
+          path and passed to CapabilityGatewayService#issueGrantForLease; no field means no MCP tool
+          grant is issued for this WorkOrder's lease.
       ring:
         range: Ring
         description: 'The ring this work acts on. RING_0_ROOT_OF_TRUST exclusion (source schema''s `not: const`) moves to
@@ -353,6 +362,27 @@ classes:
       resourceBudgetRef:
         range: ContractReference
         inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ConnectorOperationGrantTarget:
+    description: Names the McpServerBinding-bound tool operation a WorkOrder's own
+      WorkOrderSpec.connectorOperationGrant declares its lease should be granted.
+    attributes:
+      bindingRef:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: The McpServerBinding (ENABLED, appraised) this operation is granted against.
+      operationRef:
+        range: string
+        required: true
+        pattern: ^.{1,}$
+        description: The exposed tool name (McpPrimitiveExposure.exposedName) on bindingRef's recipe.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

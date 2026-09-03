@@ -479,6 +479,12 @@ public final class ContractReferenceExtractor {
             }
         }
     }
+    public static void extractFromConnectorOperationGrantTarget(ConnectorOperationGrantTarget obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.bindingRef() != null) {
+            refs.add(new OutgoingReference("bindingRef", obj.bindingRef()));
+        }
+    }
     public static void extractFromConnectorSessionBinding(ConnectorSessionBinding obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.connectorRef() != null) {
@@ -1350,6 +1356,7 @@ public final class ContractReferenceExtractor {
                 if (r != null) refs.add(new OutgoingReference("secretBindingRefs", r));
             }
         }
+        extractFromConnectorOperationGrantTarget(obj.connectorOperationGrant(), refs);
         if (obj.dependsOnWorkOrderRefs() != null) {
             for (ContractReference r : obj.dependsOnWorkOrderRefs()) {
                 if (r != null) refs.add(new OutgoingReference("dependsOnWorkOrderRefs", r));

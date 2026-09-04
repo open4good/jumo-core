@@ -9,10 +9,10 @@ spec:
     kind: CliToolDefinition
     namespace: dev.jumo.core
     id: codex
-  version: 0.1.0
+  version: 0.153.2
   platform: linux/amd64
-  ociImage: ghcr.io/jumo/runtimes/codex:0.1.0
-  imageDigest: sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
-  signatureDigest: sha256:5b7f0e34c9c1b3d3ef4237f864bc14d6934c94b39fae6cb2c9f5d34190c10b75
-  sbomDigest: sha256:8f42da915ec2f24a87f3b939730d18a3bf0b8d9bf88a13b6f8c3fe4af3a4691c
-  provenanceDigest: sha256:4e9a3f45a0d1b89c1cb226ed7d0ed05b3574ce06dffdfb29c74ee8ba3c80134b
+  ociImage: ghcr.io/open4good/jumo/runtimes/codex:0.153.2
+  imageDigest: sha256:8ca9f835d15d89418aab6b2508aacee78cd15b1be41202ac625b9c7a5b8cdba6
+  signatureDigest: sha256:e63322077248ea96dfe5533364ff6a0317ee1109155797aa415a529c102881d8
+  sbomDigest: sha256:b4d764529a2f3e1ac598a98ee8c2cc9e36fae54c5faacbf97d0a44f48d19e23f
+  provenanceDigest: sha256:107a873765f9e844f15ce5394ce37bc3ac1baa5c009d69c233f9eaa0ce51a167

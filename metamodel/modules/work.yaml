@@ -1381,6 +1381,9 @@ classes:
       name:
         range: string
         required: true
+      nameI18nKey:
+        range: string
+        description: i18n key resolving this journey's own display name/title. Same fallback convention as AssistedJourneyStep.descriptionI18nKey -- takes precedence over the literal name string when present.
       description:
         range: string
       category:
@@ -1891,6 +1894,9 @@ classes:
       narrationI18nKey:
         range: string
         description: i18n key resolving this step's personaNarration ("Nestor's voice"). Same fallback convention as descriptionI18nKey.
+      nameI18nKey:
+        range: string
+        description: i18n key resolving this step's short name label (the stepper/title text). Same fallback convention as descriptionI18nKey.
       requiredFields:
         range: AssistedJourneyRequiredField
         multivalued: true

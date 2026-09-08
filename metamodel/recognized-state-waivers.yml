@@ -69,3 +69,13 @@ waivers:
       recognized business fact beyond what the bridge already returns once to the one caller
       waiting on it; nothing else reads a resolved row afterward. Reviewed now, at the table's own
       creation, because it is what pushed this ratchet past its ceiling.
+  - table: forge_credential_activation
+    reason: recognized activation status (MISSING/ACTIVE/ROTATION_DUE/RENDER_FAILED) for the
+      platform's single shared forge credential (self-service-forge-credential-activation AC2),
+      copied in shape from its sibling provider_credential_activation (itself uncovered, not
+      waived, only because no prior pass reviewed it under ratchet pressure -- same character
+      applies here). The row documents no business state beyond what the Git-declared
+      SecretBinding (jumo-gof:.jumo/secret-bindings/github-forge-proposal-token.yml) and the real
+      value OpenBao holds already commit to; it deliberately contains no secret material,
+      existence probe, fingerprint, or filesystem path. Reviewed now, at the table's own creation,
+      because it is what pushed this ratchet past its ceiling.

@@ -9,6 +9,7 @@ spec:
   payloadSchemaRef: link-repository-form
   projectionKind: FORM
   renderedBy: home
+  actions: [repository.access.check]
   sections:
     - id: repository
       i18nKey: journeyGitRepoSection

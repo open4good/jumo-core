@@ -14,7 +14,7 @@ spec:
   icon: mdi-folder-plus-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
-  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose, repository.access.check]
   policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose
   emission:
@@ -52,6 +52,7 @@ spec:
         kind: ProjectionSpec
         namespace: dev.jumo.core
         id: bind-repository-form
+      verificationSpecRef: {kind: JourneyVerificationSpec, namespace: dev.jumo.core, id: repository-access-check}
     - id: confirm-project
       requiredObligations: []
       name: Confirmation

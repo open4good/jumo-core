@@ -94,6 +94,7 @@ spec:
         - journey.proposal.submit
         - provider.account.observe
         - provider.account.qualify
+        - repository.access.check
         - cli.session.pair
         - cli.session.pair.observe
         - cli.session.smoke

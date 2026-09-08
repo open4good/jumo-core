@@ -14,7 +14,9 @@ public enum JourneyVerificationTarget {
 
   CLI_SESSION("CLI_SESSION"),
 
-  EXECUTION_CELL("EXECUTION_CELL");
+  EXECUTION_CELL("EXECUTION_CELL"),
+
+  REPOSITORY_BINDING("REPOSITORY_BINDING");
 
   private final static Map<String, JourneyVerificationTarget> MAP;
 

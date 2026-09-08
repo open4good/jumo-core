@@ -1,0 +1,8 @@
+apiVersion: jumo.dev/v1
+kind: JourneyVerificationSpec
+metadata:
+  id: repository-access-check
+  namespace: dev.jumo.core
+  name: GitHub repository access check
+targetType: REPOSITORY_BINDING
+capability: repository.access.check

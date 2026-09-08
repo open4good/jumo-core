@@ -16,7 +16,7 @@ spec:
   icon: mdi-compass-outline
   interruptible: false
   concurrencyPolicy: SINGLE_ACTIVE_RUN
-  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose]
+  requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose, repository.access.check]
   policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   firstRunMandatory: true
   lifetimeUnique: true
@@ -81,6 +81,7 @@ spec:
         kind: ProjectionSpec
         namespace: dev.jumo.core
         id: link-repository-form
+      verificationSpecRef: {kind: JourneyVerificationSpec, namespace: dev.jumo.core, id: repository-access-check}
     - id: configure-api-accounts
       requiredObligations: []
       name: Configuration de vos API

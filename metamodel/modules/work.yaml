@@ -72,6 +72,7 @@ enums:
       PROVIDER_ACCOUNT: {}
       CLI_SESSION: {}
       EXECUTION_CELL: {}
+      REPOSITORY_BINDING: {}
   WorkOrderDeclineReason:
     permissible_values:
       OUT_OF_SCOPE: {}

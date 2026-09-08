@@ -113,6 +113,12 @@ spec:
         - RETAIN_PROVENANCE
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
+    - name: repository.access.check
+      description: Confirm the platform's own GitHub forge credential can read and open pull requests against a declared repository binding, without changing anything on the target repository or the credential itself.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: contract.change.propose
       description: Record a validated, hash-bound role-contract proposal for separate owner approval and forge projection.
       riskTier: MEDIUM

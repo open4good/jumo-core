@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: create-project
   name: Créer un projet
+  nameI18nKey: journeyCreateProjectTitle
   summaryI18nKey: createProjectSummary
   description: Déclarez un nouveau projet gouverné, liez des dépôts GitHub externes, et mettez en
     place la documentation et les autorités d'état.
@@ -32,6 +33,9 @@ spec:
       name: Identité du projet
       description: Renseignez l'identifiant technique et la finalité du projet.
       personaNarration: Donnons un nom et une mission claire à votre nouveau projet.
+      nameI18nKey: journeyCreateProjectDefineProjectName
+      descriptionI18nKey: journeyCreateProjectDefineProjectDescription
+      narrationI18nKey: journeyCreateProjectDefineProjectNarration
       stepKind: COLLECT
       requiredFields:
         - {field: projectId, i18nKey: journeyProjectIdField}
@@ -45,6 +49,9 @@ spec:
       name: Dépôt Git externe
       description: Liez le dépôt GitHub cible qui recevra le code et les artefacts (ex. owner/repo).
       personaNarration: Renseignez les coordonnées de votre dépôt Git externe sous la forme owner/repo.
+      nameI18nKey: journeyCreateProjectBindRepositoryName
+      descriptionI18nKey: journeyCreateProjectBindRepositoryDescription
+      narrationI18nKey: journeyCreateProjectBindRepositoryNarration
       stepKind: COLLECT
       requiredFields:
         - {field: repository, i18nKey: journeyGitRepoField}
@@ -58,6 +65,9 @@ spec:
       name: Confirmation
       description: Validez la création du projet et l'émission du contrat associé.
       personaNarration: Vérifions le contrat de projet avant son scellement déclaratif.
+      nameI18nKey: journeyCreateProjectConfirmProjectName
+      descriptionI18nKey: journeyCreateProjectConfirmProjectDescription
+      narrationI18nKey: journeyCreateProjectConfirmProjectNarration
       stepKind: COLLECT
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}

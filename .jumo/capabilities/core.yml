@@ -21,6 +21,16 @@ spec:
       riskTier: LOW
       reversible: true
       minimumAssurance: SELF_REPORTED
+    - name: email.message.read
+      description: Read Gmail thread and message content through the owner's own connected account -- never send, label or draft.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
+    - name: calendar.event.read
+      description: Read Calendar events and calendar lists through the owner's own connected account -- never create, update or respond to an event.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: SELF_REPORTED
     - name: knowledge.corpus.read
       description: Read knowledge-corpus/source grouping, freshness and sync diagnostics -- never fragment content or a search question.
       riskTier: LOW

@@ -720,14 +720,24 @@ deny contains corpus.violation("corpus.registry-source.disabled-types", document
 	message := sprintf("spec.lifecycle: sourceType %q may not be ENABLED (ADR-0050 6)", [corpus.spec(document).sourceType])
 }
 
-# ADR-0050 6: GitHub enrichment "remains disabled until ... terms evidence are approved".
+# ADR-0050 6, as amended by the owner ruling of 2026-09-09: terms evidence gates a GITHUB_ENRICHMENT
+# source that reaches its origin with a credential, not one that reads a public, anonymous page.
+# The distinction is the point -- what a terms approval records is a party accepting conditions of
+# use in exchange for identified access, which an anonymous GET neither obtains nor needs. Before
+# the amendment this rule was unsatisfiable in practice rather than merely strict: termsApprovalRef
+# is a ContractReference and no contract kind in this metamodel can express a terms approval at all
+# (TermsReview is a value object nested inside the entitlement branch, unreachable from a
+# reference), so the only way to enable the source was to point the field at an unrelated document.
+# A credentialed enrichment source is still refused until that kind exists, which is the case the
+# rule was actually written to catch.
 deny contains corpus.violation("corpus.registry-source.enrichment-requires-terms", document, message) if {
 	some document in corpus.documents
 	document.kind == "McpRegistrySource"
 	corpus.spec(document).sourceType == "GITHUB_ENRICHMENT"
 	corpus.spec(document).lifecycle == "ENABLED"
+	object.get(corpus.spec(document), "secretBindingRef", null) != null
 	object.get(corpus.spec(document), "termsApprovalRef", null) == null
-	message := "spec.termsApprovalRef: required for an ENABLED GITHUB_ENRICHMENT source"
+	message := "spec.termsApprovalRef: required for an ENABLED GITHUB_ENRICHMENT source that declares a secretBindingRef"
 }
 
 deny contains corpus.violation("corpus.registry-source.cadence-format", document, message) if {

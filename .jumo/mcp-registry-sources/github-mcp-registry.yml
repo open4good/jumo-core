@@ -1,0 +1,15 @@
+apiVersion: jumo.dev/v1
+kind: McpRegistrySource
+metadata:
+  id: github-mcp-registry
+  namespace: dev.jumo.core
+  name: GitHub MCP Registry
+spec:
+  sourceType: GITHUB_ENRICHMENT
+  adapter: github-mcp-registry-v1
+  lifecycle: ENABLED
+  baseUrlAllowlist:
+    - https://github.com
+  syncMode: FULL_THEN_INCREMENTAL
+  cadence: PT6H
+  jitter: PT10M

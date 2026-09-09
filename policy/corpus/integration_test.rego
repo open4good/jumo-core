@@ -275,3 +275,47 @@ test_official_catalogue_source_remains_bounded if {
 	not has_rule(violations, "corpus.registry-source.cadence-format")
 	not has_rule(violations, "corpus.registry-source.cadence-floor")
 }
+
+# The rule these three cover had no test at all before the 2026-09-09 amendment relaxed it, which
+# is how it stayed unsatisfiable unnoticed. They pin both halves of the amended boundary.
+test_anonymous_github_enrichment_source_may_be_enabled_without_terms_evidence if {
+	source := document(".jumo/mcp-registry-sources/github.yml", "McpRegistrySource", "github", "dev.jumo.core", {
+		"sourceType": "GITHUB_ENRICHMENT",
+		"adapter": "github-mcp-registry-v1",
+		"lifecycle": "ENABLED",
+		"baseUrlAllowlist": ["https://github.com"],
+		"syncMode": "FULL_THEN_INCREMENTAL",
+		"cadence": "PT6H",
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	not has_rule(violations, "corpus.registry-source.enrichment-requires-terms")
+	not has_rule(violations, "corpus.registry-source.cadence-format")
+	not has_rule(violations, "corpus.registry-source.cadence-floor")
+}
+
+test_credentialed_github_enrichment_source_still_requires_terms_evidence if {
+	source := document(".jumo/mcp-registry-sources/github.yml", "McpRegistrySource", "github", "dev.jumo.core", {
+		"sourceType": "GITHUB_ENRICHMENT",
+		"adapter": "github-mcp-registry-v1",
+		"lifecycle": "ENABLED",
+		"baseUrlAllowlist": ["https://github.com"],
+		"syncMode": "FULL_THEN_INCREMENTAL",
+		"cadence": "PT6H",
+		"secretBindingRef": {"kind": "SecretBinding", "namespace": "home.jumo.dev", "id": "github-enrichment-token"},
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	has_rule(violations, "corpus.registry-source.enrichment-requires-terms")
+}
+
+test_other_registry_types_remain_disabled if {
+	source := document(".jumo/mcp-registry-sources/glama.yml", "McpRegistrySource", "glama", "dev.jumo.core", {
+		"sourceType": "GLAMA",
+		"adapter": "glama-v1",
+		"lifecycle": "ENABLED",
+		"baseUrlAllowlist": ["https://glama.ai"],
+		"syncMode": "FULL_THEN_INCREMENTAL",
+		"cadence": "PT6H",
+	})
+	violations := data.jumo.corpus.deny with input as [source]
+	has_rule(violations, "corpus.registry-source.disabled-types")
+}

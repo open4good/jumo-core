@@ -13,6 +13,9 @@ spec:
     démarré seul.'
   category: connectors
   icon: mdi-power-plug-outline
+  # Setting up a connector is a real piece of work, not a confirmation: it deserves its own
+  # address, a back button and a per-step deep link, none of which a dialog can offer.
+  presentation: {surfaceMode: PAGE, stepperLayout: VERTICAL}
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
   requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit]

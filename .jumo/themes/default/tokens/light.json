@@ -1,0 +1,16 @@
+{
+  "colors": {
+    "primary": "#3B5BDB",
+    "secondary": "#495057",
+    "background": "#F8F9FA",
+    "surface": "#FFFFFF",
+    "error": "#E03131",
+    "warning": "#F08C00",
+    "info": "#1971C2",
+    "success": "#2F9E44",
+    "on-primary": "#FFFFFF",
+    "on-secondary": "#FFFFFF",
+    "on-background": "#212529",
+    "on-surface": "#212529"
+  }
+}

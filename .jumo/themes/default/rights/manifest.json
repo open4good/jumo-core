@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "2.0",
+  "assets": [
+    {
+      "asset": "components/manifest.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:21a3470663e3e1ad9e5cfdc53c278205e91877b8fc8ca625cddb074b20ce45f9"
+    },
+    {
+      "asset": "fonts/inter-regular-latin.woff2",
+      "source": "Inter typeface project",
+      "author": "Rasmus Andersson and contributors",
+      "license": "SIL Open Font License 1.1",
+      "url": "https://github.com/rsms/inter",
+      "transformation": "subset copied from the existing verified Jumo web fixture",
+      "digest": "sha256:8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc"
+    },
+    {
+      "asset": "fonts/manifest.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:5c12a48dce898e06b45a29b83010c820462583163b9fe08e5a6f1cdf3a07879a"
+    },
+    {
+      "asset": "i18n/en.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:c4428f3243dbc0cb4856fcbd25082d5d3fab5ba0901937e08d974625fc5e4ecd"
+    },
+    {
+      "asset": "i18n/fr.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:a84718b1102f590337be40eb6998a15e2ae7960f9d0a1aae5fd362c4cc161b17"
+    },
+    {
+      "asset": "illustrations/manifest.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:3f3b440e13b9eeace5c5233f6c2c609e01d1cdf0619a971c11c76564d4679f32"
+    },
+    {
+      "asset": "motion/manifest.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:5d641b8dc0cc7c124df9485f91bd3650a675aee415ec81a0ebc671a31b4c3175"
+    },
+    {
+      "asset": "scenes/classic/day/manifest.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:1c98d7213d91347d6fb4e74cbe684c4c57db1696088bcefdb59b08312ebac8b0"
+    },
+    {
+      "asset": "scenes/classic/night/manifest.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:d1d89d8845f6773e31b6619762e6e87c95731bfe39a5324da5ea3aa35b9caf27"
+    },
+    {
+      "asset": "shell/manifest.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:aba647837e5698d07ac50cd38f0a0ec4025dc61dfbd51a54775ad1398658451c"
+    },
+    {
+      "asset": "tokens/dark.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:85ebee72b104f239a1cc12f29481046f56c190ed46a8f390914ef933d50ab749"
+    },
+    {
+      "asset": "tokens/light.json",
+      "source": "Jumo ThemePack v2",
+      "author": "Jumo Studio",
+      "license": "Apache-2.0 project corpus",
+      "url": "https://github.com/goulven/jumo-core",
+      "transformation": "original declarative manifest",
+      "digest": "sha256:129ca89ba60bbe5213321a04d512cf9eb564905037cb1151e7c2137b63463e62"
+    }
+  ]
+}

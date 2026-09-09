@@ -1,0 +1,43 @@
+apiVersion: jumo.dev/v1
+kind: ThemePack
+metadata: {id: default, namespace: dev.jumo.core, name: Default theme}
+spec:
+  formatVersion: "2.0"
+  localizedNames:
+    - {locale: fr, name: Thème par défaut}
+    - {locale: en, name: Default theme}
+  terminology:
+    - {roleKey: chiefOfStaff, displayName: Nestor}
+    - {roleKey: projectSteward, displayName: Majordome}
+    - {roleKey: deliveryLead, displayName: Maitre d'oeuvre}
+    - {roleKey: releaseSteward, displayName: Intendant}
+    - {roleKey: producingSpecialist, displayName: Artisan}
+    - {roleKey: securityAgent, displayName: Vigie}
+    - {roleKey: independentVerifier, displayName: Auditor}
+    - {roleKey: ecosystemView, displayName: Mandala}
+  voice: {style: CALM_PRECISE, verbosity: TERSE}
+  visualization:
+    ecosystem: classic
+    palette: neutral
+    defaultRoomId: classic
+    presence: {chiefOfStaffForm: sigil, density: CALM, motion: SUBTLE}
+    rooms:
+      - roomId: classic
+        surfaceIds: [vestibule, plans, archives, workshop, transmissions, council]
+        background: classic
+        daySceneManifest: {schemaVersion: "2.0", asset: scenes/classic/day/manifest.json}
+        nightSceneManifest: {schemaVersion: "2.0", asset: scenes/classic/night/manifest.json}
+  designTokens:
+    light: {schemaVersion: "2.0", asset: tokens/light.json}
+    dark: {schemaVersion: "2.0", asset: tokens/dark.json}
+    fontManifest: {schemaVersion: "2.0", asset: fonts/manifest.json}
+  localizations:
+    - {locale: fr, messages: {schemaVersion: "2.0", asset: i18n/fr.json}}
+    - {locale: en, messages: {schemaVersion: "2.0", asset: i18n/en.json}}
+  manifests:
+    shell: {schemaVersion: "2.0", asset: shell/manifest.json}
+    components: {schemaVersion: "2.0", asset: components/manifest.json}
+    motion: {schemaVersion: "2.0", asset: motion/manifest.json}
+    illustrations: {schemaVersion: "2.0", asset: illustrations/manifest.json}
+  rightsManifest: {schemaVersion: "2.0", asset: rights/manifest.json}
+  integrityManifest: {schemaVersion: "2.0", asset: integrity.json}

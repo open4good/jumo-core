@@ -1,0 +1,89 @@
+apiVersion: jumo.dev/v1
+kind: ThemePack
+metadata: {id: nestor-atelier, namespace: dev.jumo.core, name: Nestor}
+spec:
+  formatVersion: "2.0"
+  localizedNames:
+    - {locale: fr, name: Nestor}
+    - {locale: en, name: Nestor}
+  terminology:
+    - {roleKey: chiefOfStaff, displayName: Nestor}
+  voice: {style: WARM, verbosity: TERSE}
+  visualization:
+    ecosystem: living-manor
+    palette: belle-epoque-mechanical
+    defaultRoomId: vestibule
+    presence:
+      chiefOfStaffForm: nestor-atelier
+      density: CALM
+      motion: SUBTLE
+      livingBitmapManifest: {schemaVersion: "2.0", asset: presence/manifest.json}
+    rooms:
+      - roomId: vestibule
+        surfaceIds: [vestibule]
+        background: grand-hall
+        daySceneManifest: {schemaVersion: "2.0", asset: scenes/vestibule/day/manifest.json}
+        nightSceneManifest: {schemaVersion: "2.0", asset: scenes/vestibule/night/manifest.json}
+        hotspots:
+          - {id: plans-door, targetSurfaceId: plans, labelKey: theme.wing.plans, zone: PRIMARY}
+          - {id: archives-door, targetSurfaceId: archives, labelKey: theme.wing.archives, zone: SECONDARY}
+          - {id: workshop-lift, targetSurfaceId: workshop, labelKey: theme.wing.workshop, zone: TERTIARY}
+      - roomId: plans
+        surfaceIds: [plans]
+        background: plans-cabinet
+        daySceneManifest: {schemaVersion: "2.0", asset: scenes/plans/day/manifest.json}
+        nightSceneManifest: {schemaVersion: "2.0", asset: scenes/plans/night/manifest.json}
+        hotspots:
+          - {id: hall-door, targetSurfaceId: vestibule, labelKey: theme.wing.vestibule, zone: PRIMARY}
+          - {id: archive-map, targetSurfaceId: archives, labelKey: theme.wing.archives, zone: SECONDARY}
+      - roomId: archives
+        surfaceIds: [archives]
+        background: archives-library
+        daySceneManifest: {schemaVersion: "2.0", asset: scenes/archives/day/manifest.json}
+        nightSceneManifest: {schemaVersion: "2.0", asset: scenes/archives/night/manifest.json}
+        hotspots:
+          - {id: plans-tube, targetSurfaceId: plans, labelKey: theme.wing.plans, zone: PRIMARY}
+          - {id: council-ledger, targetSurfaceId: council, labelKey: theme.wing.council, zone: SECONDARY}
+      - roomId: workshop
+        surfaceIds: [workshop]
+        background: mechanical-workshop-vault
+        daySceneManifest: {schemaVersion: "2.0", asset: scenes/workshop/day/manifest.json}
+        nightSceneManifest: {schemaVersion: "2.0", asset: scenes/workshop/night/manifest.json}
+        hotspots:
+          - {id: hall-lift, targetSurfaceId: vestibule, labelKey: theme.wing.vestibule, zone: PRIMARY}
+          - {id: observatory-console, targetSurfaceId: transmissions, labelKey: theme.wing.transmissions, zone: SECONDARY}
+      - roomId: transmissions
+        surfaceIds: [transmissions]
+        background: transmissions-observatory
+        daySceneManifest: {schemaVersion: "2.0", asset: scenes/transmissions/day/manifest.json}
+        nightSceneManifest: {schemaVersion: "2.0", asset: scenes/transmissions/night/manifest.json}
+        hotspots:
+          - {id: workshop-tube, targetSurfaceId: workshop, labelKey: theme.wing.workshop, zone: PRIMARY}
+          - {id: council-signal, targetSurfaceId: council, labelKey: theme.wing.council, zone: SECONDARY}
+      - roomId: council
+        surfaceIds: [council]
+        background: council-registry
+        daySceneManifest: {schemaVersion: "2.0", asset: scenes/council/day/manifest.json}
+        nightSceneManifest: {schemaVersion: "2.0", asset: scenes/council/night/manifest.json}
+        hotspots:
+          - {id: archives-ledger, targetSurfaceId: archives, labelKey: theme.wing.archives, zone: PRIMARY}
+          - {id: hall-door, targetSurfaceId: vestibule, labelKey: theme.wing.vestibule, zone: SECONDARY}
+  designTokens:
+    light: {schemaVersion: "2.0", asset: tokens/light.json}
+    dark: {schemaVersion: "2.0", asset: tokens/dark.json}
+    fontManifest: {schemaVersion: "2.0", asset: fonts/manifest.json}
+  localizations:
+    - {locale: fr, messages: {schemaVersion: "2.0", asset: i18n/fr.json}}
+    - {locale: en, messages: {schemaVersion: "2.0", asset: i18n/en.json}}
+  manifests:
+    shell: {schemaVersion: "2.0", asset: shell/manifest.json}
+    components: {schemaVersion: "2.0", asset: components/manifest.json}
+    motion: {schemaVersion: "2.0", asset: motion/manifest.json}
+    illustrations: {schemaVersion: "2.0", asset: illustrations/manifest.json}
+  creativeRights:
+    origin: original synthetic art
+    author: Jumo Studio, pending owner review
+    source: OpenAI image generation, locked project master
+    license: Jumo project asset
+  rightsManifest: {schemaVersion: "2.0", asset: rights/manifest.json}
+  integrityManifest: {schemaVersion: "2.0", asset: integrity.json}

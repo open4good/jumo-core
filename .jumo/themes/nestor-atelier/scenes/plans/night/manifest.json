@@ -1,0 +1,1 @@
+{"schemaVersion":"2.0","surfaceId":"plans","mode":"night","responsive":{"desktop":"scenes/plans/night/desktop.webp","tablet":"scenes/plans/night/tablet.webp","mobile":"scenes/plans/night/mobile.webp"},"safeZones":{"content":"CENTER","presence":"BOTTOM_END"},"motion":["parallax-subtle","lamp","curtain"]}

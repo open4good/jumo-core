@@ -1,0 +1,1 @@
+{"schemaVersion":"2.0","surfaceId":"archives","mode":"night","responsive":{"desktop":"scenes/archives/night/desktop.webp","tablet":"scenes/archives/night/tablet.webp","mobile":"scenes/archives/night/mobile.webp"},"safeZones":{"content":"CENTER","presence":"BOTTOM_END"},"motion":["parallax-subtle","dust","lamp"]}

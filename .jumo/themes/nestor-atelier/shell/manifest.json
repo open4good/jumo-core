@@ -1,0 +1,1 @@
+{"schemaVersion":"2.0","recipe":"living-manor","navigation":{"desktop":"manor-cutaway","mobile":"manor-map"},"safeZones":["app-bar","navigation","content","presence"],"criticalAssets":["presence/avatar.webp"]}

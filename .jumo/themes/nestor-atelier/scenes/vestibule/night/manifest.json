@@ -1,0 +1,1 @@
+{"schemaVersion":"2.0","surfaceId":"vestibule","mode":"night","responsive":{"desktop":"scenes/vestibule/night/desktop.webp","tablet":"scenes/vestibule/night/tablet.webp","mobile":"scenes/vestibule/night/mobile.webp"},"safeZones":{"content":"CENTER","presence":"BOTTOM_END"},"motion":["parallax-subtle","clock","lamp","reflection"]}

@@ -1,0 +1,1 @@
+{"schemaVersion":"2.0","surfaceId":"council","mode":"day","responsive":{"desktop":"scenes/council/day/desktop.webp","tablet":"scenes/council/day/tablet.webp","mobile":"scenes/council/day/mobile.webp"},"safeZones":{"content":"CENTER","presence":"BOTTOM_END"},"motion":["parallax-subtle","curtain","reflection"]}

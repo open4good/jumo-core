@@ -1,0 +1,18 @@
+{
+  "colors": {
+    "primary": "#E2B86A",
+    "secondary": "#D68A96",
+    "background": "#111918",
+    "surface": "#1D2927",
+    "error": "#FFB2B5",
+    "warning": "#FFD08A",
+    "info": "#9FC9DE",
+    "success": "#A9D7A8",
+    "on-primary": "#241806",
+    "on-secondary": "#2B1116",
+    "on-background": "#F5EAD4",
+    "on-surface": "#F5EAD4"
+  },
+  "variables": {"border-color": "#D4AC67", "border-opacity": "0.34"},
+  "cssVariables": {"--jumo-font-body": "Inter, system-ui, sans-serif", "--jumo-panel-radius": "14px", "--jumo-shell-tint": "rgba(22,31,29,.92)"}
+}

@@ -1,0 +1,1 @@
+{"schemaVersion":"2.0","surfaceId":"workshop","mode":"night","responsive":{"desktop":"scenes/workshop/night/desktop.webp","tablet":"scenes/workshop/night/tablet.webp","mobile":"scenes/workshop/night/mobile.webp"},"safeZones":{"content":"CENTER","presence":"BOTTOM_END"},"motion":["parallax-subtle","clock","lamp","steam"]}

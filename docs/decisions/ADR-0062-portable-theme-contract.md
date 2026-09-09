@@ -40,11 +40,15 @@ machinery cannot express: a bounded asset path (`corpus.theme.asset-path`), a pi
 manifests, `defaultRoomId` naming a declared room, unique localized-name/message locales, and room
 or hotspot surface references that resolve in `InterfaceSurface`.
 
-The authenticated runtime may expose the legacy JSON Projection endpoint and a raw binary endpoint
-for images and fonts. Both first prove declaration, source confinement and SHA-256 integrity. Raw
-responses declare an exact MIME type, ETag and private immutable cache policy. Integrity covers each
-served asset; the integrity manifest excludes itself, while the rights registry records source,
-author, licence, source URL, transformation and digest for every other file.
+The authenticated runtime exposes a single JSON Projection asset endpoint, JSON parsed and binary
+media Base64-encoded, inside the same `jumoRealmId`/`audience` envelope every response in this API
+carries -- a separate raw binary endpoint was rejected: a response whose body is exclusively
+`image/png`/`image/webp`/`font/woff2` cannot itself carry that pair, and relaxing the shared response
+policy to accept a header-based substitute is a boundary change outside this order's own authority.
+The endpoint first proves declaration, source confinement and SHA-256 integrity, and its own response
+declares an exact MIME type and ETag. Integrity covers each served asset; the integrity manifest
+excludes itself, while the rights registry records source, author, licence, source URL, transformation
+and digest for every other file.
 
 ## Alternatives
 

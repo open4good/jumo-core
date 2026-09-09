@@ -9,7 +9,7 @@ spec:
   name: Configuration de vos API
   summaryI18nKey: configureApiAccountsSummary
   description: Activation et qualification réelle des ProviderAccount déjà déclarés dans ce Realm.
-  category: integrations
+  category: apiIntegrations
   icon: mdi-tune-variant
   interruptible: true
   concurrencyPolicy: SINGLE_ACTIVE_RUN

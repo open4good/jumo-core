@@ -10,7 +10,7 @@ spec:
   summaryI18nKey: setupCliWorkerSummary
   description: Configurez Codex ou Claude Code sur une machine d'exécution déjà rattachée au Realm. La connexion utilise
     exclusivement la session locale du titulaire ; aucune clé API n'est demandée ni transmise.
-  category: integrations
+  category: cliIntegrations
   icon: mdi-console-line
   interruptible: true
   concurrencyPolicy: SINGLE_ACTIVE_RUN

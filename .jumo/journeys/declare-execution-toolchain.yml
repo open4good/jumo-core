@@ -11,7 +11,7 @@ spec:
   description: Déclarez un environnement d'exécution non-IA (build, langage) pinné par artefact
     immuable, et rattachez-le à un worker substrate qui le fournit. Ce parcours ne construit aucune
     image et ne crée aucune machine.
-  category: integrations
+  category: platform
   icon: mdi-toolbox-outline
   interruptible: true
   concurrencyPolicy: MULTIPLE_ACTIVE_RUNS

@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: declare-execution-toolchain
   name: Déclaration d'une chaîne d'outils d'exécution
+  nameI18nKey: journeyDeclareExecutionToolchainTitle
   summaryI18nKey: declareExecutionToolchainSummary
   description: Déclarez un environnement d'exécution non-IA (build, langage) pinné par artefact
     immuable, et rattachez-le à un worker substrate qui le fournit. Ce parcours ne construit aucune

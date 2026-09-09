@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: design-project-operator
   name: Concevoir un opérateur pour l'équipe projet
+  nameI18nKey: journeyDesignProjectOperatorTitle
   summaryI18nKey: designProjectOperatorSummary
   description: Ajoutez un nouvel opérateur IA à une équipe projet existante sans reconstruire le reste
     de sa composition.

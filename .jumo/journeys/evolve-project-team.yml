@@ -7,6 +7,7 @@ metadata:
 spec:
   journeyId: evolve-project-team
   name: Faire évoluer l'équipe projet
+  nameI18nKey: journeyEvolveProjectTeamTitle
   summaryI18nKey: evolveProjectTeamSummary
   description: Modifiez, ajoutez ou réorganisez les rôles et les groupes d'indépendance d'une équipe
     projet existante.

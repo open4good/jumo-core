@@ -62,7 +62,7 @@
       "license": "Apache-2.0 project corpus",
       "url": "https://github.com/goulven/jumo-core",
       "transformation": "original declarative manifest",
-      "digest": "sha256:5d641b8dc0cc7c124df9485f91bd3650a675aee415ec81a0ebc671a31b4c3175"
+      "digest": "sha256:2a512aefc064dbd57d95ca49f86c49cf8ab75ece555b1a69f5e097b0eaa6e7e5"
     },
     {
       "asset": "scenes/classic/day/manifest.json",

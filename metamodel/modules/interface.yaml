@@ -93,6 +93,13 @@ enums:
       NONE: {}
       SUBTLE: {}
       EXPRESSIVE: {}
+  ThemeHotspotZone:
+    description: Platform-owned placement slots for theme navigation. A pack cannot supply coordinates or CSS.
+    permissible_values:
+      PRIMARY: {}
+      SECONDARY: {}
+      TERTIARY: {}
+      MOBILE: {}
   HttpMethod:
     description: HTTP request methods for API operations.
     permissible_values:
@@ -306,6 +313,15 @@ classes:
         inlined: true
   ThemePackSpec:
     attributes:
+      formatVersion:
+        range: string
+        pattern: ^[0-9]+\.[0-9]+$
+        description: ThemePack directory format. Absent means legacy v1; v2 is the self-contained relative-asset format.
+      localizedNames:
+        range: ThemeLocalizedName
+        multivalued: true
+        inlined_as_list: true
+        description: Locale-aware user-facing pack names. metadata.name remains a technical compatibility fallback.
       terminology:
         range: TerminologyEntry
         multivalued: true
@@ -335,6 +351,18 @@ classes:
         inlined: true
         description: Informative origin, authorship, source and license notes. Presentation-only --
           carries no capability, policy or authority and blocks nothing when absent or incomplete.
+      manifests:
+        range: ThemeManifestSet
+        inlined: true
+        description: Declarative v2 shell, component, motion and illustration manifests. No executable content is allowed.
+      rightsManifest:
+        range: VersionedJsonAsset
+        inlined: true
+        description: Per-asset provenance and rights registry, relative to the v2 pack directory.
+      integrityManifest:
+        range: VersionedJsonAsset
+        inlined: true
+        description: SHA-256 registry for every non-contract file in the v2 pack directory.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -356,6 +384,23 @@ classes:
       jumo.model_role: VALUE_OBJECT
       jumo.audience: REALM_PRIVATE
       jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeLocalizedName:
+    attributes:
+      locale:
+        range: string
+        required: true
+        pattern: ^[a-z]{2}(-[A-Z]{2})?$
+      name:
+        range: string
+        required: true
+        pattern: ^.{1,80}$
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   ThemeVoice:
@@ -451,6 +496,10 @@ classes:
         range: string
         required: true
         pattern: ^[a-z][a-z0-9-]*$
+      surfaceIds:
+        range: Identifier
+        multivalued: true
+        description: Stable InterfaceSurface ids rendered in this room. Required by policy for v2 packs.
       background:
         range: string
         required: true
@@ -467,6 +516,19 @@ classes:
         inlined: true
         description: Optional static scene-decor manifest (portable-theme-contract-foundations). Absent renders only
           the room background.
+      daySceneManifest:
+        range: VersionedJsonAsset
+        inlined: true
+        description: V2 daylight scene manifest, relative to the pack directory.
+      nightSceneManifest:
+        range: VersionedJsonAsset
+        inlined: true
+        description: V2 night scene manifest, relative to the pack directory.
+      hotspots:
+        range: ThemeHotspot
+        multivalued: true
+        inlined_as_list: true
+        description: Navigation-only targets. Policy requires each targetSurfaceId to name an InterfaceSurface surface.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -490,10 +552,33 @@ classes:
       jumo.sensitivity: PUBLIC
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeHotspot:
+    description: A bounded navigation hint. Routes, actions, coordinates and executable handlers are deliberately absent.
+    attributes:
+      id:
+        range: Identifier
+        required: true
+      targetSurfaceId:
+        range: Identifier
+        required: true
+      labelKey:
+        range: string
+        required: true
+        pattern: ^[a-z][A-Za-z0-9.]*$
+      zone:
+        range: ThemeHotspotZone
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   VersionedJsonAsset:
-    description: A schema-versioned JSON theme asset (portable-theme-contract-foundations). The referenced bytes are
-      opaque content validated only by provenance once kit-rendered (JumoKit/KitLock), never by a LinkML class; the
-      bounded path and pinned major here are what a theme declaration itself can prove ahead of any runtime consumer.
+    description: A schema-versioned JSON theme asset. V1 repository-relative .jumo/assets paths remain readable;
+      ThemePack v2 uses a normalized path relative to the autonomous pack directory. Runtime resolution stays bound
+      to the exact source and pack that declared the reference.
     attributes:
       schemaVersion:
         range: string
@@ -503,10 +588,8 @@ classes:
       asset:
         range: string
         required: true
-        pattern: ^\.jumo/assets/([A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.json$
-        description: Normalized, repository-relative path. The extension bounds content to JSON -- never raw CSS,
-          JavaScript or HTML -- and the prefix matches JumoKitSpec.assetExports so a theme's assets are exportable
-          through the same kit mechanism unchanged.
+        pattern: ^(\.jumo/assets/([A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.json|(([A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.json))$
+        description: Normalized JSON path. Dot segments, URLs and executable extensions are structurally impossible.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -543,6 +626,31 @@ classes:
         inlined: true
       fontManifest:
         range: VersionedJsonAsset
+        inlined: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: PUBLIC
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ThemeManifestSet:
+    attributes:
+      shell:
+        range: VersionedJsonAsset
+        required: true
+        inlined: true
+      components:
+        range: VersionedJsonAsset
+        required: true
+        inlined: true
+      motion:
+        range: VersionedJsonAsset
+        required: true
+        inlined: true
+      illustrations:
+        range: VersionedJsonAsset
+        required: true
         inlined: true
     annotations:
       jumo.state_authority: GIT

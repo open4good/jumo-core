@@ -3,10 +3,12 @@ package dev.jumo.model;
 
 
 import java.util.List;
+import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record ThemeRoom(String roomId, String background, List<ThemeObjectForm> objectForms, VersionedJsonAsset sceneManifest)  {
+public record ThemeRoom(String roomId, List<String> surfaceIds, String background, List<ThemeObjectForm> objectForms, VersionedJsonAsset sceneManifest, VersionedJsonAsset daySceneManifest, VersionedJsonAsset nightSceneManifest, List<ThemeHotspot> hotspots)  {
 
     public static Builder builder() {
         return new Builder();
@@ -15,13 +17,22 @@ public record ThemeRoom(String roomId, String background, List<ThemeObjectForm> 
     public static class Builder {
 
         private String roomId = "";
+        private List<String> surfaceIds = List.of();
         private String background = "";
         private List<ThemeObjectForm> objectForms = List.of();
         private VersionedJsonAsset sceneManifest = null;
+        private VersionedJsonAsset daySceneManifest = null;
+        private VersionedJsonAsset nightSceneManifest = null;
+        private List<ThemeHotspot> hotspots = List.of();
 
 
         public Builder roomId(String roomId) {
             this.roomId = Objects.requireNonNull(roomId);
+            return this;
+        }
+
+        public Builder surfaceIds(List<String> surfaceIds) {
+            this.surfaceIds = Objects.requireNonNull(surfaceIds);
             return this;
         }
 
@@ -40,8 +51,23 @@ public record ThemeRoom(String roomId, String background, List<ThemeObjectForm> 
             return this;
         }
 
+        public Builder daySceneManifest(VersionedJsonAsset daySceneManifest) {
+            this.daySceneManifest = Objects.requireNonNull(daySceneManifest);
+            return this;
+        }
+
+        public Builder nightSceneManifest(VersionedJsonAsset nightSceneManifest) {
+            this.nightSceneManifest = Objects.requireNonNull(nightSceneManifest);
+            return this;
+        }
+
+        public Builder hotspots(List<ThemeHotspot> hotspots) {
+            this.hotspots = Objects.requireNonNull(hotspots);
+            return this;
+        }
+
     public ThemeRoom build() {
-            return new ThemeRoom(roomId, background, objectForms, sceneManifest);
+            return new ThemeRoom(roomId, surfaceIds, background, objectForms, sceneManifest, daySceneManifest, nightSceneManifest, hotspots);
         }
     }
 }

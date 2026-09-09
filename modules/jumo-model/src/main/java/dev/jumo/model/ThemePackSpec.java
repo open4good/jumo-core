@@ -4,10 +4,11 @@ package dev.jumo.model;
 
 import java.util.List;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record ThemePackSpec(List<TerminologyEntry> terminology, ThemeVoice voice, ThemeVisualization visualization, List<ThemeLocalization> localizations, ThemeDesignTokens designTokens, ThemeCreativeRights creativeRights)  {
+public record ThemePackSpec(String formatVersion, List<ThemeLocalizedName> localizedNames, List<TerminologyEntry> terminology, ThemeVoice voice, ThemeVisualization visualization, List<ThemeLocalization> localizations, ThemeDesignTokens designTokens, ThemeCreativeRights creativeRights, ThemeManifestSet manifests, VersionedJsonAsset rightsManifest, VersionedJsonAsset integrityManifest)  {
 
     public static Builder builder() {
         return new Builder();
@@ -15,13 +16,28 @@ public record ThemePackSpec(List<TerminologyEntry> terminology, ThemeVoice voice
 
     public static class Builder {
 
+        private String formatVersion = "";
+        private List<ThemeLocalizedName> localizedNames = List.of();
         private List<TerminologyEntry> terminology = List.of();
         private ThemeVoice voice = null;
         private ThemeVisualization visualization = null;
         private List<ThemeLocalization> localizations = List.of();
         private ThemeDesignTokens designTokens = null;
         private ThemeCreativeRights creativeRights = null;
+        private ThemeManifestSet manifests = null;
+        private VersionedJsonAsset rightsManifest = null;
+        private VersionedJsonAsset integrityManifest = null;
 
+
+        public Builder formatVersion(String formatVersion) {
+            this.formatVersion = Objects.requireNonNull(formatVersion);
+            return this;
+        }
+
+        public Builder localizedNames(List<ThemeLocalizedName> localizedNames) {
+            this.localizedNames = Objects.requireNonNull(localizedNames);
+            return this;
+        }
 
         public Builder terminology(List<TerminologyEntry> terminology) {
             this.terminology = Objects.requireNonNull(terminology);
@@ -53,8 +69,23 @@ public record ThemePackSpec(List<TerminologyEntry> terminology, ThemeVoice voice
             return this;
         }
 
+        public Builder manifests(ThemeManifestSet manifests) {
+            this.manifests = Objects.requireNonNull(manifests);
+            return this;
+        }
+
+        public Builder rightsManifest(VersionedJsonAsset rightsManifest) {
+            this.rightsManifest = Objects.requireNonNull(rightsManifest);
+            return this;
+        }
+
+        public Builder integrityManifest(VersionedJsonAsset integrityManifest) {
+            this.integrityManifest = Objects.requireNonNull(integrityManifest);
+            return this;
+        }
+
     public ThemePackSpec build() {
-            return new ThemePackSpec(terminology, voice, visualization, localizations, designTokens, creativeRights);
+            return new ThemePackSpec(formatVersion, localizedNames, terminology, voice, visualization, localizations, designTokens, creativeRights, manifests, rightsManifest, integrityManifest);
         }
     }
 }

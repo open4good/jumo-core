@@ -1000,13 +1000,86 @@ test_theme_pack_unsupported_media_rejected if {
 }
 
 test_theme_pack_unknown_schema_major_rejected if {
-	bad_asset := {"schemaVersion": "2.0", "asset": ".jumo/assets/themes/nestor-atelier/tokens/light.json"}
+	bad_asset := {"schemaVersion": "3.0", "asset": ".jumo/assets/themes/nestor-atelier/tokens/light.json"}
 	theme := document(".jumo/themes/bad.yml", "ThemePack", "bad", {
 		"terminology": [{"roleKey": "chiefOfStaff", "displayName": "Nestor"}],
 		"designTokens": {"light": bad_asset, "dark": valid_asset},
 	})
 	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
 	has_rule(violations, "corpus.theme.schema-version")
+}
+
+v2_asset(path) := {"schemaVersion": "2.0", "asset": path}
+
+v2_theme_pack := document(".jumo/themes/manor/theme-pack.yml", "ThemePack", "manor", {
+	"formatVersion": "2.0",
+	"localizedNames": [{"locale": "fr", "name": "Manoir"}, {"locale": "en", "name": "Manor"}],
+	"terminology": [{"roleKey": "chiefOfStaff", "displayName": "Nestor"}],
+	"designTokens": {"light": v2_asset("tokens/light.json"), "dark": v2_asset("tokens/dark.json")},
+	"localizations": [{"locale": "fr", "messages": v2_asset("i18n/fr.json")}],
+	"manifests": {
+		"shell": v2_asset("shell/manifest.json"),
+		"components": v2_asset("components/manifest.json"),
+		"motion": v2_asset("motion/manifest.json"),
+		"illustrations": v2_asset("illustrations/manifest.json"),
+	},
+	"rightsManifest": v2_asset("rights/manifest.json"),
+	"integrityManifest": v2_asset("integrity.json"),
+	"visualization": {"defaultRoomId": "study", "rooms": [{
+		"roomId": "study",
+		"surfaceIds": ["documents"],
+		"daySceneManifest": v2_asset("scenes/study/day/manifest.json"),
+		"nightSceneManifest": v2_asset("scenes/study/night/manifest.json"),
+		"hotspots": [{"id": "documents", "targetSurfaceId": "documents", "labelKey": "theme.documents", "zone": "PRIMARY"}],
+	}]},
+})
+
+test_theme_pack_v2_portable_contract_accepted if {
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [v2_theme_pack])
+	not has_rule(violations, "corpus.theme.asset-path")
+	not has_rule(violations, "corpus.theme.schema-version")
+	not has_rule(violations, "corpus.theme.v2-directory")
+	not has_rule(violations, "corpus.theme.v2-required")
+	not has_rule(violations, "corpus.theme.room-surface")
+	not has_rule(violations, "corpus.theme.hotspot-surface")
+}
+
+test_theme_pack_v2_traversal_and_forbidden_media_rejected if {
+	bad := object.union(
+		v2_theme_pack.contents.spec,
+		{
+			"designTokens": {"light": v2_asset("../escape.json"), "dark": v2_asset("tokens/active.css")},
+		},
+	)
+	theme := document(".jumo/themes/manor/theme-pack.yml", "ThemePack", "manor", bad)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
+	has_rule(violations, "corpus.theme.asset-path")
+}
+
+test_theme_pack_v2_unknown_room_and_hotspot_surfaces_rejected if {
+	visualization := {"defaultRoomId": "study", "rooms": [{
+		"roomId": "study", "surfaceIds": ["unknown"],
+		"hotspots": [{"id": "bad", "targetSurfaceId": "also-unknown", "labelKey": "theme.bad", "zone": "PRIMARY"}],
+	}]}
+	bad := object.union(v2_theme_pack.contents.spec, {"visualization": visualization})
+	theme := document(".jumo/themes/manor/theme-pack.yml", "ThemePack", "manor", bad)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
+	has_rule(violations, "corpus.theme.room-surface")
+	has_rule(violations, "corpus.theme.hotspot-surface")
+}
+
+test_theme_pack_v2_missing_manifests_rejected if {
+	base := object.remove(v2_theme_pack.contents.spec, {"manifests"})
+	theme := document(".jumo/themes/manor/theme-pack.yml", "ThemePack", "manor", base)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
+	has_rule(violations, "corpus.theme.v2-required")
+}
+
+test_theme_pack_v2_duplicate_visible_name_locale_rejected if {
+	bad := object.union(v2_theme_pack.contents.spec, {"localizedNames": [{"locale": "fr", "name": "A"}, {"locale": "fr", "name": "B"}]})
+	theme := document(".jumo/themes/manor/theme-pack.yml", "ThemePack", "manor", bad)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [theme])
+	has_rule(violations, "corpus.theme.localized-name-locale-unique")
 }
 
 test_theme_pack_default_room_not_declared_rejected if {

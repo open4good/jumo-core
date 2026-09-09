@@ -5,7 +5,7 @@ package dev.jumo.model;
 import java.util.Objects;
 
 /**
- * A schema-versioned JSON theme asset (portable-theme-contract-foundations). The referenced bytes are opaque content validated only by provenance once kit-rendered (JumoKit/KitLock), never by a LinkML class; the bounded path and pinned major here are what a theme declaration itself can prove ahead of any runtime consumer.
+ * A schema-versioned JSON theme asset. V1 repository-relative .jumo/assets paths remain readable; ThemePack v2 uses a normalized path relative to the autonomous pack directory. Runtime resolution stays bound to the exact source and pack that declared the reference.
  */
 public record VersionedJsonAsset(String schemaVersion, String asset)  {
 

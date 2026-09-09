@@ -349,4 +349,30 @@ spec:
         - audit.history.read
         - organization.governance.propose
         - organization.realm.provision.request
+    # Stable scene/navigation surfaces for ThemePack v2. They are presentation groupings over
+    # projections already exposed by the detailed surfaces above; they add no write path or action.
+    - id: vestibule
+      purpose: Group entry, home, onboarding, account, public, legal and error views.
+      audience: REALM_PRIVATE
+      reads: [SESSION, ACCOUNT_PROFILE, INTERFACE_MANIFEST]
+    - id: plans
+      purpose: Group project, team, agent and assisted-journey planning views.
+      audience: REALM_PRIVATE
+      reads: [TEAM_ROSTER, TEAM_HUB, AGENT_ROLES, JOURNEYS, JOURNEY_RUN]
+    - id: archives
+      purpose: Group corpus, knowledge, document and Jumo browser views.
+      audience: PROJECT_SCOPED
+      reads: [DOCUMENT_TREE, DOCUMENT_CONTENT, KNOWLEDGE_CORPUS_OVERVIEW]
+    - id: workshop
+      purpose: Group connector, MCP, execution-machine and secret-custody views.
+      audience: REALM_PRIVATE
+      reads: [CONNECTOR_CATALOG, MCP_CATALOG, EXECUTION_MACHINES, MACHINE_OBSERVATIONS]
+    - id: transmissions
+      purpose: Group API, CLI, AI-client and provider-quota transmission views.
+      audience: REALM_PRIVATE
+      reads: [CLI_TOOLS, PROVIDER_QUOTAS]
+    - id: council
+      purpose: Group proposal, WorkOrder, Organization and audit views.
+      audience: REALM_PRIVATE
+      reads: [CHANGE_PROPOSALS, WORK_ORDERS, ORGANIZATIONS, AUDIT_HISTORY]
   defaultThemePackRef: {kind: ThemePack, namespace: dev.jumo.core, id: default}

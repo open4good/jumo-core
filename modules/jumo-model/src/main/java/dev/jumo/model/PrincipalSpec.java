@@ -2,10 +2,13 @@
 package dev.jumo.model;
 
 
+import java.util.List;
+import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record PrincipalSpec(String ownerRealm, PrincipalKind principalKind, String displayName, ContractReference personalSpaceRef, ConsentState consentState)  {
+public record PrincipalSpec(String ownerRealm, PrincipalKind principalKind, String displayName, ContractReference personalSpaceRef, ConsentState consentState, List<String> aliases, List<String> emailAddresses, List<String> phoneNumbers, String relationship)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,6 +21,10 @@ public record PrincipalSpec(String ownerRealm, PrincipalKind principalKind, Stri
         private String displayName = "";
         private ContractReference personalSpaceRef = null;
         private ConsentState consentState = null;
+        private List<String> aliases = List.of();
+        private List<String> emailAddresses = List.of();
+        private List<String> phoneNumbers = List.of();
+        private String relationship = "";
 
 
         public Builder ownerRealm(String ownerRealm) {
@@ -45,8 +52,28 @@ public record PrincipalSpec(String ownerRealm, PrincipalKind principalKind, Stri
             return this;
         }
 
+        public Builder aliases(List<String> aliases) {
+            this.aliases = Objects.requireNonNull(aliases);
+            return this;
+        }
+
+        public Builder emailAddresses(List<String> emailAddresses) {
+            this.emailAddresses = Objects.requireNonNull(emailAddresses);
+            return this;
+        }
+
+        public Builder phoneNumbers(List<String> phoneNumbers) {
+            this.phoneNumbers = Objects.requireNonNull(phoneNumbers);
+            return this;
+        }
+
+        public Builder relationship(String relationship) {
+            this.relationship = Objects.requireNonNull(relationship);
+            return this;
+        }
+
     public PrincipalSpec build() {
-            return new PrincipalSpec(ownerRealm, principalKind, displayName, personalSpaceRef, consentState);
+            return new PrincipalSpec(ownerRealm, principalKind, displayName, personalSpaceRef, consentState, aliases, emailAddresses, phoneNumbers, relationship);
         }
     }
 }

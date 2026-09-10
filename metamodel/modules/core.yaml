@@ -405,6 +405,31 @@ classes:
         required: true
         description: NOT_APPLICABLE for OWNER and MEMBER, who consented by joining the Realm. For a CONTACT, the Realm's own
           record of whether that person agreed to being modeled -- never proof of consent, only a claim the Realm makes.
+      aliases:
+        range: string
+        multivalued: true
+        pattern: ^.{1,}$
+        description: Other names this Realm's members actually use for this person -- a first name, a nickname, an initial.
+          Lets a request naming someone informally resolve to the Principal the Realm already models instead of being guessed
+          at. A claim the Realm makes about its own vocabulary; it identifies no one outside the Realm and confers no authority.
+      emailAddresses:
+        range: string
+        multivalued: true
+        pattern: ^[^@\s]+@[^@\s]+$
+        description: Addresses the Realm holds for reaching this person. A contact point, never an identity claim and never
+          an authentication factor -- PrincipalIdentityBinding remains the only thing that binds a Principal to a login.
+      phoneNumbers:
+        range: string
+        multivalued: true
+        pattern: ^\+?[0-9 ().-]{4,}$
+        description: Numbers the Realm holds for reaching this person. Same standing as emailAddresses -- a contact point,
+          not an identity claim.
+      relationship:
+        range: string
+        pattern: ^.{1,200}$
+        description: How this person stands to the Realm in the Realm's own words, such as an accountant or a co-founder.
+          Free text on purpose - it is context for a human or an operator reading the directory, never a role, a grant or a
+          membership, all of which are modeled explicitly elsewhere.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

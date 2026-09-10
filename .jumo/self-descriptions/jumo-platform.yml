@@ -1,0 +1,26 @@
+apiVersion: jumo.dev/v1
+kind: SelfDescription
+metadata:
+  id: jumo-platform
+  namespace: dev.jumo.core
+  name: What the Jumo platform is and what it can do
+spec:
+  subject: {kind: Project, id: jumo}
+  answers:
+    - question: PURPOSE
+      audience: [AGENT, HUMAN]
+      facts:
+        - {name: projectPurpose, from: Project.spec.purpose}
+    - question: CAPABILITIES
+      audience: [AGENT]
+      facts:
+        - {name: declaredCapabilities, from: ActionCapabilitySet.spec.capabilities.name}
+    - question: BOUNDARIES
+      audience: [AGENT, HUMAN]
+      facts:
+        - {name: governingPrinciples, from: PrincipleSet.spec.principles.statement}
+        - {name: operatorProhibitedAuthority, from: AgentDefinition.spec.prohibitedAuthority}
+    - question: COMMITMENTS
+      audience: [AGENT, HUMAN]
+      facts:
+        - {name: milestoneExitConditions, from: Project.spec.milestones.exitCondition}

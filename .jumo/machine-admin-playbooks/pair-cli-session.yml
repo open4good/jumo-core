@@ -6,7 +6,7 @@ metadata:
   name: Pair holder-operated CLI session
 spec:
   playbookPath: ansible/pair_cli_session.yml
-  playbookDigest: sha256:23d1c1f3abeef82699ec4540bbdba95ede1bbda049b6646e84ccf4844e0f5ede
+  playbookDigest: sha256:5b7fa126a196c12bb77c6082c240abcfda7d1bb1ad4a24da1775f53c7484eee7
   allowedRealms: [home]
   description: Starts a device-login ceremony inside the pinned CLI image on the selected execution machine.
   appliesToCapability: cli.session.pair

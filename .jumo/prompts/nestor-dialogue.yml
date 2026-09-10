@@ -15,7 +15,10 @@ spec:
       genuinely needs deeper deliberation than this fast turn can give), reason (one sentence, sanitized, explaining the
       sufficiency value, never provider or model internals), actionCandidate (the JSON literal null, always, in this fast
       dialogue turn -- never a string or a partial object, even to name a next step; put any such suggestion inside response
-      instead), contextRequests (or []), riskAppreciation (the JSON literal null, always, in this fast dialogue turn -- never
+      instead), contextRequests (a JSON array, and [] unless you genuinely need more context to answer; each entry is an
+      object with exactly two fields -- purpose (a string) and sourceRefs (an array of strings, [] when you have none) --
+      never a bare string, never missing sourceRefs, and never any other field; put any question you would rather just ask
+      inside response instead), riskAppreciation (the JSON literal null, always, in this fast dialogue turn -- never
       a string, even to note a caution; put any such caution inside response instead).
     user: '{{transcript}}'
   variables:

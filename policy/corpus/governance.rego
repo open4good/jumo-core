@@ -1029,14 +1029,20 @@ deny contains corpus.violation("corpus.theme.localized-name-locale-unique", docu
 	message := "spec.localizedNames: locale values must be unique"
 }
 
+# SelfDescriptionAnswer declares narrationPromptTemplateRef (organization.yaml), an inlined
+# ContractReference -- not narrationPromptRef, and not a bare id string. This rule read a field the
+# schema does not define and compared the raw value against ids_of_kind, so against any schema-valid
+# document object.get returned null and the rule never fired at all. references.rego's own target_id
+# (same package) resolves either shape, so a document written with the reference object or with a
+# bare id is checked rather than silently skipped.
 deny contains corpus.violation("corpus.self-description.narration", document, message) if {
 	some document in corpus.documents
 	document.kind == "SelfDescription"
 	some index, answer in object.get(corpus.spec(document), "answers", [])
-	narration := object.get(answer, "narrationPromptRef", null)
+	narration := object.get(answer, "narrationPromptTemplateRef", null)
 	narration != null
-	not narration in corpus.ids_of_kind("PromptTemplate")
-	message := sprintf("spec.answers[%d].narrationPromptRef does not resolve", [index])
+	not target_id(narration) in corpus.ids_of_kind("PromptTemplate")
+	message := sprintf("spec.answers[%d].narrationPromptTemplateRef does not resolve", [index])
 }
 
 deny contains corpus.violation("corpus.documentation-root.monotonic", document, message) if {

@@ -939,7 +939,7 @@ test_rejects_contract_proposal_path_outside_jumo if {
 test_rejects_interface_theme_narration_and_document_root_reference_loss if {
 	theme := document(".jumo/themes/theme.yml", "ThemePack", "theme", {"terminology": [{"roleKey": "known"}]})
 	surface := document(".jumo/interfaces/theme.yml", "InterfaceSurface", "theme", {"surfaces": [{"presenceRef": "missing"}]})
-	self_description := document(".jumo/self-descriptions/bad.yml", "SelfDescription", "bad", {"answers": [{"narrationPromptRef": "missing"}]})
+	self_description := document(".jumo/self-descriptions/bad.yml", "SelfDescription", "bad", {"answers": [{"narrationPromptTemplateRef": {"kind": "PromptTemplate", "namespace": "dev.jumo.test", "id": "missing"}}]})
 	project := document("jumo.yml", "Project", "nested", {"documentation": {"roots": [
 		{"path": "docs", "maximumAudience": "REALM_PRIVATE"},
 		{"path": "docs/public", "maximumAudience": "PUBLISHED_SUMMARY"},
@@ -948,6 +948,35 @@ test_rejects_interface_theme_narration_and_document_root_reference_loss if {
 	has_rule(violations, "corpus.interface.presence")
 	has_rule(violations, "corpus.self-description.narration")
 	has_rule(violations, "corpus.documentation-root.monotonic")
+}
+
+# The three cases below pin corpus.self-description.narration against the field the metamodel
+# actually declares. The case above hand-built narrationPromptRef -- the policy's own spelling, not
+# SelfDescriptionAnswer's -- so it passed while the rule was unable to fire against any schema-valid
+# document. Asserting only this rule's presence or absence, never a clean corpus: a PromptTemplate
+# fixture minimal enough to stay readable trips unrelated execution.rego rules, which must not
+# decide whether this one works.
+
+narration_prompt := document(".jumo/prompts/narration.yml", "PromptTemplate", "narration", {})
+
+narration_subject(answer) := document(".jumo/self-descriptions/subject.yml", "SelfDescription", "subject", {"answers": [answer]})
+
+test_self_description_narration_reference_object_that_does_not_resolve_is_refused if {
+	subject := narration_subject({"narrationPromptTemplateRef": {"kind": "PromptTemplate", "namespace": "dev.jumo.test", "id": "absent"}})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [subject, narration_prompt])
+	has_rule(violations, "corpus.self-description.narration")
+}
+
+test_self_description_narration_bare_id_that_does_not_resolve_is_refused if {
+	subject := narration_subject({"narrationPromptTemplateRef": "absent"})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [subject, narration_prompt])
+	has_rule(violations, "corpus.self-description.narration")
+}
+
+test_self_description_narration_reference_to_a_declared_prompt_template_is_admitted if {
+	subject := narration_subject({"narrationPromptTemplateRef": {"kind": "PromptTemplate", "namespace": "dev.jumo.test", "id": "narration"}})
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [subject, narration_prompt])
+	not has_rule(violations, "corpus.self-description.narration")
 }
 
 # ThemePack asset extensions (portable-theme-contract-foundations)

@@ -377,10 +377,6 @@ classes:
   McpServerRecipeSpec:
     attributes:
       ownerRealm: {range: Identifier, required: true}
-      importedSourceDigest:
-        range: string
-        required: true
-        pattern: ^sha256:[0-9a-f]{64}$
       supply: {range: McpServerSupply, required: true, inlined: true}
       protocol: {range: McpRecipeProtocol, required: true, inlined: true}
       parameters: {range: McpRecipeParameter, multivalued: true, inlined_as_list: true}

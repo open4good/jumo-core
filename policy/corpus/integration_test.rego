@@ -47,7 +47,6 @@ tool := {
 recipe_spec(owner, supply, exposures, overrides) := object.union(
 	{
 		"ownerRealm": owner,
-		"importedSourceDigest": sha,
 		"supply": supply,
 		"protocol": {"minVersion": "2025-06-18", "maxVersion": "2025-11-25", "transports": ["STDIO"]},
 		"parameters": [],

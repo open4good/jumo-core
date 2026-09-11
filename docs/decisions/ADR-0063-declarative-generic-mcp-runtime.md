@@ -76,6 +76,19 @@ such as FORGE.
 - Delivery proceeds in protocol lots: tools; resources/prompts/tasks; then sampling/elicitation.
 - The shared catalogue stays provenance/adoption guidance only; import, qualification, appraisal,
   activation and quarantine display as distinct states.
+- Catalogue provenance carries no link from a Realm recipe back to the catalogue entry it came from.
+  `McpServerRecipeSpec.importedSourceDigest` was retired on the owner ruling of 2026-09-11: it was
+  declared required with no description anywhere, no author could tell what to put in it, and its
+  one consumer resolved it against `mcp_catalog_version.observation_checksum`, a checksum one
+  registry fetch page writes into every entry it carried. That key selected a page of up to a
+  hundred servers, never one, so filling the field would have bound a Realm to an arbitrary
+  neighbour rather than to its own source. The Realm-adoption surface of clause 8 is therefore
+  dormant, not retired: `mcp_realm_catalog_state` keeps its row and its `discovered_at` writer, the
+  cockpit keeps reading and rendering the remaining states, and the appraisal/admission/activation
+  milestones simply have no writer. Re-introducing a provenance link is allowed when a real need
+  appears and a key exists that identifies ONE catalogue entry — the `catalogId` a machine already
+  names on the discovery endpoint is the obvious candidate, and is not itself an authorisation to
+  build one.
 
 ## Rejected alternatives
 

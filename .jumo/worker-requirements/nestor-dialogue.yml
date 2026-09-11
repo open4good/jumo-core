@@ -24,7 +24,13 @@ spec:
     maximumEvaluationAge: P30D
     reasoningEffort: LOW
   limits:
-    maximumLatency: PT10S
+    # PT1M, not PT10S: since nestor-dialogue-maximum-latency-enforcement this declaration is
+    # the bound ConversationService.dispatchToWorker actually races the call against, and the
+    # route it bounds is a reasoning-family model at LOW effort whose measured dev-local turns
+    # succeed between 5.7s and 8.1s but tail past 18s -- a 10s budget failed live turns for
+    # being slow rather than wrong. Stays under the generic PT90S model-worker read timeout, so
+    # this remains the tighter of the two bounds (nestor-dialogue-latency-budget-realistic).
+    maximumLatency: PT1M
     # MEDIUM, not LOW: ConversationService.attemptBoundedEscalation reads this ceiling against the
     # same LOW/MEDIUM/HIGH vocabulary as reasoningEffort to bound AUTO_BOUNDED's retry rung (ADR-0019
     # -- "no higher than the profile ceiling"). A LOW ceiling on a LOW-effort profile would make the

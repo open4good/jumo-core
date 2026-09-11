@@ -685,8 +685,6 @@ classes:
         range: KitBindingValue
         multivalued: true
         inlined_as_list: true
-        required: true
-        minimum_cardinality: 1
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

@@ -28,8 +28,11 @@ spec:
     # the bound ConversationService.dispatchToWorker actually races the call against, and the
     # route it bounds is a reasoning-family model at LOW effort whose measured dev-local turns
     # succeed between 5.7s and 8.1s but tail past 18s -- a 10s budget failed live turns for
-    # being slow rather than wrong. Stays under the generic PT90S model-worker read timeout, so
-    # this remains the tighter of the two bounds (nestor-dialogue-latency-budget-realistic).
+    # being slow rather than wrong. Stays under the generic model-worker read timeout (PT4M since
+    # conversation-turn-deadline-coherence raised it above every declared budget), so this remains
+    # the tighter of the two bounds (nestor-dialogue-latency-budget-realistic). Since that same
+    # order this number bounds the whole TURN, not each leg: a bounded escalation spends what the
+    # first leg left of it, so two legs can no longer add up to twice what is declared here.
     maximumLatency: PT1M
     # MEDIUM, not LOW: ConversationService.attemptBoundedEscalation reads this ceiling against the
     # same LOW/MEDIUM/HIGH vocabulary as reasoningEffort to bound AUTO_BOUNDED's retry rung (ADR-0019

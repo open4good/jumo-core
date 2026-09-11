@@ -27,6 +27,8 @@ spec:
       - {field: projectId, required: true}
       - {field: purpose, required: true, minimumLength: 10}
       - {field: repository, required: true}
+    fieldDefaults:
+      - {field: lifecycle, value: IDEATION}
   steps:
     - id: define-project
       requiredObligations: []
@@ -40,6 +42,7 @@ spec:
       requiredFields:
         - {field: projectId, i18nKey: journeyProjectIdField}
         - {field: purpose, i18nKey: journeyProjectPurposeField}
+        - {field: lifecycle, i18nKey: journeyProjectLifecycleField}
       projectionSpecRef:
         kind: ProjectionSpec
         namespace: dev.jumo.core

@@ -16,7 +16,8 @@ spec:
     spec:
       contractDirectory: .jumo
       ownerRealm: ${realmId}
-      lifecycle: ACTIVE
+      lifecycle: ${lifecycle}
+      purpose: ${purpose}
       repositoryBindings:
         - id: github-repository
           provider: github

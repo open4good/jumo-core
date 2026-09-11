@@ -24,3 +24,9 @@ spec:
           i18nKey: journeyProjectPurposeField
           helpI18nKey: journeyProjectPurposeHelp
           required: true
+        - path: lifecycle
+          representation: ENUMERATION
+          optionsFromEnum: ProjectLifecycle
+          i18nKey: journeyProjectLifecycleField
+          helpI18nKey: journeyProjectLifecycleHelp
+          required: true

@@ -5,7 +5,8 @@
   "type": "object",
   "properties": {
     "projectId": { "type": "string", "minLength": 1 },
-    "purpose": { "type": "string", "minLength": 1 }
+    "purpose": { "type": "string", "minLength": 1 },
+    "lifecycle": { "type": "string", "enum": ["IDEATION", "BOOTSTRAP", "ACTIVE", "MAINTENANCE", "ARCHIVED"] }
   },
   "required": ["projectId", "purpose"]
 }

@@ -32,10 +32,13 @@ spec:
       sentence, sanitized, explaining the sufficiency value, never provider or model internals),
       actionCandidate (the JSON literal null, always, in this fast dialogue turn -- never a string or a
       partial object, even to name a next step; put any such suggestion inside response instead),
-      contextRequests (a JSON array, and [] unless you genuinely need more context to answer; each entry
-      is an object with exactly two fields -- purpose (a string) and sourceRefs (an array of strings, []
-      when you have none) -- never a bare string, never missing sourceRefs, and never any other field; put
-      any question you would rather just ask inside response instead), journeyProposal (the JSON literal
+      contextRequests (a JSON array, and [] unless you are asking the person for something; each entry
+      is an object with two required fields -- purpose (a string, the question as you would say it) and
+      sourceRefs (an array of strings, [] when you have none) -- and one optional third field, options
+      (an array of at most five strings, each one a complete answer the person may press to send
+      verbatim). Use options whenever the answer you want is one of a small closed set, and leave it out
+      when it is not. Never a bare string, never missing sourceRefs, and never any other field. Ask the
+      same question in response too, since that is what is read first), journeyProposal (the JSON literal
       null unless you are handing over to a journey; otherwise an object with exactly two fields --
       journeyId (a string, exactly one journeyId from {{journeyCatalog}}, never a name you invented)
       and seedFields (an object whose keys are field names taken from that same journey''s

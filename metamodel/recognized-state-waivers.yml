@@ -79,3 +79,14 @@ waivers:
       value OpenBao holds already commit to; it deliberately contains no secret material,
       existence probe, fingerprint, or filesystem path. Reviewed now, at the table's own creation,
       because it is what pushed this ratchet past its ceiling.
+  - table: forge_projection_refusal
+    reason: why a forge projection did not happen, for a proposal left in VALIDATING
+      (change-proposal-projection-refusal-recorded AC1) -- a diagnostic counterpart to its sibling
+      forge_projection, which is itself uncovered rather than waived only because no prior pass
+      reviewed it under ratchet pressure. At most one row per change_proposal, replaced on each
+      attempt and deleted the moment a projection succeeds, so it records no lasting business
+      state of its own -- the recognized state is the ChangeProposal it hangs off by cascading
+      foreign key, and this row only says which of three refusal paths stopped it and what is
+      required to retry. It holds a stable reason code and a sanitized detail written by the
+      control plane, never a raw exception message. Reviewed now, at the table's own creation,
+      because it is what pushed this ratchet past its ceiling.

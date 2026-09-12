@@ -79,7 +79,7 @@ spec:
       name: Bilan et proposition
       description: Vérifiez la déclaration avant l'émission de la proposition contractuelle.
       personaNarration: Récapitulons avant d'enregistrer cette proposition.
-      stepKind: COLLECT
+      stepKind: CONFIRM
       projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: summary-and-activate}
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}

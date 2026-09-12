@@ -40,7 +40,7 @@ spec:
       name: Confirmation
       description: Confirmez la mise en place des connecteurs sélectionnés.
       personaNarration: Récapitulons avant de sceller la configuration de ces connecteurs.
-      stepKind: COLLECT
+      stepKind: CONFIRM
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}
       projectionSpecRef:

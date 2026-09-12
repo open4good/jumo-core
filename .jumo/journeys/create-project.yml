@@ -71,7 +71,7 @@ spec:
       nameI18nKey: journeyCreateProjectConfirmProjectName
       descriptionI18nKey: journeyCreateProjectConfirmProjectDescription
       narrationI18nKey: journeyCreateProjectConfirmProjectNarration
-      stepKind: COLLECT
+      stepKind: CONFIRM
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}
       projectionSpecRef:

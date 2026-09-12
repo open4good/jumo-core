@@ -46,7 +46,7 @@ spec:
       name: Confirmation
       description: Validez l'importation et l'enregistrement de la liaison du kit.
       personaNarration: Verifions la declaration du kit avant son emission declarative.
-      stepKind: COLLECT
+      stepKind: CONFIRM
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}
       projectionSpecRef:

@@ -177,7 +177,7 @@ spec:
       name: Validation de l'équipe
       description: Vérifiez le récapitulatif de l'équipe avant émission de la proposition contractuelle.
       personaNarration: Tout est en ordre. Validons la création de cette équipe dans votre Realm.
-      stepKind: COLLECT
+      stepKind: CONFIRM
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}
       projectionSpecRef:

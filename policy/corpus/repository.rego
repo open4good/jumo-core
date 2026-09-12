@@ -11,6 +11,31 @@ repository_facts := facts if {
 	count(facts) > 0
 }
 
+# Whether this evaluation was given repository facts at all.
+#
+# A rule that concludes "X is not a declared payload schema" from `not x in known_payload_schemas`
+# is reading an EMPTY set as a COMPLETE one. That is sound only when the facts populating those
+# sets were actually supplied. `repository_facts` is undefined when they were not, so referencing
+# it directly in a rule body makes that body undefined and the rule simply does not fire -- but a
+# set rule like `known_payload_schemas` is different: its own body is undefined, so it evaluates to
+# an empty-but-DEFINED set, `not x in set()` is true for every x, and the deny fires on everything.
+# The polarity of an unsupplied fact therefore depends on how the rule reaches it, which is why
+# four rule families refused every document while thirteen others silently checked nothing.
+#
+# The control plane's candidate-corpus gate is the evaluation that has no facts: they exist only as
+# the output of scripts/generate/extract-repository-facts.py at lint time, and nothing computes them
+# at runtime. Measured 2026-09-12 against this bundle: the runtime envelope returned 34 violations,
+# 28 of them from these four families, naming documents that are valid and that the same bundle
+# accepts when facts are present. Guarding restores "absence of evidence is not evidence of absence".
+#
+# The cost is deliberate and is NOT nothing: a candidate with a genuinely bad payloadSchemaRef, `of`,
+# output.schemaRef or output.javaType is no longer caught at runtime, only in CI where facts are
+# supplied. Restoring that is its own work, tracked separately -- guarding is what makes the gate
+# usable at all, not what makes it complete.
+repository_facts_supplied if {
+	count(repository_facts) > 0
+}
+
 deny contains {"msg": "governed Markdown front matter is invalid YAML", "path": fact.path, "rule": "repository.front-matter.yaml"} if {
 	some fact in object.get(repository_facts, "governedMarkdown", [])
 	fact.status == "INVALID_YAML"

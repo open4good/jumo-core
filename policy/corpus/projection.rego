@@ -50,6 +50,7 @@ forbidden_field_paths := {
 }
 
 deny contains corpus.violation("corpus.projection.class", document, message) if {
+	repository_facts_supplied
 	some document in projection_specs
 	of := object.get(corpus.spec(document), "of", "")
 	of != ""
@@ -58,6 +59,7 @@ deny contains corpus.violation("corpus.projection.class", document, message) if 
 }
 
 deny contains corpus.violation("corpus.projection.payload-schema", document, message) if {
+	repository_facts_supplied
 	some document in projection_specs
 	ref := object.get(corpus.spec(document), "payloadSchemaRef", "")
 	ref != ""

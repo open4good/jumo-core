@@ -721,3 +721,27 @@ test_rejects_required_fields_diverging_from_projection if {
 	violations := data.jumo.corpus.deny with input as [facts, required_fields_projection, bad]
 	has_rule(violations, "corpus.journey.required-fields-drift")
 }
+
+# The runtime candidate-corpus gate supplies no repository facts, and before the guard that made
+# an EMPTY known_* set read as a COMPLETE one: `not ref in known_payload_schemas` was true for
+# every reference, so a valid document was refused. These two cases pin the guard from both sides.
+# The paired positive cases above (test_rejects_unknown_payload_schema_ref,
+# test_rejects_unknown_projection_class) keep `facts` in their input and still DENY -- without
+# them these would pass against a rule that had simply been deleted.
+test_unknown_payload_schema_ref_is_not_refused_when_facts_are_absent if {
+	bad := document(".jumo/projections/bad-schema.yml", "ProjectionSpec", "bad-schema", {
+		"ownerRealm": "home", "payloadSchemaRef": "no-such-schema", "projectionKind": "FORM",
+		"sections": [{"id": "s", "i18nKey": "s", "fields": [{"path": "x", "representation": "SHORT_TEXT"}]}],
+	})
+	violations := data.jumo.corpus.deny with input as [bad]
+	not has_rule(violations, "corpus.projection.payload-schema")
+}
+
+test_unknown_projection_class_is_not_refused_when_facts_are_absent if {
+	bad := document(".jumo/projections/bad-class.yml", "ProjectionSpec", "bad-class", {
+		"ownerRealm": "home", "of": "NoSuchGeneratedClass", "projectionKind": "FORM",
+		"sections": [{"id": "s", "i18nKey": "s", "fields": [{"path": "x", "representation": "SHORT_TEXT"}]}],
+	})
+	violations := data.jumo.corpus.deny with input as [bad]
+	not has_rule(violations, "corpus.projection.class")
+}

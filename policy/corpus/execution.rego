@@ -830,6 +830,7 @@ deny contains corpus.violation("corpus.prompt.structured-output", document, mess
 # failure mode: a field carried as metadata that nothing actually verifies against real code.
 
 deny contains corpus.violation("corpus.prompt.structured-schema", document, message) if {
+	repository_facts_supplied
 	some document in corpus.documents
 	document.kind == "PromptTemplate"
 	output := object.get(corpus.spec(document), "output", {})
@@ -846,6 +847,7 @@ prompt_java_type_sources(java_type) := {source |
 }
 
 deny contains corpus.violation("corpus.prompt.structured-java-type", document, message) if {
+	repository_facts_supplied
 	some document in corpus.documents
 	document.kind == "PromptTemplate"
 	output := object.get(corpus.spec(document), "output", {})

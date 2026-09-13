@@ -36,11 +36,9 @@ handling ADR-0012 sets out are untouched. What this ADR amends: `HOLDER_OPERATED
 only admissible account use for a plan substrate. It remains the default, and the declared value
 governs.
 
-## Why this is written down rather than coded silently
-
-Driving a subscription account automatically is precisely to stop being holder-operated. Leaving
-the code at odds with an accepted normative ADR would make the contradiction unreadable, and a
-later reader must be able to reverse this decision without rediscovering why it was taken.
+Driving a subscription account automatically is precisely to stop being holder-operated. This is
+written down rather than coded silently because a later reader must be able to reverse it without
+rediscovering why it was taken.
 
 ## The clause that argues against this decision
 
@@ -72,14 +70,18 @@ afterwards, during the per-account review this ADR records, and were not in view
   forbidding nor permitting this. That is wrong. The first-party documentation states that
   "Directly accessing the services powering Gemini CLI (for example, the Gemini Code Assist
   service) using third-party software, tools, or services [...] is a violation of applicable terms
-  and policies." A distinction the owner should weigh rather than have resolved here: the clause
-  names third-party software reaching the backing service, and driving the official `gemini` binary
-  is arguably not that. So the ruling stands against two providers' adverse clauses, not one.
+  and policies." **Ruled 2026-09-13, with this clause quoted verbatim in front of the owner:
+  `google-gemini-cli` is ADMITTED.** The clause targets software reaching the Gemini Code Assist
+  backend; Jumo orchestrates the official `gemini` binary the owner installed and authenticated,
+  which is not that. Recorded so a later reader re-reading the terms does not reopen this as a
+  fresh discovery — it was decided knowingly, not missed.
   Source: https://github.com/google-gemini/gemini-cli/blob/main/docs/resources/tos-privacy.md —
   reviewed 2026-09-13.
-- **github-copilot-cli — its quota is observable.** The claim that no documented API exposes the
-  premium-request quota is wrong: the Copilot SDK's `account.getQuota` reports the authenticated
-  user's remaining entitlement, keyed by quota type including `premium_interactions`. Whether this
-  account joins the chain is left open here and its entitlement is unchanged.
+- **github-copilot-cli — out, and not for the reason first written.** The claim that no documented
+  API exposes the premium-request quota is wrong: the Copilot SDK's `account.getQuota` reports
+  remaining entitlement keyed by type, including `premium_interactions`. It distinguishes nothing
+  either way, since Jumo reads none of the four CLI plan quotas. **Ruled 2026-09-13: out, because
+  no Copilot subscription is provisioned to route to** — the Realm holds nine secret bindings and
+  none is a Copilot credential.
   Source: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/usage-and-billing —
   reviewed 2026-09-13.

@@ -66,7 +66,7 @@ spec:
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
     - name: conversation.turn.submit
-      description: Submit one creator-private Nestor conversation turn without tools or external effects.
+      description: Submit one creator-private Nestor conversation turn. The turn may call platform operations, each authorized on its own against the capability it names and consuming a single-use grant; an operation whose capability produces an external effect is never executed by the turn, only proposed for consent.
       riskTier: MEDIUM
       reversible: true
       minimumAssurance: OBSERVED

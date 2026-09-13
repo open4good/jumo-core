@@ -152,6 +152,10 @@ public final class ContractReferenceExtractor {
             extractFromPersonalSpace(m, refs);
             return refs;
         }
+        if (model instanceof PlatformOperationSet m) {
+            extractFromPlatformOperationSet(m, refs);
+            return refs;
+        }
         if (model instanceof Practice m) {
             extractFromPractice(m, refs);
             return refs;
@@ -974,6 +978,26 @@ public final class ContractReferenceExtractor {
         if (obj == null) return;
         if (obj.preferencesRef() != null) {
             refs.add(new OutgoingReference("preferencesRef", obj.preferencesRef()));
+        }
+    }
+    public static void extractFromPlatformOperation(PlatformOperation obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.exposedToAgentDefinitionRefs() != null) {
+            for (ContractReference r : obj.exposedToAgentDefinitionRefs()) {
+                if (r != null) refs.add(new OutgoingReference("exposedToAgentDefinitionRefs", r));
+            }
+        }
+    }
+    public static void extractFromPlatformOperationSet(PlatformOperationSet obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromPlatformOperationSetSpec(obj.spec(), refs);
+    }
+    public static void extractFromPlatformOperationSetSpec(PlatformOperationSetSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.operations() != null) {
+            for (PlatformOperation item : obj.operations()) {
+                extractFromPlatformOperation(item, refs);
+            }
         }
     }
     public static void extractFromPractice(Practice obj, List<OutgoingReference> refs) {

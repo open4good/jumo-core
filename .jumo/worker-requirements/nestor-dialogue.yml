@@ -15,7 +15,10 @@ spec:
   context:
     minimumTokens: 8192
   interaction:
-    toolUse: NONE
+    # OPTIONAL, not NONE: the turn may now run a bounded, per-call-authorized tool loop
+    # (ADR-0022's 2026-09-13 amendment). OPTIONAL rather than REQUIRED because a turn that
+    # answers without reaching for an operation is the common case and must stay routable.
+    toolUse: OPTIONAL
     structuredOutput: REQUIRED
   quality:
     minimumAssurance: OBSERVED
@@ -33,7 +36,11 @@ spec:
     # the tighter of the two bounds (nestor-dialogue-latency-budget-realistic). Since that same
     # order this number bounds the whole TURN, not each leg: a bounded escalation spends what the
     # first leg left of it, so two legs can no longer add up to twice what is declared here.
-    maximumLatency: PT1M
+    # PT2M since the tool loop: the 5.7s-18s measurement above bounded a turn with NO loop at
+    # all. A loop adds legs to the same turn, and this number bounds the whole turn rather
+    # than each leg, so the budget has to cover them together. Still under the PT4M generic
+    # model-worker read timeout, so this stays the tighter of the two bounds.
+    maximumLatency: PT2M
     # MEDIUM, not LOW: ConversationService.attemptBoundedEscalation reads this ceiling against the
     # same LOW/MEDIUM/HIGH vocabulary as reasoningEffort to bound AUTO_BOUNDED's retry rung (ADR-0019
     # -- "no higher than the profile ceiling"). A LOW ceiling on a LOW-effort profile would make the

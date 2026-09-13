@@ -1,0 +1,64 @@
+apiVersion: jumo.dev/v1
+kind: PlatformOperationSet
+metadata:
+  id: core
+  namespace: dev.jumo.core
+  name: Platform read operations
+spec:
+  operations:
+    - exposedName: platform.work-orders.list
+      capabilityRef: work.order.read
+      description: "List the Realm's WorkOrders, most relevant first, with their id, name, state, milestone and purpose. Filter by state or by a free-text query over id, name and purpose. Returns at most 25."
+      inputSchemaRef: platform-work-orders-list
+      handlerId: PLATFORM_WORK_ORDERS_LIST
+      exposedToAgentDefinitionRefs:
+        - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}
+    - exposedName: platform.work-orders.get
+      capabilityRef: work.order.read
+      description: "Read one WorkOrder in full -- its purpose, condition, acceptance criteria, pathScope, ring and declared references. Use it after work-orders.list when the summary is not enough to answer."
+      inputSchemaRef: platform-work-orders-get
+      handlerId: PLATFORM_WORK_ORDERS_GET
+      exposedToAgentDefinitionRefs:
+        - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}
+    - exposedName: platform.connectors.list
+      capabilityRef: connector.read
+      description: "List the connectors and enabled MCP server bindings this Realm can actually reach, with their lifecycle and what each one is for. Optionally filter by a substring of the name."
+      inputSchemaRef: platform-connectors-list
+      handlerId: PLATFORM_CONNECTORS_LIST
+      exposedToAgentDefinitionRefs:
+        - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}
+    - exposedName: platform.mcp-catalog.search
+      capabilityRef: mcp.catalog.read
+      description: "Search the MCP server catalogue built from the declared registry sources. Returns catalogue entries with their canonical name, description and source, not installed connectors."
+      inputSchemaRef: platform-mcp-catalog-search
+      handlerId: PLATFORM_MCP_CATALOG_SEARCH
+      exposedToAgentDefinitionRefs:
+        - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}
+    - exposedName: platform.knowledge.search
+      capabilityRef: knowledge.search.request
+      description: "Search the Realm's knowledge corpora and return the matching fragments' own text with their citations, so an answer can quote the source rather than paraphrase a title."
+      inputSchemaRef: platform-knowledge-search
+      handlerId: PLATFORM_KNOWLEDGE_SEARCH
+      exposedToAgentDefinitionRefs:
+        - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}
+    - exposedName: platform.teams.list
+      capabilityRef: team.roster.read
+      description: "List the Realm's teams with their members and each member's declared role, so a question about who does what can be answered from the roster rather than guessed."
+      inputSchemaRef: platform-teams-list
+      handlerId: PLATFORM_TEAMS_LIST
+      exposedToAgentDefinitionRefs:
+        - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}
+    - exposedName: platform.journeys.list
+      capabilityRef: interface.manifest.read
+      description: "List the declared assisted journeys with their steps and, for each field, the kind of step it belongs to. A field on a CONFIRM step is a human consent and must never be pre-filled."
+      inputSchemaRef: platform-journeys-list
+      handlerId: PLATFORM_JOURNEYS_LIST
+      exposedToAgentDefinitionRefs:
+        - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}
+    - exposedName: platform.principals.list
+      capabilityRef: team.roster.read
+      description: "List the Realm's principals -- people and machine agents -- with their display name and kind, so a name mentioned in conversation can be resolved to a declared principal."
+      inputSchemaRef: platform-principals-list
+      handlerId: PLATFORM_PRINCIPALS_LIST
+      exposedToAgentDefinitionRefs:
+        - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}

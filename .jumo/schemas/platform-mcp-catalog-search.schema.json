@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/platform-operation/platform-mcp-catalog-search",
+  "title": "platform.mcp-catalog.search input",
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Text to match against the catalogue entry name and description."
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "description": "How many entries to return. Defaults to 10 when absent."
+    }
+  },
+  "required": [
+    "query"
+  ],
+  "additionalProperties": false
+}

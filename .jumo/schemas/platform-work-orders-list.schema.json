@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/platform-operation/platform-work-orders-list",
+  "title": "platform.work-orders.list input",
+  "type": "object",
+  "properties": {
+    "state": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "ACCEPTED",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "REFUSED"
+      ],
+      "description": "Keep only WorkOrders in this state."
+    },
+    "query": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Free-text filter over id, name and purpose."
+    }
+  },
+  "required": [],
+  "additionalProperties": false
+}

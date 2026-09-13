@@ -272,6 +272,12 @@ spec:
     displayFr: 'Espace personnel'
     pluralEn: 'Personal Spaces'
     pluralFr: 'Espaces personnels'
+  - canonical: PlatformOperationSet
+    displayEn: 'Platform Operation Set'
+    displayFr: 'Ensemble d''opérations de plateforme'
+    pluralEn: 'Platform Operation Sets'
+    pluralFr: 'Ensembles d''opérations de plateforme'
+    directory: platform-operations
   - canonical: PolicySet
     displayEn: 'Policy Set'
     displayFr: 'Ensemble de politiques'

@@ -1131,6 +1131,12 @@ classes:
         required: true
       system:
         range: string
+      systemSuffix:
+        range: string
+        description: The volatile tail of the system message, rendered after system rather than inside it. system is a
+          pure function of the corpus revision and the Realm, which is what makes it a stable provider cache prefix;
+          anything that changes between two turns of the same conversation, currentTime above all, belongs here so that
+          it cannot invalidate the prefix.
       user:
         range: string
         required: true

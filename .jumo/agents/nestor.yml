@@ -20,5 +20,15 @@ spec:
     - repository.content.read
     - contract.change.propose
     - work.order.propose
+    # The six read capabilities the platform-operations/core.yml catalogue names. An
+    # operation is offerable to this agent only where it already requests that capability
+    # (corpus.platform-operation.exposure-requested), so this list is what bounds the tool
+    # catalogue -- exposure is never a second way to obtain authority.
+    - work.order.read
+    - connector.read
+    - mcp.catalog.read
+    - knowledge.search.request
+    - team.roster.read
+    - interface.manifest.read
   defaultAutonomy: SUPERVISED
   modificationRing: RING_2_AGENT_BEHAVIOR

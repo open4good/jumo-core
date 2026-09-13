@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/platform-operation/platform-knowledge-search",
+  "title": "platform.knowledge.search input",
+  "type": "object",
+  "properties": {
+    "question": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 1000,
+      "description": "The question to search for, in natural language."
+    },
+    "corpusId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Restrict the search to one knowledge corpus. Searches all when absent."
+    }
+  },
+  "required": [
+    "question"
+  ],
+  "additionalProperties": false
+}

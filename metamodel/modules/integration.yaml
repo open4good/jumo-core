@@ -2572,6 +2572,11 @@ classes:
       exposedName:
         range: string
         required: true
+      description:
+        range: string
+        description: Unsigned display text, the same treatment PlannedOperation.description already receives. It is
+          deliberately outside the canonical payload PlanSignatureVerifier checks -- adding it there would make every
+          plan signed before this field existed unverifiable.
       inputSchema:
         range: string
         required: true
@@ -3833,6 +3838,100 @@ classes:
         inlined: true
         description: The exact ProcessSpec this ingress starts; must resolve to a same-Realm
           ProcessSpec whose own startTrigger is EVENT (Rego).
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PlatformOperationSet:
+    description: The catalogue of platform operations an agent may be offered as tools. It declares which operations
+      exist and to which AgentDefinition each is exposed; it grants nothing. Authority still comes from the capability
+      an operation names, resolved at call time, and an operation is offerable to an agent only when that agent already
+      requests that capability -- one authority model, the one Rego already checks. Sealed because widening the set a
+      Realm's agents may be offered is a PLATFORM decision, not a Realm one.
+    annotations:
+      jumo.composition: SEALED
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: PlatformOperationSet
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: PlatformOperationSetSpec
+        required: true
+        inlined: true
+  PlatformOperationSetSpec:
+    attributes:
+      operations:
+        range: PlatformOperation
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  PlatformOperation:
+    description: One platform operation exposable to an agent as a tool. riskTier, producesExternalEffect, reversible,
+      requiredObligations and ringCeiling are deliberately absent -- every one of them is derived from capabilityRef at
+      resolution time, so a declaration here could only ever contradict the capability it names. requiresGrant is
+      implicit for the same reason it is not a field, since every call consumes a single-use InvocationCapabilityGrant.
+    attributes:
+      exposedName:
+        range: string
+        required: true
+        pattern: ^platform\.[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$
+        description: The name the model sees. Always "platform." followed by the operation's own segment, so the grant
+          it consumes carries connectorRef "platform" and operationRef the rest, and the existing invocation-ledger
+          check operationName == connectorRef + "." + operationRef stays true without a line of change.
+      capabilityRef:
+        range: CapabilityName
+        required: true
+      description:
+        range: string
+        required: true
+        pattern: ^.{20,400}$
+        description: Written for a model to read, not for a corpus reader. The lower bound rejects a name restated as
+          a sentence; the upper bound keeps the tool catalogue inside a cacheable system prefix.
+      inputSchemaRef:
+        range: string
+        required: true
+      outputSchemaRef:
+        range: string
+      handlerId:
+        range: string
+        required: true
+        pattern: ^[A-Z][A-Z0-9_]+$
+      exposedToAgentDefinitionRefs:
+        range: ContractReference
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+        description: required alone does not reject an empty list in LinkML. The pair with minimum_cardinality is the
+          constraint; either one on its own is decorative, and an empty list would mean an operation exposed to nobody.
+      maxResultBytes:
+        range: integer
+        ifabsent: 'int(65536)'
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

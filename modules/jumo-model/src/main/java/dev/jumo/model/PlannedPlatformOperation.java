@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * One PLATFORM capability operation exposed by a signed MCP gateway session plan, resolved from a validated KnowledgeCorpusGrant bound to the lease (knowledge-retrieval-access-and-cockpit AC3) -- the cross-cutting counterpart to PlannedOperation, which is always resolved from a connector-bound InvocationCapabilityGrant instead. Carries no upstream MCP server identity, recipe, binding or appraisal digest -- a PLATFORM operation is served by the control plane itself, never proxied to an upstream MCP process, so SessionPlan.platformOperations exists independently of SessionPlan.recipeDigest/bindingDigest/appraisalDigest/supplyDigest/negotiatedVersion/ negotiatedTransport/upstreamToolsDigest -- a lease bound to platform grants only, and no McpServerBinding, leaves all seven of those absent. Mirrors dev.jumo.mcpgateway.plan.PlannedPlatformOperation on the gateway side.
  */
-public record PlannedPlatformOperation(String grantId, String exposedName, String inputSchema, boolean producesExternalEffect)  {
+public record PlannedPlatformOperation(String grantId, String exposedName, String description, String inputSchema, boolean producesExternalEffect)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,6 +17,7 @@ public record PlannedPlatformOperation(String grantId, String exposedName, Strin
 
         private String grantId = "";
         private String exposedName = "";
+        private String description = "";
         private String inputSchema = "";
         private boolean producesExternalEffect = false;
 
@@ -31,6 +32,11 @@ public record PlannedPlatformOperation(String grantId, String exposedName, Strin
             return this;
         }
 
+        public Builder description(String description) {
+            this.description = Objects.requireNonNull(description);
+            return this;
+        }
+
         public Builder inputSchema(String inputSchema) {
             this.inputSchema = Objects.requireNonNull(inputSchema);
             return this;
@@ -42,7 +48,7 @@ public record PlannedPlatformOperation(String grantId, String exposedName, Strin
         }
 
     public PlannedPlatformOperation build() {
-            return new PlannedPlatformOperation(grantId, exposedName, inputSchema, producesExternalEffect);
+            return new PlannedPlatformOperation(grantId, exposedName, description, inputSchema, producesExternalEffect);
         }
     }
 }

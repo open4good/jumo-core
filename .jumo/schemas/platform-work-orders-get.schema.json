@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/platform-operation/platform-work-orders-get",
+  "title": "platform.work-orders.get input",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "The WorkOrder id, exactly as work-orders.list returned it."
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false
+}

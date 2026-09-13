@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/platform-operation/platform-journeys-list",
+  "title": "platform.journeys.list input",
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}

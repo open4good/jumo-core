@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/platform-operation/platform-connectors-list",
+  "title": "platform.connectors.list input",
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Keep only connectors whose name or description contains this text."
+    }
+  },
+  "required": [],
+  "additionalProperties": false
+}

@@ -5,7 +5,7 @@ package dev.jumo.model;
 import java.util.Objects;
 
 
-public record PromptBody(PromptEngine engine, String system, String user, String path)  {
+public record PromptBody(PromptEngine engine, String system, String systemSuffix, String user, String path)  {
 
     public static Builder builder() {
         return new Builder();
@@ -15,6 +15,7 @@ public record PromptBody(PromptEngine engine, String system, String user, String
 
         private PromptEngine engine = null;
         private String system = "";
+        private String systemSuffix = "";
         private String user = "";
         private String path = "";
 
@@ -29,6 +30,11 @@ public record PromptBody(PromptEngine engine, String system, String user, String
             return this;
         }
 
+        public Builder systemSuffix(String systemSuffix) {
+            this.systemSuffix = Objects.requireNonNull(systemSuffix);
+            return this;
+        }
+
         public Builder user(String user) {
             this.user = Objects.requireNonNull(user);
             return this;
@@ -40,7 +46,7 @@ public record PromptBody(PromptEngine engine, String system, String user, String
         }
 
     public PromptBody build() {
-            return new PromptBody(engine, system, user, path);
+            return new PromptBody(engine, system, systemSuffix, user, path);
         }
     }
 }

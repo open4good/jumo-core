@@ -48,8 +48,8 @@ projection_slots(document) := slots if {
 
 projection_slots(document) := slots if {
 	object.get(corpus.spec(document), "of", "") == ""
-	ref := object.get(corpus.spec(document), "payloadSchemaRef", "")
 	repository_facts_supplied("payloadSchemaSlots")
+	ref := object.get(corpus.spec(document), "payloadSchemaRef", "")
 	slots := payload_schema_slots(ref)
 }
 

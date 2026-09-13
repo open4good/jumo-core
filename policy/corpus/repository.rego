@@ -72,6 +72,52 @@ repository_facts_supplied(family) if {
 	family in supplied_fact_families
 }
 
+# Which fact families each fact-dependent deny rule needs, so an evaluation can say what it could not
+# evaluate instead of returning a clean verdict it has not earned
+# (corpus-rules-silently-unchecked-at-runtime AC3).
+#
+# Kept beside the guards and checked against them by jumo's
+# scripts/verify/check-corpus-fact-dependencies.py, which derives the same set from this source and
+# fails when the two disagree -- so this table cannot drift away from the rules it describes, and a
+# new fact-dependent rule cannot be added without appearing here.
+#
+# corpus.projection.field-path is the one approximation: it reads classSlots on its `of` branch and
+# payloadSchemaSlots on its payloadSchemaRef branch, so with only one supplied it still evaluates
+# half the corpus. It is reported unevaluated when either is missing, which over-reports rather than
+# under-reports -- the safe direction for a signal whose whole job is to stop a partial pass reading
+# as a complete one.
+fact_dependent_rules := {
+	"corpus.journey.emission-kind": {"contractKinds"},
+	"corpus.journey.emission-reference-kind": {"contractKinds"},
+	"corpus.projection.class": {"classSlots"},
+	"corpus.projection.field-path": {"classSlots", "payloadSchemaSlots"},
+	"corpus.projection.options-kind": {"contractKinds"},
+	"corpus.projection.options-nested-kind": {"contractKinds"},
+	"corpus.projection.payload-schema": {"payloadSchemaSlots"},
+	"corpus.prompt.structured-java-type": {"javaSources"},
+	"corpus.prompt.structured-schema": {"classSlots"},
+	"repository.evidence.keyword": {"completedCriteria", "javaSources"},
+	"repository.evidence.vocabulary": {"completedCriteria", "vocabulary"},
+	"repository.forge.applier-only-writer": {"javaSources"},
+	"repository.front-matter.adr-reference": {"decisionIds", "governedMarkdown"},
+	"repository.front-matter.audience": {"documentationRoots", "governedMarkdown"},
+	"repository.front-matter.freshness": {"governedMarkdown"},
+	"repository.front-matter.mapping": {"governedMarkdown"},
+	"repository.front-matter.yaml": {"governedMarkdown"},
+	"repository.interface.normative-proposal-path": {"governedMarkdown"},
+}
+
+# The rules this evaluation could not decide, each with the families it was not given. A caller that
+# gets an empty deny set and a non-empty unevaluated set has NOT been told the corpus is clean.
+unevaluated contains {"rule": rule, "missing": sort(missing)} if {
+	some rule, families in fact_dependent_rules
+	missing := {family |
+		some family in families
+		not repository_facts_supplied(family)
+	}
+	count(missing) > 0
+}
+
 deny contains {"msg": "governed Markdown front matter is invalid YAML", "path": fact.path, "rule": "repository.front-matter.yaml"} if {
 	repository_facts_supplied("governedMarkdown")
 	some fact in object.get(repository_facts, "governedMarkdown", [])

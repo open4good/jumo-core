@@ -4,6 +4,20 @@ import rego.v1
 
 import data.jumo.lib.corpus
 
+# The one entrypoint a runtime corpus gate should call
+# (corpus-rules-silently-unchecked-at-runtime AC3): what this evaluation refused, and what it could
+# not decide because it was not given the facts those rules need.
+#
+# A single rule rather than two calls, and rather than the whole `data.jumo.corpus` package. Two
+# calls would double a request measured at 2068-6375 ms against the live PDP, on the very path whose
+# timeout ceiling once sat below its floor; asking for the package would serialize every helper rule
+# in it, including whole-corpus derived sets, to answer a question about two.
+#
+# `deny` alone remains a valid entrypoint and is what CI's Conftest run uses -- CI always supplies
+# every fact family, so its unevaluated set is empty by construction and asking for it would add
+# nothing.
+verdict := {"deny": deny, "unevaluated": unevaluated}
+
 placeholder_tokens := {"TODO", "FIXME", "XXX", "CHANGEME", "TBD"}
 
 deny contains corpus.violation("corpus.api-version.v1alpha1-refused", document, message) if {

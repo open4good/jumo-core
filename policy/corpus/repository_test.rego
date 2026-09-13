@@ -152,3 +152,83 @@ test_allows_a_git_provider_write_inside_forge_applier if {
 	violations := data.jumo.corpus.deny with input as [facts]
 	not has_rule(violations, "repository.forge.applier-only-writer")
 }
+
+# --- corpus-rules-silently-unchecked-at-runtime AC4: the three guards that can flip polarity ---
+#
+# Most rules in this file ITERATE a fact family, so an absent family yields no iterations and they
+# fall silent -- their guards are declarations, and removing one changes nothing observable. These
+# three are different: each iterates one family and tests MEMBERSHIP against a second. With the
+# second absent, every member fails the test and the rule denounces everything it walks.
+#
+# That state was unreachable while facts were all-or-nothing. runtime-repository-facts-provider
+# supplies some families and not others, so it is reachable now, and these are the mutation proofs
+# AC4 asks for. Each is a pair: one case asserting silence when the membership family is missing, one
+# asserting the rule still bites when it is present. A family that is PRESENT BUT EMPTY counts as
+# supplied for all three -- a corpus genuinely can have no ADRs -- so these fixtures OMIT the key
+# rather than setting it to [].
+
+completed_criterion := {
+	"workOrderId": "some-order", "criterionId": "AC1",
+	"camelCaseTokens": ["NoSuchClassName"], "keywords": ["container"], "pathScope": [],
+}
+
+test_evidence_vocabulary_stays_silent_when_vocabulary_is_absent if {
+	facts := item("repository-facts.json", {"jumoRepositoryFacts": {
+		"completedCriteria": [completed_criterion],
+		"javaSources": [{"path": "modules/x/src/main/java/X.java", "text": ""}],
+	}})
+	violations := data.jumo.corpus.deny with input as [facts]
+	not has_rule(violations, "repository.evidence.vocabulary")
+}
+
+test_evidence_vocabulary_still_refuses_an_unknown_token_when_vocabulary_is_supplied if {
+	facts := item("repository-facts.json", {"jumoRepositoryFacts": {
+		"completedCriteria": [completed_criterion],
+		"vocabulary": ["SomethingElse"],
+		"javaSources": [{"path": "modules/x/src/main/java/X.java", "text": ""}],
+	}})
+	violations := data.jumo.corpus.deny with input as [facts]
+	has_rule(violations, "repository.evidence.vocabulary")
+}
+
+# javaSources decides criterion_has_candidate, and this rule fires on its NEGATION -- so an absent
+# javaSources would denounce every container-keyword criterion in the corpus.
+test_evidence_keyword_stays_silent_when_java_sources_is_absent if {
+	facts := item("repository-facts.json", {"jumoRepositoryFacts": {
+		"completedCriteria": [completed_criterion],
+		"vocabulary": ["NoSuchClassName"],
+	}})
+	violations := data.jumo.corpus.deny with input as [facts]
+	not has_rule(violations, "repository.evidence.keyword")
+}
+
+test_evidence_keyword_still_refuses_a_criterion_with_no_candidate_when_supplied if {
+	facts := item("repository-facts.json", {"jumoRepositoryFacts": {
+		"completedCriteria": [completed_criterion],
+		"vocabulary": ["NoSuchClassName"],
+		"javaSources": [{"path": "modules/x/src/main/java/Unrelated.java", "text": ""}],
+	}})
+	violations := data.jumo.corpus.deny with input as [facts]
+	has_rule(violations, "repository.evidence.keyword")
+}
+
+dangling_adr := {
+	"path": "docs/decisions/ADR-0002-example.md", "status": "MAPPING",
+	"frontMatter": {"supersedes": ["ADR-0000"], "audience": "PROJECT_SCOPED"},
+}
+
+test_adr_reference_stays_silent_when_decision_ids_is_absent if {
+	facts := item("repository-facts.json", {"jumoRepositoryFacts": {"governedMarkdown": [dangling_adr]}})
+	violations := data.jumo.corpus.deny with input as [facts]
+	not has_rule(violations, "repository.front-matter.adr-reference")
+}
+
+# And an EMPTY decisionIds still refuses, because a corpus with no ADRs genuinely has none: that is
+# the per-family emptiness rule, asserted rather than left to the comment explaining it.
+test_adr_reference_refuses_a_dangling_reference_against_an_empty_decision_set if {
+	facts := item("repository-facts.json", {"jumoRepositoryFacts": {
+		"governedMarkdown": [dangling_adr], "decisionIds": [],
+	}})
+	violations := data.jumo.corpus.deny with input as [facts]
+	has_rule(violations, "repository.front-matter.adr-reference")
+}

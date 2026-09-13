@@ -27,15 +27,29 @@ payload_schema_slots(ref) := object.get(object.get(repository_facts, "payloadSch
 # `of` (a generated LinkML class) and `payloadSchemaRef` (a raw JSON Schema file, for a payload
 # with no generated class -- canonical decision 15 forbids the metamodel naming that instance)
 # are mutually exclusive: a projection's payload shape comes from exactly one authority.
+#
+# Each branch is guarded by the family it reads, so an unsupplied family leaves this function
+# UNDEFINED rather than returning an empty slot list. That distinction is the whole rule: the one
+# consumer, corpus.projection.field-path, asks `not field.path in slots`, which is true of every
+# path when slots is empty -- so an absent payloadSchemaSlots would refuse every field of every
+# valid projection, while an undefined projection_slots makes the rule simply not fire.
+#
+# Not hypothetical, and found by running it: the deployed shape strips .git from every contract
+# source, so payloadSchemaSlots cannot be read at a revision there while classSlots still arrives
+# from the generated artifact. Before runtime-repository-facts-provider that combination could not
+# occur -- facts were absent entirely and this function was undefined for every document -- and
+# supplying facts is exactly what made it reachable.
 projection_slots(document) := slots if {
 	of := object.get(corpus.spec(document), "of", "")
 	of != ""
+	repository_facts_supplied("classSlots")
 	slots := class_slots(of)
 }
 
 projection_slots(document) := slots if {
 	object.get(corpus.spec(document), "of", "") == ""
 	ref := object.get(corpus.spec(document), "payloadSchemaRef", "")
+	repository_facts_supplied("payloadSchemaSlots")
 	slots := payload_schema_slots(ref)
 }
 

@@ -803,3 +803,34 @@ test_empty_family_does_not_count_as_supplied if {
 	not has_rule(violations, "corpus.projection.class")
 	has_rule(violations, "corpus.projection.payload-schema")
 }
+
+# The deployed shape, where the contract sources are archives with .git removed: payloadSchemaSlots
+# cannot be read at a revision, while classSlots still arrives from the generated artifact. Before
+# runtime-repository-facts-provider that combination could not occur, because facts were absent
+# entirely. Supplying them is what made it reachable, and an unguarded projection_slots would then
+# refuse every field of every valid payload-schema projection.
+valid_payload_schema_projection := document(".jumo/projections/deployed-good.yml", "ProjectionSpec", "deployed-good", {
+	"ownerRealm": "home", "payloadSchemaRef": "setup-identity", "projectionKind": "FORM",
+	"renderedBy": "cockpit",
+	"sections": [{"id": "s", "i18nKey": "s", "fields": [{"path": "nickname", "representation": "SHORT_TEXT"}]}],
+})
+
+test_field_path_stays_silent_when_the_payload_family_is_absent if {
+	violations := data.jumo.corpus.deny with input as array.concat(
+		[facts_class_slots_only, capabilities, surface],
+		[valid_payload_schema_projection],
+	)
+	not has_rule(violations, "corpus.projection.field-path")
+}
+
+# The mirror, so the silence above is not the silence of a rule that never fires: with the family
+# supplied, a field that is genuinely not a slot is still refused.
+test_field_path_still_refuses_an_unknown_slot_when_the_family_is_supplied if {
+	bad := document(".jumo/projections/deployed-bad-slot.yml", "ProjectionSpec", "deployed-bad-slot", {
+		"ownerRealm": "home", "payloadSchemaRef": "setup-identity", "projectionKind": "FORM",
+		"renderedBy": "cockpit",
+		"sections": [{"id": "s", "i18nKey": "s", "fields": [{"path": "notASlot", "representation": "SHORT_TEXT"}]}],
+	})
+	violations := data.jumo.corpus.deny with input as [facts, capabilities, surface, bad]
+	has_rule(violations, "corpus.projection.field-path")
+}

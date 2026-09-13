@@ -834,3 +834,74 @@ test_field_path_still_refuses_an_unknown_slot_when_the_family_is_supplied if {
 	violations := data.jumo.corpus.deny with input as [facts, capabilities, surface, bad]
 	has_rule(violations, "corpus.projection.field-path")
 }
+
+# --- corpus-rules-silently-unchecked-at-runtime AC2/AC4: contractKinds is declared, not assumed ---
+#
+# These four rules read contractKinds directly, so before runtime-repository-facts-provider they were
+# undefined and silent whenever facts were absent -- wrong, but harmlessly so. That order made a
+# THIRD state reachable for the first time: facts present, this family missing. RepositoryFacts omits
+# contractKinds whenever manifest.json cannot be read, and the schema bundle beside it can read fine,
+# so classSlots and payloadSchemaSlots arrive while contractKinds does not. The rules then compare
+# against an empty kind list and refuse every optionsFrom and every emission kind in the corpus.
+# Reproduced against the real bundle on 2026-09-13: a projection whose optionsFrom named the genuine
+# kind TeamSpec was refused as "not a declared contract kind".
+
+facts_without_contract_kinds := item("repository-facts.json", {"jumoRepositoryFacts": {
+	"classSlots": {"TeamSpec": ["teamName", "members"]},
+	"payloadSchemaSlots": {"setup-identity": ["nickname"]},
+}})
+
+valid_options_projection := document(".jumo/projections/kinds-guard.yml", "ProjectionSpec", "kinds-guard", {
+	"ownerRealm": "home", "of": "TeamSpec", "projectionKind": "FORM",
+	"sections": [{
+		"id": "s", "i18nKey": "s",
+		"fields": [{"path": "members", "representation": "ENTITY_COLLECTION", "optionsFrom": "ConnectorDefinition"}],
+	}],
+})
+
+test_options_kind_stays_silent_when_contract_kinds_is_absent if {
+	violations := data.jumo.corpus.deny with input as [facts_without_contract_kinds, valid_options_projection]
+	not has_rule(violations, "corpus.projection.options-kind")
+}
+
+# The mirror: with the family supplied, a genuinely unknown kind is still refused. Without this the
+# test above would pass just as well against a deleted rule.
+test_options_kind_still_refuses_an_unknown_kind_when_supplied if {
+	bad := document(".jumo/projections/kinds-guard-bad.yml", "ProjectionSpec", "kinds-guard-bad", {
+		"ownerRealm": "home", "of": "TeamSpec", "projectionKind": "FORM",
+		"sections": [{
+			"id": "s", "i18nKey": "s",
+			"fields": [{"path": "members", "representation": "ENTITY_COLLECTION", "optionsFrom": "NoSuchKind"}],
+		}],
+	})
+	violations := data.jumo.corpus.deny with input as [facts, bad]
+	has_rule(violations, "corpus.projection.options-kind")
+}
+
+# The same reachable-third-state argument applies to the emission rules, which read the same family.
+# The fixture is spec.emission.targetKind and not a step-level "kind": written the latter way first,
+# this pair passed while corpus.journey.emission-kind never evaluated at all -- the only violation
+# raised was emission-missing. An absence assertion over a rule that cannot fire proves nothing, so
+# the positive case below is what keeps the negative one honest.
+emitting_journey(identifier, target) := document(sprintf(".jumo/journeys/%s.yml", [identifier]), "AssistedJourney", identifier, {
+	"ownerRealm": "home",
+	"journeyKind": "PROPOSAL",
+	"emission": {"targetKind": target, "pathTemplate": ".jumo/connectors/{id}.yml"},
+	"steps": [{"id": "emit", "stepKind": "CONFIRM", "i18nKey": "s"}],
+})
+
+test_emission_kind_stays_silent_when_contract_kinds_is_absent if {
+	violations := data.jumo.corpus.deny with input as [
+		facts_without_contract_kinds,
+		emitting_journey("kinds-guard-emission", "NoSuchKind"),
+	]
+	not has_rule(violations, "corpus.journey.emission-kind")
+}
+
+test_emission_kind_still_refuses_an_unknown_kind_when_supplied if {
+	violations := data.jumo.corpus.deny with input as [
+		facts,
+		emitting_journey("kinds-guard-emission-bad", "NoSuchKind"),
+	]
+	has_rule(violations, "corpus.journey.emission-kind")
+}

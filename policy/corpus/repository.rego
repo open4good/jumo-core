@@ -42,24 +42,44 @@ repository_facts := facts if {
 # javaSources as an empty list, find no match for every javaType, and deny every STRUCTURED
 # prompt -- recreating on one rule exactly the defect candidate-corpus-envelope-faithful guarded.
 # A partially-supplied facts object must not arm the rules it cannot satisfy.
+# Whether PRESENT BUT EMPTY counts as supplied depends on the family, and getting this uniform in
+# either direction is wrong.
+#
+# For most families an empty value is a real answer: a corpus with no ADRs genuinely has no
+# decisionIds, and repository.front-matter.adr-reference must still refuse a supersedes pointing at
+# one -- there is a test asserting exactly that. Treating empty as unsupplied there would silence a
+# rule that was working.
+#
+# For these three it never is. The metamodel always has generated classes, declared payload schemas
+# and Git-contract kinds, so an empty value can only mean the bundle, the schemas directory or
+# manifest.json could not be read. Arming a membership test against it refuses every document --
+# which is the original defect candidate-corpus-envelope-faithful guarded, and, measured on
+# 2026-09-13, exactly what an absent contractKinds did to a projection naming the real kind TeamSpec.
+never_legitimately_empty := {"classSlots", "payloadSchemaSlots", "contractKinds"}
+
+supplied_fact_families contains name if {
+	some name, _ in repository_facts
+	not name in never_legitimately_empty
+}
+
 supplied_fact_families contains name if {
 	some name, value in repository_facts
+	name in never_legitimately_empty
 	count(value) > 0
 }
 
-# A family that is PRESENT BUT EMPTY is not supplied. `not x in set()` is true for every x, so an
-# empty classSlots is indistinguishable from a complete one that happens to contain nothing, and
-# treating it as supplied is the same polarity error one layer down.
 repository_facts_supplied(family) if {
 	family in supplied_fact_families
 }
 
 deny contains {"msg": "governed Markdown front matter is invalid YAML", "path": fact.path, "rule": "repository.front-matter.yaml"} if {
+	repository_facts_supplied("governedMarkdown")
 	some fact in object.get(repository_facts, "governedMarkdown", [])
 	fact.status == "INVALID_YAML"
 }
 
 deny contains {"msg": "governed Markdown front matter must be a mapping", "path": fact.path, "rule": "repository.front-matter.mapping"} if {
+	repository_facts_supplied("governedMarkdown")
 	some fact in object.get(repository_facts, "governedMarkdown", [])
 	fact.status == "NOT_MAPPING"
 }
@@ -84,6 +104,8 @@ longest_documentation_root(path) := root if {
 }
 
 deny contains {"msg": "governed Markdown audience exceeds its declared documentation root", "path": fact.path, "rule": "repository.front-matter.audience"} if {
+	repository_facts_supplied("governedMarkdown")
+	repository_facts_supplied("documentationRoots")
 	some fact in object.get(repository_facts, "governedMarkdown", [])
 	fact.status == "MAPPING"
 	root := longest_documentation_root(fact.path)
@@ -104,6 +126,7 @@ duration_days(duration) := to_number(trim_suffix(trim_prefix(duration, "P"), "Y"
 }
 
 deny contains {"msg": "governed Markdown verification is stale", "path": fact.path, "rule": "repository.front-matter.freshness"} if {
+	repository_facts_supplied("governedMarkdown")
 	some fact in object.get(repository_facts, "governedMarkdown", [])
 	fact.status == "MAPPING"
 	verified := object.get(fact.frontMatter, "verified_at", null)
@@ -117,6 +140,8 @@ deny contains {"msg": "governed Markdown verification is stale", "path": fact.pa
 }
 
 deny contains {"msg": sprintf("%s names an absent ADR", [direction]), "path": fact.path, "rule": "repository.front-matter.adr-reference"} if {
+	repository_facts_supplied("governedMarkdown")
+	repository_facts_supplied("decisionIds")
 	some fact in object.get(repository_facts, "governedMarkdown", [])
 	fact.status == "MAPPING"
 	startswith(fact.path, "docs/decisions/")
@@ -143,6 +168,7 @@ deny contains {
 	"path": fact.path,
 	"rule": "repository.interface.normative-proposal-path",
 } if {
+	repository_facts_supplied("governedMarkdown")
 	some fact in object.get(repository_facts, "governedMarkdown", [])
 	fact.status == "MAPPING"
 	fact.frontMatter.normative == true
@@ -174,6 +200,8 @@ deny contains corpus.violation("repository.realm.chief-of-staff", document, mess
 }
 
 deny contains {"msg": sprintf("%s/%s names unknown implementation token %s", [criterion.workOrderId, criterion.criterionId, token]), "path": sprintf(".jumo/work/%s.yml", [criterion.workOrderId]), "rule": "repository.evidence.vocabulary"} if {
+	repository_facts_supplied("completedCriteria")
+	repository_facts_supplied("vocabulary")
 	some criterion in object.get(repository_facts, "completedCriteria", [])
 	some token in object.get(criterion, "camelCaseTokens", [])
 	not token in object.get(repository_facts, "vocabulary", [])
@@ -204,12 +232,16 @@ criterion_has_container_evidence(criterion) if {
 }
 
 deny contains {"msg": sprintf("%s/%s claims container behavior without implementation evidence", [criterion.workOrderId, criterion.criterionId]), "path": sprintf(".jumo/work/%s.yml", [criterion.workOrderId]), "rule": "repository.evidence.keyword"} if {
+	repository_facts_supplied("completedCriteria")
+	repository_facts_supplied("javaSources")
 	some criterion in object.get(repository_facts, "completedCriteria", [])
 	"container" in object.get(criterion, "keywords", [])
 	not criterion_has_candidate(criterion)
 }
 
 deny contains {"msg": sprintf("%s/%s claims container behavior without implementation evidence", [criterion.workOrderId, criterion.criterionId]), "path": sprintf(".jumo/work/%s.yml", [criterion.workOrderId]), "rule": "repository.evidence.keyword"} if {
+	repository_facts_supplied("completedCriteria")
+	repository_facts_supplied("javaSources")
 	some criterion in object.get(repository_facts, "completedCriteria", [])
 	"container" in object.get(criterion, "keywords", [])
 	criterion_has_candidate(criterion)
@@ -225,6 +257,7 @@ github_write_evidence(source) if {
 }
 
 deny contains {"msg": sprintf("%q writes to a Git provider outside forge-applier", [source.path]), "path": source.path, "rule": "repository.forge.applier-only-writer"} if {
+	repository_facts_supplied("javaSources")
 	some source in object.get(repository_facts, "javaSources", [])
 	not startswith(source.path, "modules/forge-applier/")
 	github_write_evidence(source)

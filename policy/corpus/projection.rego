@@ -215,6 +215,7 @@ nested_source_present(field) := 0 if {
 }
 
 deny contains corpus.violation("corpus.projection.options-nested-kind", document, message) if {
+	repository_facts_supplied("contractKinds")
 	some document in projection_specs
 	kinds := object.get(repository_facts, "contractKinds", [])
 	some section_index, section in object.get(corpus.spec(document), "sections", [])
@@ -267,6 +268,7 @@ exactly_one_condition_form(condition) if {
 }
 
 deny contains corpus.violation("corpus.projection.options-kind", document, message) if {
+	repository_facts_supplied("contractKinds")
 	some document in projection_specs
 	kinds := object.get(repository_facts, "contractKinds", [])
 	some section_index, section in object.get(corpus.spec(document), "sections", [])
@@ -553,6 +555,7 @@ deny contains corpus.violation("corpus.journey.emission-bundle-invalid-fanout", 
 }
 
 deny contains corpus.violation("corpus.journey.emission-kind", document, message) if {
+	repository_facts_supplied("contractKinds")
 	some document in proposal_journeys
 	some pair in document_emissions(document)
 	label := pair[0]
@@ -563,6 +566,7 @@ deny contains corpus.violation("corpus.journey.emission-kind", document, message
 }
 
 deny contains corpus.violation("corpus.journey.emission-reference-kind", document, message) if {
+	repository_facts_supplied("contractKinds")
 	some document in proposal_journeys
 	some pair in document_emissions(document)
 	label := pair[0]

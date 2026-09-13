@@ -10,8 +10,7 @@ spec:
   nameI18nKey: journeyOnboardingTitle
   summaryI18nKey: onboardingSummary
   description: 'Le parcours d''accueil et d''initialisation de l''environnement Jumo : configuration d''identité, provisioning
-    de la VM d''exécution, liaison du dépôt Git racine, appairage des clients IA, captation d''intention pour les connecteurs,
-    mise en place de ces connecteurs via le sous-parcours dédié, et bilan d''activation.'
+    de la VM d''exécution, liaison du dépôt Git racine, appairage des clients IA et bilan d''activation.'
   category: workspace
   icon: mdi-compass-outline
   interruptible: false
@@ -96,39 +95,6 @@ spec:
       requiredFields: []
       presentationOverride: {subJourneyOpenMode: MODAL}
       subAssistedJourneyRef: {kind: AssistedJourney, namespace: dev.jumo.core, id: configure-api-accounts}
-    - id: capture-connector-intent
-      requiredObligations: []
-      name: Découverte des Connecteurs
-      description: Dialogue avec Nestor pour analyser vos outils et sélectionner les connecteurs appropriés.
-      personaNarration: Discutons de votre quotidien de développeur pour déterminer quels connecteurs et MCP activer.
-      nameI18nKey: journeyOnboardingCaptureConnectorIntentName
-      descriptionI18nKey: journeyOnboardingCaptureConnectorIntentDescription
-      narrationI18nKey: journeyOnboardingCaptureConnectorIntentNarration
-      stepKind: DIALOGUE_COLLECT
-      dependsOn: [setup-identity]
-      parallelizable: true
-      requiredFields:
-        - {field: selectedConnectors, i18nKey: journeyConnectorsField}
-      promptTemplateRef:
-        kind: PromptTemplate
-        namespace: dev.jumo.core
-        id: connector-intent-capture
-    - id: setup-connectors
-      requiredObligations: []
-      name: Mise en Place des Connecteurs
-      description: Sélection puis confirmation des connecteurs à appairer, via le parcours réutilisable dédié.
-      personaNarration: Passons à la mise en place concrète des connecteurs que nous venons de choisir ensemble.
-      nameI18nKey: journeyOnboardingSetupConnectorsName
-      descriptionI18nKey: journeyOnboardingSetupConnectorsDescription
-      narrationI18nKey: journeyOnboardingSetupConnectorsNarration
-      stepKind: SUB_JOURNEY
-      dependsOn: [setup-identity]
-      parallelizable: true
-      requiredFields: []
-      subAssistedJourneyRef:
-        kind: AssistedJourney
-        namespace: dev.jumo.core
-        id: setup-connector
     - id: summary-and-activate
       requiredObligations: []
       name: Bilan et Activation
@@ -139,7 +105,7 @@ spec:
       descriptionI18nKey: journeyOnboardingSummaryAndActivateDescription
       narrationI18nKey: journeyOnboardingSummaryAndActivateNarration
       stepKind: COLLECT
-      dependsOn: [provision-execution-cell, link-repository, configure-api-accounts, capture-connector-intent, setup-connectors]
+      dependsOn: [provision-execution-cell, link-repository, configure-api-accounts]
       requiredFields:
         - {field: roadmapRef, i18nKey: journeyRoadmapRefField}
         - {field: confirmed, i18nKey: journeyConfirmField}

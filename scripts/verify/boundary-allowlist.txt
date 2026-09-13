@@ -3,8 +3,8 @@
 # (corpus-budget-extension-and-agents-guide measures boundary_allowlist_entries).
 # Format: metamodel:<ClassName>  |  literal:<repo-relative-path>:<identifier>
 
-# JourneyService.emit no longer has a JourneyService.java entry: declare-provider-account's
-# conditional gatewayRef closed via fieldConditions, and setup-cli-worker's WorkerSubstrate
+# JourneyService.emit no longer has a JourneyService.java entry: a conditional field closes via
+# emission.fieldConditions, and setup-cli-worker's WorkerSubstrate
 # rendering now dispatches on the declared emission.targetKind (a contract kind name, not a
 # journey identifier), not the journeyId literal. ConversationService.resolveRoute now resolves
 # its promptId from the PromptTemplate declaring the matching conversationTask (corpus.prompt.

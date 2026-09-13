@@ -194,10 +194,14 @@ spec:
       reversible: true
       minimumAssurance: OBSERVED
     - name: attention.item.publish
-      description: Publish a typed attention item to the owner without granting effect authority.
-      riskTier: LOW
-      reversible: true
-      minimumAssurance: SELF_REPORTED
+      description: Publish a typed attention item to its principal by Web Push and, for an email-shaped principal identifier, by email -- an outbound notification that cannot be recalled.
+      riskTier: MEDIUM
+      reversible: false
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: attention.item.read
       description: Read the authenticated principal's Realm-scoped open attention routing items.
       riskTier: LOW

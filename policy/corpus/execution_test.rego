@@ -744,7 +744,7 @@ event_capabilities := document(
 	{"capabilities": [
 		{"name": "event.capture.normalize", "riskTier": "LOW"},
 		{"name": "event.test.effect", "producesExternalEffect": true},
-		{"name": "attention.item.publish", "riskTier": "LOW"},
+		{"name": "attention.item.publish", "riskTier": "MEDIUM", "reversible": false, "producesExternalEffect": true},
 	]},
 )
 

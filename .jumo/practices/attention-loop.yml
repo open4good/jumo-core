@@ -11,4 +11,4 @@ spec:
   processSpecRef:
     kind: ProcessSpec
     namespace: dev.jumo.core
-    id: attention-loop--1-0-0
+    id: attention-loop--1-1-0

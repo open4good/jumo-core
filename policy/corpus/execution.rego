@@ -1132,7 +1132,12 @@ deny contains corpus.violation("corpus.event-ingress.inactive-target", document,
 
 # The first SERVICE step reachable from START in an EVENT-started ProcessSpec must be an observation
 # (semanticStage OBSERVATION) or an attention publication (capability attention.item.publish) before
-# any other effect -- untrusted event content earns no more trust than that on its own.
+# any other effect. The publication carve-out is not inert: publishing sends a Web Push to the
+# recipient's subscribed browsers and, for an email-shaped principal, an email, so an exempted step
+# reaches a person's devices before anything has observed the event. That is accepted because the
+# recipient is the Realm owner -- EventIngressReceiptService resolves it through realmOwner. Nothing
+# in this policy constrains an attention item's target, so that guarantee lives in that code, not
+# here. Rate limiting against event-injection spam is a separate control that does not exist yet.
 event_first_effect_observed(step) if step.semanticStage == "OBSERVATION"
 
 event_first_effect_observed(step) if step.capabilityRef == "attention.item.publish"

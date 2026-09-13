@@ -745,3 +745,61 @@ test_unknown_projection_class_is_not_refused_when_facts_are_absent if {
 	violations := data.jumo.corpus.deny with input as [bad]
 	not has_rule(violations, "corpus.projection.class")
 }
+
+# --- runtime-repository-facts-provider AC4: the guard is per family, not per evaluation ---
+#
+# These four tests are the only ones in this file that can see the difference between the
+# per-family guard and the single boolean it replaced, because every other test supplies a
+# complete facts object and therefore passes under either. They are written as a pair per
+# family -- one asserting the rule DOES fire, one asserting a sibling rule does NOT -- because
+# an assertion that a rule is silent passes just as well against a rule that was deleted.
+
+facts_payload_schema_only := item("repository-facts.json", {"jumoRepositoryFacts": {
+	"payloadSchemaSlots": {"setup-identity": ["nickname"]},
+}})
+
+facts_class_slots_only := item("repository-facts.json", {"jumoRepositoryFacts": {
+	"classSlots": {"TeamSpec": ["teamName", "members"]},
+}})
+
+facts_empty_class_slots := item("repository-facts.json", {"jumoRepositoryFacts": {
+	"classSlots": {},
+	"payloadSchemaSlots": {"setup-identity": ["nickname"]},
+}})
+
+bad_class := document(".jumo/projections/partial-bad-class.yml", "ProjectionSpec", "partial-bad-class", {
+	"ownerRealm": "home", "of": "NoSuchClass", "projectionKind": "FORM",
+	"sections": [{"id": "s", "i18nKey": "s", "fields": [{"path": "x", "representation": "SHORT_TEXT"}]}],
+})
+
+bad_payload_schema := document(".jumo/projections/partial-bad-schema.yml", "ProjectionSpec", "partial-bad-schema", {
+	"ownerRealm": "home", "payloadSchemaRef": "no-such-schema", "projectionKind": "FORM",
+	"sections": [{"id": "s", "i18nKey": "s", "fields": [{"path": "x", "representation": "SHORT_TEXT"}]}],
+})
+
+# payloadSchemaSlots supplied, classSlots absent: the payload-schema rule must do its job.
+test_payload_schema_rule_fires_when_only_its_own_family_is_supplied if {
+	violations := data.jumo.corpus.deny with input as [facts_payload_schema_only, bad_payload_schema]
+	has_rule(violations, "corpus.projection.payload-schema")
+}
+
+# Same input, and the class rule must stay silent rather than read an absent classSlots as a
+# complete-but-empty one. Under a single boolean guard this denies, which is the defect.
+test_class_rule_stays_silent_when_its_own_family_is_absent if {
+	violations := data.jumo.corpus.deny with input as [facts_payload_schema_only, bad_class]
+	not has_rule(violations, "corpus.projection.class")
+}
+
+# The mirror image, so neither assertion above can be satisfied by a rule that never fires at all.
+test_class_rule_fires_when_only_its_own_family_is_supplied if {
+	violations := data.jumo.corpus.deny with input as [facts_class_slots_only, bad_class]
+	has_rule(violations, "corpus.projection.class")
+}
+
+# A family PRESENT BUT EMPTY is not supplied. `not x in set()` is true for every x, so an empty
+# classSlots would arm the rule against every projection in the corpus.
+test_empty_family_does_not_count_as_supplied if {
+	violations := data.jumo.corpus.deny with input as [facts_empty_class_slots, bad_class, bad_payload_schema]
+	not has_rule(violations, "corpus.projection.class")
+	has_rule(violations, "corpus.projection.payload-schema")
+}

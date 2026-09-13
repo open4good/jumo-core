@@ -29,11 +29,29 @@ repository_facts := facts if {
 # accepts when facts are present. Guarding restores "absence of evidence is not evidence of absence".
 #
 # The cost is deliberate and is NOT nothing: a candidate with a genuinely bad payloadSchemaRef, `of`,
-# output.schemaRef or output.javaType is no longer caught at runtime, only in CI where facts are
-# supplied. Restoring that is its own work, tracked separately -- guarding is what makes the gate
-# usable at all, not what makes it complete.
-repository_facts_supplied if {
-	count(repository_facts) > 0
+# output.schemaRef or output.javaType is caught only where the family it needs was actually
+# supplied. runtime-repository-facts-provider buys most of that back by deriving three of the
+# families inside the control plane -- guarding is what makes the gate usable at all, not what
+# makes it complete.
+#
+# The guard is PER FAMILY, and that is the whole point of it rather than a refinement of it. One
+# boolean over the whole facts object would re-arm all four rule families the moment ANY family
+# arrived, and the runtime can supply classSlots, payloadSchemaSlots and contractKinds but NOT
+# javaSources -- 1265 source texts, 5.3 MB, measured 2026-09-13, which is not a per-evaluation
+# input. Under a single boolean, corpus.prompt.structured-java-type would then read an absent
+# javaSources as an empty list, find no match for every javaType, and deny every STRUCTURED
+# prompt -- recreating on one rule exactly the defect candidate-corpus-envelope-faithful guarded.
+# A partially-supplied facts object must not arm the rules it cannot satisfy.
+supplied_fact_families contains name if {
+	some name, value in repository_facts
+	count(value) > 0
+}
+
+# A family that is PRESENT BUT EMPTY is not supplied. `not x in set()` is true for every x, so an
+# empty classSlots is indistinguishable from a complete one that happens to contain nothing, and
+# treating it as supplied is the same polarity error one layer down.
+repository_facts_supplied(family) if {
+	family in supplied_fact_families
 }
 
 deny contains {"msg": "governed Markdown front matter is invalid YAML", "path": fact.path, "rule": "repository.front-matter.yaml"} if {

@@ -149,6 +149,25 @@ deny contains corpus.violation("corpus.work.completed-in-ledger", document, mess
 	message := "a COMPLETED WorkOrder must be a closure record under .jumo/work/ledger/"
 }
 
+# A specification file explains an order; it never obliges. The location is what policy checks,
+# because the two roots mean different things: .jumo/specifications/ is live design an implementing
+# agent is meant to read, archive/ is pre-v0 ideation AGENTS.md labels history. Before this rule the
+# only budget-free home for a long specification WAS archive/, so seven open orders pointed an
+# implementer at a text the corpus calls historical (owner ruling 2026-09-13).
+#
+# Scoped to open work, and deliberately asymmetric. A ledger record may reference EITHER root: a
+# specification shared by several orders stays under .jumo/specifications/ until its last open
+# referrer closes, so a record closed before that move still names the live path and was correct
+# when written.
+deny contains corpus.violation("corpus.work.specification-ref-open-location", document, message) if {
+	some document in corpus.documents
+	document.kind == "WorkOrder"
+	not contains(corpus.path(document), "/work/ledger/")
+	some reference in object.get(corpus.spec(document), "specificationRefs", [])
+	not startswith(reference, ".jumo/specifications/")
+	message := sprintf("spec.specificationRefs %q: an open WorkOrder references a specification outside .jumo/specifications/", [reference])
+}
+
 deny contains corpus.violation("corpus.work.decline-reason-required", document, message) if {
 	some document in corpus.documents
 	document.kind == "WorkOrder"

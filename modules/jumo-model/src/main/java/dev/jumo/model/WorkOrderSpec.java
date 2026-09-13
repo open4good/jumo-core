@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.List;
 import java.util.List;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record WorkOrderSpec(String purpose, ContractReference producerRoleDefinitionRef, ContractReference teamSpecRef, ContractReference projectRef, String roadmapRef, List<String> decisionRefs, ContractReference verifierRoleDefinitionRef, WorkOrderState state, WorkOrderDeclineReason declineReason, String suspendedReason, String debtor, String creditor, String condition, List<AcceptanceCriterion> acceptanceCriteria, List<WorkOrderSpecification> specification, List<String> pathScope, List<ContractReference> secretBindingRefs, ConnectorOperationGrantTarget connectorOperationGrant, Boolean knowledgeSearchGrant, Ring ring, List<ContractReference> dependsOnWorkOrderRefs, ContractReference parentWorkOrderRef, List<String> sourceRefs, String contractRevision, List<String> evidenceRefs, String ledgerSourceRevision, ConsumptionReport consumption, ContractReference resourceBudgetRef)  {
+public record WorkOrderSpec(String purpose, ContractReference producerRoleDefinitionRef, ContractReference teamSpecRef, ContractReference projectRef, String roadmapRef, List<String> decisionRefs, ContractReference verifierRoleDefinitionRef, WorkOrderState state, WorkOrderDeclineReason declineReason, String suspendedReason, String debtor, String creditor, String condition, List<AcceptanceCriterion> acceptanceCriteria, List<WorkOrderSpecification> specification, List<String> specificationRefs, List<String> pathScope, List<ContractReference> secretBindingRefs, ConnectorOperationGrantTarget connectorOperationGrant, Boolean knowledgeSearchGrant, Ring ring, List<ContractReference> dependsOnWorkOrderRefs, ContractReference parentWorkOrderRef, List<String> sourceRefs, String contractRevision, List<String> evidenceRefs, String ledgerSourceRevision, ConsumptionReport consumption, ContractReference resourceBudgetRef)  {
 
     public static Builder builder() {
         return new Builder();
@@ -36,6 +37,7 @@ public record WorkOrderSpec(String purpose, ContractReference producerRoleDefini
         private String condition = "";
         private List<AcceptanceCriterion> acceptanceCriteria = List.of();
         private List<WorkOrderSpecification> specification = List.of();
+        private List<String> specificationRefs = List.of();
         private List<String> pathScope = List.of();
         private List<ContractReference> secretBindingRefs = List.of();
         private ConnectorOperationGrantTarget connectorOperationGrant = null;
@@ -126,6 +128,11 @@ public record WorkOrderSpec(String purpose, ContractReference producerRoleDefini
             return this;
         }
 
+        public Builder specificationRefs(List<String> specificationRefs) {
+            this.specificationRefs = Objects.requireNonNull(specificationRefs);
+            return this;
+        }
+
         public Builder pathScope(List<String> pathScope) {
             this.pathScope = Objects.requireNonNull(pathScope);
             return this;
@@ -192,7 +199,7 @@ public record WorkOrderSpec(String purpose, ContractReference producerRoleDefini
         }
 
     public WorkOrderSpec build() {
-            return new WorkOrderSpec(purpose, producerRoleDefinitionRef, teamSpecRef, projectRef, roadmapRef, decisionRefs, verifierRoleDefinitionRef, state, declineReason, suspendedReason, debtor, creditor, condition, acceptanceCriteria, specification, pathScope, secretBindingRefs, connectorOperationGrant, knowledgeSearchGrant, ring, dependsOnWorkOrderRefs, parentWorkOrderRef, sourceRefs, contractRevision, evidenceRefs, ledgerSourceRevision, consumption, resourceBudgetRef);
+            return new WorkOrderSpec(purpose, producerRoleDefinitionRef, teamSpecRef, projectRef, roadmapRef, decisionRefs, verifierRoleDefinitionRef, state, declineReason, suspendedReason, debtor, creditor, condition, acceptanceCriteria, specification, specificationRefs, pathScope, secretBindingRefs, connectorOperationGrant, knowledgeSearchGrant, ring, dependsOnWorkOrderRefs, parentWorkOrderRef, sourceRefs, contractRevision, evidenceRefs, ledgerSourceRevision, consumption, resourceBudgetRef);
         }
     }
 }

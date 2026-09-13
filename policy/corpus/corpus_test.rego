@@ -526,6 +526,66 @@ test_accepts_completed_work_in_ledger if {
 	not has_rule(violations, "corpus.work.completed-in-ledger")
 }
 
+test_open_work_refuses_a_specification_outside_the_live_directory if {
+	bad := document(
+		".jumo/work/points-at-history.yml",
+		"WorkOrder",
+		"points-at-history",
+		{
+			"operatorRef": "implementer",
+			"projectRef": "jumo",
+			"state": "IN_PROGRESS",
+			"acceptanceCriteria": [{"id": "AC1", "statement": "The result is reproducible."}],
+			"pathScope": ["docs/**"],
+			"ring": "RING_1_CONTROL_PLANE",
+			"specificationRefs": ["archive/specs/nestor-tool-first.md"],
+		},
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [bad])
+	has_rule(violations, "corpus.work.specification-ref-open-location")
+}
+
+test_open_work_accepts_a_specification_in_the_live_directory if {
+	good := document(
+		".jumo/work/points-at-live-design.yml",
+		"WorkOrder",
+		"points-at-live-design",
+		{
+			"operatorRef": "implementer",
+			"projectRef": "jumo",
+			"state": "IN_PROGRESS",
+			"acceptanceCriteria": [{"id": "AC1", "statement": "The result is reproducible."}],
+			"pathScope": ["docs/**"],
+			"ring": "RING_1_CONTROL_PLANE",
+			"specificationRefs": [".jumo/specifications/nestor-tool-first.md"],
+		},
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [good])
+	not has_rule(violations, "corpus.work.specification-ref-open-location")
+}
+
+# The asymmetry is the point, so it is tested rather than only commented: a closure record may keep
+# naming .jumo/specifications/ because the file only moves once the LAST open referrer closes.
+test_ledger_record_accepts_either_specification_root if {
+	closed := document(
+		".jumo/work/ledger/closed-with-spec.yml",
+		"WorkOrder",
+		"closed-with-spec",
+		{
+			"operatorRef": "implementer",
+			"projectRef": "jumo",
+			"state": "COMPLETED",
+			"acceptanceCriteria": [{"id": "AC1", "statement": "The result is reproducible."}],
+			"pathScope": ["docs/**"],
+			"ring": "RING_1_CONTROL_PLANE",
+			"evidenceRefs": ["commit:jumo 0000000"],
+			"specificationRefs": ["archive/specs/nestor-tool-first.md", ".jumo/specifications/still-open.md"],
+		},
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [closed])
+	not has_rule(violations, "corpus.work.specification-ref-open-location")
+}
+
 test_decline_reason_matches_declined_state if {
 	missing := document(
 		".jumo/work/declined.yml",

@@ -304,6 +304,17 @@ classes:
         inlined_as_list: true
         description: Long-form design lots too large for purpose/condition/acceptanceCriteria -- Markdown body, no
           language restriction (WorkOrder specification prose is exempt from the English-only rule, AGENTS.md).
+      specificationRefs:
+        range: string
+        multivalued: true
+        pattern: ^(\.jumo/specifications|archive/specs)/[a-z0-9][a-z0-9-]*\.md$
+        description: Markdown files holding explanatory design detail that an implementing agent reads when it takes
+          the order. They explain; they do not oblige -- acceptanceCriteria remain the only checked contract, and
+          nothing in a referenced file is verified. A file lives under .jumo/specifications/ while any order
+          referencing it is open and moves to archive/specs/ once the last one closes (owner ruling 2026-09-13);
+          policy refuses an open order pointing anywhere else. The file is Markdown and never .yml, because
+          ContractLoader and validate-contracts.py load every .jumo/**/*.yml as a contract and would refuse a
+          specification as a document with no declared kind.
       pathScope:
         range: string
         multivalued: true
@@ -426,8 +437,12 @@ classes:
       body:
         range: string
         required: true
-        pattern: ^.{1,}$
-        description: Markdown allowed.
+        pattern: ^[\s\S]+$
+        description: Markdown allowed, including multi-line Markdown. The character class is not decoration -- the
+          previous ^.{1,}$ rejected every body containing a newline, because `.` matches no line terminator in
+          either Java or ECMAScript without a flag the generated JSON Schema cannot carry. So the slot said
+          Markdown and accepted only a single line. ^[\s\S]+$ still refuses an empty body and is written as a
+          character class rather than an inline (?s) flag, which ECMAScript does not support.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

@@ -8,6 +8,7 @@ spec:
   journeyId: delegate-development-task
   name: Déléguer une tâche de développement
   nameI18nKey: journeyDelegateDevelopmentTaskTitle
+  descriptionI18nKey: journeyDelegateDevelopmentTaskDescription
   summaryI18nKey: delegateDevelopmentTaskSummary
   description: Capturez, décomposez et spécifiez une tâche de développement logiciel sous forme de
     WorkOrder gouverné.

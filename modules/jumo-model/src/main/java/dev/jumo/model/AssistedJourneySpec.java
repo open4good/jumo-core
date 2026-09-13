@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record AssistedJourneySpec(String journeyId, String name, String nameI18nKey, String description, String category, String icon, Boolean interruptible, AssistedJourneyConcurrencyPolicy concurrencyPolicy, Boolean firstRunMandatory, Boolean lifetimeUnique, String heroImage, JourneyPresentation presentation, ContractReference resourceBudgetRef, List<String> requiredCapabilities, List<ContractReference> policySetRefs, String emitsCapability, AssistedJourneyCompletionMode completionMode, AssistedJourneyNavigationMode navigationMode, AssistedJourneyEmission emission, List<AssistedJourneyEmissionBundleItem> emissionBundle, List<AssistedJourneyStep> steps, String summaryI18nKey)  {
+public record AssistedJourneySpec(String journeyId, String name, String nameI18nKey, String description, String descriptionI18nKey, String category, String icon, Boolean interruptible, AssistedJourneyConcurrencyPolicy concurrencyPolicy, Boolean firstRunMandatory, Boolean lifetimeUnique, String heroImage, JourneyPresentation presentation, ContractReference resourceBudgetRef, List<String> requiredCapabilities, List<ContractReference> policySetRefs, String emitsCapability, AssistedJourneyCompletionMode completionMode, AssistedJourneyNavigationMode navigationMode, AssistedJourneyEmission emission, List<AssistedJourneyEmissionBundleItem> emissionBundle, List<AssistedJourneyStep> steps, String summaryI18nKey)  {
 
     public static Builder builder() {
         return new Builder();
@@ -21,6 +21,7 @@ public record AssistedJourneySpec(String journeyId, String name, String nameI18n
         private String name = "";
         private String nameI18nKey = "";
         private String description = "";
+        private String descriptionI18nKey = "";
         private String category = "";
         private String icon = "";
         private Boolean interruptible = null;
@@ -58,6 +59,11 @@ public record AssistedJourneySpec(String journeyId, String name, String nameI18n
 
         public Builder description(String description) {
             this.description = Objects.requireNonNull(description);
+            return this;
+        }
+
+        public Builder descriptionI18nKey(String descriptionI18nKey) {
+            this.descriptionI18nKey = Objects.requireNonNull(descriptionI18nKey);
             return this;
         }
 
@@ -152,7 +158,7 @@ public record AssistedJourneySpec(String journeyId, String name, String nameI18n
         }
 
     public AssistedJourneySpec build() {
-            return new AssistedJourneySpec(journeyId, name, nameI18nKey, description, category, icon, interruptible, concurrencyPolicy, firstRunMandatory, lifetimeUnique, heroImage, presentation, resourceBudgetRef, requiredCapabilities, policySetRefs, emitsCapability, completionMode, navigationMode, emission, emissionBundle, steps, summaryI18nKey);
+            return new AssistedJourneySpec(journeyId, name, nameI18nKey, description, descriptionI18nKey, category, icon, interruptible, concurrencyPolicy, firstRunMandatory, lifetimeUnique, heroImage, presentation, resourceBudgetRef, requiredCapabilities, policySetRefs, emitsCapability, completionMode, navigationMode, emission, emissionBundle, steps, summaryI18nKey);
         }
     }
 }

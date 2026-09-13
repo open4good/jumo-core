@@ -8,6 +8,7 @@ spec:
   journeyId: create-project
   name: Créer un projet
   nameI18nKey: journeyCreateProjectTitle
+  descriptionI18nKey: journeyCreateProjectDescription
   summaryI18nKey: createProjectSummary
   description: Déclarez un nouveau projet gouverné, liez des dépôts GitHub externes, et mettez en
     place la documentation et les autorités d'état.

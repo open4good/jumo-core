@@ -8,6 +8,7 @@ spec:
   journeyId: configure-api-accounts
   name: Configuration de vos API
   nameI18nKey: journeyConfigureApiAccountsTitle
+  descriptionI18nKey: journeyConfigureApiAccountsDescription
   summaryI18nKey: configureApiAccountsSummary
   description: Activation et qualification réelle des ProviderAccount déjà déclarés dans ce Realm.
   category: apiIntegrations

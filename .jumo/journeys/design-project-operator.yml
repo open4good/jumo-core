@@ -8,6 +8,7 @@ spec:
   journeyId: design-project-operator
   name: Concevoir un opérateur pour l'équipe projet
   nameI18nKey: journeyDesignProjectOperatorTitle
+  descriptionI18nKey: journeyDesignProjectOperatorDescription
   summaryI18nKey: designProjectOperatorSummary
   description: Ajoutez un nouvel opérateur IA à une équipe projet existante sans reconstruire le reste
     de sa composition.

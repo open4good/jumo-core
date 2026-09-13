@@ -8,6 +8,7 @@ spec:
   journeyId: import-skill
   name: Importer une competence (Kit)
   nameI18nKey: journeyImportSkillTitle
+  descriptionI18nKey: journeyImportSkillDescription
   summaryI18nKey: importSkillSummary
   description: Importez un kit externe contenant des competences, parcours et artefacts complementaires.
   category: extension

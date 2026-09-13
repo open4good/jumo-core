@@ -1402,6 +1402,9 @@ classes:
         description: i18n key resolving this journey's own display name/title. Same fallback convention as AssistedJourneyStep.descriptionI18nKey -- takes precedence over the literal name string when present.
       description:
         range: string
+      descriptionI18nKey:
+        range: string
+        description: i18n key resolving this journey's own catalogue description, the text a hub card renders. Same fallback convention as nameI18nKey and AssistedJourneyStep.descriptionI18nKey -- takes precedence over the literal description string, which remains the fallback for a journey that has not been translated. Additive and optional, so a journey declaring none keeps rendering its literal.
       category:
         range: string
         description: Catalog category for this journey.

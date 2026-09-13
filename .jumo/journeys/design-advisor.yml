@@ -8,6 +8,7 @@ spec:
   journeyId: design-advisor
   name: Concevoir un profil de conseil pour un rôle
   nameI18nKey: journeyDesignAdvisorTitle
+  descriptionI18nKey: journeyDesignAdvisorDescription
   summaryI18nKey: designAdvisorSummary
   description: Donnez à un rôle existant une capacité de conseil contextuel -- un dialogue borné,
     non-décisionnel, distinct de son travail de production.

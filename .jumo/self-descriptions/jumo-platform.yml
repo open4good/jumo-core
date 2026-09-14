@@ -14,13 +14,13 @@ spec:
     - question: CAPABILITIES
       audience: [AGENT]
       facts:
-        - {name: declaredCapabilities, from: ActionCapabilitySet.spec.capabilities.name}
+        - {name: declaredCapabilities, from: ActionCapabilitySet.spec.capabilities}
     - question: BOUNDARIES
       audience: [AGENT, HUMAN]
       facts:
         - {name: governingPrinciples, from: PrincipleSet.spec.principles.statement}
         - {name: operatorProhibitedAuthority, from: AgentDefinition.spec.prohibitedAuthority}
     - question: COMMITMENTS
-      audience: [AGENT, HUMAN]
+      audience: [HUMAN]
       facts:
         - {name: milestoneExitConditions, from: Project.spec.milestones.exitCondition}

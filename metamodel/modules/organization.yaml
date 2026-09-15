@@ -1093,6 +1093,37 @@ classes:
       notifications:
         range: NotificationPreferences
         inlined: true
+      turnAudit:
+        range: TurnAuditPreferences
+        inlined: true
+        description: How long this principal's own conversation turns keep their prompt and reply
+          text (conversation-turn-audit-corpus). Absent means the platform default diagnostic window
+          applies. Deliberately the LAST attribute of this class - an attribute inserted mid-class
+          becomes an argument mid-record in the generated Java and breaks every positional caller.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  TurnAuditPreferences:
+    description: A principal's own choice about the retention of their conversation turns. It governs
+      RETENTION, never capture - every dispatch records its prompt, reply, timings and token counts
+      unconditionally, because that record is what makes a failed turn diagnosable at all. What this
+      declares is how long the two TEXT columns survive past the platform's default diagnostic window,
+      and therefore whether an audit of real sequences has a corpus to read. The measurements always
+      outlive the text - they carry no prompt, no reply and no personal data.
+    attributes:
+      enabled:
+        range: boolean
+        ifabsent: 'false'
+        description: When false the default diagnostic window applies and nothing is kept beyond it.
+      retention:
+        range: Duration
+        description: ISO-8601 duration the text is kept when enabled. Read only when enabled is true;
+          a declared window shorter than the platform default narrows rather than widens, so setting
+          it can never keep text longer than the owner of the platform allows.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

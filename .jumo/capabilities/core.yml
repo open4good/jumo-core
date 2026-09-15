@@ -267,6 +267,19 @@ spec:
         - RETAIN_PROVENANCE
       minimumAssurance: OBSERVED
       appliedBy: jumo.effect.ForgeProposalApplier
+    - name: account.retention.preference.propose
+      description: Record a hash-bound proposal changing how long the authenticated principal's own
+        conversation turns keep their prompt and reply text (conversation-turn-audit-corpus). It
+        governs retention and consent, never capture - every dispatch is recorded regardless, which
+        is what makes a failed turn diagnosable. A capability of its own rather than a reuse of
+        account.theme.preference.propose, whose name would then authorize something it does not say.
+      riskTier: LOW
+      reversible: true
+      producesExternalEffect: true
+      requiredObligations:
+        - RETAIN_PROVENANCE
+      minimumAssurance: OBSERVED
+      appliedBy: jumo.effect.ForgeProposalApplier
     - name: team.roster.read
       description: Read team composition, roles, and independence groups within the authenticated Realm.
       riskTier: LOW

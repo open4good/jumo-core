@@ -5,7 +5,7 @@ package dev.jumo.model;
 import java.util.Objects;
 
 
-public record PreferencesSpec(String ownerPrincipal, ContractReference themePackRef, String language, NotificationPreferences notifications)  {
+public record PreferencesSpec(String ownerPrincipal, ContractReference themePackRef, String language, NotificationPreferences notifications, TurnAuditPreferences turnAudit)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,6 +17,7 @@ public record PreferencesSpec(String ownerPrincipal, ContractReference themePack
         private ContractReference themePackRef = null;
         private String language = "";
         private NotificationPreferences notifications = null;
+        private TurnAuditPreferences turnAudit = null;
 
 
         public Builder ownerPrincipal(String ownerPrincipal) {
@@ -39,8 +40,13 @@ public record PreferencesSpec(String ownerPrincipal, ContractReference themePack
             return this;
         }
 
+        public Builder turnAudit(TurnAuditPreferences turnAudit) {
+            this.turnAudit = Objects.requireNonNull(turnAudit);
+            return this;
+        }
+
     public PreferencesSpec build() {
-            return new PreferencesSpec(ownerPrincipal, themePackRef, language, notifications);
+            return new PreferencesSpec(ownerPrincipal, themePackRef, language, notifications, turnAudit);
         }
     }
 }

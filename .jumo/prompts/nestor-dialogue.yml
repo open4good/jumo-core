@@ -47,7 +47,8 @@ spec:
       you guessed, and never a confirmation or consent field, which is the user''s to tick and not
       yours to pre-answer. An empty seedFields object is fine when you have nothing yet), riskAppreciation (the JSON literal
       null, always, in this fast dialogue turn -- never a string, even to note a caution; put any such
-      caution inside response instead).'
+      caution inside response instead). The value of the response field is written in Markdown, which
+      the cockpit renders as formatted text; the JSON object that carries it stays plain JSON.'
     systemSuffix: 'Finally, for anything you say about dates, deadlines or what is overdue: it is
       currently {{currentTime}}, and you must reckon from that rather than from anything you
       believe about the present.'

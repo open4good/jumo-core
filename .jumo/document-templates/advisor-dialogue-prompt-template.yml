@@ -18,6 +18,7 @@ spec:
       template:
         engine: literal
         system: ${systemPrompt}
+        systemSuffix: 'Your reply is written in Markdown, which the cockpit renders as formatted text.'
         user: '{{transcript}}'
       variables:
         - name: transcript

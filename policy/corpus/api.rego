@@ -234,6 +234,7 @@ deny contains {"msg": sprintf("%s %v: command response requires a result id", [o
 	path := endpoint.path
 	operation := endpoint.operation
 	object.get(operation, "x-jumo-command", null) != null
+	not dry_run(operation)
 	some success in success_responses(operation)
 	code := success.code
 	response := success.response
@@ -318,10 +319,46 @@ deny contains {"msg": sprintf("%s %v: proposal response requires changeProposalI
 	path := endpoint.path
 	operation := endpoint.operation
 	plain_write(method, operation)
+	not dry_run(operation)
 	some success in success_responses(operation)
 	code := success.code
 	response := success.response
 	not required_field(web_contract.contents, json_schema(web_contract.contents, response), "changeProposalId")
+}
+
+# A declared dry run validates and returns, and leaves nothing behind for a result id to name, so
+# it is exempt from api.write.proposal-result and api.command.result-id and from no other rule --
+# ring, ring-zero, step-up, request binding, surface capability and realm audience still apply
+# (owner ruling 2026-09-16, contract-proposal-preflight AC3). Rego sees only this label and cannot
+# prove the absence of a write: the service's zero-invocation tests carry that proof. What Rego can
+# refuse is a dry run whose response declares an identifier, which would claim a durable effect.
+dry_run(operation) if operation["x-jumo-dry-run"] == true
+
+declared_field(document, node, field) if required_field(document, node, field)
+
+declared_field(document, node, field) if {
+	resolved := resolved_schema(document, node)
+	field in object.keys(object.get(resolved, "properties", {}))
+}
+
+declared_field(document, node, field) if {
+	resolved := resolved_schema(document, node)
+	some branch in object.get(resolved, "allOf", [])
+	branch_resolved := resolved_schema(document, branch)
+	field in object.keys(object.get(branch_resolved, "properties", {}))
+}
+
+deny contains {"msg": sprintf("%s %v: dry-run response may not declare %s", [operation_location(method, path), code, field]), "path": web_contract.path, "rule": "api.dry-run.no-result-id"} if {
+	some endpoint in http_operations
+	method := endpoint.method
+	path := endpoint.path
+	operation := endpoint.operation
+	dry_run(operation)
+	some success in success_responses(operation)
+	code := success.code
+	response := success.response
+	some field in {"changeProposalId", "interactionId"}
+	declared_field(web_contract.contents, json_schema(web_contract.contents, response), field)
 }
 
 deny contains {"msg": sprintf("%s %v: proposal response may not require commitSha", [operation_location(method, path), code]), "path": web_contract.path, "rule": "api.write.no-applied-commit"} if {

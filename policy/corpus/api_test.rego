@@ -189,3 +189,56 @@ test_rejects_incomplete_citation_provenance if {
 	has_rule(violations, "api.citation.commit-pattern")
 	has_rule(violations, "api.citation.used-as")
 }
+
+dry_run_api(response_schema) := replace_api({
+	"paths": object.union(valid_api.paths, {"/proposals/preflight": {"post": {
+		"x-jumo-capability": "document.propose",
+		"x-jumo-ring": "RING_3_GOVERNED_PROJECT",
+		"x-jumo-dry-run": true,
+		"requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/Request"}}}},
+		"responses": {"200": {"content": {"application/json": {"schema": response_schema}}}},
+	}}}),
+})
+
+test_dry_run_write_needs_no_proposal_id if {
+	violations := data.jumo.corpus.deny with input as dry_run_api({"$ref": "#/components/schemas/Projection"})
+	not has_api_rule(violations)
+}
+
+test_dry_run_is_exempt_from_nothing_else if {
+	unlabelled := data.jumo.corpus.deny with input as replace_api({"paths": object.union(valid_api.paths, {"/proposals/preflight": {"post": object.remove(
+		dry_run_api({"$ref": "#/components/schemas/Projection"})[2].contents.paths["/proposals/preflight"].post,
+		{"x-jumo-dry-run"},
+	)}})})
+	has_rule(unlabelled, "api.write.proposal-result")
+	ringless := data.jumo.corpus.deny with input as replace_api({"paths": object.union(valid_api.paths, {"/proposals/preflight": {"post": object.remove(
+		dry_run_api({"$ref": "#/components/schemas/Projection"})[2].contents.paths["/proposals/preflight"].post,
+		{"x-jumo-ring"},
+	)}})})
+	has_rule(ringless, "api.write.ring")
+	not has_rule(ringless, "api.write.proposal-result")
+}
+
+test_dry_run_response_declaring_an_identifier_is_refused if {
+	with_proposal := data.jumo.corpus.deny with input as dry_run_api({"$ref": "#/components/schemas/Proposal"})
+	has_rule(with_proposal, "api.dry-run.no-result-id")
+	optional_interaction := {"allOf": [
+		{"$ref": "#/components/schemas/Projection"},
+		{"type": "object", "properties": {"interactionId": {"type": "string"}}},
+	]}
+	with_interaction := data.jumo.corpus.deny with input as dry_run_api(optional_interaction)
+	has_rule(with_interaction, "api.dry-run.no-result-id")
+}
+
+test_dry_run_command_needs_no_result_id if {
+	command := {
+		"x-jumo-capability": "document.propose",
+		"x-jumo-command": "CHECK",
+		"x-jumo-dry-run": true,
+		"responses": {"200": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/Projection"}}}}},
+	}
+	violations := data.jumo.corpus.deny with input as replace_api({"paths": object.union(valid_api.paths, {"/check": {"post": command}})})
+	not has_rule(violations, "api.command.result-id")
+	undeclared := data.jumo.corpus.deny with input as replace_api({"paths": object.union(valid_api.paths, {"/check": {"post": object.remove(command, {"x-jumo-dry-run"})}})})
+	has_rule(undeclared, "api.command.result-id")
+}

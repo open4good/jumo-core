@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record McpServerRecipeSpec(String ownerRealm, McpServerSupply supply, McpRecipeProtocol protocol, List<McpRecipeParameter> parameters, List<McpCredentialSlot> credentialSlots, List<McpArgumentValue> argv, List<McpNamedValue> env, List<McpNamedValue> headers, List<String> egressOrigins, McpRuntimeLimits limits, McpRecipeAuth auth, List<McpPrimitiveExposure> exposures)  {
+public record McpServerRecipeSpec(String ownerRealm, McpServerSupply supply, McpRecipeProtocol protocol, List<McpRecipeParameter> parameters, List<McpCredentialSlot> credentialSlots, List<McpArgumentValue> argv, List<McpNamedValue> env, List<McpNamedValue> headers, List<String> egressOrigins, McpRuntimeLimits limits, McpRecipeAuth auth, List<McpPrimitiveExposure> exposures, McpCatalogListingKey importedFrom)  {
 
     public static Builder builder() {
         return new Builder();
@@ -32,6 +32,7 @@ public record McpServerRecipeSpec(String ownerRealm, McpServerSupply supply, Mcp
         private McpRuntimeLimits limits = null;
         private McpRecipeAuth auth = null;
         private List<McpPrimitiveExposure> exposures = List.of();
+        private McpCatalogListingKey importedFrom = null;
 
 
         public Builder ownerRealm(String ownerRealm) {
@@ -94,8 +95,13 @@ public record McpServerRecipeSpec(String ownerRealm, McpServerSupply supply, Mcp
             return this;
         }
 
+        public Builder importedFrom(McpCatalogListingKey importedFrom) {
+            this.importedFrom = Objects.requireNonNull(importedFrom);
+            return this;
+        }
+
     public McpServerRecipeSpec build() {
-            return new McpServerRecipeSpec(ownerRealm, supply, protocol, parameters, credentialSlots, argv, env, headers, egressOrigins, limits, auth, exposures);
+            return new McpServerRecipeSpec(ownerRealm, supply, protocol, parameters, credentialSlots, argv, env, headers, egressOrigins, limits, auth, exposures, importedFrom);
         }
     }
 }

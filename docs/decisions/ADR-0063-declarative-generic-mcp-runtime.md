@@ -73,10 +73,10 @@ such as FORGE.
   stay unavailable until requalified through the generic path — no compatibility reader.
 - Delivery proceeds in protocol lots: tools; resources/prompts/tasks; then sampling/elicitation.
 - The shared catalogue stays provenance/adoption guidance only; import, qualification, appraisal, activation and
-  quarantine display as distinct states. No link runs from a Realm recipe back to its catalogue entry:
-  `McpServerRecipeSpec.importedSourceDigest` is retired (owner ruling 2026-09-11), its only key having named a whole
-  registry fetch page rather than one entry. Clause 8's adoption surface is dormant, not retired: `discovered_at`
-  keeps its writer, the milestones lose theirs, and a link may return once a key identifies ONE entry.
+  quarantine display as distinct states. `McpServerRecipeSpec.importedSourceDigest` is retired (owner ruling
+  2026-09-11): its key named a whole registry fetch page. The link returns on a key naming ONE entry (owner ruling
+  2026-09-16): optional `importedFrom` carries the listing's `(sourceId, externalId)` pair verbatim and resolves to
+  exactly that entry or to none, never a neighbour. It is display provenance and grants nothing.
 
 ## Rejected alternatives
 

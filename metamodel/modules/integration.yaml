@@ -388,6 +388,25 @@ classes:
       limits: {range: McpRuntimeLimits, required: true, inlined: true}
       auth: {range: McpRecipeAuth, required: true, inlined: true}
       exposures: {range: McpPrimitiveExposure, multivalued: true, inlined_as_list: true, required: true}
+      importedFrom:
+        range: McpCatalogListingKey
+        inlined: true
+        description: The catalogue listing this recipe was imported from, or absent for a hand-written recipe. Display
+          provenance only -- it resolves to exactly one catalogue entry or to none, and grants nothing.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpCatalogListingKey:
+    description: One mcp_catalog_listing row's (source_id, external_id) pair, carried verbatim as two strings and never
+      composed into one, because the same server listed by two sources is legitimately two catalogue entries. It replaces
+      the retired importedSourceDigest, whose page-level checksum named up to a hundred servers rather than one.
+    attributes:
+      sourceId: {range: string, required: true}
+      externalId: {range: string, required: true}
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

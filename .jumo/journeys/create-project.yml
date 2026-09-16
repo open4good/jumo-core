@@ -27,7 +27,9 @@ spec:
     validations:
       - {field: projectId, required: true}
       - {field: purpose, required: true, minimumLength: 10}
-      - {field: repository, required: true}
+      # contract-proposal-preflight AC1: the RepositoryBinding.repository slot pattern, enforced at
+      # the bind-repository step so a value the corpus refuses never becomes a change_proposal row.
+      - {field: repository, required: true, pattern: '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'}
     fieldDefaults:
       - {field: lifecycle, value: IDEATION}
   steps:

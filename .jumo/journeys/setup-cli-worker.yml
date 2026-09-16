@@ -15,7 +15,7 @@ spec:
   category: cliIntegrations
   icon: mdi-console-line
   interruptible: true
-  concurrencyPolicy: SINGLE_ACTIVE_RUN
+  concurrencyPolicy: MULTIPLE_ACTIVE_RUNS
   requiredCapabilities: [journey.run.start, journey.run.read, journey.run.abandon, journey.step.select, journey.step.submit, journey.proposal.submit, contract.change.propose, cli.session.pair, cli.session.pair.observe, cli.session.smoke, cli.session.smoke.observe]
   policySetRefs: [{kind: PolicySet, namespace: dev.jumo.core, id: security-baseline}]
   emitsCapability: contract.change.propose

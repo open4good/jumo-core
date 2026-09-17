@@ -28,6 +28,10 @@ public final class ContractReferenceExtractor {
             extractFromAssistedJourney(m, refs);
             return refs;
         }
+        if (model instanceof AutonomousMergeDelegation m) {
+            extractFromAutonomousMergeDelegation(m, refs);
+            return refs;
+        }
         if (model instanceof CapabilityProfile m) {
             extractFromCapabilityProfile(m, refs);
             return refs;
@@ -334,6 +338,16 @@ public final class ContractReferenceExtractor {
         }
         if (obj.verificationSpecRef() != null) {
             refs.add(new OutgoingReference("verificationSpecRef", obj.verificationSpecRef()));
+        }
+    }
+    public static void extractFromAutonomousMergeDelegation(AutonomousMergeDelegation obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        extractFromAutonomousMergeDelegationSpec(obj.spec(), refs);
+    }
+    public static void extractFromAutonomousMergeDelegationSpec(AutonomousMergeDelegationSpec obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.grantedBy() != null) {
+            refs.add(new OutgoingReference("grantedBy", obj.grantedBy()));
         }
     }
     public static void extractFromCapabilityProfile(CapabilityProfile obj, List<OutgoingReference> refs) {

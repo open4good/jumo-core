@@ -967,3 +967,65 @@ classes:
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  AutonomousMergeDelegation:
+    description: 'A standing owner delegation, evaluated by policy at merge time rather than read by the
+      authoring turn, per bounded-autonomous-merge-gates (ADR-0024). Declared per pathGlob, ring and
+      capability -- never as one global boolean, since AutonomyLevel is configured per action class,
+      channel, audience, risk and Realm and never as one global agent level. A change to the delegation
+      itself is never eligible for the automatic merge it grants (fixpoint guard, Rego).'
+    annotations:
+      jumo.composition: ADDITIVE
+      jumo.state_authority: GIT
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+    attributes:
+      apiVersion:
+        range: string
+        equals_string: jumo.dev/v1
+        required: true
+      kind:
+        range: string
+        equals_string: AutonomousMergeDelegation
+        required: true
+      metadata:
+        range: Metadata
+        required: true
+        inlined: true
+      spec:
+        range: AutonomousMergeDelegationSpec
+        required: true
+        inlined: true
+  AutonomousMergeDelegationSpec:
+    attributes:
+      ownerRealm:
+        range: Identifier
+        required: true
+      grantedBy:
+        range: ContractReference
+        required: true
+        inlined: true
+        description: Must resolve to a Principal holding the OWNER role (Rego).
+      expiresAt:
+        range: datetime
+        required: true
+        description: 'A permanent delegation that is forgotten is how this mode drifts (mandatory
+          expiry, Rego). An expired delegation authorises nothing.'
+      targets:
+        range: ImprovementTarget
+        multivalued: true
+        inlined_as_list: true
+        required: true
+        minimum_cardinality: 1
+        description: 'Reuses ImprovementTarget verbatim rather than a parallel value object. RING_0_ROOT_OF_TRUST
+          and RING_1_CONTROL_PLANE are unreachable by automatic merge regardless of what a target declares
+          (Rego). A proposal whose path matches no declared target merges by no automatic path.'
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated

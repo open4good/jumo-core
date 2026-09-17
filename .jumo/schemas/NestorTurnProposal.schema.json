@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/prompt-output/nestor-turn-proposal",
+  "title": "Nestor turn proposal envelope",
+  "type": "object",
+  "properties": {
+    "response": { "type": "string", "maxLength": 10000 },
+    "sufficiency": { "type": "string", "enum": ["SUFFICIENT", "INSUFFICIENT_NEEDS_DEPTH"] },
+    "reason": { "type": "string", "maxLength": 1000 },
+    "actionCandidate": { "type": "null" },
+    "contextRequests": {
+      "type": "array",
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/contextRequest" }
+    },
+    "riskAppreciation": {
+      "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/riskAppreciation" }]
+    },
+    "journeyProposal": {
+      "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/journeyProposal" }]
+    }
+  },
+  "required": ["response", "sufficiency", "reason", "actionCandidate", "contextRequests", "riskAppreciation", "journeyProposal"],
+  "additionalProperties": false,
+  "$defs": {
+    "contextRequest": {
+      "type": "object",
+      "properties": {
+        "purpose": { "type": "string", "maxLength": 512 },
+        "sourceRefs": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 256 } },
+        "options": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 200 } }
+      },
+      "required": ["purpose", "sourceRefs", "options"],
+      "additionalProperties": false
+    },
+    "riskAppreciation": {
+      "type": "object",
+      "properties": {
+        "factors": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 512 } },
+        "unknowns": { "type": "array", "maxItems": 12, "items": { "type": "string", "maxLength": 512 } },
+        "solicitation": { "type": ["string", "null"], "maxLength": 2000 }
+      },
+      "required": ["factors", "unknowns", "solicitation"],
+      "additionalProperties": false
+    },
+    "journeyProposal": {
+      "type": "object",
+      "properties": {
+        "journeyId": { "type": "string", "maxLength": 128 },
+        "seedFields": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "maxLength": 128 },
+              "value": { "type": "string", "maxLength": 2000 }
+            },
+            "required": ["name", "value"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["journeyId", "seedFields"],
+      "additionalProperties": false
+    }
+  }
+}

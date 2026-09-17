@@ -6,7 +6,7 @@ metadata:
   name: Install qualified CLI runtime
 spec:
   playbookPath: ansible/install_cli.yml
-  playbookDigest: sha256:1e9beeafcabfc58cf8404cb5718093d13c5ed046a797ffbeabb00b333e7f6dcc
+  playbookDigest: sha256:8f689214f2cc5cc7e0d497e9417b9b7bad52737e2deef42018da60eb48cc0bae
   allowedRealms: [home]
   description: Install a qualified CLI runtime (Codex, Claude Code) on the target machine.
   appliesToCapability: cli.runtime.install

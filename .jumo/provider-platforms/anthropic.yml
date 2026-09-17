@@ -15,15 +15,15 @@ spec:
   hostDeclaredByAccount: false
   defaultEffortLadder:
     - rung: LOW
-      modelAlias: claude-haiku
+      modelAlias: claude-haiku-4-5
       nativeEffort:
         maxOutputTokens: 4096
     - rung: MEDIUM
-      modelAlias: claude-sonnet
+      modelAlias: claude-sonnet-5
       nativeEffort:
         maxOutputTokens: 4096
     - rung: HIGH
-      modelAlias: claude-sonnet
+      modelAlias: claude-sonnet-5
       nativeEffort:
         maxOutputTokens: 8192
         thinkingBudgetTokens: 4096

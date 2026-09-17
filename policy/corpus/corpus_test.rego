@@ -953,6 +953,123 @@ test_rejects_surface_obligation_downgrade if {
 	has_rule(violations, "corpus.interface.no-self-write")
 }
 
+owner_principal := document(".jumo/principals/owner.yml", "Principal", "owner", {"ownerRealm": "home", "principalKind": "OWNER"})
+
+member_principal := document(".jumo/principals/member.yml", "Principal", "member", {"ownerRealm": "home", "principalKind": "MEMBER"})
+
+merge_delegation(path, identifier, granted_by, targets) := document(
+	path,
+	"AutonomousMergeDelegation",
+	identifier,
+	{"ownerRealm": "home", "grantedBy": granted_by, "expiresAt": "2027-01-01T00:00:00Z", "targets": targets},
+)
+
+merge_target(overrides) := object.union(
+	{
+		"pathGlob": "modules/gamified-widget/**",
+		"ring": "RING_2_AGENT_BEHAVIOR",
+		"capabilityRef": "change.propose",
+		"autonomy": "OBSERVE",
+		"requiredObligations": ["RETAIN_PROVENANCE"],
+	},
+	overrides,
+)
+
+test_merge_delegation_admits_ring_two_target_granted_by_owner if {
+	good := merge_delegation(
+		".jumo/governance/delegation-good.yml",
+		"delegation-good",
+		"owner",
+		[merge_target({})],
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, good])
+	not has_rule(violations, "corpus.merge-delegation.ring-ceiling")
+	not has_rule(violations, "corpus.merge-delegation.merge-capability-required")
+	not has_rule(violations, "corpus.merge-delegation.no-self-target")
+	not has_rule(violations, "corpus.merge-delegation.granted-by-resolves")
+	not has_rule(violations, "corpus.merge-delegation.granted-by-owner")
+}
+
+test_merge_delegation_rejects_ring_zero_and_ring_one_targets if {
+	bad := merge_delegation(
+		".jumo/governance/delegation-rings.yml",
+		"delegation-rings",
+		"owner",
+		[
+			merge_target({"ring": "RING_0_ROOT_OF_TRUST"}),
+			merge_target({"ring": "RING_1_CONTROL_PLANE"}),
+		],
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, bad])
+	has_rule(violations, "corpus.merge-delegation.ring-ceiling")
+}
+
+test_merge_delegation_rejects_bounded_autonomous_without_merge_capability if {
+	bad := merge_delegation(
+		".jumo/governance/delegation-bounded.yml",
+		"delegation-bounded",
+		"owner",
+		[merge_target({"autonomy": "BOUNDED_AUTONOMOUS"})],
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, bad])
+	has_rule(violations, "corpus.merge-delegation.merge-capability-required")
+}
+
+test_merge_delegation_accepts_bounded_autonomous_with_merge_capability if {
+	good := merge_delegation(
+		".jumo/governance/delegation-bounded-ok.yml",
+		"delegation-bounded-ok",
+		"owner",
+		[merge_target({"autonomy": "BOUNDED_AUTONOMOUS", "mergeCapabilityRef": "change.merge"})],
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, good])
+	not has_rule(violations, "corpus.merge-delegation.merge-capability-required")
+}
+
+test_merge_delegation_rejects_target_matching_its_own_document if {
+	bad := merge_delegation(
+		".jumo/governance/delegation-fixpoint.yml",
+		"delegation-fixpoint",
+		"owner",
+		[merge_target({"pathGlob": ".jumo/governance/delegation-fixpoint.yml"})],
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, bad])
+	has_rule(violations, "corpus.merge-delegation.no-self-target")
+}
+
+test_merge_delegation_rejects_wildcard_target_reaching_its_own_document if {
+	bad := merge_delegation(
+		".jumo/governance/delegation-wide.yml",
+		"delegation-wide",
+		"owner",
+		[merge_target({"pathGlob": ".jumo/governance/**"})],
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, bad])
+	has_rule(violations, "corpus.merge-delegation.no-self-target")
+}
+
+test_merge_delegation_rejects_granted_by_that_does_not_resolve if {
+	bad := merge_delegation(
+		".jumo/governance/delegation-unresolved.yml",
+		"delegation-unresolved",
+		"nobody",
+		[merge_target({})],
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, bad])
+	has_rule(violations, "corpus.merge-delegation.granted-by-resolves")
+}
+
+test_merge_delegation_rejects_granted_by_a_non_owner_principal if {
+	bad := merge_delegation(
+		".jumo/governance/delegation-member.yml",
+		"delegation-member",
+		"member",
+		[merge_target({})],
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [member_principal, bad])
+	has_rule(violations, "corpus.merge-delegation.granted-by-owner")
+}
+
 test_rejects_interface_repository_boundaries if {
 	project := document("jumo.yml", "Project", "docs", {"documentation": {"roots": [{"path": "docs", "maximumAudience": "REALM_PRIVATE"}]}})
 	bad := document(".jumo/interfaces/boundaries.yml", "InterfaceSurface", "boundaries", {

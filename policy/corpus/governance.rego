@@ -841,6 +841,55 @@ deny contains corpus.violation("corpus.interface.ring-ceiling", document, messag
 	message := sprintf("write ring %s exceeds capability %q ceiling %s", [write.ring, write.capabilityRef, ceiling])
 }
 
+# bounded-autonomous-merge-gates / AC6: RING_0_ROOT_OF_TRUST and RING_1_CONTROL_PLANE are never
+# reachable by automatic merge, whatever a target declares -- enforced here so Java is not the only
+# thing standing between a delegation and those rings.
+deny contains corpus.violation("corpus.merge-delegation.ring-ceiling", document, message) if {
+	some document in corpus.documents
+	document.kind == "AutonomousMergeDelegation"
+	some index, target in object.get(corpus.spec(document), "targets", [])
+	target.ring in {"RING_0_ROOT_OF_TRUST", "RING_1_CONTROL_PLANE"}
+	message := sprintf("spec.targets[%d].ring %s is never reachable by automatic merge", [index, target.ring])
+}
+
+# AC5: mergeCapabilityRef is required exactly when a target declares BOUNDED_AUTONOMOUS autonomy --
+# the field is optional in the schema because it is meaningless for every other AutonomyLevel.
+deny contains corpus.violation("corpus.merge-delegation.merge-capability-required", document, message) if {
+	some document in corpus.documents
+	document.kind == "AutonomousMergeDelegation"
+	some index, target in object.get(corpus.spec(document), "targets", [])
+	target.autonomy == "BOUNDED_AUTONOMOUS"
+	object.get(target, "mergeCapabilityRef", "") == ""
+	message := sprintf("spec.targets[%d] declares autonomy BOUNDED_AUTONOMOUS without mergeCapabilityRef", [index])
+}
+
+# AC9 fixpoint guard: a delegation that could widen itself makes every other bound in this order
+# advisory, so a target may never match the delegation document's own path.
+deny contains corpus.violation("corpus.merge-delegation.no-self-target", document, message) if {
+	some document in corpus.documents
+	document.kind == "AutonomousMergeDelegation"
+	some index, target in object.get(corpus.spec(document), "targets", [])
+	glob.match(target.pathGlob, [], corpus.path(document))
+	message := sprintf("spec.targets[%d].pathGlob %q matches the AutonomousMergeDelegation document itself", [index, target.pathGlob])
+}
+
+deny contains corpus.violation("corpus.merge-delegation.granted-by-resolves", document, message) if {
+	some document in corpus.documents
+	document.kind == "AutonomousMergeDelegation"
+	granted_by_id := corpus.ref_id(object.get(corpus.spec(document), "grantedBy", null))
+	not corpus.document_by_kind_id("Principal", granted_by_id)
+	message := "spec.grantedBy must resolve to a Principal"
+}
+
+deny contains corpus.violation("corpus.merge-delegation.granted-by-owner", document, message) if {
+	some document in corpus.documents
+	document.kind == "AutonomousMergeDelegation"
+	granted_by_id := corpus.ref_id(object.get(corpus.spec(document), "grantedBy", null))
+	granted_by := corpus.document_by_kind_id("Principal", granted_by_id)
+	corpus.spec(granted_by).principalKind != "OWNER"
+	message := "spec.grantedBy must resolve to a Principal holding the OWNER role"
+}
+
 theme_keys contains key if {
 	some document in corpus.documents
 	document.kind == "ThemePack"

@@ -990,15 +990,23 @@ test_merge_delegation_admits_ring_two_target_granted_by_owner if {
 	not has_rule(violations, "corpus.merge-delegation.granted-by-owner")
 }
 
-test_merge_delegation_rejects_ring_zero_and_ring_one_targets if {
+test_merge_delegation_rejects_a_ring_zero_target if {
 	bad := merge_delegation(
-		".jumo/governance/delegation-rings.yml",
-		"delegation-rings",
+		".jumo/governance/delegation-ring0.yml",
+		"delegation-ring0",
 		"owner",
-		[
-			merge_target({"ring": "RING_0_ROOT_OF_TRUST"}),
-			merge_target({"ring": "RING_1_CONTROL_PLANE"}),
-		],
+		[merge_target({"ring": "RING_0_ROOT_OF_TRUST"})],
+	)
+	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, bad])
+	has_rule(violations, "corpus.merge-delegation.ring-ceiling")
+}
+
+test_merge_delegation_rejects_a_ring_one_target if {
+	bad := merge_delegation(
+		".jumo/governance/delegation-ring1.yml",
+		"delegation-ring1",
+		"owner",
+		[merge_target({"ring": "RING_1_CONTROL_PLANE"})],
 	)
 	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, bad])
 	has_rule(violations, "corpus.merge-delegation.ring-ceiling")

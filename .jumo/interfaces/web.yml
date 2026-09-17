@@ -99,6 +99,7 @@ spec:
         - cli.session.pair.observe
         - cli.session.smoke
         - cli.session.smoke.observe
+        - cli.session.revoke
         - contract.change.propose
         - attention.item.read
         - notification.email.send

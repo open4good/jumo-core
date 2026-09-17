@@ -408,6 +408,15 @@ spec:
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
       appliedBy: dev.jumo.controlplane.web.CliSessionService
+    - name: cli.session.revoke
+      description: Revoke every ACTIVE provider session binding for a CLI engine in the Realm, invalidating all its current pairings at once.
+      riskTier: HIGH
+      reversible: false
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: dev.jumo.controlplane.web.CliSessionService
     - name: cli.session.pair.observe
       description: Confirm a previously-dispatched device-login ceremony was observed on the machine, without dispatching or re-authorizing the ceremony itself.
       riskTier: MEDIUM

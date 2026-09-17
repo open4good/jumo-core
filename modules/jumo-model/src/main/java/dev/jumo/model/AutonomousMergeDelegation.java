@@ -5,7 +5,7 @@ package dev.jumo.model;
 import java.util.Objects;
 
 /**
- * A standing owner delegation, evaluated by policy at merge time rather than read by the authoring turn, per bounded-autonomous-merge-gates (ADR-0024). Declared per pathGlob, ring and capability -- never as one global boolean, since AutonomyLevel is configured per action class, channel, audience, risk and Realm and never as one global agent level. A change to the delegation itself is never eligible for the automatic merge it grants (fixpoint guard, Rego).
+ * A standing owner delegation, evaluated by policy at merge time rather than read by the authoring turn, per bounded-autonomous-merge-gates (ADR-0024). Declared per pathGlob, ring and capability -- never as one global boolean, since AutonomyLevel is configured per action class, channel, audience, risk and Realm and never as one global agent level. A change to the delegation itself is never eligible for the automatic merge it grants (fixpoint guard, Rego). Instances are declared in the owning Realm's own overlay (composition REALM_ONLY), the same placement WorkOrder itself uses -- REALM_PRIVATE audience does not require the private Realm source specifically; it is compatible with a Realm's public overlay, as WorkOrder already shows.
  */
 public record AutonomousMergeDelegation(String apiVersion, String kind, Metadata metadata, AutonomousMergeDelegationSpec spec)  {
 

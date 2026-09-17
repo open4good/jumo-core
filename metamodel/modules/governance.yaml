@@ -972,9 +972,12 @@ classes:
       authoring turn, per bounded-autonomous-merge-gates (ADR-0024). Declared per pathGlob, ring and
       capability -- never as one global boolean, since AutonomyLevel is configured per action class,
       channel, audience, risk and Realm and never as one global agent level. A change to the delegation
-      itself is never eligible for the automatic merge it grants (fixpoint guard, Rego).'
+      itself is never eligible for the automatic merge it grants (fixpoint guard, Rego). Instances are
+      declared in the owning Realm''s own overlay (composition REALM_ONLY), the same placement
+      WorkOrder itself uses -- REALM_PRIVATE audience does not require the private Realm source
+      specifically; it is compatible with a Realm''s public overlay, as WorkOrder already shows.'
     annotations:
-      jumo.composition: ADDITIVE
+      jumo.composition: REALM_ONLY
       jumo.state_authority: GIT
       jumo.model_role: CONTRACT
       jumo.audience: REALM_PRIVATE

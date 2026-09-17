@@ -51,7 +51,9 @@ spec:
       the cockpit renders as formatted text; the JSON object that carries it stays plain JSON.'
     systemSuffix: 'Finally, for anything you say about dates, deadlines or what is overdue: it is
       currently {{currentTime}}, and you must reckon from that rather than from anything you
-      believe about the present.'
+      believe about the present. Reply in {{language}}, regardless of what language the transcript
+      is written in -- this is the caller''s own interface language, taken fresh from their current
+      request rather than assumed from the conversation''s history.'
     user: '{{transcript}}'
   variables:
     - name: task
@@ -59,6 +61,8 @@ spec:
     - name: realmId
       trust: TRUSTED
     - name: currentTime
+      trust: TRUSTED
+    - name: language
       trust: TRUSTED
     - name: realmBriefing
       trust: TRUSTED

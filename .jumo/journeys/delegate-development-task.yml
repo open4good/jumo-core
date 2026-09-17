@@ -40,6 +40,9 @@ spec:
       name: Description du besoin
       description: Décrivez l'objectif fonctionnel ou technique à réaliser par un jumeau développeur.
       personaNarration: Expliquez ce que vous souhaitez développer ou corriger. Je vais cadrer le périmètre et la décomposition.
+      nameI18nKey: journeyDelegateDevelopmentTaskCaptureTaskIntentName
+      descriptionI18nKey: journeyDelegateDevelopmentTaskCaptureTaskIntentDescription
+      narrationI18nKey: journeyDelegateDevelopmentTaskCaptureTaskIntentNarration
       requiredFields:
         - {field: taskSlug, i18nKey: journeyTaskSlugField}
         - {field: purpose, i18nKey: journeyTaskPurposeField}
@@ -50,6 +53,9 @@ spec:
         d'acceptation.
       personaNarration: Associons ce lot à un rôle d'implémentation, à un vérificateur indépendant et
         au jalon de la feuille de route auquel il se rattache.
+      nameI18nKey: journeyDelegateDevelopmentTaskSpecifyWorkOrderName
+      descriptionI18nKey: journeyDelegateDevelopmentTaskSpecifyWorkOrderDescription
+      narrationI18nKey: journeyDelegateDevelopmentTaskSpecifyWorkOrderNarration
       stepKind: COLLECT
       requiredFields:
         - {field: roleRef, i18nKey: journeyRoleRefField}
@@ -64,6 +70,9 @@ spec:
       name: Confirmation de la tâche
       description: Vérifiez la proposition de contrat WorkOrder avant son émission.
       personaNarration: Le contrat de travail est prêt. Validez pour enregistrer la proposition de tâche.
+      nameI18nKey: journeyDelegateDevelopmentTaskConfirmWorkOrderName
+      descriptionI18nKey: journeyDelegateDevelopmentTaskConfirmWorkOrderDescription
+      narrationI18nKey: journeyDelegateDevelopmentTaskConfirmWorkOrderNarration
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}
   resourceBudgetRef:

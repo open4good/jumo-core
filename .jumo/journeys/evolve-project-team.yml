@@ -131,6 +131,9 @@ spec:
       name: Analyse du besoin d'évolution
       description: Nestor examine le besoin d'évolution exprimé avant la sélection de l'équipe.
       personaNarration: Avant de faire évoluer une équipe, discutons de ce qui doit changer.
+      nameI18nKey: journeyEvolveProjectTeamAnalyzeEvolutionNeedName
+      descriptionI18nKey: journeyEvolveProjectTeamAnalyzeEvolutionNeedDescription
+      narrationI18nKey: journeyEvolveProjectTeamAnalyzeEvolutionNeedNarration
       stepKind: DIALOGUE_COLLECT
       requiredFields: []
       promptTemplateRef:
@@ -142,6 +145,9 @@ spec:
       name: Sélection de l'équipe
       description: Choisissez l'équipe à faire évoluer et précisez l'intention d'évolution.
       personaNarration: Quelle équipe souhaitez-vous réorganiser ou enrichir de nouveaux jumeaux ?
+      nameI18nKey: journeyEvolveProjectTeamSelectTeamName
+      descriptionI18nKey: journeyEvolveProjectTeamSelectTeamDescription
+      narrationI18nKey: journeyEvolveProjectTeamSelectTeamNarration
       requiredFields:
         - {field: teamId, i18nKey: journeyTeamIdField}
         - {field: purpose, i18nKey: journeyTeamEvolutionPurposeField}
@@ -151,6 +157,9 @@ spec:
       name: Composition des membres
       description: Ajustez les assignations d'opérateurs et les groupes d'indépendance.
       personaNarration: Ajustons la composition des membres pour respecter l'indépendance de revue.
+      nameI18nKey: journeyEvolveProjectTeamUpdateMembersName
+      descriptionI18nKey: journeyEvolveProjectTeamUpdateMembersDescription
+      narrationI18nKey: journeyEvolveProjectTeamUpdateMembersNarration
       stepKind: COLLECT
       requiredFields:
         - {field: members, i18nKey: journeySelectRoles}
@@ -163,6 +172,9 @@ spec:
       name: Confirmation de l'évolution
       description: Vérifiez le diff contractuel avant d'enregistrer la proposition.
       personaNarration: Tout est prêt pour enregistrer la proposition de modification d'équipe.
+      nameI18nKey: journeyEvolveProjectTeamConfirmEvolutionName
+      descriptionI18nKey: journeyEvolveProjectTeamConfirmEvolutionDescription
+      narrationI18nKey: journeyEvolveProjectTeamConfirmEvolutionNarration
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}
   resourceBudgetRef:

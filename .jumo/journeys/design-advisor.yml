@@ -66,6 +66,9 @@ spec:
       name: Analyse du besoin
       description: Nestor examine le besoin de conseil exprimé avant la conception du profil.
       personaNarration: Avant de concevoir ce conseil, discutons du besoin réel de ce rôle.
+      nameI18nKey: journeyDesignAdvisorAnalyzeAdvisorNeedName
+      descriptionI18nKey: journeyDesignAdvisorAnalyzeAdvisorNeedDescription
+      narrationI18nKey: journeyDesignAdvisorAnalyzeAdvisorNeedNarration
       stepKind: DIALOGUE_COLLECT
       requiredFields: []
       promptTemplateRef:
@@ -77,6 +80,9 @@ spec:
       name: Sélection du rôle
       description: Choisissez le rôle existant qui recevra cette capacité de conseil.
       personaNarration: Quel rôle établi doit pouvoir être consulté de cette manière ?
+      nameI18nKey: journeyDesignAdvisorSelectRoleName
+      descriptionI18nKey: journeyDesignAdvisorSelectRoleDescription
+      narrationI18nKey: journeyDesignAdvisorSelectRoleNarration
       requiredFields:
         - {field: roleRef, i18nKey: journeyAdvisorRoleField}
     - id: design-advisor-dialogue
@@ -84,6 +90,9 @@ spec:
       name: Conception du dialogue de conseil
       description: Définissez le profil de capacité repris, l'exigence de worker et le prompt du dialogue.
       personaNarration: Structurons ensemble ce que ce conseil peut offrir et comment il doit se comporter.
+      nameI18nKey: journeyDesignAdvisorDesignAdvisorDialogueName
+      descriptionI18nKey: journeyDesignAdvisorDesignAdvisorDialogueDescription
+      narrationI18nKey: journeyDesignAdvisorDesignAdvisorDialogueNarration
       requiredFields:
         - {field: advisorTopicId, i18nKey: journeyAdvisorTopicIdField}
         - {field: capabilityProfileRef, i18nKey: journeyCapabilityProfileField}
@@ -96,6 +105,9 @@ spec:
       name: Confirmation du profil de conseil
       description: Vérifiez le récapitulatif avant d'enregistrer la proposition.
       personaNarration: Tout est prêt pour enregistrer ce profil de conseil dans votre Realm.
+      nameI18nKey: journeyDesignAdvisorConfirmAdvisorName
+      descriptionI18nKey: journeyDesignAdvisorConfirmAdvisorDescription
+      narrationI18nKey: journeyDesignAdvisorConfirmAdvisorNarration
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}
   resourceBudgetRef:

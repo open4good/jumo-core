@@ -35,6 +35,9 @@ spec:
       name: Choix du moteur CLI
       description: Sélectionnez le moteur qualifié à initialiser (Codex ou Claude Code). Copilot et Gemini ne sont pas encore activables.
       personaNarration: Choisissons le runtime qualifié que vous souhaitez mettre à disposition de vos agents.
+      nameI18nKey: journeySetupCliWorkerSelectCliEngineName
+      descriptionI18nKey: journeySetupCliWorkerSelectCliEngineDescription
+      narrationI18nKey: journeySetupCliWorkerSelectCliEngineNarration
       stepKind: COLLECT
       projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: cli-worker-engine}
       requiredFields:
@@ -45,6 +48,9 @@ spec:
       name: Machine d'exécution
       description: Choisissez une machine existante, ACTIVE et saine, appartenant à ce Realm. Le parcours ne crée jamais de VM.
       personaNarration: La session et le runtime seront liés à cette machine précise.
+      nameI18nKey: journeySetupCliWorkerSelectExecutionMachineName
+      descriptionI18nKey: journeySetupCliWorkerSelectExecutionMachineDescription
+      narrationI18nKey: journeySetupCliWorkerSelectExecutionMachineNarration
       stepKind: COLLECT
       projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: cli-worker-execution-machine}
       requiredFields:
@@ -55,6 +61,9 @@ spec:
       name: Runtime CLI qualifié
       description: Vérifiez le runtime OCI signé sur la machine ; s'il est absent, un WorkOrder approuvé l'installe avant de continuer.
       personaNarration: Nous vérifions l'image immuable qui exécutera le CLI, sans créer de nouvelle machine.
+      nameI18nKey: journeySetupCliWorkerInstallCliRuntimeName
+      descriptionI18nKey: journeySetupCliWorkerInstallCliRuntimeDescription
+      narrationI18nKey: journeySetupCliWorkerInstallCliRuntimeNarration
       stepKind: AWAIT
       requiredFields: []
       processSpecRef:
@@ -68,6 +77,9 @@ spec:
       name: Connexion locale
       description: Ouvrez le lien temporaire et saisissez le code affiché. La session reste chiffrée sur la machine sélectionnée.
       personaNarration: Votre abonnement est authentifié directement auprès du fournisseur, sans passer par Jumo.
+      nameI18nKey: journeySetupCliWorkerPairLocalSessionName
+      descriptionI18nKey: journeySetupCliWorkerPairLocalSessionDescription
+      narrationI18nKey: journeySetupCliWorkerPairLocalSessionNarration
       requiredFields:
         - {field: providerSessionRef, i18nKey: journeyProviderSessionField}
       verificationSpecRef:
@@ -81,6 +93,9 @@ spec:
       name: Test réel de la CLI
       description: Exécutez une commande minimale dans un bail isolé. L'activation reste bloquée tant que cette observation n'est pas réussie.
       personaNarration: Vérifions maintenant la session et le runtime dans les mêmes conditions que l'exécution future.
+      nameI18nKey: journeySetupCliWorkerSmokeTestCliName
+      descriptionI18nKey: journeySetupCliWorkerSmokeTestCliDescription
+      narrationI18nKey: journeySetupCliWorkerSmokeTestCliNarration
       requiredFields: []
       verificationSpecRef:
         kind: JourneyVerificationSpec
@@ -91,6 +106,9 @@ spec:
       name: Bilan et activation
       description: Vérifiez la déclaration du WorkerSubstrate avant enregistrement dans le Grand Registre.
       personaNarration: Récapitulons les paramètres avant d'enregistrer la proposition.
+      nameI18nKey: journeySetupCliWorkerConfirmCliSetupName
+      descriptionI18nKey: journeySetupCliWorkerConfirmCliSetupDescription
+      narrationI18nKey: journeySetupCliWorkerConfirmCliSetupNarration
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}
   resourceBudgetRef:

@@ -23,6 +23,8 @@ spec:
       requiredObligations: []
       name: Qualifier vos comptes API
       description: Sélectionnez plusieurs comptes déclarés, activez chaque clé via l’ingress propriétaire, puis vérifiez réellement les modèles accessibles.
+      nameI18nKey: journeyConfigureApiAccountsSelectApiAccountsName
+      descriptionI18nKey: journeyConfigureApiAccountsSelectApiAccountsDescription
       stepKind: COLLECT
       requiredFields: [{field: providerAccountRefs, i18nKey: journeyProviderAccountsField}]
       projectionSpecRef: {kind: ProjectionSpec, namespace: dev.jumo.core, id: configure-api-accounts}

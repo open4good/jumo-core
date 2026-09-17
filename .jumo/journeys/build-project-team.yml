@@ -125,6 +125,9 @@ spec:
       name: Analyse du besoin
       description: Nestor examine le besoin exprimé pour ce projet avant la composition de l'équipe.
       personaNarration: Avant de composer l'équipe, discutons du besoin réel de ce projet.
+      nameI18nKey: journeyBuildProjectTeamAnalyzeTeamNeedName
+      descriptionI18nKey: journeyBuildProjectTeamAnalyzeTeamNeedDescription
+      narrationI18nKey: journeyBuildProjectTeamAnalyzeTeamNeedNarration
       stepKind: DIALOGUE_COLLECT
       requiredFields: []
       promptTemplateRef:
@@ -136,6 +139,9 @@ spec:
       name: Définition de l'équipe
       description: Renseignez le nom de l'équipe et la mission du projet gouverné.
       personaNarration: Définissons ensemble les objectifs de cette nouvelle équipe projet et son champ d'action.
+      nameI18nKey: journeyBuildProjectTeamDefineTeamScopeName
+      descriptionI18nKey: journeyBuildProjectTeamDefineTeamScopeDescription
+      narrationI18nKey: journeyBuildProjectTeamDefineTeamScopeNarration
       stepKind: COLLECT
       requiredFields:
         - {field: teamId, i18nKey: journeyTeamIdField}
@@ -152,6 +158,9 @@ spec:
       description: Choisissez les opérateurs et définissez leurs rôles et groupes d'indépendance.
       personaNarration: Structurons les membres de l'équipe en veillant à la séparation des responsabilités de production
         et de revue.
+      nameI18nKey: journeyBuildProjectTeamSelectMembersName
+      descriptionI18nKey: journeyBuildProjectTeamSelectMembersDescription
+      narrationI18nKey: journeyBuildProjectTeamSelectMembersNarration
       stepKind: COLLECT
       requiredFields:
         - {field: members, i18nKey: journeySelectRoles}
@@ -166,6 +175,9 @@ spec:
         d'accès non couverts, sans en créer, installer ni activer aucun.
       personaNarration: Voyons quels accès cette équipe pourrait utiliser -- ce que vous avez déjà, ce qui existe
         dans le catalogue, et ce qui reste à clarifier.
+      nameI18nKey: journeyBuildProjectTeamRecommendConnectorsName
+      descriptionI18nKey: journeyBuildProjectTeamRecommendConnectorsDescription
+      narrationI18nKey: journeyBuildProjectTeamRecommendConnectorsNarration
       stepKind: DIALOGUE_COLLECT
       dependsOn: [select-members]
       requiredFields: []
@@ -178,6 +190,9 @@ spec:
       name: Validation de l'équipe
       description: Vérifiez le récapitulatif de l'équipe avant émission de la proposition contractuelle.
       personaNarration: Tout est en ordre. Validons la création de cette équipe dans votre Realm.
+      nameI18nKey: journeyBuildProjectTeamConfirmTeamName
+      descriptionI18nKey: journeyBuildProjectTeamConfirmTeamDescription
+      narrationI18nKey: journeyBuildProjectTeamConfirmTeamNarration
       stepKind: CONFIRM
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}

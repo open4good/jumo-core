@@ -132,6 +132,9 @@ spec:
       name: Analyse du besoin
       description: Nestor examine le besoin de ce nouvel opérateur avant sa conception.
       personaNarration: Avant de concevoir cet opérateur, discutons du besoin réel de l'équipe.
+      nameI18nKey: journeyDesignProjectOperatorAnalyzeOperatorNeedName
+      descriptionI18nKey: journeyDesignProjectOperatorAnalyzeOperatorNeedDescription
+      narrationI18nKey: journeyDesignProjectOperatorAnalyzeOperatorNeedNarration
       stepKind: DIALOGUE_COLLECT
       requiredFields: []
       promptTemplateRef:
@@ -143,6 +146,9 @@ spec:
       name: Sélection de l'équipe
       description: Choisissez l'équipe projet existante qui accueillera ce nouvel opérateur.
       personaNarration: À quelle équipe ce nouvel opérateur doit-il se joindre ?
+      nameI18nKey: journeyDesignProjectOperatorSelectTeamName
+      descriptionI18nKey: journeyDesignProjectOperatorSelectTeamDescription
+      narrationI18nKey: journeyDesignProjectOperatorSelectTeamNarration
       requiredFields:
         - {field: teamId, i18nKey: journeyTeamIdField}
         - {field: projectRef, i18nKey: journeyProjectRefField}
@@ -151,6 +157,9 @@ spec:
       name: Conception de l'opérateur
       description: Définissez le rôle, la mission et les exigences du nouvel opérateur.
       personaNarration: Structurons ensemble ce nouvel opérateur, ses responsabilités et ses capacités.
+      nameI18nKey: journeyDesignProjectOperatorDesignOperatorName
+      descriptionI18nKey: journeyDesignProjectOperatorDesignOperatorDescription
+      narrationI18nKey: journeyDesignProjectOperatorDesignOperatorNarration
       stepKind: COLLECT
       requiredFields:
         - {field: proposedMembers, i18nKey: journeyNewOperatorField}
@@ -163,6 +172,9 @@ spec:
       name: Confirmation de l'opérateur
       description: Vérifiez le diff contractuel avant d'enregistrer la proposition.
       personaNarration: Tout est prêt pour enregistrer ce nouvel opérateur dans votre Realm.
+      nameI18nKey: journeyDesignProjectOperatorConfirmOperatorName
+      descriptionI18nKey: journeyDesignProjectOperatorConfirmOperatorDescription
+      narrationI18nKey: journeyDesignProjectOperatorConfirmOperatorNarration
       requiredFields:
         - {field: confirmed, i18nKey: journeyConfirmField}
   resourceBudgetRef:

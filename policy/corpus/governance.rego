@@ -873,14 +873,9 @@ deny contains corpus.violation("corpus.merge-delegation.no-self-target", documen
 	message := sprintf("spec.targets[%d].pathGlob %q matches the AutonomousMergeDelegation document itself", [index, target.pathGlob])
 }
 
-deny contains corpus.violation("corpus.merge-delegation.granted-by-resolves", document, message) if {
-	some document in corpus.documents
-	document.kind == "AutonomousMergeDelegation"
-	granted_by_id := corpus.ref_id(object.get(corpus.spec(document), "grantedBy", null))
-	not corpus.document_by_kind_id("Principal", granted_by_id)
-	message := "spec.grantedBy must resolve to a Principal"
-}
-
+# Resolution itself (kind matches, id exists, same Realm) is the generic
+# spec.grantedBy -> Principal entry in policy/corpus/references.rego -- this rule adds only the
+# semantic check the generic mechanism cannot express, that the resolved Principal holds OWNER.
 deny contains corpus.violation("corpus.merge-delegation.granted-by-owner", document, message) if {
 	some document in corpus.documents
 	document.kind == "AutonomousMergeDelegation"

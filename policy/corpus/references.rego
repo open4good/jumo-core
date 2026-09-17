@@ -775,6 +775,14 @@ references contains {"document": document, "location": sprintf("spec.steps[%d].s
 	ref != null
 }
 
+# AutonomousMergeDelegation (bounded-autonomous-merge-gates)
+references contains {"document": document, "location": "spec.grantedBy", "expected_kind": "Principal", "ref": ref} if {
+	some document in corpus.documents
+	document.kind == "AutonomousMergeDelegation"
+	ref := object.get(corpus.spec(document), "grantedBy", null)
+	ref != null
+}
+
 # --- Reference Validation Rules ---
 
 target_matches_kind(actual_kind, expected_kind) if {

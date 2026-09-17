@@ -986,7 +986,7 @@ test_merge_delegation_admits_ring_two_target_granted_by_owner if {
 	not has_rule(violations, "corpus.merge-delegation.ring-ceiling")
 	not has_rule(violations, "corpus.merge-delegation.merge-capability-required")
 	not has_rule(violations, "corpus.merge-delegation.no-self-target")
-	not has_rule(violations, "corpus.merge-delegation.granted-by-resolves")
+	not has_rule(violations, "corpus.reference.kind-id")
 	not has_rule(violations, "corpus.merge-delegation.granted-by-owner")
 }
 
@@ -1056,7 +1056,7 @@ test_merge_delegation_rejects_granted_by_that_does_not_resolve if {
 		[merge_target({})],
 	)
 	violations := data.jumo.corpus.deny with input as array.concat(valid_corpus, [owner_principal, bad])
-	has_rule(violations, "corpus.merge-delegation.granted-by-resolves")
+	has_rule(violations, "corpus.reference.kind-id")
 }
 
 test_merge_delegation_rejects_granted_by_a_non_owner_principal if {

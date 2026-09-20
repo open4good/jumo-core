@@ -27,3 +27,27 @@ spec:
       nativeEffort:
         maxOutputTokens: 8192
         thinkingBudgetTokens: 4096
+  # quota-usage-ledger-and-pricing AC1. Anthropic first-party API list rates, per million tokens, USD.
+  # Read from the bundled claude-api reference table (cached 2026-06-24), which is effectiveFrom below --
+  # the date the table was published, not the date this file was written. The cache rates are the
+  # documented multipliers of the uncached input rate for these models (cache read 0.1x, cache write
+  # 1.25x for the default 5-minute ephemeral TTL), written out as absolute rates because a multiplier is
+  # a convention a provider may change per model.
+  # Only the two aliases defaultEffortLadder above actually names are declared. A model with no entry
+  # here is not a gap to fill with a guess: the ledger records its token counts with a null cost and
+  # states why, which is AC3.
+  modelPricing:
+    - modelAlias: claude-sonnet-5
+      uncachedInputPerMillion: 2.00
+      outputPerMillion: 10.00
+      cacheReadPerMillion: 0.20
+      cacheWritePerMillion: 2.50
+      currency: USD
+      effectiveFrom: '2026-06-24'
+    - modelAlias: claude-haiku-4-5
+      uncachedInputPerMillion: 1.00
+      outputPerMillion: 5.00
+      cacheReadPerMillion: 0.10
+      cacheWritePerMillion: 1.25
+      currency: USD
+      effectiveFrom: '2026-06-24'

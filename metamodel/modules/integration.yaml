@@ -2076,6 +2076,149 @@ classes:
         minimum_cardinality: 1
         description: The rung-by-rung ladder every account opened against this platform inherits unless it
           declares its own ProviderRouting.effortLadder.
+      modelPricing:
+        range: ModelPricingSpec
+        multivalued: true
+        inlined_as_list: true
+        description: >-
+          What a model on this platform costs, one entry per model alias
+          (quota-usage-ledger-and-pricing AC1). Optional and additive -- a platform that declares none
+          prices nothing, and the ledger records the call's token counts with a null cost and a stated
+          reason rather than a fabricated zero. Keyed by this document (the platform) and the entry's
+          modelAlias, so pricing lives beside the effort ladder that names the alias.
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ModelCallLedger:
+    description: >-
+      One recorded model call and what it cost (quota-usage-ledger-and-pricing AC2/AC3). PostgreSQL is
+      the authority, because this is observed business state -- what a call actually consumed -- and not
+      a declaration. The four token counts are kept apart rather than summed, so that a cached call can
+      be priced at the four declared ModelPricingSpec rates instead of one. costAmount is ABSENT, never
+      zero, for a model the platform declares no price for, and costAbsentReason then states why -- a
+      zero would sum silently into a spend total and understate it. Counting only -- nothing refuses a
+      call on spend, which would need a periodic ceiling and an atomic pre-call reservation, neither of
+      which exists.
+    attributes:
+      realmId:
+        range: Identifier
+        required: true
+      workerInvocationId:
+        range: string
+        required: true
+        description: The worker_invocation this call was made under. One ledger row per invocation.
+      providerAccountId:
+        range: string
+      providerPlatformId:
+        range: string
+        description: The ProviderPlatform half of the route, and the key ModelPricingSpec is resolved by.
+      modelAlias:
+        range: string
+      effortRung:
+        range: string
+      origin:
+        range: string
+        required: true
+        description: What asked for the call, declared by its producer rather than inferred.
+      conversationTask:
+        range: string
+      inputTokens:
+        range: integer
+        minimum_value: 0
+      outputTokens:
+        range: integer
+        minimum_value: 0
+      cacheReadInputTokens:
+        range: integer
+        minimum_value: 0
+      cacheCreationInputTokens:
+        range: integer
+        minimum_value: 0
+      costAmount:
+        range: decimal
+        minimum_value: 0
+        description: Absent when no ModelPricing is declared for this platform and alias. Never zero.
+      costCurrency:
+        range: string
+        pattern: ^[A-Z]{3}$
+      pricingEffectiveFrom:
+        range: date
+        description: The ModelPricingSpec revision this cost was computed against.
+      costAbsentReason:
+        range: string
+        description: Present exactly when costAmount is absent, and absent exactly when it is present.
+      latencyMs:
+        range: integer
+        minimum_value: 0
+      recordedAt:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: CONTRACT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  ModelPricingSpec:
+    description: >-
+      The declared price of one model on its ProviderPlatform, denominated per million tokens
+      (quota-usage-ledger-and-pricing AC1). FOUR rates and not two, because both the Anthropic and the
+      OpenAI usage objects report cache-read and cache-creation tokens separately from uncached input,
+      so a two-rate table would misprice every cached call -- which is most of them. USD because every
+      published source reports USD, including the CLIs. A EUR figure is a display-time conversion
+      against a declared dated rate and is never frozen into a ledger row, so that a later rate change
+      cannot rewrite history.
+    attributes:
+      modelAlias:
+        range: Identifier
+        required: true
+        description: >-
+          The alias an EffortRungSpec or a ProviderRouting names. Pricing is keyed by the platform
+          document plus this alias, so the same alias on another platform is another price.
+      uncachedInputPerMillion:
+        range: decimal
+        required: true
+        minimum_value: 0
+        description: Price of one million input tokens the provider did NOT serve from its cache.
+      outputPerMillion:
+        range: decimal
+        required: true
+        minimum_value: 0
+        description: Price of one million output tokens.
+      cacheReadPerMillion:
+        range: decimal
+        required: true
+        minimum_value: 0
+        description: >-
+          Price of one million tokens served from the provider's prompt cache, reported as
+          cache_read_input_tokens. Declared rather than derived from a multiplier, because the
+          multiplier is a convention a provider may change for one model without changing the others.
+      cacheWritePerMillion:
+        range: decimal
+        required: true
+        minimum_value: 0
+        description: >-
+          Price of one million tokens written into the provider's prompt cache, reported as
+          cache_creation_input_tokens.
+      currency:
+        range: string
+        required: true
+        pattern: ^[A-Z]{3}$
+        description: >-
+          ISO 4217 code of the four rates above, USD for every published provider table today. Declared
+          rather than assumed, so a ledger row records the currency it was computed in.
+      effectiveFrom:
+        range: date
+        required: true
+        description: >-
+          The date this rate table was published by its provider. Recorded on every ledger row beside
+          the computed cost, so a row states which price it was computed against and a later rate change
+          adds a new declaration instead of rewriting history.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

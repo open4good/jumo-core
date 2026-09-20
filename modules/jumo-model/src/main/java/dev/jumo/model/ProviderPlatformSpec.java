@@ -3,10 +3,11 @@ package dev.jumo.model;
 
 
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record ProviderPlatformSpec(WireProtocol wireProtocol, String egressRouteId, String upstreamHost, String completionPath, String modelCatalogPath, CredentialHeaderStyle credentialHeader, String independenceGroup, boolean hostDeclaredByAccount, List<EffortRungSpec> defaultEffortLadder)  {
+public record ProviderPlatformSpec(WireProtocol wireProtocol, String egressRouteId, String upstreamHost, String completionPath, String modelCatalogPath, CredentialHeaderStyle credentialHeader, String independenceGroup, boolean hostDeclaredByAccount, List<EffortRungSpec> defaultEffortLadder, List<ModelPricingSpec> modelPricing)  {
 
     public static Builder builder() {
         return new Builder();
@@ -23,6 +24,7 @@ public record ProviderPlatformSpec(WireProtocol wireProtocol, String egressRoute
         private String independenceGroup = "";
         private boolean hostDeclaredByAccount = false;
         private List<EffortRungSpec> defaultEffortLadder = List.of();
+        private List<ModelPricingSpec> modelPricing = List.of();
 
 
         public Builder wireProtocol(WireProtocol wireProtocol) {
@@ -70,8 +72,13 @@ public record ProviderPlatformSpec(WireProtocol wireProtocol, String egressRoute
             return this;
         }
 
+        public Builder modelPricing(List<ModelPricingSpec> modelPricing) {
+            this.modelPricing = Objects.requireNonNull(modelPricing);
+            return this;
+        }
+
     public ProviderPlatformSpec build() {
-            return new ProviderPlatformSpec(wireProtocol, egressRouteId, upstreamHost, completionPath, modelCatalogPath, credentialHeader, independenceGroup, hostDeclaredByAccount, defaultEffortLadder);
+            return new ProviderPlatformSpec(wireProtocol, egressRouteId, upstreamHost, completionPath, modelCatalogPath, credentialHeader, independenceGroup, hostDeclaredByAccount, defaultEffortLadder, modelPricing);
         }
     }
 }

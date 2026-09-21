@@ -2694,6 +2694,9 @@ classes:
         range: integer
       networkIsolationMode:
         range: string
+      privateEgressObserved:
+        range: boolean
+        description: True when the machine's lease-local DNS pin contains a private address; absent is not proof of public egress.
     annotations:
       jumo.state_authority: POSTGRES
       jumo.model_role: EVENT

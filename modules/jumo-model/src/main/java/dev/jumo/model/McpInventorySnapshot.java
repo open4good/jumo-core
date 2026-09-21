@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * PostgreSQL event recording an MCP inventory discovered under an exact Realm lease; it is not a Git contract.
  */
-public record McpInventorySnapshot(String serverId, String ownerRealm, ContractReference workOrderRef, String executionCellLeaseRef, ContractReference executionMachineRef, String contractRevision, String artifactOrEndpoint, String serverName, String serverVersion, String protocolVersion, List<String> capabilities, List<McpToolDescriptor> tools, String inventoryDigest, String discoveredAt, Integer pagesObserved, Integer bytesObserved, String networkIsolationMode)  {
+public record McpInventorySnapshot(String serverId, String ownerRealm, ContractReference workOrderRef, String executionCellLeaseRef, ContractReference executionMachineRef, String contractRevision, String artifactOrEndpoint, String serverName, String serverVersion, String protocolVersion, List<String> capabilities, List<McpToolDescriptor> tools, String inventoryDigest, String discoveredAt, Integer pagesObserved, Integer bytesObserved, String networkIsolationMode, Boolean privateEgressObserved)  {
 
     public static Builder builder() {
         return new Builder();
@@ -34,6 +34,7 @@ public record McpInventorySnapshot(String serverId, String ownerRealm, ContractR
         private Integer pagesObserved = null;
         private Integer bytesObserved = null;
         private String networkIsolationMode = "";
+        private Boolean privateEgressObserved = null;
 
 
         public Builder serverId(String serverId) {
@@ -121,8 +122,13 @@ public record McpInventorySnapshot(String serverId, String ownerRealm, ContractR
             return this;
         }
 
+        public Builder privateEgressObserved(Boolean privateEgressObserved) {
+            this.privateEgressObserved = Objects.requireNonNull(privateEgressObserved);
+            return this;
+        }
+
     public McpInventorySnapshot build() {
-            return new McpInventorySnapshot(serverId, ownerRealm, workOrderRef, executionCellLeaseRef, executionMachineRef, contractRevision, artifactOrEndpoint, serverName, serverVersion, protocolVersion, capabilities, tools, inventoryDigest, discoveredAt, pagesObserved, bytesObserved, networkIsolationMode);
+            return new McpInventorySnapshot(serverId, ownerRealm, workOrderRef, executionCellLeaseRef, executionMachineRef, contractRevision, artifactOrEndpoint, serverName, serverVersion, protocolVersion, capabilities, tools, inventoryDigest, discoveredAt, pagesObserved, bytesObserved, networkIsolationMode, privateEgressObserved);
         }
     }
 }

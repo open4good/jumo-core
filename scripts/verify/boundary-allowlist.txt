@@ -27,12 +27,10 @@
 # dedicated capabilityRef (cli.runtime.install, not the generic machine.administer) and
 # install-cli.yml declares appliesToCapability: cli.runtime.install, so
 # CliRuntimeInstallationAwaitDispatcher.dispatch resolves it via playbookIdForCapability instead of
-# a hand-typed literal. pair-cli-session/smoke-cli-session closed the same way too (2026-08-24,
-# owner decision to author a ProcessSpec): cli-session-pairing--1-0-0 and
-# cli-session-smoke-test--1-0-0 each declare an EFFECT_APPLICATION step with a dedicated
-# capabilityRef (cli.session.pair, cli.session.smoke), pair-cli-session.yml/smoke-cli-session.yml
-# declare the matching appliesToCapability, and CliSessionService.start resolves both via
-# playbookIdForCapability instead of the hand-typed operationKind switch. Neither ProcessSpec
-# changes CliSessionService's actual trigger path (still a direct stepUp-gated service call, not
-# journey-orchestrated) -- they exist as the capability's declared home, same minimal footprint as
-# install-cli's mechanical resolution, not a UX change to how pairing/smoke are invoked.
+# a hand-typed literal. pair-cli-session closed the same way too (2026-08-24):
+# cli-session-pairing--1-0-0 declares an EFFECT_APPLICATION step with capabilityRef
+# cli.session.pair, pair-cli-session.yml declares the matching appliesToCapability, and
+# CliSessionService.start resolves it via playbookIdForCapability instead of the hand-typed
+# operationKind switch. The smoke action is declared directly by setup-cli-worker and its
+# cli-runtime-smoke-actions projection; smoke-cli-session.yml binds the same cli.session.smoke
+# capability to the selected playbook, so its former orphan ProcessSpec added no runtime path.

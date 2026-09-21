@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.List;
 import java.util.List;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 
-public record McpServerRecipeSpec(String ownerRealm, McpServerSupply supply, McpRecipeProtocol protocol, List<McpRecipeParameter> parameters, List<McpCredentialSlot> credentialSlots, List<McpArgumentValue> argv, List<McpNamedValue> env, List<McpNamedValue> headers, List<String> egressOrigins, McpRuntimeLimits limits, McpRecipeAuth auth, List<McpPrimitiveExposure> exposures, McpCatalogListingKey importedFrom)  {
+public record McpServerRecipeSpec(String ownerRealm, McpServerSupply supply, McpRecipeProtocol protocol, List<McpRecipeParameter> parameters, List<McpCredentialSlot> credentialSlots, List<McpArgumentValue> argv, List<McpNamedValue> env, List<McpNamedValue> headers, List<String> egressOrigins, List<McpEgressRule> egressRules, McpRuntimeLimits limits, McpRecipeAuth auth, List<McpPrimitiveExposure> exposures, McpCatalogListingKey importedFrom)  {
 
     public static Builder builder() {
         return new Builder();
@@ -29,6 +30,7 @@ public record McpServerRecipeSpec(String ownerRealm, McpServerSupply supply, Mcp
         private List<McpNamedValue> env = List.of();
         private List<McpNamedValue> headers = List.of();
         private List<String> egressOrigins = List.of();
+        private List<McpEgressRule> egressRules = List.of();
         private McpRuntimeLimits limits = null;
         private McpRecipeAuth auth = null;
         private List<McpPrimitiveExposure> exposures = List.of();
@@ -80,6 +82,11 @@ public record McpServerRecipeSpec(String ownerRealm, McpServerSupply supply, Mcp
             return this;
         }
 
+        public Builder egressRules(List<McpEgressRule> egressRules) {
+            this.egressRules = Objects.requireNonNull(egressRules);
+            return this;
+        }
+
         public Builder limits(McpRuntimeLimits limits) {
             this.limits = Objects.requireNonNull(limits);
             return this;
@@ -101,7 +108,7 @@ public record McpServerRecipeSpec(String ownerRealm, McpServerSupply supply, Mcp
         }
 
     public McpServerRecipeSpec build() {
-            return new McpServerRecipeSpec(ownerRealm, supply, protocol, parameters, credentialSlots, argv, env, headers, egressOrigins, limits, auth, exposures, importedFrom);
+            return new McpServerRecipeSpec(ownerRealm, supply, protocol, parameters, credentialSlots, argv, env, headers, egressOrigins, egressRules, limits, auth, exposures, importedFrom);
         }
     }
 }

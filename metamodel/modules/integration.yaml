@@ -225,6 +225,11 @@ enums:
       DECLARED: {}
       ENABLED: {}
       SUSPENDED: {}
+  McpNetworkIsolationMode:
+    permissible_values:
+      NONE: {}
+      REMOTE_EXACT_ORIGIN: {}
+      LEASE_SCOPED_EXACT_ORIGIN: {}
   McpParameterType:
     permissible_values:
       STRING: {}
@@ -385,6 +390,7 @@ classes:
       env: {range: McpNamedValue, multivalued: true, inlined_as_list: true}
       headers: {range: McpNamedValue, multivalued: true, inlined_as_list: true}
       egressOrigins: {range: string, multivalued: true, pattern: '^https://[^/?#]+(?::[0-9]+)?$'}
+      egressRules: {range: McpEgressRule, multivalued: true, inlined_as_list: true}
       limits: {range: McpRuntimeLimits, required: true, inlined: true}
       auth: {range: McpRecipeAuth, required: true, inlined: true}
       exposures: {range: McpPrimitiveExposure, multivalued: true, inlined_as_list: true, required: true}
@@ -452,6 +458,17 @@ classes:
       required: {range: boolean, required: true}
       allowedValues: {range: string, multivalued: true}
       pattern: {range: string}
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: REALM_PRIVATE
+      jumo.sensitivity: INTERNAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  McpEgressRule:
+    description: One exact HTTPS origin a binding may resolve for its lease; policy limits origin to a literal or ORIGIN parameter.
+    attributes:
+      origin: {range: McpArgumentValue, required: true, inlined: true}
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT
@@ -707,7 +724,7 @@ classes:
       observedAt: {range: datetime, required: true}
       pagesObserved: {range: integer}
       bytesObserved: {range: integer}
-      networkIsolationMode: {range: string}
+      networkIsolationMode: {range: McpNetworkIsolationMode}
     annotations:
       jumo.state_authority: POSTGRES
       jumo.model_role: EVENT

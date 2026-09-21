@@ -47,6 +47,11 @@ recipe_parameter_names(recipe) := {parameter.name |
 	some parameter in object.get(corpus.spec(recipe), "parameters", [])
 }
 
+recipe_origin_parameter_names(recipe) := {parameter.name |
+	some parameter in object.get(corpus.spec(recipe), "parameters", [])
+	parameter.type == "ORIGIN"
+}
+
 recipe_credential_slots(recipe) := {slot.name |
 	some slot in object.get(corpus.spec(recipe), "credentialSlots", [])
 }
@@ -57,6 +62,16 @@ binding_parameter_names(binding) := {parameter.parameterRef |
 
 binding_credential_slots(binding) := {credential.credentialSlotRef |
 	some credential in object.get(corpus.spec(binding), "credentialBindings", [])
+}
+
+mcp_recipe_declares_literal_origin(recipe, origin) if {
+	origin in object.get(corpus.spec(recipe), "egressOrigins", [])
+}
+
+mcp_recipe_declares_literal_origin(recipe, origin) if {
+	some rule in object.get(corpus.spec(recipe), "egressRules", [])
+	rule.origin.valueKind == "LITERAL"
+	rule.origin.literal == origin
 }
 
 deny contains corpus.violation("corpus.mcp.recipe-secret-field", document, message) if {
@@ -78,6 +93,67 @@ deny contains corpus.violation("corpus.mcp.recipe-no-shell", document, message) 
 	argument.valueKind == "LITERAL"
 	regex.match(`[;&|<>\x60$\n\r]`, object.get(argument, "literal", ""))
 	message := "spec.argv: shell metacharacters are refused; argv is passed directly without a shell"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-egress-exclusive", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	spec := corpus.spec(document)
+	count(object.get(spec, "egressOrigins", [])) > 0
+	count(object.get(spec, "egressRules", [])) > 0
+	message := "spec.egressOrigins/spec.egressRules: legacy origins and typed rules are mutually exclusive"
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-egress-rule", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, rule in object.get(corpus.spec(document), "egressRules", [])
+	not rule.origin.valueKind in {"LITERAL", "PARAMETER"}
+	message := sprintf("spec.egressRules[%d].origin: only LITERAL or PARAMETER is allowed", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-egress-rule", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, rule in object.get(corpus.spec(document), "egressRules", [])
+	object.get(rule.origin, "credentialSlotRef", "") != ""
+	message := sprintf("spec.egressRules[%d].origin: credential references are forbidden", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-egress-rule", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, rule in object.get(corpus.spec(document), "egressRules", [])
+	rule.origin.valueKind == "LITERAL"
+	not regex.match(`^https://[^/?#]+(?::[0-9]+)?$`, object.get(rule.origin, "literal", ""))
+	message := sprintf("spec.egressRules[%d].origin.literal: an exact HTTPS origin is required", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-egress-rule", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, rule in object.get(corpus.spec(document), "egressRules", [])
+	rule.origin.valueKind == "LITERAL"
+	object.get(rule.origin, "parameterRef", "") != ""
+	message := sprintf("spec.egressRules[%d].origin: a literal rule cannot also reference a parameter", [index])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-egress-rule", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, rule in object.get(corpus.spec(document), "egressRules", [])
+	rule.origin.valueKind == "PARAMETER"
+	not rule.origin.parameterRef in recipe_origin_parameter_names(document)
+	message := sprintf("spec.egressRules[%d].origin.parameterRef %q is not a declared ORIGIN parameter", [index, rule.origin.parameterRef])
+}
+
+deny contains corpus.violation("corpus.mcp.recipe-egress-rule", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerRecipe"
+	some index, rule in object.get(corpus.spec(document), "egressRules", [])
+	rule.origin.valueKind == "PARAMETER"
+	object.get(rule.origin, "literal", "") != ""
+	message := sprintf("spec.egressRules[%d].origin: a parameter rule cannot also carry a literal", [index])
 }
 
 deny contains corpus.violation("corpus.mcp.recipe-no-shell", document, message) if {
@@ -246,7 +322,7 @@ deny contains corpus.violation("corpus.mcp.recipe-elicitation-origin", document,
 	some index, exposure in corpus.spec(document).exposures
 	exposure.primitiveKind == "ELICITATION"
 	some origin in object.get(exposure, "allowedOrigins", [])
-	not origin in object.get(corpus.spec(document), "egressOrigins", [])
+	not mcp_recipe_declares_literal_origin(document, origin)
 	message := sprintf("spec.exposures[%d].allowedOrigins: elicitation origin %q is not appraised egress", [index, origin])
 }
 
@@ -299,6 +375,18 @@ deny contains corpus.violation("corpus.mcp.binding-required-parameter", document
 	parameter.required == true
 	not parameter.name in binding_parameter_names(document)
 	message := sprintf("spec.parameterValues: required parameter %q is missing", [parameter.name])
+}
+
+deny contains corpus.violation("corpus.mcp.binding-origin-parameter", document, message) if {
+	some document in corpus.documents
+	document.kind == "McpServerBinding"
+	recipe := mcp_recipe_for(document)
+	some parameter in object.get(corpus.spec(recipe), "parameters", [])
+	parameter.type == "ORIGIN"
+	some bound in object.get(corpus.spec(document), "parameterValues", [])
+	bound.parameterRef == parameter.name
+	not regex.match(`^https://[^/?#]+(?::[0-9]+)?$`, bound.value)
+	message := sprintf("spec.parameterValues: ORIGIN parameter %q must be an exact HTTPS origin", [parameter.name])
 }
 
 deny contains corpus.violation("corpus.mcp.binding-credential-slot", document, message) if {

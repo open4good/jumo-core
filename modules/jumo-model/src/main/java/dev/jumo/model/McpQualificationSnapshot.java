@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 
-public record McpQualificationSnapshot(String snapshotId, String realmId, String recipeDigest, String bindingDigest, String supplyDigest, String inventoryDigest, String negotiatedVersion, McpTransportType negotiatedTransport, McpQualificationOutcome outcome, ZonedDateTime observedAt, Integer pagesObserved, Integer bytesObserved, String networkIsolationMode)  {
+public record McpQualificationSnapshot(String snapshotId, String realmId, String recipeDigest, String bindingDigest, String supplyDigest, String inventoryDigest, String negotiatedVersion, McpTransportType negotiatedTransport, McpQualificationOutcome outcome, ZonedDateTime observedAt, Integer pagesObserved, Integer bytesObserved, McpNetworkIsolationMode networkIsolationMode)  {
 
     public static Builder builder() {
         return new Builder();
@@ -26,7 +26,7 @@ public record McpQualificationSnapshot(String snapshotId, String realmId, String
         private ZonedDateTime observedAt = null;
         private Integer pagesObserved = null;
         private Integer bytesObserved = null;
-        private String networkIsolationMode = "";
+        private McpNetworkIsolationMode networkIsolationMode = null;
 
 
         public Builder snapshotId(String snapshotId) {
@@ -89,7 +89,7 @@ public record McpQualificationSnapshot(String snapshotId, String realmId, String
             return this;
         }
 
-        public Builder networkIsolationMode(String networkIsolationMode) {
+        public Builder networkIsolationMode(McpNetworkIsolationMode networkIsolationMode) {
             this.networkIsolationMode = Objects.requireNonNull(networkIsolationMode);
             return this;
         }

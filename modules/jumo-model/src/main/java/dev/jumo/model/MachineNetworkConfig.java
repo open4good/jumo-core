@@ -3,12 +3,13 @@ package dev.jumo.model;
 
 
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Network configuration for an ExecutionMachine.
  */
-public record MachineNetworkConfig(String ipAllocation, String macAddress, String outboundControlUrl, List<String> egressAllowlist)  {
+public record MachineNetworkConfig(String ipAllocation, String macAddress, String outboundControlUrl, List<String> egressAllowlist, List<String> allowedPrivateEgressCidrs)  {
 
     public static Builder builder() {
         return new Builder();
@@ -20,6 +21,7 @@ public record MachineNetworkConfig(String ipAllocation, String macAddress, Strin
         private String macAddress = "";
         private String outboundControlUrl = "";
         private List<String> egressAllowlist = List.of();
+        private List<String> allowedPrivateEgressCidrs = List.of();
 
 
         public Builder ipAllocation(String ipAllocation) {
@@ -42,8 +44,13 @@ public record MachineNetworkConfig(String ipAllocation, String macAddress, Strin
             return this;
         }
 
+        public Builder allowedPrivateEgressCidrs(List<String> allowedPrivateEgressCidrs) {
+            this.allowedPrivateEgressCidrs = Objects.requireNonNull(allowedPrivateEgressCidrs);
+            return this;
+        }
+
     public MachineNetworkConfig build() {
-            return new MachineNetworkConfig(ipAllocation, macAddress, outboundControlUrl, egressAllowlist);
+            return new MachineNetworkConfig(ipAllocation, macAddress, outboundControlUrl, egressAllowlist, allowedPrivateEgressCidrs);
         }
     }
 }

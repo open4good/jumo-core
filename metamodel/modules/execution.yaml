@@ -504,6 +504,10 @@ classes:
       egressAllowlist:
         range: string
         multivalued: true
+      allowedPrivateEgressCidrs:
+        range: string
+        multivalued: true
+        description: Upper bound for binding-resolved private addresses; each entry is an explicit IPv4 or IPv6 CIDR.
     annotations:
       jumo.state_authority: GIT
       jumo.model_role: VALUE_OBJECT

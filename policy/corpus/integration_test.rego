@@ -132,6 +132,59 @@ test_recipe_refuses_secret_value_and_shell if {
 	has_rule(violations, "corpus.mcp.recipe-no-shell")
 }
 
+test_recipe_accepts_literal_and_origin_parameter_egress_rules if {
+	spec := recipe_spec("home", {"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha}, [tool], {
+		"parameters": [{"name": "privateOrigin", "type": "ORIGIN", "required": true}],
+		"egressRules": [
+			{"origin": {"valueKind": "LITERAL", "literal": "https://discovery.example.test"}},
+			{"origin": {"valueKind": "PARAMETER", "parameterRef": "privateOrigin"}},
+		],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(base, [recipe("home", spec)])
+	not has_rule(violations, "corpus.mcp.recipe-egress-exclusive")
+	not has_rule(violations, "corpus.mcp.recipe-egress-rule")
+}
+
+test_recipe_refuses_mixed_legacy_and_typed_egress if {
+	spec := recipe_spec("home", {"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha}, [tool], {
+		"egressOrigins": ["https://legacy.example.test"],
+		"egressRules": [{"origin": {"valueKind": "LITERAL", "literal": "https://new.example.test"}}],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(base, [recipe("home", spec)])
+	has_rule(violations, "corpus.mcp.recipe-egress-exclusive")
+}
+
+test_recipe_refuses_non_https_and_credential_egress_rules if {
+	spec := recipe_spec("home", {"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha}, [tool], {
+		"egressRules": [
+			{"origin": {"valueKind": "LITERAL", "literal": "http://private.example.test"}},
+			{"origin": {"valueKind": "CREDENTIAL", "credentialSlotRef": "origin"}},
+		],
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(base, [recipe("home", spec)])
+	has_rule(violations, "corpus.mcp.recipe-egress-rule")
+}
+
+test_recipe_and_binding_refuse_non_origin_parameter_or_non_https_bound_value if {
+	spec := recipe_spec("home", {"supplyKind": "OCI_STDIO", "ociReference": "example/server", "artifactDigest": sha}, [tool], {
+		"parameters": [
+			{"name": "privateOrigin", "type": "ORIGIN", "required": true},
+			{"name": "ordinary", "type": "STRING", "required": false},
+		],
+		"egressRules": [{"origin": {"valueKind": "PARAMETER", "parameterRef": "ordinary"}}],
+	})
+	bound := object.union(binding("DECLARED", null), {
+		"contents": object.union(binding("DECLARED", null).contents, {
+			"spec": object.union(binding("DECLARED", null).contents.spec, {
+				"parameterValues": [{"parameterRef": "privateOrigin", "value": "http://192.168.1.1"}],
+			}),
+		}),
+	})
+	violations := data.jumo.corpus.deny with input as array.concat(base, [recipe("home", spec), bound])
+	has_rule(violations, "corpus.mcp.recipe-egress-rule")
+	has_rule(violations, "corpus.mcp.binding-origin-parameter")
+}
+
 test_package_supplies_require_exact_versions if {
 	some supply_kind in {"NPM_STDIO", "PYTHON_UV_STDIO"}
 	spec := recipe_spec(

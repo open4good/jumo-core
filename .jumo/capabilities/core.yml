@@ -423,6 +423,14 @@ spec:
       reversible: true
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
+    - name: cli.session.pair.submit
+      description: Dispatch the signed Ansible submit-cli-session-code playbook to deliver the holder's pasted OAuth code to the claude-code login a cli.session.pair ceremony left waiting. A continuation of that step-up-authorized ceremony, authorized by its PENDING operation, its Realm and its holder rather than by a second step-up.
+      riskTier: HIGH
+      reversible: false
+      producesExternalEffect: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+      appliedBy: dev.jumo.controlplane.web.CliSessionService
     - name: cli.session.smoke.observe
       description: Confirm a previously-dispatched CLI smoke-test outcome was observed on the machine, without dispatching or re-authorizing the smoke test itself.
       riskTier: MEDIUM

@@ -1,0 +1,12 @@
+apiVersion: jumo.dev/v1
+kind: MachineAdminPlaybook
+metadata:
+  id: submit-cli-session-code
+  namespace: dev.jumo.core
+  name: Submit a pasted CLI session code
+spec:
+  playbookPath: ansible/submit_cli_session_code.yml
+  playbookDigest: sha256:261c0114474746aeffa3572344d9914d5c379c3055179489d0376742cd9b7ccb
+  allowedRealms: [home]
+  description: Delivers the holder's pasted OAuth code, read from the command environment and never from its variables, to the claude-code login pair-cli-session left waiting, then reads back and asserts the outcome.
+  appliesToCapability: cli.session.pair.submit

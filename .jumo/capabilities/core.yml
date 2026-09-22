@@ -502,6 +502,31 @@ spec:
         - RETAIN_PROVENANCE
       minimumAssurance: OBSERVED
       ringCeiling: RING_1_CONTROL_PLANE
+    - name: mcp.credential.read
+      description: Read which credential slots one Realm-owned McpServerBinding declares, whether a value is present and when it last rotated -- never the value itself.
+      riskTier: LOW
+      reversible: true
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: mcp.credential.write
+      description: Write or rotate the value of one declared MCP credential slot straight into its SecretBinding's OpenBao reference, for an MCP_PROCESS_ONLY injection target only.
+      riskTier: HIGH
+      reversible: false
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+        - HUMAN_OWNER_APPROVAL
+        - REDACT_SECRETS
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
+    - name: mcp.credential.revoke
+      description: Destroy the stored value of one declared MCP credential slot in OpenBao, leaving the binding and its recipe declaration intact.
+      riskTier: MEDIUM
+      reversible: false
+      requiredObligations:
+        - STEP_UP_AUTHENTICATION
+        - HUMAN_OWNER_APPROVAL
+      minimumAssurance: OBSERVED
+      ringCeiling: RING_1_CONTROL_PLANE
     - name: gmail.message.search
       description: Search the authenticated Realm principal's Gmail with a typed query and return only a bounded header projection, never a message body.
       riskTier: LOW

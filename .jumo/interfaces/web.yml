@@ -294,6 +294,7 @@ spec:
         - CONNECTOR_CATALOG
         - MCP_CATALOG
         - MCP_ELICITATION_CONSENTS
+        - MCP_CREDENTIAL_SLOTS
         - CONTEXT_GRAPH
       proposes:
         - machine.read
@@ -307,6 +308,9 @@ spec:
         - mcp.catalog.read
         - mcp.elicitation.consent.read
         - mcp.elicitation.consent.resolve
+        - mcp.credential.read
+        - mcp.credential.write
+        - mcp.credential.revoke
         - contract.change.propose
         - context.graph.read
       writePaths:

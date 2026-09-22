@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 
-public record McpMaterializationSnapshot(String snapshotId, String realmId, String recipeDigest, String resolvedLockDigest, String sbomDigest, String materializationDigest, String architecture, ZonedDateTime createdAt)  {
+public record McpMaterializationSnapshot(String snapshotId, String realmId, String recipeDigest, String resolvedLockDigest, String sbomDigest, String materializationDigest, String architecture, ZonedDateTime createdAt, String artifactDigest, String requestedOrigin, String finalOrigin, Boolean signatureVerified, String interpreterFacts)  {
 
     public static Builder builder() {
         return new Builder();
@@ -22,6 +22,11 @@ public record McpMaterializationSnapshot(String snapshotId, String realmId, Stri
         private String materializationDigest = "";
         private String architecture = "";
         private ZonedDateTime createdAt = null;
+        private String artifactDigest = "";
+        private String requestedOrigin = "";
+        private String finalOrigin = "";
+        private Boolean signatureVerified = null;
+        private String interpreterFacts = "";
 
 
         public Builder snapshotId(String snapshotId) {
@@ -64,8 +69,33 @@ public record McpMaterializationSnapshot(String snapshotId, String realmId, Stri
             return this;
         }
 
+        public Builder artifactDigest(String artifactDigest) {
+            this.artifactDigest = Objects.requireNonNull(artifactDigest);
+            return this;
+        }
+
+        public Builder requestedOrigin(String requestedOrigin) {
+            this.requestedOrigin = Objects.requireNonNull(requestedOrigin);
+            return this;
+        }
+
+        public Builder finalOrigin(String finalOrigin) {
+            this.finalOrigin = Objects.requireNonNull(finalOrigin);
+            return this;
+        }
+
+        public Builder signatureVerified(Boolean signatureVerified) {
+            this.signatureVerified = Objects.requireNonNull(signatureVerified);
+            return this;
+        }
+
+        public Builder interpreterFacts(String interpreterFacts) {
+            this.interpreterFacts = Objects.requireNonNull(interpreterFacts);
+            return this;
+        }
+
     public McpMaterializationSnapshot build() {
-            return new McpMaterializationSnapshot(snapshotId, realmId, recipeDigest, resolvedLockDigest, sbomDigest, materializationDigest, architecture, createdAt);
+            return new McpMaterializationSnapshot(snapshotId, realmId, recipeDigest, resolvedLockDigest, sbomDigest, materializationDigest, architecture, createdAt, artifactDigest, requestedOrigin, finalOrigin, signatureVerified, interpreterFacts);
         }
     }
 }

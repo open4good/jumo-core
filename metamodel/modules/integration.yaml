@@ -704,6 +704,25 @@ classes:
       materializationDigest: {range: string, required: true}
       architecture: {range: string, required: true}
       createdAt: {range: datetime, required: true}
+      artifactDigest:
+        range: string
+        description: The digest of the exact bytes this materialization verified, as the supply declared them. Absent for a
+          supply kind that materializes from a resolver rather than one pinned artifact.
+      requestedOrigin:
+        range: string
+        description: The URL the materializer asked for. Recorded beside finalOrigin because a publisher that starts
+          redirecting elsewhere is a fact the evidence must be able to state even when the bytes still match.
+      finalOrigin:
+        range: string
+        description: The URL the bytes finally came from after a bounded redirect chain.
+      signatureVerified:
+        range: boolean
+        description: Whether this materialization carried a publisher signature at all. Recorded explicitly rather than
+          inferred from an absent signatureDigest, so an unsigned admission is a stated fact in the evidence.
+      interpreterFacts:
+        range: string
+        description: The accepted interpreter facts as JSON -- manifest version, server type, entrypoint and declared
+          environment keys for a bundle supply. Attested, never re-derived at launch time.
     annotations:
       jumo.state_authority: POSTGRES
       jumo.model_role: EVENT

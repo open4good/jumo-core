@@ -220,6 +220,7 @@ enums:
       NPM_STDIO: {}
       PYTHON_UV_STDIO: {}
       NATIVE_STDIO: {}
+      MCPB_STDIO: {}
   McpBindingLifecycle:
     permissible_values:
       DECLARED: {}

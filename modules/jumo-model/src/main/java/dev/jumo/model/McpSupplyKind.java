@@ -18,7 +18,9 @@ public enum McpSupplyKind {
 
   PYTHON_UV_STDIO("PYTHON_UV_STDIO"),
 
-  NATIVE_STDIO("NATIVE_STDIO");
+  NATIVE_STDIO("NATIVE_STDIO"),
+
+  MCPB_STDIO("MCPB_STDIO");
 
   private final static Map<String, McpSupplyKind> MAP;
 

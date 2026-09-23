@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/platform-operation/platform-attention-publish",
+  "title": "platform.attention.publish input",
+  "description": "An attention item the owner is asked to consent to before it is sent. It never runs from the conversation loop: a call becomes an effect batch the owner approves or refuses (nestor-effect-consent-loop).",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "description": "What the notification says, in one short line."
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Optional detail shown with the item."
+    },
+    "urgency": {
+      "type": "string",
+      "enum": ["LOW", "NORMAL", "HIGH"],
+      "description": "How insistent the item is. CRITICAL stays a human decision and is not offered."
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "description": "Why this should be sent now. The owner reads this sentence before consenting, so it is required."
+    }
+  },
+  "required": [
+    "title",
+    "rationale"
+  ],
+  "additionalProperties": false
+}

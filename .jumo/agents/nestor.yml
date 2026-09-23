@@ -30,5 +30,9 @@ spec:
     - knowledge.search.request
     - team.roster.read
     - interface.manifest.read
+    # nestor-effect-consent-loop AC1: the first effect Nestor may PROPOSE. Requesting it is what makes
+    # platform.attention.publish offerable (exposure-requested); it grants no execution -- an effect
+    # call becomes an effect batch the owner consents to, and only the trusted applier runs it.
+    - attention.item.publish
   defaultAutonomy: SUPERVISED
   modificationRing: RING_2_AGENT_BEHAVIOR

@@ -3,7 +3,7 @@ kind: PlatformOperationSet
 metadata:
   id: core
   namespace: dev.jumo.core
-  name: Platform read operations
+  name: Platform operations
 spec:
   operations:
     - exposedName: platform.work-orders.list
@@ -62,3 +62,14 @@ spec:
       handlerId: PLATFORM_PRINCIPALS_LIST
       exposedToAgentDefinitionRefs:
         - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}
+    - exposedName: platform.attention.publish
+      capabilityRef: attention.item.publish
+      description: "Ask the owner to let you send them an attention item -- a Web Push, and an email for an email-shaped identity. It is never sent by calling this: the owner reads your rationale and approves or refuses first."
+      inputSchemaRef: platform-attention-publish
+      handlerId: PLATFORM_ATTENTION_PUBLISH
+      # An outbound notification cannot be recalled, and a dispatch the applier loses track of
+      # must be reconciled rather than retried blind -- so REQUIRED, as for a connector write.
+      reconciliation: REQUIRED
+      exposedToAgentDefinitionRefs:
+        - {kind: AgentDefinition, namespace: dev.jumo.core, id: federating-chief-of-staff}
+

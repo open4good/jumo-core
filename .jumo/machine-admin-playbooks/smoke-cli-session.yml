@@ -6,7 +6,7 @@ metadata:
   name: Smoke test holder-operated CLI session
 spec:
   playbookPath: ansible/smoke_cli_session.yml
-  playbookDigest: sha256:32a362404021197ad34a14aedce7c73e223a559f020efa0b28f8b175b0e659d3
+  playbookDigest: sha256:78b60f26cec9fb34ed2b3c050f9ec7850f1cc4d333b37d3d8c7c14b558161fc4
   allowedRealms: [home]
   description: Runs one minimal authenticated request using the machine-local CLI session state.
   appliesToCapability: cli.session.smoke

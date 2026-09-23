@@ -62,7 +62,7 @@ deny contains corpus.violation("corpus.platform-operation.unique-name", document
 deny contains corpus.violation("corpus.platform-operation.effect-reconciliation", entry.document, message) if {
 	some entry in platform_operations
 	capability := corpus.capability_by_name(object.get(entry.operation, "capabilityRef", ""))
-	object.get(capability, "producesExternalEffect", false) == true
+	capability.producesExternalEffect == true
 	object.get(entry.operation, "reconciliation", "") == ""
 	message := sprintf(
 		"platform operation %s names capability %s, which produces an external effect, and declares no reconciliation",

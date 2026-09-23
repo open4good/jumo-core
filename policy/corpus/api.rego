@@ -302,18 +302,51 @@ deny contains {"msg": sprintf("%s: Ring 1 requires step-up", [operation_location
 	not operation_uses_step_up(operation)
 }
 
+# A contract set binds each of its documents to a path instead of the request binding one: the
+# write names a required documents array whose items each require path, and baseCommit stays a
+# top-level requirement (owner ruling 2026-09-23, quota-cockpit-screen-and-reordering AC3). It is
+# still a plain write, so ring, ring-zero, step-up and no-applied-commit apply unchanged.
+request_binds_path(document, request_schema) if required_field(document, request_schema, "path")
+
+request_binds_path(document, request_schema) if {
+	required_field(document, request_schema, "documents")
+	resolved := resolved_schema(document, request_schema)
+	documents := object.get(object.get(resolved, "properties", {}), "documents", {})
+	documents.type == "array"
+	required_field(document, object.get(documents, "items", {}), "path")
+}
+
 deny contains {"msg": sprintf("%s: request requires %s", [operation_location(method, path), field]), "path": web_contract.path, "rule": "api.write.request-binding"} if {
 	some endpoint in http_operations
 	method := endpoint.method
 	path := endpoint.path
 	operation := endpoint.operation
 	plain_write(method, operation)
-	some field in {"path", "baseCommit"}
+	field := "baseCommit"
 	request_schema := json_schema(web_contract.contents, object.get(operation, "requestBody", {}))
 	not required_field(web_contract.contents, request_schema, field)
 }
 
-deny contains {"msg": sprintf("%s %v: proposal response requires changeProposalId", [operation_location(method, path), code]), "path": web_contract.path, "rule": "api.write.proposal-result"} if {
+deny contains {"msg": sprintf("%s: request requires %s", [operation_location(method, path), field]), "path": web_contract.path, "rule": "api.write.request-binding"} if {
+	some endpoint in http_operations
+	method := endpoint.method
+	path := endpoint.path
+	operation := endpoint.operation
+	plain_write(method, operation)
+	field := "path"
+	request_schema := json_schema(web_contract.contents, object.get(operation, "requestBody", {}))
+	not request_binds_path(web_contract.contents, request_schema)
+}
+
+# A single-document write is named by changeProposalId, a contract set by changeSetProposalId.
+proposal_result_field := {"changeProposalId", "changeSetProposalId"}
+
+names_proposal(document, response_schema) if {
+	some field in proposal_result_field
+	required_field(document, response_schema, field)
+}
+
+deny contains {"msg": sprintf("%s %v: proposal response requires changeProposalId or changeSetProposalId", [operation_location(method, path), code]), "path": web_contract.path, "rule": "api.write.proposal-result"} if {
 	some endpoint in http_operations
 	method := endpoint.method
 	path := endpoint.path
@@ -323,7 +356,7 @@ deny contains {"msg": sprintf("%s %v: proposal response requires changeProposalI
 	some success in success_responses(operation)
 	code := success.code
 	response := success.response
-	not required_field(web_contract.contents, json_schema(web_contract.contents, response), "changeProposalId")
+	not names_proposal(web_contract.contents, json_schema(web_contract.contents, response))
 }
 
 # A declared dry run validates and returns, and leaves nothing behind for a result id to name, so
@@ -357,7 +390,7 @@ deny contains {"msg": sprintf("%s %v: dry-run response may not declare %s", [ope
 	some success in success_responses(operation)
 	code := success.code
 	response := success.response
-	some field in {"changeProposalId", "interactionId"}
+	some field in {"changeProposalId", "changeSetProposalId", "interactionId"}
 	declared_field(web_contract.contents, json_schema(web_contract.contents, response), field)
 }
 

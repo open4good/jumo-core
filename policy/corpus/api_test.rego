@@ -242,3 +242,59 @@ test_dry_run_command_needs_no_result_id if {
 	undeclared := data.jumo.corpus.deny with input as replace_api({"paths": object.union(valid_api.paths, {"/check": {"post": object.remove(command, {"x-jumo-dry-run"})}})})
 	has_rule(undeclared, "api.command.result-id")
 }
+
+contract_set_api(request) := replace_api({
+	"paths": object.union(valid_api.paths, {"/proposals/set": {"post": {
+		"x-jumo-capability": "document.propose",
+		"x-jumo-ring": "RING_3_GOVERNED_PROJECT",
+		"requestBody": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/SetRequest"}}}},
+		"responses": {"202": {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/SetProposal"}}}}},
+	}}}),
+	"components": object.union(valid_api.components, {"schemas": object.union(valid_api.components.schemas, {
+		"SetRequest": request,
+		"SetProposal": {"allOf": [
+			{"$ref": "#/components/schemas/Projection"},
+			{"type": "object", "required": ["changeSetProposalId"], "properties": {"changeSetProposalId": {"type": "string"}}},
+		]},
+	})}),
+})
+
+set_request := {
+	"type": "object",
+	"required": ["baseCommit", "documents"],
+	"properties": {"documents": {"type": "array", "items": {"type": "object", "required": ["path", "content"]}}},
+}
+
+test_contract_set_binds_each_document_path_and_answers_a_changeset_id if {
+	violations := data.jumo.corpus.deny with input as contract_set_api(set_request)
+	not has_api_rule(violations)
+}
+
+test_contract_set_without_a_per_document_path_is_refused if {
+	unbound := json.patch(set_request, [{"op": "replace", "path": "/properties/documents/items/required", "value": ["content"]}])
+	violations := data.jumo.corpus.deny with input as contract_set_api(unbound)
+	has_rule(violations, "api.write.request-binding")
+	baseless := json.patch(set_request, [{"op": "replace", "path": "/required", "value": ["documents"]}])
+	baseless_violations := data.jumo.corpus.deny with input as contract_set_api(baseless)
+	has_rule(baseless_violations, "api.write.request-binding")
+}
+
+test_contract_set_is_still_a_plain_write_needing_step_up_at_ring_one if {
+	api := contract_set_api(set_request)
+	contents := api[count(api) - 1].contents
+	post := object.union(contents.paths["/proposals/set"].post, {"x-jumo-ring": "RING_1_CONTROL_PLANE"})
+	violations := data.jumo.corpus.deny with input as replace_api({
+		"paths": object.union(contents.paths, {"/proposals/set": {"post": post}}),
+		"components": contents.components,
+	})
+	has_rule(violations, "api.write.step-up")
+}
+
+test_dry_run_response_declaring_a_changeset_id_is_refused if {
+	with_changeset := {"allOf": [
+		{"$ref": "#/components/schemas/Projection"},
+		{"type": "object", "properties": {"changeSetProposalId": {"type": "string"}}},
+	]}
+	violations := data.jumo.corpus.deny with input as dry_run_api(with_changeset)
+	has_rule(violations, "api.dry-run.no-result-id")
+}

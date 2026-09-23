@@ -20,6 +20,7 @@ has_rule(violations, rule) if {
 capabilities := document(".jumo/capabilities/core.yml", "ActionCapabilitySet", "core", "dev.jumo.core", {"capabilities": [
 	{"name": "work.order.read", "description": "Read a work order.", "riskTier": "LOW", "reversible": true},
 	{"name": "team.roster.read", "description": "Read the roster.", "riskTier": "LOW", "reversible": true},
+	{"name": "attention.item.publish", "description": "Publish an attention item.", "riskTier": "MEDIUM", "reversible": false, "producesExternalEffect": true},
 ]})
 
 agent := document(".jumo/agents/nestor.yml", "AgentDefinition", "federating-chief-of-staff", "dev.jumo.core", {"requestedCapabilities": ["work.order.read"]})
@@ -87,4 +88,28 @@ test_duplicate_exposed_name_in_one_set_is_denied if {
 	])
 	violations := data.jumo.corpus.deny with input as [capabilities, agent, set]
 	has_rule(violations, "corpus.platform-operation.unique-name")
+}
+
+# corpus.platform-operation.effect-reconciliation
+
+effect_agent := document(".jumo/agents/nestor.yml", "AgentDefinition", "federating-chief-of-staff", "dev.jumo.core", {"requestedCapabilities": ["work.order.read", "attention.item.publish"]})
+
+test_an_effect_operation_without_a_reconciliation_is_denied if {
+	set := operation_set([operation("platform.attention.publish", "attention.item.publish")])
+	violations := data.jumo.corpus.deny with input as [capabilities, effect_agent, set]
+	has_rule(violations, "corpus.platform-operation.effect-reconciliation")
+}
+
+test_an_effect_operation_declaring_its_reconciliation_is_accepted if {
+	set := operation_set([object.union(operation("platform.attention.publish", "attention.item.publish"), {"reconciliation": "REQUIRED"})])
+	violations := data.jumo.corpus.deny with input as [capabilities, effect_agent, set]
+	not has_rule(violations, "corpus.platform-operation.effect-reconciliation")
+}
+
+# The reachability half: a READ operation declaring none is not refused, so the deny above is about
+# the effect and not about the field being absent everywhere.
+test_a_read_operation_needs_no_reconciliation if {
+	set := operation_set([operation("platform.work-orders.list", "work.order.read")])
+	violations := data.jumo.corpus.deny with input as [capabilities, effect_agent, set]
+	not has_rule(violations, "corpus.platform-operation.effect-reconciliation")
 }

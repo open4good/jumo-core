@@ -53,3 +53,19 @@ deny contains corpus.violation("corpus.platform-operation.unique-name", document
 	count([other | some other in names; other == name]) > 1
 	message := sprintf("platform operation name %s is declared more than once in this set", [name])
 }
+
+# An operation whose capability produces an external effect never runs in the conversation loop: it
+# becomes an EffectBatch line, and a line must carry the reconciliation its operation declared
+# (EffectBatchLine.reconciliation is required). The capability does not carry that fact, so the
+# operation must (owner ruling 2026-09-23, nestor-effect-consent-loop). A read operation declares
+# none -- there is nothing to reconcile -- and is not asked for one.
+deny contains corpus.violation("corpus.platform-operation.effect-reconciliation", entry.document, message) if {
+	some entry in platform_operations
+	capability := corpus.capability_by_name(object.get(entry.operation, "capabilityRef", ""))
+	object.get(capability, "producesExternalEffect", false) == true
+	object.get(entry.operation, "reconciliation", "") == ""
+	message := sprintf(
+		"platform operation %s names capability %s, which produces an external effect, and declares no reconciliation",
+		[object.get(entry.operation, "exposedName", "<missing>"), object.get(entry.operation, "capabilityRef", "")],
+	)
+}

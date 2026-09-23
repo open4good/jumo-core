@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * One platform operation exposable to an agent as a tool. riskTier, producesExternalEffect, reversible, requiredObligations and ringCeiling are deliberately absent -- every one of them is derived from capabilityRef at resolution time, so a declaration here could only ever contradict the capability it names. requiresGrant is implicit for the same reason it is not a field, since every call consumes a single-use InvocationCapabilityGrant.
  */
-public record PlatformOperation(String exposedName, String capabilityRef, String description, String inputSchemaRef, String outputSchemaRef, String handlerId, List<ContractReference> exposedToAgentDefinitionRefs, Long maxResultBytes)  {
+public record PlatformOperation(String exposedName, String capabilityRef, String description, String inputSchemaRef, String outputSchemaRef, String handlerId, List<ContractReference> exposedToAgentDefinitionRefs, Long maxResultBytes, OperationReconciliation reconciliation)  {
 
     public static Builder builder() {
         return new Builder();
@@ -24,6 +24,7 @@ public record PlatformOperation(String exposedName, String capabilityRef, String
         private String handlerId = "";
         private List<ContractReference> exposedToAgentDefinitionRefs = List.of();
         private Long maxResultBytes = null;
+        private OperationReconciliation reconciliation = null;
 
 
         public Builder exposedName(String exposedName) {
@@ -66,8 +67,13 @@ public record PlatformOperation(String exposedName, String capabilityRef, String
             return this;
         }
 
+        public Builder reconciliation(OperationReconciliation reconciliation) {
+            this.reconciliation = Objects.requireNonNull(reconciliation);
+            return this;
+        }
+
     public PlatformOperation build() {
-            return new PlatformOperation(exposedName, capabilityRef, description, inputSchemaRef, outputSchemaRef, handlerId, exposedToAgentDefinitionRefs, maxResultBytes);
+            return new PlatformOperation(exposedName, capabilityRef, description, inputSchemaRef, outputSchemaRef, handlerId, exposedToAgentDefinitionRefs, maxResultBytes, reconciliation);
         }
     }
 }

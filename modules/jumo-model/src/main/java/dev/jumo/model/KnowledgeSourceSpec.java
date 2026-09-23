@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record KnowledgeSourceSpec(String ownerRealm, ContractReference knowledgeCorpusRef, KnowledgeSourceKind sourceKind, ContractReference projectRef, String composedRealm, ContractReference connectorDefinitionRef, List<String> readOperationRefs, List<String> roots, List<String> includePatterns, List<String> excludePatterns, List<String> allowedMimeTypes, int maximumDocumentBytes, KnowledgeSyncMode syncMode, String reconciliationCadence, KnowledgeWithdrawalPolicy withdrawalPolicy, DataScope audience)  {
+public record KnowledgeSourceSpec(String ownerRealm, ContractReference knowledgeCorpusRef, KnowledgeSourceKind sourceKind, ContractReference projectRef, String composedRealm, ContractReference connectorDefinitionRef, List<String> readOperationRefs, List<String> roots, List<String> includePatterns, List<String> excludePatterns, List<String> allowedMimeTypes, long maximumDocumentBytes, KnowledgeSyncMode syncMode, String reconciliationCadence, KnowledgeWithdrawalPolicy withdrawalPolicy, DataScope audience)  {
 
     public static Builder builder() {
         return new Builder();
@@ -29,7 +29,7 @@ public record KnowledgeSourceSpec(String ownerRealm, ContractReference knowledge
         private List<String> includePatterns = List.of();
         private List<String> excludePatterns = List.of();
         private List<String> allowedMimeTypes = List.of();
-        private int maximumDocumentBytes = 0;
+        private long maximumDocumentBytes = 0L;
         private KnowledgeSyncMode syncMode = null;
         private String reconciliationCadence = "";
         private KnowledgeWithdrawalPolicy withdrawalPolicy = null;
@@ -91,7 +91,7 @@ public record KnowledgeSourceSpec(String ownerRealm, ContractReference knowledge
             return this;
         }
 
-        public Builder maximumDocumentBytes(int maximumDocumentBytes) {
+        public Builder maximumDocumentBytes(long maximumDocumentBytes) {
             this.maximumDocumentBytes = Objects.requireNonNull(maximumDocumentBytes);
             return this;
         }

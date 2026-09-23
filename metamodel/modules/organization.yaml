@@ -1033,7 +1033,7 @@ classes:
         required: true
         pattern: ^[A-Za-z0-9._/-]+$
       storageQuotaBytes:
-        range: integer
+        range: ByteCount
         required: true
         minimum_value: 1048576
       gitLfsPointers:

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public record PersonalSpaceSpec(String ownerRealm, String ownerPrincipal, String workspacePath, int storageQuotaBytes, List<String> gitLfsPointers, ContractReference preferencesRef)  {
+public record PersonalSpaceSpec(String ownerRealm, String ownerPrincipal, String workspacePath, long storageQuotaBytes, List<String> gitLfsPointers, ContractReference preferencesRef)  {
 
     public static Builder builder() {
         return new Builder();
@@ -17,7 +17,7 @@ public record PersonalSpaceSpec(String ownerRealm, String ownerPrincipal, String
         private String ownerRealm = "";
         private String ownerPrincipal = "";
         private String workspacePath = "";
-        private int storageQuotaBytes = 0;
+        private long storageQuotaBytes = 0L;
         private List<String> gitLfsPointers = List.of();
         private ContractReference preferencesRef = null;
 
@@ -37,7 +37,7 @@ public record PersonalSpaceSpec(String ownerRealm, String ownerPrincipal, String
             return this;
         }
 
-        public Builder storageQuotaBytes(int storageQuotaBytes) {
+        public Builder storageQuotaBytes(long storageQuotaBytes) {
             this.storageQuotaBytes = Objects.requireNonNull(storageQuotaBytes);
             return this;
         }

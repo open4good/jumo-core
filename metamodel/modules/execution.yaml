@@ -626,7 +626,7 @@ classes:
       bridgeNetwork:
         range: string
       memoryBytes:
-        range: integer
+        range: ByteCount
       vcpuCount:
         range: integer
     annotations:
@@ -650,9 +650,9 @@ classes:
       cpuCount:
         range: integer
       memoryBytes:
-        range: integer
+        range: ByteCount
       diskBytes:
-        range: integer
+        range: ByteCount
       agentVersion:
         range: string
       observedAt:

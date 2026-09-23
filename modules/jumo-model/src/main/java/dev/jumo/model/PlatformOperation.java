@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * One platform operation exposable to an agent as a tool. riskTier, producesExternalEffect, reversible, requiredObligations and ringCeiling are deliberately absent -- every one of them is derived from capabilityRef at resolution time, so a declaration here could only ever contradict the capability it names. requiresGrant is implicit for the same reason it is not a field, since every call consumes a single-use InvocationCapabilityGrant.
  */
-public record PlatformOperation(String exposedName, String capabilityRef, String description, String inputSchemaRef, String outputSchemaRef, String handlerId, List<ContractReference> exposedToAgentDefinitionRefs, Integer maxResultBytes)  {
+public record PlatformOperation(String exposedName, String capabilityRef, String description, String inputSchemaRef, String outputSchemaRef, String handlerId, List<ContractReference> exposedToAgentDefinitionRefs, Long maxResultBytes)  {
 
     public static Builder builder() {
         return new Builder();
@@ -23,7 +23,7 @@ public record PlatformOperation(String exposedName, String capabilityRef, String
         private String outputSchemaRef = "";
         private String handlerId = "";
         private List<ContractReference> exposedToAgentDefinitionRefs = List.of();
-        private Integer maxResultBytes = null;
+        private Long maxResultBytes = null;
 
 
         public Builder exposedName(String exposedName) {
@@ -61,7 +61,7 @@ public record PlatformOperation(String exposedName, String capabilityRef, String
             return this;
         }
 
-        public Builder maxResultBytes(Integer maxResultBytes) {
+        public Builder maxResultBytes(Long maxResultBytes) {
             this.maxResultBytes = Objects.requireNonNull(maxResultBytes);
             return this;
         }

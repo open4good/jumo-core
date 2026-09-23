@@ -89,7 +89,8 @@ gen-json-schema "$MERGED" > "$OUT_DIR/jsonschema/jumo-v1.schema.json"
 "$PYTHON" "$POSTPROCESS" strip-nullable-json-schema "$OUT_DIR/jsonschema/jumo-v1.schema.json"
 
 echo "== Java records =="
-gen-java --template-variant records --true-enums --package dev.jumo.model \
+# gen_java.py is gen-java plus an xsd:long mapping (ByteCount); see its docstring.
+"$PYTHON" "$ROOT_DIR/scripts/generate/gen_java.py" --template-variant records --true-enums --package dev.jumo.model \
   --output-directory "$JAVA_MODEL_DIR" "$MERGED"
 "$PYTHON" "$POSTPROCESS" fix-java-primitive-builder-defaults "$JAVA_MODEL_DIR"
 "$PYTHON" "$POSTPROCESS" add-java-banners "$JAVA_MODEL_DIR"

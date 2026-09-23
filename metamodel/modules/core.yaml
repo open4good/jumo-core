@@ -50,6 +50,12 @@ types:
     pattern: ^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*){1,3}$
     description: 'Capability namespace grammar: <domain>.[<resource>.]<verb>[.<qualifier>], two to four lowercase segments.
       Every name used anywhere must resolve against .jumo/capabilities/.'
+  ByteCount:
+    typeof: integer
+    base: int
+    uri: xsd:long
+    description: A size or count in bytes. 64-bit in every generated binding (scripts/generate/gen_java.py maps xsd:long
+      to Java long/Long), so a declared quota or limit above 2 GiB is representable.
   Duration:
     typeof: string
     base: str

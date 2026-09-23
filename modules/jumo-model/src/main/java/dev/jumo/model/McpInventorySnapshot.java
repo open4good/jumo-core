@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * PostgreSQL event recording an MCP inventory discovered under an exact Realm lease; it is not a Git contract.
  */
-public record McpInventorySnapshot(String serverId, String ownerRealm, ContractReference workOrderRef, String executionCellLeaseRef, ContractReference executionMachineRef, String contractRevision, String artifactOrEndpoint, String serverName, String serverVersion, String protocolVersion, List<String> capabilities, List<McpToolDescriptor> tools, String inventoryDigest, String discoveredAt, Integer pagesObserved, Integer bytesObserved, String networkIsolationMode, Boolean privateEgressObserved)  {
+public record McpInventorySnapshot(String serverId, String ownerRealm, ContractReference workOrderRef, String executionCellLeaseRef, ContractReference executionMachineRef, String contractRevision, String artifactOrEndpoint, String serverName, String serverVersion, String protocolVersion, List<String> capabilities, List<McpToolDescriptor> tools, String inventoryDigest, String discoveredAt, Integer pagesObserved, Long bytesObserved, String networkIsolationMode, Boolean privateEgressObserved)  {
 
     public static Builder builder() {
         return new Builder();
@@ -32,7 +32,7 @@ public record McpInventorySnapshot(String serverId, String ownerRealm, ContractR
         private String inventoryDigest = "";
         private String discoveredAt = "";
         private Integer pagesObserved = null;
-        private Integer bytesObserved = null;
+        private Long bytesObserved = null;
         private String networkIsolationMode = "";
         private Boolean privateEgressObserved = null;
 
@@ -112,7 +112,7 @@ public record McpInventorySnapshot(String serverId, String ownerRealm, ContractR
             return this;
         }
 
-        public Builder bytesObserved(Integer bytesObserved) {
+        public Builder bytesObserved(Long bytesObserved) {
             this.bytesObserved = Objects.requireNonNull(bytesObserved);
             return this;
         }

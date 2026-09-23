@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Specification for a MachineHostDefinition contract.
  */
-public record MachineHostDefinitionSpec(String ownerRealm, String driver, String domainPrefix, String storagePool, String bridgeNetwork, Integer memoryBytes, Integer vcpuCount)  {
+public record MachineHostDefinitionSpec(String ownerRealm, String driver, String domainPrefix, String storagePool, String bridgeNetwork, Long memoryBytes, Integer vcpuCount)  {
 
     public static Builder builder() {
         return new Builder();
@@ -20,7 +20,7 @@ public record MachineHostDefinitionSpec(String ownerRealm, String driver, String
         private String domainPrefix = "";
         private String storagePool = "";
         private String bridgeNetwork = "";
-        private Integer memoryBytes = null;
+        private Long memoryBytes = null;
         private Integer vcpuCount = null;
 
 
@@ -49,7 +49,7 @@ public record MachineHostDefinitionSpec(String ownerRealm, String driver, String
             return this;
         }
 
-        public Builder memoryBytes(Integer memoryBytes) {
+        public Builder memoryBytes(Long memoryBytes) {
             this.memoryBytes = Objects.requireNonNull(memoryBytes);
             return this;
         }

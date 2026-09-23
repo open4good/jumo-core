@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Observed hardware and OS characteristics of an enrolled machine.
  */
-public record MachineInventoryObservation(String osName, String osVersion, String arch, String kernelVersion, Integer cpuCount, Integer memoryBytes, Integer diskBytes, String agentVersion, String observedAt)  {
+public record MachineInventoryObservation(String osName, String osVersion, String arch, String kernelVersion, Integer cpuCount, Long memoryBytes, Long diskBytes, String agentVersion, String observedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -20,8 +20,8 @@ public record MachineInventoryObservation(String osName, String osVersion, Strin
         private String arch = "";
         private String kernelVersion = "";
         private Integer cpuCount = null;
-        private Integer memoryBytes = null;
-        private Integer diskBytes = null;
+        private Long memoryBytes = null;
+        private Long diskBytes = null;
         private String agentVersion = "";
         private String observedAt = "";
 
@@ -51,12 +51,12 @@ public record MachineInventoryObservation(String osName, String osVersion, Strin
             return this;
         }
 
-        public Builder memoryBytes(Integer memoryBytes) {
+        public Builder memoryBytes(Long memoryBytes) {
             this.memoryBytes = Objects.requireNonNull(memoryBytes);
             return this;
         }
 
-        public Builder diskBytes(Integer diskBytes) {
+        public Builder diskBytes(Long diskBytes) {
             this.diskBytes = Objects.requireNonNull(diskBytes);
             return this;
         }

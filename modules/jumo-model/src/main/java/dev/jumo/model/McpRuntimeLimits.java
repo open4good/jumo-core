@@ -5,7 +5,7 @@ package dev.jumo.model;
 import java.util.Objects;
 
 
-public record McpRuntimeLimits(int maxMemoryBytes, int maxCpuMillis, int maxPayloadBytes, int timeoutMillis, int maxCallsPerMinute)  {
+public record McpRuntimeLimits(long maxMemoryBytes, int maxCpuMillis, long maxPayloadBytes, int timeoutMillis, int maxCallsPerMinute)  {
 
     public static Builder builder() {
         return new Builder();
@@ -13,14 +13,14 @@ public record McpRuntimeLimits(int maxMemoryBytes, int maxCpuMillis, int maxPayl
 
     public static class Builder {
 
-        private int maxMemoryBytes = 0;
+        private long maxMemoryBytes = 0L;
         private int maxCpuMillis = 0;
-        private int maxPayloadBytes = 0;
+        private long maxPayloadBytes = 0L;
         private int timeoutMillis = 0;
         private int maxCallsPerMinute = 0;
 
 
-        public Builder maxMemoryBytes(int maxMemoryBytes) {
+        public Builder maxMemoryBytes(long maxMemoryBytes) {
             this.maxMemoryBytes = Objects.requireNonNull(maxMemoryBytes);
             return this;
         }
@@ -30,7 +30,7 @@ public record McpRuntimeLimits(int maxMemoryBytes, int maxCpuMillis, int maxPayl
             return this;
         }
 
-        public Builder maxPayloadBytes(int maxPayloadBytes) {
+        public Builder maxPayloadBytes(long maxPayloadBytes) {
             this.maxPayloadBytes = Objects.requireNonNull(maxPayloadBytes);
             return this;
         }

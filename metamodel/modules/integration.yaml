@@ -515,9 +515,9 @@ classes:
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   McpRuntimeLimits:
     attributes:
-      maxMemoryBytes: {range: integer, required: true}
+      maxMemoryBytes: {range: ByteCount, required: true}
       maxCpuMillis: {range: integer, required: true}
-      maxPayloadBytes: {range: integer, required: true}
+      maxPayloadBytes: {range: ByteCount, required: true}
       timeoutMillis: {range: integer, required: true}
       maxCallsPerMinute: {range: integer, required: true}
     annotations:
@@ -743,7 +743,7 @@ classes:
       outcome: {range: McpQualificationOutcome, required: true}
       observedAt: {range: datetime, required: true}
       pagesObserved: {range: integer}
-      bytesObserved: {range: integer}
+      bytesObserved: {range: ByteCount}
       networkIsolationMode: {range: McpNetworkIsolationMode}
     annotations:
       jumo.state_authority: POSTGRES
@@ -2711,7 +2711,7 @@ classes:
       pagesObserved:
         range: integer
       bytesObserved:
-        range: integer
+        range: ByteCount
       networkIsolationMode:
         range: string
       privateEgressObserved:
@@ -3812,7 +3812,7 @@ classes:
       includePatterns: {range: string, multivalued: true}
       excludePatterns: {range: string, multivalued: true}
       allowedMimeTypes: {range: string, multivalued: true, required: true, minimum_cardinality: 1}
-      maximumDocumentBytes: {range: integer, required: true, minimum_value: 1}
+      maximumDocumentBytes: {range: ByteCount, required: true, minimum_value: 1}
       syncMode: {range: KnowledgeSyncMode, required: true}
       reconciliationCadence: {range: Duration, required: true}
       withdrawalPolicy: {range: KnowledgeWithdrawalPolicy, required: true}
@@ -4132,7 +4132,7 @@ classes:
         description: required alone does not reject an empty list in LinkML. The pair with minimum_cardinality is the
           constraint; either one on its own is decorative, and an empty list would mean an operation exposed to nobody.
       maxResultBytes:
-        range: integer
+        range: ByteCount
         ifabsent: 'int(65536)'
     annotations:
       jumo.state_authority: GIT

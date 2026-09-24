@@ -2148,13 +2148,21 @@ classes:
         range: string
         description: >-
           The worker_invocation a dialogue-path call was made under. One ledger row per invocation.
-          Absent for an MCP sampling call, which creates no worker_invocation; exactly one of this
-          and mcpSamplingInvocationId is present, enforced by the table's producer check.
+          Absent for an MCP sampling call or a provider qualification probe, neither of which creates
+          a worker_invocation; exactly one of this, mcpSamplingInvocationId and qualificationProbeId
+          is present, enforced by the table's producer check.
       mcpSamplingInvocationId:
         range: string
         description: >-
           The MCP sampling dispatch this call was made under -- the subject id of its audit event.
           Present only for origin MCP_SAMPLING, and then in place of workerInvocationId.
+      qualificationProbeId:
+        range: string
+        description: >-
+          The provider qualification probe this call was made under -- the id its
+          provider-account-rung-observation evidenceRef carries. One row per probe call, so a
+          re-qualification of the same rung, paid again, is counted again. Present only for origin
+          PROVIDER_QUALIFICATION, and then in place of the other two producers.
       providerAccountId:
         range: string
       providerPlatformId:

@@ -1,0 +1,49 @@
+apiVersion: jumo.dev/v1
+kind: ProcessSpec
+metadata:
+  id: daily-review-scan--1-0-0
+  namespace: dev.jumo.core
+  name: Timer-started daily review scan 1.0.0
+spec:
+  ownerRealm: home
+  projectRef:
+    kind: Project
+    namespace: dev.jumo.core
+    id: jumo
+  processId: daily-review-scan
+  processVersion: 1.0.0
+  inputType: AttentionItem
+  outputType: AttentionItem
+  startTrigger: TIMER
+  timerDelay: PT24H
+  steps:
+    - id: start
+      kind: START
+    - id: scan-mail
+      kind: SERVICE
+      semanticStage: OBSERVATION
+      capabilityRef: email.message.read
+      ring: RING_1_CONTROL_PLANE
+      idempotencyKey: daily-review-scan-gmail-message
+    - id: scan-calendar
+      kind: SERVICE
+      semanticStage: OBSERVATION
+      capabilityRef: calendar.event.read
+      ring: RING_1_CONTROL_PLANE
+      idempotencyKey: daily-review-scan-calendar-event
+    - id: completed
+      kind: END
+      terminalState: COMPLETED
+  flows:
+    - id: start-scan-mail
+      from: start
+      to: scan-mail
+      payloadType: AttentionItem
+    - id: scan-mail-scan-calendar
+      from: scan-mail
+      to: scan-calendar
+      payloadType: AttentionItem
+    - id: scan-calendar-completed
+      from: scan-calendar
+      to: completed
+      payloadType: AttentionItem

@@ -1,0 +1,14 @@
+apiVersion: jumo.dev/v1
+kind: Practice
+metadata:
+  id: daily-review-scan
+  namespace: dev.jumo.core
+  name: Daily review scan
+spec:
+  purpose: Open one AttentionItem per Gmail message or Calendar event the daily scan finds, observation only.
+  delivery: LIVE
+  enabled: true
+  processSpecRef:
+    kind: ProcessSpec
+    namespace: dev.jumo.core
+    id: daily-review-scan--1-0-0

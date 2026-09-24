@@ -45,7 +45,7 @@ such as FORGE.
    commit signature, exact SHA, required CI and owner decision, revalidates LinkML/Rego, then switches
    `ActiveContractSet` atomically — no build, deploy, restart or lock mutation. Updates apply only to new
    leases; existing ones drain on their original digest. Suspension/compromise/refusal revokes affected
-   leases immediately; a prior digest can be reactivated for rollback.
+   leases immediately; a prior digest can be reactivated for rollback. Start-up activation: ADR-0065.
 7. **Isolated upstream.** Per lease/binding the machine agent runs one gateway and one upstream; the worker
    reaches only the local gateway. stdio runs from the pinned OCI supply or offline snapshot as
    non-privileged, read-only filesystem, dropped capabilities, bounded resources, appraised egress, no

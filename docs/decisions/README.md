@@ -43,3 +43,4 @@ audience: PROJECT_SCOPED
 | [ADR-0062](ADR-0062-portable-theme-contract.md) | Portable theme contract | 1, 2, 14, 15 | `InterfaceSurface`, `Preferences`, `ThemePack`, `VocabularySet` |
 | [ADR-0063](ADR-0063-declarative-generic-mcp-runtime.md) | Declarative generic MCP runtime and hot Realm activation | 8 | `ConnectorDefinition`, `ExecutionMachine`, `McpServerAppraisal`, `McpServerBinding`, `McpServerRecipe`, `SecretBinding` |
 | [ADR-0064](ADR-0064-platform-managed-plan-account-use.md) | platform-managed use of a plan-direct subscription account | 2 | `ProviderAccount`, `WorkerSubstrate` |
+| [ADR-0065](ADR-0065-contract-set-activation-at-start-up.md) | contract-set activation at control-plane start-up | 8 | — |

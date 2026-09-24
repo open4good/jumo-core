@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * One recorded model call and what it cost (quota-usage-ledger-and-pricing AC2/AC3). PostgreSQL is the authority, because this is observed business state -- what a call actually consumed -- and not a declaration. The four token counts are kept apart rather than summed, so that a cached call can be priced at the four declared ModelPricingSpec rates instead of one. costAmount is ABSENT, never zero, for a model the platform declares no price for, and costAbsentReason then states why -- a zero would sum silently into a spend total and understate it. Counting only -- nothing refuses a call on spend, which would need a periodic ceiling and an atomic pre-call reservation, neither of which exists.
  */
-public record ModelCallLedger(String realmId, String workerInvocationId, String providerAccountId, String providerPlatformId, String modelAlias, String effortRung, String origin, String conversationTask, Integer inputTokens, Integer outputTokens, Integer cacheReadInputTokens, Integer cacheCreationInputTokens, BigDecimal costAmount, String costCurrency, LocalDate pricingEffectiveFrom, String costAbsentReason, Integer latencyMs, String recordedAt)  {
+public record ModelCallLedger(String realmId, String workerInvocationId, String mcpSamplingInvocationId, String providerAccountId, String providerPlatformId, String modelAlias, String effortRung, String origin, String conversationTask, Integer inputTokens, Integer outputTokens, Integer cacheReadInputTokens, Integer cacheCreationInputTokens, BigDecimal costAmount, String costCurrency, LocalDate pricingEffectiveFrom, String costAbsentReason, Integer latencyMs, String recordedAt)  {
 
     public static Builder builder() {
         return new Builder();
@@ -19,6 +19,7 @@ public record ModelCallLedger(String realmId, String workerInvocationId, String 
 
         private String realmId = "";
         private String workerInvocationId = "";
+        private String mcpSamplingInvocationId = "";
         private String providerAccountId = "";
         private String providerPlatformId = "";
         private String modelAlias = "";
@@ -44,6 +45,11 @@ public record ModelCallLedger(String realmId, String workerInvocationId, String 
 
         public Builder workerInvocationId(String workerInvocationId) {
             this.workerInvocationId = Objects.requireNonNull(workerInvocationId);
+            return this;
+        }
+
+        public Builder mcpSamplingInvocationId(String mcpSamplingInvocationId) {
+            this.mcpSamplingInvocationId = Objects.requireNonNull(mcpSamplingInvocationId);
             return this;
         }
 
@@ -128,7 +134,7 @@ public record ModelCallLedger(String realmId, String workerInvocationId, String 
         }
 
     public ModelCallLedger build() {
-            return new ModelCallLedger(realmId, workerInvocationId, providerAccountId, providerPlatformId, modelAlias, effortRung, origin, conversationTask, inputTokens, outputTokens, cacheReadInputTokens, cacheCreationInputTokens, costAmount, costCurrency, pricingEffectiveFrom, costAbsentReason, latencyMs, recordedAt);
+            return new ModelCallLedger(realmId, workerInvocationId, mcpSamplingInvocationId, providerAccountId, providerPlatformId, modelAlias, effortRung, origin, conversationTask, inputTokens, outputTokens, cacheReadInputTokens, cacheCreationInputTokens, costAmount, costCurrency, pricingEffectiveFrom, costAbsentReason, latencyMs, recordedAt);
         }
     }
 }

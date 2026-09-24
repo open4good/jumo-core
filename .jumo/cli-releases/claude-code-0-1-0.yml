@@ -16,3 +16,9 @@ spec:
   signatureDigest: sha256:0e5fd50c22e2ccaba5847cd0966f5410bad59bd2832517511f203f5c81d04f14
   sbomDigest: sha256:785be7bf4e94db49f947378660514b9caef9b1428b4692dd73bf24eeee1ce890
   provenanceDigest: sha256:0af14a78d0990204da9cea8cfcb291277b9a1196cd7b5bde5ca81759fa3b7d6f
+  modelEndpointOrigins: [https://api.anthropic.com, https://claude.ai, https://platform.claude.com]
+  mcpAdapterProfile:
+    configurationFormat: CLAUDE_JSON_HTTP
+    toolNameEncoding: MCP_SERVER_PREFIX
+    configSchemaDigest: sha256:307ae188b5a6f4e1cb61d88a24226b7b99f6eeefe7a71566e56ca1ce20fe4d63
+    smokeEvidenceRef: note:claude-code-2.1.260-help-2026-09-24

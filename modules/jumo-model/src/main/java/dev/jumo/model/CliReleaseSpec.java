@@ -2,12 +2,13 @@
 package dev.jumo.model;
 
 
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Specification for a CliRelease contract.
  */
-public record CliReleaseSpec(ContractReference toolRef, String version, String platform, String ociImage, String imageDigest, String signatureDigest, String sbomDigest, String provenanceDigest)  {
+public record CliReleaseSpec(ContractReference toolRef, String version, String platform, String ociImage, String imageDigest, String signatureDigest, String sbomDigest, String provenanceDigest, CliMcpAdapterProfile mcpAdapterProfile, List<String> modelEndpointOrigins)  {
 
     public static Builder builder() {
         return new Builder();
@@ -23,6 +24,8 @@ public record CliReleaseSpec(ContractReference toolRef, String version, String p
         private String signatureDigest = "";
         private String sbomDigest = "";
         private String provenanceDigest = "";
+        private CliMcpAdapterProfile mcpAdapterProfile = null;
+        private List<String> modelEndpointOrigins = List.of();
 
 
         public Builder toolRef(ContractReference toolRef) {
@@ -65,8 +68,18 @@ public record CliReleaseSpec(ContractReference toolRef, String version, String p
             return this;
         }
 
+        public Builder mcpAdapterProfile(CliMcpAdapterProfile mcpAdapterProfile) {
+            this.mcpAdapterProfile = Objects.requireNonNull(mcpAdapterProfile);
+            return this;
+        }
+
+        public Builder modelEndpointOrigins(List<String> modelEndpointOrigins) {
+            this.modelEndpointOrigins = Objects.requireNonNull(modelEndpointOrigins);
+            return this;
+        }
+
     public CliReleaseSpec build() {
-            return new CliReleaseSpec(toolRef, version, platform, ociImage, imageDigest, signatureDigest, sbomDigest, provenanceDigest);
+            return new CliReleaseSpec(toolRef, version, platform, ociImage, imageDigest, signatureDigest, sbomDigest, provenanceDigest, mcpAdapterProfile, modelEndpointOrigins);
         }
     }
 }

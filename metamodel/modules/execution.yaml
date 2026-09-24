@@ -112,6 +112,10 @@ enums:
       NATIVE_JSON_SCHEMA: {}
       PROMPTED_JSON_VALIDATED: {}
       UNSUPPORTED: {}
+  ExecutionLeaseKind:
+    permissible_values:
+      WORK_ORDER: {}
+      DIALOGUE: {}
   QuotaStatus:
     permissible_values:
       OBSERVED: {}
@@ -1085,7 +1089,7 @@ classes:
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   ExecutionCellLease:
-    description: Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and immutable active contract-set digest.
+    description: Ephemeral sandbox execution lease bound to a machine and immutable active contract-set digest; a WORK_ORDER lease carries a task and SHA, while a DIALOGUE lease carries a conversation turn.
     attributes:
       leaseId:
         range: Identifier
@@ -1093,12 +1097,18 @@ classes:
       machineId:
         range: Identifier
         required: true
+      leaseKind:
+        range: ExecutionLeaseKind
+        required: true
       workOrderId:
         range: Identifier
-        required: true
       gitCommitSha:
         range: string
-        required: true
+      conversationTurnId:
+        range: Identifier
+      providerAccountRef:
+        range: ContractReference
+        inlined: true
       contractSetDigest:
         range: string
         required: true
@@ -1320,6 +1330,13 @@ classes:
         range: string
       provenanceDigest:
         range: string
+      mcpAdapterProfile:
+        range: CliMcpAdapterProfile
+        inlined: true
+      modelEndpointOrigins:
+        description: HTTPS origins this pinned CLI release may contact for model and account traffic.
+        range: string
+        multivalued: true
     annotations:
       jumo.state_authority: OCI_REGISTRY
       jumo.model_role: VALUE_OBJECT
@@ -1357,6 +1374,28 @@ classes:
       jumo.model_role: VALUE_OBJECT
       jumo.audience: MACHINE_MTLS
       jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliMcpAdapterProfile:
+    description: Exact CLI release's qualified format for an isolated lease-local MCP configuration.
+    attributes:
+      configurationFormat:
+        range: string
+        required: true
+      toolNameEncoding:
+        range: string
+        required: true
+      configSchemaDigest:
+        range: string
+        required: true
+      smokeEvidenceRef:
+        range: string
+        required: true
+    annotations:
+      jumo.state_authority: GIT
+      jumo.model_role: VALUE_OBJECT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   CliInstallationDesiredState:
@@ -1493,7 +1532,6 @@ classes:
     attributes:
       workOrderId:
         range: Identifier
-        required: true
       status:
         range: string
         required: true
@@ -1523,6 +1561,42 @@ classes:
       jumo.audience: MACHINE_MTLS
       jumo.sensitivity: INTERNAL
       jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliDialogueReply:
+    description: Validated, sanitized answer from a DIALOGUE CLI lease; never a changeset.
+    attributes:
+      content:
+        range: string
+        required: true
+      inputTokens:
+        range: integer
+      outputTokens:
+        range: integer
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EVENT
+      jumo.audience: MACHINE_MTLS
+      jumo.sensitivity: PERSONAL
+      jumo.boundary_eligible: true
+      jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
+  CliDialogueDispatch:
+    description: Recognized pending CLI turn and sealed prompt, bound to one execution lease.
+    attributes:
+      leaseId: {range: Identifier, required: true}
+      realmId: {range: Identifier, required: true}
+      conversationId: {range: Identifier, required: true}
+      turnId: {range: Identifier, required: true}
+      invocationId: {range: Identifier, required: true}
+      promptCiphertext: {range: string}
+      promptDigest: {range: string, required: true, pattern: '^sha256:[0-9a-f]{64}$'}
+      status: {range: string, required: true}
+      completedAt: {range: datetime}
+    annotations:
+      jumo.state_authority: POSTGRES
+      jumo.model_role: EXECUTION_HISTORY
+      jumo.audience: INTERNAL_WORKER
+      jumo.sensitivity: SECRET
+      jumo.boundary_eligible: false
       jumo.schema_profiles: draft-2020-12,native-json-schema,prompted-json-validated
   CliUsageObservation:
     description: Observed consumption metrics from CLI tool invocations.

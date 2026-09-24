@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/cli/codex-mcp-adapter-v1",
+  "title": "Codex lease MCP adapter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mcp_servers"],
+  "properties": {
+    "mcp_servers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jumo"],
+      "properties": {
+        "jumo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["url"],
+          "properties": {"url": {"type": "string", "pattern": "^http://(127\\.0\\.0\\.1|10\\.0\\.2\\.2):[0-9]{1,5}/mcp$"}}
+        }
+      }
+    }
+  }
+}

@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Ephemeral sandbox execution lease bound to a machine, WorkOrder, SHA, and immutable active contract-set digest.
+ * Ephemeral sandbox execution lease bound to a machine and immutable active contract-set digest; a WORK_ORDER lease carries a task and SHA, while a DIALOGUE lease carries a conversation turn.
  */
-public record ExecutionCellLease(String leaseId, String machineId, String workOrderId, String gitCommitSha, String contractSetDigest, String status, String grantedAt, String expiresAt, List<String> delegatedSecretBindings)  {
+public record ExecutionCellLease(String leaseId, String machineId, ExecutionLeaseKind leaseKind, String workOrderId, String gitCommitSha, String conversationTurnId, ContractReference providerAccountRef, String contractSetDigest, String status, String grantedAt, String expiresAt, List<String> delegatedSecretBindings)  {
 
     public static Builder builder() {
         return new Builder();
@@ -18,8 +18,11 @@ public record ExecutionCellLease(String leaseId, String machineId, String workOr
 
         private String leaseId = "";
         private String machineId = "";
+        private ExecutionLeaseKind leaseKind = null;
         private String workOrderId = "";
         private String gitCommitSha = "";
+        private String conversationTurnId = "";
+        private ContractReference providerAccountRef = null;
         private String contractSetDigest = "";
         private String status = "";
         private String grantedAt = "";
@@ -37,6 +40,11 @@ public record ExecutionCellLease(String leaseId, String machineId, String workOr
             return this;
         }
 
+        public Builder leaseKind(ExecutionLeaseKind leaseKind) {
+            this.leaseKind = Objects.requireNonNull(leaseKind);
+            return this;
+        }
+
         public Builder workOrderId(String workOrderId) {
             this.workOrderId = Objects.requireNonNull(workOrderId);
             return this;
@@ -44,6 +52,16 @@ public record ExecutionCellLease(String leaseId, String machineId, String workOr
 
         public Builder gitCommitSha(String gitCommitSha) {
             this.gitCommitSha = Objects.requireNonNull(gitCommitSha);
+            return this;
+        }
+
+        public Builder conversationTurnId(String conversationTurnId) {
+            this.conversationTurnId = Objects.requireNonNull(conversationTurnId);
+            return this;
+        }
+
+        public Builder providerAccountRef(ContractReference providerAccountRef) {
+            this.providerAccountRef = Objects.requireNonNull(providerAccountRef);
             return this;
         }
 
@@ -73,7 +91,7 @@ public record ExecutionCellLease(String leaseId, String machineId, String workOr
         }
 
     public ExecutionCellLease build() {
-            return new ExecutionCellLease(leaseId, machineId, workOrderId, gitCommitSha, contractSetDigest, status, grantedAt, expiresAt, delegatedSecretBindings);
+            return new ExecutionCellLease(leaseId, machineId, leaseKind, workOrderId, gitCommitSha, conversationTurnId, providerAccountRef, contractSetDigest, status, grantedAt, expiresAt, delegatedSecretBindings);
         }
     }
 }

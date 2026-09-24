@@ -23,6 +23,13 @@ The coding agent executes within the cell, applies local changes, runs verificat
 returns a verified commit or patch proposal to the control plane. Direct pushes to protected branches
 remain strictly prohibited.
 
+A `DIALOGUE` lease is a separate, explicitly typed case for an addressed operator conversation.
+It binds one conversation turn and its declared provider account to a signed session plan, but has
+no WorkOrder, checkout, git SHA or return branch. A `WORK_ORDER` lease retains all four task
+bindings above. The lease kind and database constraints refuse either kind carrying the other's
+identity fields. Dialogue output has its own schema-bound reply envelope and cannot be consumed as
+a changeset.
+
 ## Alternatives
 
 - Ambient VM execution without work order leases was rejected: unleased execution permits untracked

@@ -16,3 +16,9 @@ spec:
   signatureDigest: sha256:e63322077248ea96dfe5533364ff6a0317ee1109155797aa415a529c102881d8
   sbomDigest: sha256:b4d764529a2f3e1ac598a98ee8c2cc9e36fae54c5faacbf97d0a44f48d19e23f
   provenanceDigest: sha256:107a873765f9e844f15ce5394ce37bc3ac1baa5c009d69c233f9eaa0ce51a167
+  modelEndpointOrigins: [https://chatgpt.com, https://api.openai.com, https://auth.openai.com]
+  mcpAdapterProfile:
+    configurationFormat: CODEX_TOML_HTTP
+    toolNameEncoding: MCP_SERVER_PREFIX
+    configSchemaDigest: sha256:01b23a03383ae1e1b169dcb0b5de0b59d87c14b3be180a544a3fa652ec23cdb3
+    smokeEvidenceRef: note:codex-0.153.2-exec-help-2026-09-24

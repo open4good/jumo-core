@@ -602,6 +602,12 @@ public final class ContractReferenceExtractor {
         if (obj == null) return;
         extractFromExecutionCellSpec(obj.spec(), refs);
     }
+    public static void extractFromExecutionCellLease(ExecutionCellLease obj, List<OutgoingReference> refs) {
+        if (obj == null) return;
+        if (obj.providerAccountRef() != null) {
+            refs.add(new OutgoingReference("providerAccountRef", obj.providerAccountRef()));
+        }
+    }
     public static void extractFromExecutionCellProvisioningRef(ExecutionCellProvisioningRef obj, List<OutgoingReference> refs) {
         if (obj == null) return;
         if (obj.projectRef() != null) {

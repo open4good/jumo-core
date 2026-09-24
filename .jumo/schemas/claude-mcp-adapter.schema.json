@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jumo.dev/schemas/cli/claude-mcp-adapter-v1",
+  "title": "Claude Code lease MCP adapter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mcpServers"],
+  "properties": {
+    "mcpServers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jumo"],
+      "properties": {
+        "jumo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "url"],
+          "properties": {
+            "type": {"const": "http"},
+            "url": {"type": "string", "pattern": "^http://(127\\.0\\.0\\.1|10\\.0\\.2\\.2):[0-9]{1,5}/mcp$"}
+          }
+        }
+      }
+    }
+  }
+}

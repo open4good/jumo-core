@@ -14,6 +14,11 @@ spec:
       i18nKey: journeySpecifyWorkOrderSection
       columns: 1
       fields:
+        - path: projectRef
+          representation: ENTITY_REFERENCE
+          i18nKey: journeyProjectRefField
+          optionsFrom: Project
+          required: true
         - path: roleRef
           representation: IDENTIFIER
           i18nKey: journeyRoleRefField
@@ -23,8 +28,7 @@ spec:
           i18nKey: journeyTeamRefField
           required: true
         - path: roadmapRef
-          representation: ENTITY_REFERENCE
+          representation: IDENTIFIER
           i18nKey: journeyRoadmapRefField
           helpI18nKey: journeyRoadmapRefHelp
           required: true
-          optionsFromNested: {sourceKind: Project, sourceId: jumo, path: spec.milestones}

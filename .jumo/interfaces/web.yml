@@ -207,8 +207,8 @@ spec:
         - conversation.coordinate.read
         - capability.grant.read
         - context.graph.read
-    - id: work
-      purpose: Show work orders, execution rings, and acceptance criteria.
+    - id: projects
+      purpose: Pilot each Project and its governed WorkOrders.
       audience: REALM_PRIVATE
       reads:
         - WORK_ORDERS
@@ -216,6 +216,7 @@ spec:
       proposes:
         - work.order.read
         - context.graph.read
+        - contract.change.propose
     - id: documents
       purpose: Read pilot documents and draft a bounded documentation proposal.
       audience: PROJECT_SCOPED
@@ -378,7 +379,7 @@ spec:
     - id: plans
       purpose: Group project, team, agent and assisted-journey planning views.
       audience: REALM_PRIVATE
-      reads: [TEAM_ROSTER, TEAM_HUB, AGENT_ROLES, JOURNEYS, JOURNEY_RUN]
+      reads: [TEAM_ROSTER, TEAM_HUB, AGENT_ROLES, JOURNEYS, JOURNEY_RUN, WORK_ORDERS]
     - id: archives
       purpose: Group corpus, knowledge, document and Jumo browser views.
       audience: PROJECT_SCOPED
@@ -392,7 +393,7 @@ spec:
       audience: REALM_PRIVATE
       reads: [CLI_TOOLS, PROVIDER_QUOTAS]
     - id: council
-      purpose: Group proposal, WorkOrder, Organization and audit views.
+      purpose: Group proposal, Organization and audit views.
       audience: REALM_PRIVATE
-      reads: [CHANGE_PROPOSALS, WORK_ORDERS, ORGANIZATIONS, AUDIT_HISTORY]
+      reads: [CHANGE_PROPOSALS, ORGANIZATIONS, AUDIT_HISTORY]
   defaultThemePackRef: {kind: ThemePack, namespace: dev.jumo.core, id: default}

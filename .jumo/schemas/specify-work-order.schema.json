@@ -4,9 +4,10 @@
   "title": "Specify work order step payload",
   "type": "object",
   "properties": {
+    "projectRef": { "type": "string", "minLength": 1 },
     "roleRef": { "type": "string", "minLength": 1 },
     "teamRef": { "type": "string", "minLength": 1 },
     "roadmapRef": { "type": "string", "minLength": 1 }
   },
-  "required": ["roleRef", "teamRef", "roadmapRef"]
+  "required": ["projectRef", "roleRef", "teamRef", "roadmapRef"]
 }

@@ -8,7 +8,7 @@ spec:
   ownerRealm: home
   of: WorkOrderSpec
   projectionKind: COLLECTION
-  renderedBy: work
+  renderedBy: projects
   sections:
     - id: work-overview
       i18nKey: workOrderBoard

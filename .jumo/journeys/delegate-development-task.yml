@@ -27,11 +27,11 @@ spec:
     validations:
       - {field: taskSlug, required: true}
       - {field: purpose, required: true, minimumLength: 10}
+      - {field: projectRef, required: true}
       - {field: roleRef, required: true}
       - {field: teamRef, required: true}
       - {field: roadmapRef, required: true}
     fieldDefaults:
-      - {field: projectRef, value: jumo}
       - {field: ring, value: RING_2_AGENT_BEHAVIOR}
     routingEligibilityCheck: {projectField: projectRef, teamField: teamRef}
   steps:
@@ -58,6 +58,7 @@ spec:
       narrationI18nKey: journeyDelegateDevelopmentTaskSpecifyWorkOrderNarration
       stepKind: COLLECT
       requiredFields:
+        - {field: projectRef, i18nKey: journeyProjectRefField}
         - {field: roleRef, i18nKey: journeyRoleRefField}
         - {field: teamRef, i18nKey: journeyTeamRefField}
         - {field: roadmapRef, i18nKey: journeyRoadmapRefField}

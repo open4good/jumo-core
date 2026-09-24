@@ -15,9 +15,9 @@ spec:
       name: Development task ${id}
     spec:
       purpose: ${purpose}
-      roleRef: ${roleRef}
-      teamRef: ${teamRef}
-      projectRef: ${projectRef}
+      producerRoleDefinitionRef: ${producerRoleReference}
+      teamSpecRef: ${teamReference}
+      projectRef: ${projectReference}
       roadmapRef: ${roadmapRef}
       state: PROPOSED
       contractRevision: ${contractRevision}
